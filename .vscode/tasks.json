@@ -1,0 +1,68 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "Docker Compose Up",
+        "type": "shell",
+        "command": "docker compose up -d",
+        "presentation": {
+          "panel": "new",
+          "clear": true
+        }
+      },
+      {
+        "label": "Prisma Studio",
+        "type": "shell",
+        "command": "npm",
+        "args": [
+          "run",
+          "server-p"
+        ],
+        "options": {
+          "cwd": "${workspaceFolder}"
+        },
+        "presentation": {
+          "panel": "shared",
+          "clear": true
+        },
+        "dependsOn": [
+          "Docker Compose Up"
+        ],
+        "dependsOrder": "sequence"
+      },
+      {
+        "label": "Server Start",
+        "type": "shell",
+        "command": "npm",
+        "args": [
+          "run",
+          "dev"
+        ],
+        "options": {
+          "cwd": "${workspaceFolder}"
+        },
+        "presentation": {
+          "panel": "dedicated",
+          "clear": true
+        },
+        "dependsOn": [
+          "Docker Compose Up"
+        ],
+        "dependsOrder": "sequence",
+        "problemMatcher": []
+      },
+      {
+        "label": "Run All Tasks",
+        "dependsOn": [
+          "Docker Compose Up",
+          "Prisma Studio",
+          "Server Start"
+        ],
+        "problemMatcher": [],
+        "group": {
+          "kind": "build",
+          "isDefault": true
+        }
+      }
+    ]
+  }

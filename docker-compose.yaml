@@ -1,0 +1,14 @@
+services:
+  # Setup a local database
+  db:
+    image: postgres:alpine3.19
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: AVMkI04t465O
+    ports:
+      - 5432:5432
+  # Setup adminer, a simple web UI for database management
+  adminer:
+    image: adminer
+    ports:
+      - 8080:8080

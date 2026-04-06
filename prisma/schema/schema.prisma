@@ -1,0 +1,13 @@
+generator client {
+  provider = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-1.1.x", "linux-musl"]
+}
+
+generator client_ts {
+  provider = "prisma-client-js"
+  output   = "../../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
