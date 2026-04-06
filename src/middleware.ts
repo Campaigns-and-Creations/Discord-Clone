@@ -18,7 +18,7 @@ export function middleware(request: NextRequest) {
 
     if (
         pathname.startsWith("/_next") ||
-        pathname.startsWith("/api/auth") ||
+        pathname.startsWith("/api/") ||
         pathname === "/favicon.ico" ||
         isStaticAsset(pathname)
     ) {
@@ -30,7 +30,7 @@ export function middleware(request: NextRequest) {
 
     if (isPublicAuthPath) {
         if (isAuthenticated) {
-            return NextResponse.redirect(new URL("/welcome", request.url));
+            return NextResponse.redirect(new URL("/", request.url));
         }
 
         return NextResponse.next();

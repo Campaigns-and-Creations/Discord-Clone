@@ -1,0 +1,53 @@
+model Server {
+    id          String   @id @default(uuid())
+    name        String
+    picture     String?
+    createdAt   DateTime @default(now())
+    channels    Channel[]
+    members     ServerMember[]
+    roles       serverRoles[]
+}
+
+model Channel {
+    id          String   @id @default(uuid())
+    name        String
+    serverId    String
+    server      Server   @relation(fields: [serverId], references: [id])
+    createdAt   DateTime @default(now())
+    type        ChannelType
+    messages    Messages[]
+    users       User[]   @relation("ChannelUsers")
+}
+
+model ServerMember {
+    id          String   @id @default(uuid())
+    userId      String
+    serverId    String
+    server      Server   @relation(fields: [serverId], references: [id])
+    user        User     @relation(fields: [userId], references: [id])
+    serverRoles serverRoles[] @relation("ServerMemberRoles")
+}
+
+model serverRoles {
+    id          String   @id @default(uuid())
+    name        String
+    serverId    String
+    server      Server   @relation(fields: [serverId], references: [id])
+    members     ServerMember[] @relation("ServerMemberRoles")
+}
+
+model Messages {
+    id          String   @id @default(uuid())
+    content     String   @db.Text
+    channelId   String
+    channel     Channel  @relation(fields: [channelId], references: [id])
+    authorId    String
+    author      User     @relation(fields: [authorId], references: [id])
+    createdAt   DateTime @default(now())
+    pinned      Boolean  @default(false)
+}
+
+enum ChannelType {
+    TEXT
+    VOICE
+}

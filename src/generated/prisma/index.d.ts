@@ -14,6 +14,31 @@ export type PrismaPromise<T> = $Public.PrismaPromise<T>
 
 
 /**
+ * Model Server
+ * 
+ */
+export type Server = $Result.DefaultSelection<Prisma.$ServerPayload>
+/**
+ * Model Channel
+ * 
+ */
+export type Channel = $Result.DefaultSelection<Prisma.$ChannelPayload>
+/**
+ * Model ServerMember
+ * 
+ */
+export type ServerMember = $Result.DefaultSelection<Prisma.$ServerMemberPayload>
+/**
+ * Model serverRoles
+ * 
+ */
+export type serverRoles = $Result.DefaultSelection<Prisma.$serverRolesPayload>
+/**
+ * Model Messages
+ * 
+ */
+export type Messages = $Result.DefaultSelection<Prisma.$MessagesPayload>
+/**
  * Model User
  * 
  */
@@ -35,6 +60,23 @@ export type Account = $Result.DefaultSelection<Prisma.$AccountPayload>
 export type Verification = $Result.DefaultSelection<Prisma.$VerificationPayload>
 
 /**
+ * Enums
+ */
+export namespace $Enums {
+  export const ChannelType: {
+  TEXT: 'TEXT',
+  VOICE: 'VOICE'
+};
+
+export type ChannelType = (typeof ChannelType)[keyof typeof ChannelType]
+
+}
+
+export type ChannelType = $Enums.ChannelType
+
+export const ChannelType: typeof $Enums.ChannelType
+
+/**
  * ##  Prisma Client ʲˢ
  *
  * Type-safe database client for TypeScript & Node.js
@@ -43,8 +85,8 @@ export type Verification = $Result.DefaultSelection<Prisma.$VerificationPayload>
  * const prisma = new PrismaClient({
  *   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL })
  * })
- * // Fetch zero or more Users
- * const users = await prisma.user.findMany()
+ * // Fetch zero or more Servers
+ * const servers = await prisma.server.findMany()
  * ```
  *
  *
@@ -66,8 +108,8 @@ export class PrismaClient<
    * const prisma = new PrismaClient({
    *   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL })
    * })
-   * // Fetch zero or more Users
-   * const users = await prisma.user.findMany()
+   * // Fetch zero or more Servers
+   * const servers = await prisma.server.findMany()
    * ```
    *
    *
@@ -156,6 +198,56 @@ export class PrismaClient<
   }>>
 
       /**
+   * `prisma.server`: Exposes CRUD operations for the **Server** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Servers
+    * const servers = await prisma.server.findMany()
+    * ```
+    */
+  get server(): Prisma.ServerDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.channel`: Exposes CRUD operations for the **Channel** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Channels
+    * const channels = await prisma.channel.findMany()
+    * ```
+    */
+  get channel(): Prisma.ChannelDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.serverMember`: Exposes CRUD operations for the **ServerMember** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ServerMembers
+    * const serverMembers = await prisma.serverMember.findMany()
+    * ```
+    */
+  get serverMember(): Prisma.ServerMemberDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.serverRoles`: Exposes CRUD operations for the **serverRoles** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ServerRoles
+    * const serverRoles = await prisma.serverRoles.findMany()
+    * ```
+    */
+  get serverRoles(): Prisma.serverRolesDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.messages`: Exposes CRUD operations for the **Messages** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Messages
+    * const messages = await prisma.messages.findMany()
+    * ```
+    */
+  get messages(): Prisma.MessagesDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.user`: Exposes CRUD operations for the **User** model.
     * Example usage:
     * ```ts
@@ -628,6 +720,11 @@ export namespace Prisma {
 
 
   export const ModelName: {
+    Server: 'Server',
+    Channel: 'Channel',
+    ServerMember: 'ServerMember',
+    serverRoles: 'serverRoles',
+    Messages: 'Messages',
     User: 'User',
     Session: 'Session',
     Account: 'Account',
@@ -647,10 +744,380 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "session" | "account" | "verification"
+      modelProps: "server" | "channel" | "serverMember" | "serverRoles" | "messages" | "user" | "session" | "account" | "verification"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
+      Server: {
+        payload: Prisma.$ServerPayload<ExtArgs>
+        fields: Prisma.ServerFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ServerFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ServerFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerPayload>
+          }
+          findFirst: {
+            args: Prisma.ServerFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ServerFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerPayload>
+          }
+          findMany: {
+            args: Prisma.ServerFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerPayload>[]
+          }
+          create: {
+            args: Prisma.ServerCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerPayload>
+          }
+          createMany: {
+            args: Prisma.ServerCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ServerCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerPayload>[]
+          }
+          delete: {
+            args: Prisma.ServerDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerPayload>
+          }
+          update: {
+            args: Prisma.ServerUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerPayload>
+          }
+          deleteMany: {
+            args: Prisma.ServerDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ServerUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ServerUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerPayload>[]
+          }
+          upsert: {
+            args: Prisma.ServerUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerPayload>
+          }
+          aggregate: {
+            args: Prisma.ServerAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateServer>
+          }
+          groupBy: {
+            args: Prisma.ServerGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ServerGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ServerCountArgs<ExtArgs>
+            result: $Utils.Optional<ServerCountAggregateOutputType> | number
+          }
+        }
+      }
+      Channel: {
+        payload: Prisma.$ChannelPayload<ExtArgs>
+        fields: Prisma.ChannelFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ChannelFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ChannelFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelPayload>
+          }
+          findFirst: {
+            args: Prisma.ChannelFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ChannelFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelPayload>
+          }
+          findMany: {
+            args: Prisma.ChannelFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelPayload>[]
+          }
+          create: {
+            args: Prisma.ChannelCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelPayload>
+          }
+          createMany: {
+            args: Prisma.ChannelCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ChannelCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelPayload>[]
+          }
+          delete: {
+            args: Prisma.ChannelDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelPayload>
+          }
+          update: {
+            args: Prisma.ChannelUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelPayload>
+          }
+          deleteMany: {
+            args: Prisma.ChannelDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ChannelUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ChannelUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelPayload>[]
+          }
+          upsert: {
+            args: Prisma.ChannelUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelPayload>
+          }
+          aggregate: {
+            args: Prisma.ChannelAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateChannel>
+          }
+          groupBy: {
+            args: Prisma.ChannelGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ChannelGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ChannelCountArgs<ExtArgs>
+            result: $Utils.Optional<ChannelCountAggregateOutputType> | number
+          }
+        }
+      }
+      ServerMember: {
+        payload: Prisma.$ServerMemberPayload<ExtArgs>
+        fields: Prisma.ServerMemberFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ServerMemberFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerMemberPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ServerMemberFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerMemberPayload>
+          }
+          findFirst: {
+            args: Prisma.ServerMemberFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerMemberPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ServerMemberFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerMemberPayload>
+          }
+          findMany: {
+            args: Prisma.ServerMemberFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerMemberPayload>[]
+          }
+          create: {
+            args: Prisma.ServerMemberCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerMemberPayload>
+          }
+          createMany: {
+            args: Prisma.ServerMemberCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ServerMemberCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerMemberPayload>[]
+          }
+          delete: {
+            args: Prisma.ServerMemberDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerMemberPayload>
+          }
+          update: {
+            args: Prisma.ServerMemberUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerMemberPayload>
+          }
+          deleteMany: {
+            args: Prisma.ServerMemberDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ServerMemberUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ServerMemberUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerMemberPayload>[]
+          }
+          upsert: {
+            args: Prisma.ServerMemberUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerMemberPayload>
+          }
+          aggregate: {
+            args: Prisma.ServerMemberAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateServerMember>
+          }
+          groupBy: {
+            args: Prisma.ServerMemberGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ServerMemberGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ServerMemberCountArgs<ExtArgs>
+            result: $Utils.Optional<ServerMemberCountAggregateOutputType> | number
+          }
+        }
+      }
+      serverRoles: {
+        payload: Prisma.$serverRolesPayload<ExtArgs>
+        fields: Prisma.serverRolesFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.serverRolesFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$serverRolesPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.serverRolesFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$serverRolesPayload>
+          }
+          findFirst: {
+            args: Prisma.serverRolesFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$serverRolesPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.serverRolesFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$serverRolesPayload>
+          }
+          findMany: {
+            args: Prisma.serverRolesFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$serverRolesPayload>[]
+          }
+          create: {
+            args: Prisma.serverRolesCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$serverRolesPayload>
+          }
+          createMany: {
+            args: Prisma.serverRolesCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.serverRolesCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$serverRolesPayload>[]
+          }
+          delete: {
+            args: Prisma.serverRolesDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$serverRolesPayload>
+          }
+          update: {
+            args: Prisma.serverRolesUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$serverRolesPayload>
+          }
+          deleteMany: {
+            args: Prisma.serverRolesDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.serverRolesUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.serverRolesUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$serverRolesPayload>[]
+          }
+          upsert: {
+            args: Prisma.serverRolesUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$serverRolesPayload>
+          }
+          aggregate: {
+            args: Prisma.ServerRolesAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateServerRoles>
+          }
+          groupBy: {
+            args: Prisma.serverRolesGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ServerRolesGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.serverRolesCountArgs<ExtArgs>
+            result: $Utils.Optional<ServerRolesCountAggregateOutputType> | number
+          }
+        }
+      }
+      Messages: {
+        payload: Prisma.$MessagesPayload<ExtArgs>
+        fields: Prisma.MessagesFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.MessagesFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessagesPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.MessagesFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessagesPayload>
+          }
+          findFirst: {
+            args: Prisma.MessagesFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessagesPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.MessagesFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessagesPayload>
+          }
+          findMany: {
+            args: Prisma.MessagesFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessagesPayload>[]
+          }
+          create: {
+            args: Prisma.MessagesCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessagesPayload>
+          }
+          createMany: {
+            args: Prisma.MessagesCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.MessagesCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessagesPayload>[]
+          }
+          delete: {
+            args: Prisma.MessagesDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessagesPayload>
+          }
+          update: {
+            args: Prisma.MessagesUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessagesPayload>
+          }
+          deleteMany: {
+            args: Prisma.MessagesDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.MessagesUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.MessagesUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessagesPayload>[]
+          }
+          upsert: {
+            args: Prisma.MessagesUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessagesPayload>
+          }
+          aggregate: {
+            args: Prisma.MessagesAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateMessages>
+          }
+          groupBy: {
+            args: Prisma.MessagesGroupByArgs<ExtArgs>
+            result: $Utils.Optional<MessagesGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.MessagesCountArgs<ExtArgs>
+            result: $Utils.Optional<MessagesCountAggregateOutputType> | number
+          }
+        }
+      }
       User: {
         payload: Prisma.$UserPayload<ExtArgs>
         fields: Prisma.UserFieldRefs
@@ -1055,6 +1522,11 @@ export namespace Prisma {
     comments?: runtime.SqlCommenterPlugin[]
   }
   export type GlobalOmitConfig = {
+    server?: ServerOmit
+    channel?: ChannelOmit
+    serverMember?: ServerMemberOmit
+    serverRoles?: serverRolesOmit
+    messages?: MessagesOmit
     user?: UserOmit
     session?: SessionOmit
     account?: AccountOmit
@@ -1135,17 +1607,174 @@ export namespace Prisma {
 
 
   /**
+   * Count Type ServerCountOutputType
+   */
+
+  export type ServerCountOutputType = {
+    channels: number
+    members: number
+    roles: number
+  }
+
+  export type ServerCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    channels?: boolean | ServerCountOutputTypeCountChannelsArgs
+    members?: boolean | ServerCountOutputTypeCountMembersArgs
+    roles?: boolean | ServerCountOutputTypeCountRolesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * ServerCountOutputType without action
+   */
+  export type ServerCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ServerCountOutputType
+     */
+    select?: ServerCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * ServerCountOutputType without action
+   */
+  export type ServerCountOutputTypeCountChannelsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ChannelWhereInput
+  }
+
+  /**
+   * ServerCountOutputType without action
+   */
+  export type ServerCountOutputTypeCountMembersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ServerMemberWhereInput
+  }
+
+  /**
+   * ServerCountOutputType without action
+   */
+  export type ServerCountOutputTypeCountRolesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: serverRolesWhereInput
+  }
+
+
+  /**
+   * Count Type ChannelCountOutputType
+   */
+
+  export type ChannelCountOutputType = {
+    messages: number
+    users: number
+  }
+
+  export type ChannelCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    messages?: boolean | ChannelCountOutputTypeCountMessagesArgs
+    users?: boolean | ChannelCountOutputTypeCountUsersArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * ChannelCountOutputType without action
+   */
+  export type ChannelCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelCountOutputType
+     */
+    select?: ChannelCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * ChannelCountOutputType without action
+   */
+  export type ChannelCountOutputTypeCountMessagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MessagesWhereInput
+  }
+
+  /**
+   * ChannelCountOutputType without action
+   */
+  export type ChannelCountOutputTypeCountUsersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserWhereInput
+  }
+
+
+  /**
+   * Count Type ServerMemberCountOutputType
+   */
+
+  export type ServerMemberCountOutputType = {
+    serverRoles: number
+  }
+
+  export type ServerMemberCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    serverRoles?: boolean | ServerMemberCountOutputTypeCountServerRolesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * ServerMemberCountOutputType without action
+   */
+  export type ServerMemberCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ServerMemberCountOutputType
+     */
+    select?: ServerMemberCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * ServerMemberCountOutputType without action
+   */
+  export type ServerMemberCountOutputTypeCountServerRolesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: serverRolesWhereInput
+  }
+
+
+  /**
+   * Count Type ServerRolesCountOutputType
+   */
+
+  export type ServerRolesCountOutputType = {
+    members: number
+  }
+
+  export type ServerRolesCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    members?: boolean | ServerRolesCountOutputTypeCountMembersArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * ServerRolesCountOutputType without action
+   */
+  export type ServerRolesCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ServerRolesCountOutputType
+     */
+    select?: ServerRolesCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * ServerRolesCountOutputType without action
+   */
+  export type ServerRolesCountOutputTypeCountMembersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ServerMemberWhereInput
+  }
+
+
+  /**
    * Count Type UserCountOutputType
    */
 
   export type UserCountOutputType = {
     sessions: number
     accounts: number
+    messages: number
+    memberships: number
+    channels: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     sessions?: boolean | UserCountOutputTypeCountSessionsArgs
     accounts?: boolean | UserCountOutputTypeCountAccountsArgs
+    messages?: boolean | UserCountOutputTypeCountMessagesArgs
+    memberships?: boolean | UserCountOutputTypeCountMembershipsArgs
+    channels?: boolean | UserCountOutputTypeCountChannelsArgs
   }
 
   // Custom InputTypes
@@ -1173,10 +1802,5496 @@ export namespace Prisma {
     where?: AccountWhereInput
   }
 
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountMessagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MessagesWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountMembershipsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ServerMemberWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountChannelsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ChannelWhereInput
+  }
+
 
   /**
    * Models
    */
+
+  /**
+   * Model Server
+   */
+
+  export type AggregateServer = {
+    _count: ServerCountAggregateOutputType | null
+    _min: ServerMinAggregateOutputType | null
+    _max: ServerMaxAggregateOutputType | null
+  }
+
+  export type ServerMinAggregateOutputType = {
+    id: string | null
+    name: string | null
+    picture: string | null
+    createdAt: Date | null
+  }
+
+  export type ServerMaxAggregateOutputType = {
+    id: string | null
+    name: string | null
+    picture: string | null
+    createdAt: Date | null
+  }
+
+  export type ServerCountAggregateOutputType = {
+    id: number
+    name: number
+    picture: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type ServerMinAggregateInputType = {
+    id?: true
+    name?: true
+    picture?: true
+    createdAt?: true
+  }
+
+  export type ServerMaxAggregateInputType = {
+    id?: true
+    name?: true
+    picture?: true
+    createdAt?: true
+  }
+
+  export type ServerCountAggregateInputType = {
+    id?: true
+    name?: true
+    picture?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type ServerAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Server to aggregate.
+     */
+    where?: ServerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Servers to fetch.
+     */
+    orderBy?: ServerOrderByWithRelationInput | ServerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ServerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Servers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Servers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Servers
+    **/
+    _count?: true | ServerCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ServerMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ServerMaxAggregateInputType
+  }
+
+  export type GetServerAggregateType<T extends ServerAggregateArgs> = {
+        [P in keyof T & keyof AggregateServer]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateServer[P]>
+      : GetScalarType<T[P], AggregateServer[P]>
+  }
+
+
+
+
+  export type ServerGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ServerWhereInput
+    orderBy?: ServerOrderByWithAggregationInput | ServerOrderByWithAggregationInput[]
+    by: ServerScalarFieldEnum[] | ServerScalarFieldEnum
+    having?: ServerScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ServerCountAggregateInputType | true
+    _min?: ServerMinAggregateInputType
+    _max?: ServerMaxAggregateInputType
+  }
+
+  export type ServerGroupByOutputType = {
+    id: string
+    name: string
+    picture: string | null
+    createdAt: Date
+    _count: ServerCountAggregateOutputType | null
+    _min: ServerMinAggregateOutputType | null
+    _max: ServerMaxAggregateOutputType | null
+  }
+
+  type GetServerGroupByPayload<T extends ServerGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ServerGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ServerGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ServerGroupByOutputType[P]>
+            : GetScalarType<T[P], ServerGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ServerSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    picture?: boolean
+    createdAt?: boolean
+    channels?: boolean | Server$channelsArgs<ExtArgs>
+    members?: boolean | Server$membersArgs<ExtArgs>
+    roles?: boolean | Server$rolesArgs<ExtArgs>
+    _count?: boolean | ServerCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["server"]>
+
+  export type ServerSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    picture?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["server"]>
+
+  export type ServerSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    picture?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["server"]>
+
+  export type ServerSelectScalar = {
+    id?: boolean
+    name?: boolean
+    picture?: boolean
+    createdAt?: boolean
+  }
+
+  export type ServerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "picture" | "createdAt", ExtArgs["result"]["server"]>
+  export type ServerInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    channels?: boolean | Server$channelsArgs<ExtArgs>
+    members?: boolean | Server$membersArgs<ExtArgs>
+    roles?: boolean | Server$rolesArgs<ExtArgs>
+    _count?: boolean | ServerCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type ServerIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type ServerIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $ServerPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Server"
+    objects: {
+      channels: Prisma.$ChannelPayload<ExtArgs>[]
+      members: Prisma.$ServerMemberPayload<ExtArgs>[]
+      roles: Prisma.$serverRolesPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      name: string
+      picture: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["server"]>
+    composites: {}
+  }
+
+  type ServerGetPayload<S extends boolean | null | undefined | ServerDefaultArgs> = $Result.GetResult<Prisma.$ServerPayload, S>
+
+  type ServerCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ServerFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ServerCountAggregateInputType | true
+    }
+
+  export interface ServerDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Server'], meta: { name: 'Server' } }
+    /**
+     * Find zero or one Server that matches the filter.
+     * @param {ServerFindUniqueArgs} args - Arguments to find a Server
+     * @example
+     * // Get one Server
+     * const server = await prisma.server.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ServerFindUniqueArgs>(args: SelectSubset<T, ServerFindUniqueArgs<ExtArgs>>): Prisma__ServerClient<$Result.GetResult<Prisma.$ServerPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Server that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ServerFindUniqueOrThrowArgs} args - Arguments to find a Server
+     * @example
+     * // Get one Server
+     * const server = await prisma.server.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ServerFindUniqueOrThrowArgs>(args: SelectSubset<T, ServerFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ServerClient<$Result.GetResult<Prisma.$ServerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Server that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ServerFindFirstArgs} args - Arguments to find a Server
+     * @example
+     * // Get one Server
+     * const server = await prisma.server.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ServerFindFirstArgs>(args?: SelectSubset<T, ServerFindFirstArgs<ExtArgs>>): Prisma__ServerClient<$Result.GetResult<Prisma.$ServerPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Server that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ServerFindFirstOrThrowArgs} args - Arguments to find a Server
+     * @example
+     * // Get one Server
+     * const server = await prisma.server.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ServerFindFirstOrThrowArgs>(args?: SelectSubset<T, ServerFindFirstOrThrowArgs<ExtArgs>>): Prisma__ServerClient<$Result.GetResult<Prisma.$ServerPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Servers that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ServerFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Servers
+     * const servers = await prisma.server.findMany()
+     * 
+     * // Get first 10 Servers
+     * const servers = await prisma.server.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const serverWithIdOnly = await prisma.server.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ServerFindManyArgs>(args?: SelectSubset<T, ServerFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ServerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Server.
+     * @param {ServerCreateArgs} args - Arguments to create a Server.
+     * @example
+     * // Create one Server
+     * const Server = await prisma.server.create({
+     *   data: {
+     *     // ... data to create a Server
+     *   }
+     * })
+     * 
+     */
+    create<T extends ServerCreateArgs>(args: SelectSubset<T, ServerCreateArgs<ExtArgs>>): Prisma__ServerClient<$Result.GetResult<Prisma.$ServerPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Servers.
+     * @param {ServerCreateManyArgs} args - Arguments to create many Servers.
+     * @example
+     * // Create many Servers
+     * const server = await prisma.server.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ServerCreateManyArgs>(args?: SelectSubset<T, ServerCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Servers and returns the data saved in the database.
+     * @param {ServerCreateManyAndReturnArgs} args - Arguments to create many Servers.
+     * @example
+     * // Create many Servers
+     * const server = await prisma.server.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Servers and only return the `id`
+     * const serverWithIdOnly = await prisma.server.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ServerCreateManyAndReturnArgs>(args?: SelectSubset<T, ServerCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ServerPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Server.
+     * @param {ServerDeleteArgs} args - Arguments to delete one Server.
+     * @example
+     * // Delete one Server
+     * const Server = await prisma.server.delete({
+     *   where: {
+     *     // ... filter to delete one Server
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ServerDeleteArgs>(args: SelectSubset<T, ServerDeleteArgs<ExtArgs>>): Prisma__ServerClient<$Result.GetResult<Prisma.$ServerPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Server.
+     * @param {ServerUpdateArgs} args - Arguments to update one Server.
+     * @example
+     * // Update one Server
+     * const server = await prisma.server.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ServerUpdateArgs>(args: SelectSubset<T, ServerUpdateArgs<ExtArgs>>): Prisma__ServerClient<$Result.GetResult<Prisma.$ServerPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Servers.
+     * @param {ServerDeleteManyArgs} args - Arguments to filter Servers to delete.
+     * @example
+     * // Delete a few Servers
+     * const { count } = await prisma.server.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ServerDeleteManyArgs>(args?: SelectSubset<T, ServerDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Servers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ServerUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Servers
+     * const server = await prisma.server.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ServerUpdateManyArgs>(args: SelectSubset<T, ServerUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Servers and returns the data updated in the database.
+     * @param {ServerUpdateManyAndReturnArgs} args - Arguments to update many Servers.
+     * @example
+     * // Update many Servers
+     * const server = await prisma.server.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Servers and only return the `id`
+     * const serverWithIdOnly = await prisma.server.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ServerUpdateManyAndReturnArgs>(args: SelectSubset<T, ServerUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ServerPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Server.
+     * @param {ServerUpsertArgs} args - Arguments to update or create a Server.
+     * @example
+     * // Update or create a Server
+     * const server = await prisma.server.upsert({
+     *   create: {
+     *     // ... data to create a Server
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Server we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ServerUpsertArgs>(args: SelectSubset<T, ServerUpsertArgs<ExtArgs>>): Prisma__ServerClient<$Result.GetResult<Prisma.$ServerPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Servers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ServerCountArgs} args - Arguments to filter Servers to count.
+     * @example
+     * // Count the number of Servers
+     * const count = await prisma.server.count({
+     *   where: {
+     *     // ... the filter for the Servers we want to count
+     *   }
+     * })
+    **/
+    count<T extends ServerCountArgs>(
+      args?: Subset<T, ServerCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ServerCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Server.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ServerAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ServerAggregateArgs>(args: Subset<T, ServerAggregateArgs>): Prisma.PrismaPromise<GetServerAggregateType<T>>
+
+    /**
+     * Group by Server.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ServerGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ServerGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ServerGroupByArgs['orderBy'] }
+        : { orderBy?: ServerGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ServerGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetServerGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Server model
+   */
+  readonly fields: ServerFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Server.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ServerClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    channels<T extends Server$channelsArgs<ExtArgs> = {}>(args?: Subset<T, Server$channelsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChannelPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    members<T extends Server$membersArgs<ExtArgs> = {}>(args?: Subset<T, Server$membersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ServerMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    roles<T extends Server$rolesArgs<ExtArgs> = {}>(args?: Subset<T, Server$rolesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$serverRolesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Server model
+   */
+  interface ServerFieldRefs {
+    readonly id: FieldRef<"Server", 'String'>
+    readonly name: FieldRef<"Server", 'String'>
+    readonly picture: FieldRef<"Server", 'String'>
+    readonly createdAt: FieldRef<"Server", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Server findUnique
+   */
+  export type ServerFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Server
+     */
+    select?: ServerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Server
+     */
+    omit?: ServerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerInclude<ExtArgs> | null
+    /**
+     * Filter, which Server to fetch.
+     */
+    where: ServerWhereUniqueInput
+  }
+
+  /**
+   * Server findUniqueOrThrow
+   */
+  export type ServerFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Server
+     */
+    select?: ServerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Server
+     */
+    omit?: ServerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerInclude<ExtArgs> | null
+    /**
+     * Filter, which Server to fetch.
+     */
+    where: ServerWhereUniqueInput
+  }
+
+  /**
+   * Server findFirst
+   */
+  export type ServerFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Server
+     */
+    select?: ServerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Server
+     */
+    omit?: ServerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerInclude<ExtArgs> | null
+    /**
+     * Filter, which Server to fetch.
+     */
+    where?: ServerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Servers to fetch.
+     */
+    orderBy?: ServerOrderByWithRelationInput | ServerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Servers.
+     */
+    cursor?: ServerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Servers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Servers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Servers.
+     */
+    distinct?: ServerScalarFieldEnum | ServerScalarFieldEnum[]
+  }
+
+  /**
+   * Server findFirstOrThrow
+   */
+  export type ServerFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Server
+     */
+    select?: ServerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Server
+     */
+    omit?: ServerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerInclude<ExtArgs> | null
+    /**
+     * Filter, which Server to fetch.
+     */
+    where?: ServerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Servers to fetch.
+     */
+    orderBy?: ServerOrderByWithRelationInput | ServerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Servers.
+     */
+    cursor?: ServerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Servers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Servers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Servers.
+     */
+    distinct?: ServerScalarFieldEnum | ServerScalarFieldEnum[]
+  }
+
+  /**
+   * Server findMany
+   */
+  export type ServerFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Server
+     */
+    select?: ServerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Server
+     */
+    omit?: ServerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerInclude<ExtArgs> | null
+    /**
+     * Filter, which Servers to fetch.
+     */
+    where?: ServerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Servers to fetch.
+     */
+    orderBy?: ServerOrderByWithRelationInput | ServerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Servers.
+     */
+    cursor?: ServerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Servers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Servers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Servers.
+     */
+    distinct?: ServerScalarFieldEnum | ServerScalarFieldEnum[]
+  }
+
+  /**
+   * Server create
+   */
+  export type ServerCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Server
+     */
+    select?: ServerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Server
+     */
+    omit?: ServerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Server.
+     */
+    data: XOR<ServerCreateInput, ServerUncheckedCreateInput>
+  }
+
+  /**
+   * Server createMany
+   */
+  export type ServerCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Servers.
+     */
+    data: ServerCreateManyInput | ServerCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Server createManyAndReturn
+   */
+  export type ServerCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Server
+     */
+    select?: ServerSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Server
+     */
+    omit?: ServerOmit<ExtArgs> | null
+    /**
+     * The data used to create many Servers.
+     */
+    data: ServerCreateManyInput | ServerCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Server update
+   */
+  export type ServerUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Server
+     */
+    select?: ServerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Server
+     */
+    omit?: ServerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Server.
+     */
+    data: XOR<ServerUpdateInput, ServerUncheckedUpdateInput>
+    /**
+     * Choose, which Server to update.
+     */
+    where: ServerWhereUniqueInput
+  }
+
+  /**
+   * Server updateMany
+   */
+  export type ServerUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Servers.
+     */
+    data: XOR<ServerUpdateManyMutationInput, ServerUncheckedUpdateManyInput>
+    /**
+     * Filter which Servers to update
+     */
+    where?: ServerWhereInput
+    /**
+     * Limit how many Servers to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Server updateManyAndReturn
+   */
+  export type ServerUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Server
+     */
+    select?: ServerSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Server
+     */
+    omit?: ServerOmit<ExtArgs> | null
+    /**
+     * The data used to update Servers.
+     */
+    data: XOR<ServerUpdateManyMutationInput, ServerUncheckedUpdateManyInput>
+    /**
+     * Filter which Servers to update
+     */
+    where?: ServerWhereInput
+    /**
+     * Limit how many Servers to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Server upsert
+   */
+  export type ServerUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Server
+     */
+    select?: ServerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Server
+     */
+    omit?: ServerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Server to update in case it exists.
+     */
+    where: ServerWhereUniqueInput
+    /**
+     * In case the Server found by the `where` argument doesn't exist, create a new Server with this data.
+     */
+    create: XOR<ServerCreateInput, ServerUncheckedCreateInput>
+    /**
+     * In case the Server was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ServerUpdateInput, ServerUncheckedUpdateInput>
+  }
+
+  /**
+   * Server delete
+   */
+  export type ServerDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Server
+     */
+    select?: ServerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Server
+     */
+    omit?: ServerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerInclude<ExtArgs> | null
+    /**
+     * Filter which Server to delete.
+     */
+    where: ServerWhereUniqueInput
+  }
+
+  /**
+   * Server deleteMany
+   */
+  export type ServerDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Servers to delete
+     */
+    where?: ServerWhereInput
+    /**
+     * Limit how many Servers to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Server.channels
+   */
+  export type Server$channelsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Channel
+     */
+    select?: ChannelSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Channel
+     */
+    omit?: ChannelOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelInclude<ExtArgs> | null
+    where?: ChannelWhereInput
+    orderBy?: ChannelOrderByWithRelationInput | ChannelOrderByWithRelationInput[]
+    cursor?: ChannelWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ChannelScalarFieldEnum | ChannelScalarFieldEnum[]
+  }
+
+  /**
+   * Server.members
+   */
+  export type Server$membersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ServerMember
+     */
+    select?: ServerMemberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ServerMember
+     */
+    omit?: ServerMemberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerMemberInclude<ExtArgs> | null
+    where?: ServerMemberWhereInput
+    orderBy?: ServerMemberOrderByWithRelationInput | ServerMemberOrderByWithRelationInput[]
+    cursor?: ServerMemberWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ServerMemberScalarFieldEnum | ServerMemberScalarFieldEnum[]
+  }
+
+  /**
+   * Server.roles
+   */
+  export type Server$rolesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the serverRoles
+     */
+    select?: serverRolesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the serverRoles
+     */
+    omit?: serverRolesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: serverRolesInclude<ExtArgs> | null
+    where?: serverRolesWhereInput
+    orderBy?: serverRolesOrderByWithRelationInput | serverRolesOrderByWithRelationInput[]
+    cursor?: serverRolesWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ServerRolesScalarFieldEnum | ServerRolesScalarFieldEnum[]
+  }
+
+  /**
+   * Server without action
+   */
+  export type ServerDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Server
+     */
+    select?: ServerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Server
+     */
+    omit?: ServerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Channel
+   */
+
+  export type AggregateChannel = {
+    _count: ChannelCountAggregateOutputType | null
+    _min: ChannelMinAggregateOutputType | null
+    _max: ChannelMaxAggregateOutputType | null
+  }
+
+  export type ChannelMinAggregateOutputType = {
+    id: string | null
+    name: string | null
+    serverId: string | null
+    createdAt: Date | null
+    type: $Enums.ChannelType | null
+  }
+
+  export type ChannelMaxAggregateOutputType = {
+    id: string | null
+    name: string | null
+    serverId: string | null
+    createdAt: Date | null
+    type: $Enums.ChannelType | null
+  }
+
+  export type ChannelCountAggregateOutputType = {
+    id: number
+    name: number
+    serverId: number
+    createdAt: number
+    type: number
+    _all: number
+  }
+
+
+  export type ChannelMinAggregateInputType = {
+    id?: true
+    name?: true
+    serverId?: true
+    createdAt?: true
+    type?: true
+  }
+
+  export type ChannelMaxAggregateInputType = {
+    id?: true
+    name?: true
+    serverId?: true
+    createdAt?: true
+    type?: true
+  }
+
+  export type ChannelCountAggregateInputType = {
+    id?: true
+    name?: true
+    serverId?: true
+    createdAt?: true
+    type?: true
+    _all?: true
+  }
+
+  export type ChannelAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Channel to aggregate.
+     */
+    where?: ChannelWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Channels to fetch.
+     */
+    orderBy?: ChannelOrderByWithRelationInput | ChannelOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ChannelWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Channels from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Channels.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Channels
+    **/
+    _count?: true | ChannelCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ChannelMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ChannelMaxAggregateInputType
+  }
+
+  export type GetChannelAggregateType<T extends ChannelAggregateArgs> = {
+        [P in keyof T & keyof AggregateChannel]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateChannel[P]>
+      : GetScalarType<T[P], AggregateChannel[P]>
+  }
+
+
+
+
+  export type ChannelGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ChannelWhereInput
+    orderBy?: ChannelOrderByWithAggregationInput | ChannelOrderByWithAggregationInput[]
+    by: ChannelScalarFieldEnum[] | ChannelScalarFieldEnum
+    having?: ChannelScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ChannelCountAggregateInputType | true
+    _min?: ChannelMinAggregateInputType
+    _max?: ChannelMaxAggregateInputType
+  }
+
+  export type ChannelGroupByOutputType = {
+    id: string
+    name: string
+    serverId: string
+    createdAt: Date
+    type: $Enums.ChannelType
+    _count: ChannelCountAggregateOutputType | null
+    _min: ChannelMinAggregateOutputType | null
+    _max: ChannelMaxAggregateOutputType | null
+  }
+
+  type GetChannelGroupByPayload<T extends ChannelGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ChannelGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ChannelGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ChannelGroupByOutputType[P]>
+            : GetScalarType<T[P], ChannelGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ChannelSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    serverId?: boolean
+    createdAt?: boolean
+    type?: boolean
+    server?: boolean | ServerDefaultArgs<ExtArgs>
+    messages?: boolean | Channel$messagesArgs<ExtArgs>
+    users?: boolean | Channel$usersArgs<ExtArgs>
+    _count?: boolean | ChannelCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["channel"]>
+
+  export type ChannelSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    serverId?: boolean
+    createdAt?: boolean
+    type?: boolean
+    server?: boolean | ServerDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["channel"]>
+
+  export type ChannelSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    serverId?: boolean
+    createdAt?: boolean
+    type?: boolean
+    server?: boolean | ServerDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["channel"]>
+
+  export type ChannelSelectScalar = {
+    id?: boolean
+    name?: boolean
+    serverId?: boolean
+    createdAt?: boolean
+    type?: boolean
+  }
+
+  export type ChannelOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "serverId" | "createdAt" | "type", ExtArgs["result"]["channel"]>
+  export type ChannelInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    server?: boolean | ServerDefaultArgs<ExtArgs>
+    messages?: boolean | Channel$messagesArgs<ExtArgs>
+    users?: boolean | Channel$usersArgs<ExtArgs>
+    _count?: boolean | ChannelCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type ChannelIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    server?: boolean | ServerDefaultArgs<ExtArgs>
+  }
+  export type ChannelIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    server?: boolean | ServerDefaultArgs<ExtArgs>
+  }
+
+  export type $ChannelPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Channel"
+    objects: {
+      server: Prisma.$ServerPayload<ExtArgs>
+      messages: Prisma.$MessagesPayload<ExtArgs>[]
+      users: Prisma.$UserPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      name: string
+      serverId: string
+      createdAt: Date
+      type: $Enums.ChannelType
+    }, ExtArgs["result"]["channel"]>
+    composites: {}
+  }
+
+  type ChannelGetPayload<S extends boolean | null | undefined | ChannelDefaultArgs> = $Result.GetResult<Prisma.$ChannelPayload, S>
+
+  type ChannelCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ChannelFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ChannelCountAggregateInputType | true
+    }
+
+  export interface ChannelDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Channel'], meta: { name: 'Channel' } }
+    /**
+     * Find zero or one Channel that matches the filter.
+     * @param {ChannelFindUniqueArgs} args - Arguments to find a Channel
+     * @example
+     * // Get one Channel
+     * const channel = await prisma.channel.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ChannelFindUniqueArgs>(args: SelectSubset<T, ChannelFindUniqueArgs<ExtArgs>>): Prisma__ChannelClient<$Result.GetResult<Prisma.$ChannelPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Channel that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ChannelFindUniqueOrThrowArgs} args - Arguments to find a Channel
+     * @example
+     * // Get one Channel
+     * const channel = await prisma.channel.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ChannelFindUniqueOrThrowArgs>(args: SelectSubset<T, ChannelFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ChannelClient<$Result.GetResult<Prisma.$ChannelPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Channel that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChannelFindFirstArgs} args - Arguments to find a Channel
+     * @example
+     * // Get one Channel
+     * const channel = await prisma.channel.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ChannelFindFirstArgs>(args?: SelectSubset<T, ChannelFindFirstArgs<ExtArgs>>): Prisma__ChannelClient<$Result.GetResult<Prisma.$ChannelPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Channel that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChannelFindFirstOrThrowArgs} args - Arguments to find a Channel
+     * @example
+     * // Get one Channel
+     * const channel = await prisma.channel.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ChannelFindFirstOrThrowArgs>(args?: SelectSubset<T, ChannelFindFirstOrThrowArgs<ExtArgs>>): Prisma__ChannelClient<$Result.GetResult<Prisma.$ChannelPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Channels that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChannelFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Channels
+     * const channels = await prisma.channel.findMany()
+     * 
+     * // Get first 10 Channels
+     * const channels = await prisma.channel.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const channelWithIdOnly = await prisma.channel.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ChannelFindManyArgs>(args?: SelectSubset<T, ChannelFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChannelPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Channel.
+     * @param {ChannelCreateArgs} args - Arguments to create a Channel.
+     * @example
+     * // Create one Channel
+     * const Channel = await prisma.channel.create({
+     *   data: {
+     *     // ... data to create a Channel
+     *   }
+     * })
+     * 
+     */
+    create<T extends ChannelCreateArgs>(args: SelectSubset<T, ChannelCreateArgs<ExtArgs>>): Prisma__ChannelClient<$Result.GetResult<Prisma.$ChannelPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Channels.
+     * @param {ChannelCreateManyArgs} args - Arguments to create many Channels.
+     * @example
+     * // Create many Channels
+     * const channel = await prisma.channel.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ChannelCreateManyArgs>(args?: SelectSubset<T, ChannelCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Channels and returns the data saved in the database.
+     * @param {ChannelCreateManyAndReturnArgs} args - Arguments to create many Channels.
+     * @example
+     * // Create many Channels
+     * const channel = await prisma.channel.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Channels and only return the `id`
+     * const channelWithIdOnly = await prisma.channel.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ChannelCreateManyAndReturnArgs>(args?: SelectSubset<T, ChannelCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChannelPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Channel.
+     * @param {ChannelDeleteArgs} args - Arguments to delete one Channel.
+     * @example
+     * // Delete one Channel
+     * const Channel = await prisma.channel.delete({
+     *   where: {
+     *     // ... filter to delete one Channel
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ChannelDeleteArgs>(args: SelectSubset<T, ChannelDeleteArgs<ExtArgs>>): Prisma__ChannelClient<$Result.GetResult<Prisma.$ChannelPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Channel.
+     * @param {ChannelUpdateArgs} args - Arguments to update one Channel.
+     * @example
+     * // Update one Channel
+     * const channel = await prisma.channel.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ChannelUpdateArgs>(args: SelectSubset<T, ChannelUpdateArgs<ExtArgs>>): Prisma__ChannelClient<$Result.GetResult<Prisma.$ChannelPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Channels.
+     * @param {ChannelDeleteManyArgs} args - Arguments to filter Channels to delete.
+     * @example
+     * // Delete a few Channels
+     * const { count } = await prisma.channel.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ChannelDeleteManyArgs>(args?: SelectSubset<T, ChannelDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Channels.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChannelUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Channels
+     * const channel = await prisma.channel.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ChannelUpdateManyArgs>(args: SelectSubset<T, ChannelUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Channels and returns the data updated in the database.
+     * @param {ChannelUpdateManyAndReturnArgs} args - Arguments to update many Channels.
+     * @example
+     * // Update many Channels
+     * const channel = await prisma.channel.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Channels and only return the `id`
+     * const channelWithIdOnly = await prisma.channel.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ChannelUpdateManyAndReturnArgs>(args: SelectSubset<T, ChannelUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChannelPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Channel.
+     * @param {ChannelUpsertArgs} args - Arguments to update or create a Channel.
+     * @example
+     * // Update or create a Channel
+     * const channel = await prisma.channel.upsert({
+     *   create: {
+     *     // ... data to create a Channel
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Channel we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ChannelUpsertArgs>(args: SelectSubset<T, ChannelUpsertArgs<ExtArgs>>): Prisma__ChannelClient<$Result.GetResult<Prisma.$ChannelPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Channels.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChannelCountArgs} args - Arguments to filter Channels to count.
+     * @example
+     * // Count the number of Channels
+     * const count = await prisma.channel.count({
+     *   where: {
+     *     // ... the filter for the Channels we want to count
+     *   }
+     * })
+    **/
+    count<T extends ChannelCountArgs>(
+      args?: Subset<T, ChannelCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ChannelCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Channel.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChannelAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ChannelAggregateArgs>(args: Subset<T, ChannelAggregateArgs>): Prisma.PrismaPromise<GetChannelAggregateType<T>>
+
+    /**
+     * Group by Channel.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChannelGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ChannelGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ChannelGroupByArgs['orderBy'] }
+        : { orderBy?: ChannelGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ChannelGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetChannelGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Channel model
+   */
+  readonly fields: ChannelFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Channel.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ChannelClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    server<T extends ServerDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ServerDefaultArgs<ExtArgs>>): Prisma__ServerClient<$Result.GetResult<Prisma.$ServerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    messages<T extends Channel$messagesArgs<ExtArgs> = {}>(args?: Subset<T, Channel$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessagesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    users<T extends Channel$usersArgs<ExtArgs> = {}>(args?: Subset<T, Channel$usersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Channel model
+   */
+  interface ChannelFieldRefs {
+    readonly id: FieldRef<"Channel", 'String'>
+    readonly name: FieldRef<"Channel", 'String'>
+    readonly serverId: FieldRef<"Channel", 'String'>
+    readonly createdAt: FieldRef<"Channel", 'DateTime'>
+    readonly type: FieldRef<"Channel", 'ChannelType'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Channel findUnique
+   */
+  export type ChannelFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Channel
+     */
+    select?: ChannelSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Channel
+     */
+    omit?: ChannelOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelInclude<ExtArgs> | null
+    /**
+     * Filter, which Channel to fetch.
+     */
+    where: ChannelWhereUniqueInput
+  }
+
+  /**
+   * Channel findUniqueOrThrow
+   */
+  export type ChannelFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Channel
+     */
+    select?: ChannelSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Channel
+     */
+    omit?: ChannelOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelInclude<ExtArgs> | null
+    /**
+     * Filter, which Channel to fetch.
+     */
+    where: ChannelWhereUniqueInput
+  }
+
+  /**
+   * Channel findFirst
+   */
+  export type ChannelFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Channel
+     */
+    select?: ChannelSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Channel
+     */
+    omit?: ChannelOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelInclude<ExtArgs> | null
+    /**
+     * Filter, which Channel to fetch.
+     */
+    where?: ChannelWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Channels to fetch.
+     */
+    orderBy?: ChannelOrderByWithRelationInput | ChannelOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Channels.
+     */
+    cursor?: ChannelWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Channels from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Channels.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Channels.
+     */
+    distinct?: ChannelScalarFieldEnum | ChannelScalarFieldEnum[]
+  }
+
+  /**
+   * Channel findFirstOrThrow
+   */
+  export type ChannelFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Channel
+     */
+    select?: ChannelSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Channel
+     */
+    omit?: ChannelOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelInclude<ExtArgs> | null
+    /**
+     * Filter, which Channel to fetch.
+     */
+    where?: ChannelWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Channels to fetch.
+     */
+    orderBy?: ChannelOrderByWithRelationInput | ChannelOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Channels.
+     */
+    cursor?: ChannelWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Channels from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Channels.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Channels.
+     */
+    distinct?: ChannelScalarFieldEnum | ChannelScalarFieldEnum[]
+  }
+
+  /**
+   * Channel findMany
+   */
+  export type ChannelFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Channel
+     */
+    select?: ChannelSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Channel
+     */
+    omit?: ChannelOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelInclude<ExtArgs> | null
+    /**
+     * Filter, which Channels to fetch.
+     */
+    where?: ChannelWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Channels to fetch.
+     */
+    orderBy?: ChannelOrderByWithRelationInput | ChannelOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Channels.
+     */
+    cursor?: ChannelWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Channels from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Channels.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Channels.
+     */
+    distinct?: ChannelScalarFieldEnum | ChannelScalarFieldEnum[]
+  }
+
+  /**
+   * Channel create
+   */
+  export type ChannelCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Channel
+     */
+    select?: ChannelSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Channel
+     */
+    omit?: ChannelOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Channel.
+     */
+    data: XOR<ChannelCreateInput, ChannelUncheckedCreateInput>
+  }
+
+  /**
+   * Channel createMany
+   */
+  export type ChannelCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Channels.
+     */
+    data: ChannelCreateManyInput | ChannelCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Channel createManyAndReturn
+   */
+  export type ChannelCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Channel
+     */
+    select?: ChannelSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Channel
+     */
+    omit?: ChannelOmit<ExtArgs> | null
+    /**
+     * The data used to create many Channels.
+     */
+    data: ChannelCreateManyInput | ChannelCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Channel update
+   */
+  export type ChannelUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Channel
+     */
+    select?: ChannelSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Channel
+     */
+    omit?: ChannelOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Channel.
+     */
+    data: XOR<ChannelUpdateInput, ChannelUncheckedUpdateInput>
+    /**
+     * Choose, which Channel to update.
+     */
+    where: ChannelWhereUniqueInput
+  }
+
+  /**
+   * Channel updateMany
+   */
+  export type ChannelUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Channels.
+     */
+    data: XOR<ChannelUpdateManyMutationInput, ChannelUncheckedUpdateManyInput>
+    /**
+     * Filter which Channels to update
+     */
+    where?: ChannelWhereInput
+    /**
+     * Limit how many Channels to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Channel updateManyAndReturn
+   */
+  export type ChannelUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Channel
+     */
+    select?: ChannelSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Channel
+     */
+    omit?: ChannelOmit<ExtArgs> | null
+    /**
+     * The data used to update Channels.
+     */
+    data: XOR<ChannelUpdateManyMutationInput, ChannelUncheckedUpdateManyInput>
+    /**
+     * Filter which Channels to update
+     */
+    where?: ChannelWhereInput
+    /**
+     * Limit how many Channels to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Channel upsert
+   */
+  export type ChannelUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Channel
+     */
+    select?: ChannelSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Channel
+     */
+    omit?: ChannelOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Channel to update in case it exists.
+     */
+    where: ChannelWhereUniqueInput
+    /**
+     * In case the Channel found by the `where` argument doesn't exist, create a new Channel with this data.
+     */
+    create: XOR<ChannelCreateInput, ChannelUncheckedCreateInput>
+    /**
+     * In case the Channel was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ChannelUpdateInput, ChannelUncheckedUpdateInput>
+  }
+
+  /**
+   * Channel delete
+   */
+  export type ChannelDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Channel
+     */
+    select?: ChannelSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Channel
+     */
+    omit?: ChannelOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelInclude<ExtArgs> | null
+    /**
+     * Filter which Channel to delete.
+     */
+    where: ChannelWhereUniqueInput
+  }
+
+  /**
+   * Channel deleteMany
+   */
+  export type ChannelDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Channels to delete
+     */
+    where?: ChannelWhereInput
+    /**
+     * Limit how many Channels to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Channel.messages
+   */
+  export type Channel$messagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Messages
+     */
+    select?: MessagesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Messages
+     */
+    omit?: MessagesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessagesInclude<ExtArgs> | null
+    where?: MessagesWhereInput
+    orderBy?: MessagesOrderByWithRelationInput | MessagesOrderByWithRelationInput[]
+    cursor?: MessagesWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: MessagesScalarFieldEnum | MessagesScalarFieldEnum[]
+  }
+
+  /**
+   * Channel.users
+   */
+  export type Channel$usersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+    orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[]
+    cursor?: UserWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
+  }
+
+  /**
+   * Channel without action
+   */
+  export type ChannelDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Channel
+     */
+    select?: ChannelSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Channel
+     */
+    omit?: ChannelOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ServerMember
+   */
+
+  export type AggregateServerMember = {
+    _count: ServerMemberCountAggregateOutputType | null
+    _min: ServerMemberMinAggregateOutputType | null
+    _max: ServerMemberMaxAggregateOutputType | null
+  }
+
+  export type ServerMemberMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    serverId: string | null
+  }
+
+  export type ServerMemberMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    serverId: string | null
+  }
+
+  export type ServerMemberCountAggregateOutputType = {
+    id: number
+    userId: number
+    serverId: number
+    _all: number
+  }
+
+
+  export type ServerMemberMinAggregateInputType = {
+    id?: true
+    userId?: true
+    serverId?: true
+  }
+
+  export type ServerMemberMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    serverId?: true
+  }
+
+  export type ServerMemberCountAggregateInputType = {
+    id?: true
+    userId?: true
+    serverId?: true
+    _all?: true
+  }
+
+  export type ServerMemberAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ServerMember to aggregate.
+     */
+    where?: ServerMemberWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ServerMembers to fetch.
+     */
+    orderBy?: ServerMemberOrderByWithRelationInput | ServerMemberOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ServerMemberWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ServerMembers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ServerMembers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ServerMembers
+    **/
+    _count?: true | ServerMemberCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ServerMemberMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ServerMemberMaxAggregateInputType
+  }
+
+  export type GetServerMemberAggregateType<T extends ServerMemberAggregateArgs> = {
+        [P in keyof T & keyof AggregateServerMember]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateServerMember[P]>
+      : GetScalarType<T[P], AggregateServerMember[P]>
+  }
+
+
+
+
+  export type ServerMemberGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ServerMemberWhereInput
+    orderBy?: ServerMemberOrderByWithAggregationInput | ServerMemberOrderByWithAggregationInput[]
+    by: ServerMemberScalarFieldEnum[] | ServerMemberScalarFieldEnum
+    having?: ServerMemberScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ServerMemberCountAggregateInputType | true
+    _min?: ServerMemberMinAggregateInputType
+    _max?: ServerMemberMaxAggregateInputType
+  }
+
+  export type ServerMemberGroupByOutputType = {
+    id: string
+    userId: string
+    serverId: string
+    _count: ServerMemberCountAggregateOutputType | null
+    _min: ServerMemberMinAggregateOutputType | null
+    _max: ServerMemberMaxAggregateOutputType | null
+  }
+
+  type GetServerMemberGroupByPayload<T extends ServerMemberGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ServerMemberGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ServerMemberGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ServerMemberGroupByOutputType[P]>
+            : GetScalarType<T[P], ServerMemberGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ServerMemberSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    serverId?: boolean
+    server?: boolean | ServerDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    serverRoles?: boolean | ServerMember$serverRolesArgs<ExtArgs>
+    _count?: boolean | ServerMemberCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["serverMember"]>
+
+  export type ServerMemberSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    serverId?: boolean
+    server?: boolean | ServerDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["serverMember"]>
+
+  export type ServerMemberSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    serverId?: boolean
+    server?: boolean | ServerDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["serverMember"]>
+
+  export type ServerMemberSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    serverId?: boolean
+  }
+
+  export type ServerMemberOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "serverId", ExtArgs["result"]["serverMember"]>
+  export type ServerMemberInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    server?: boolean | ServerDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    serverRoles?: boolean | ServerMember$serverRolesArgs<ExtArgs>
+    _count?: boolean | ServerMemberCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type ServerMemberIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    server?: boolean | ServerDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type ServerMemberIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    server?: boolean | ServerDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $ServerMemberPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ServerMember"
+    objects: {
+      server: Prisma.$ServerPayload<ExtArgs>
+      user: Prisma.$UserPayload<ExtArgs>
+      serverRoles: Prisma.$serverRolesPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      serverId: string
+    }, ExtArgs["result"]["serverMember"]>
+    composites: {}
+  }
+
+  type ServerMemberGetPayload<S extends boolean | null | undefined | ServerMemberDefaultArgs> = $Result.GetResult<Prisma.$ServerMemberPayload, S>
+
+  type ServerMemberCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ServerMemberFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ServerMemberCountAggregateInputType | true
+    }
+
+  export interface ServerMemberDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ServerMember'], meta: { name: 'ServerMember' } }
+    /**
+     * Find zero or one ServerMember that matches the filter.
+     * @param {ServerMemberFindUniqueArgs} args - Arguments to find a ServerMember
+     * @example
+     * // Get one ServerMember
+     * const serverMember = await prisma.serverMember.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ServerMemberFindUniqueArgs>(args: SelectSubset<T, ServerMemberFindUniqueArgs<ExtArgs>>): Prisma__ServerMemberClient<$Result.GetResult<Prisma.$ServerMemberPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ServerMember that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ServerMemberFindUniqueOrThrowArgs} args - Arguments to find a ServerMember
+     * @example
+     * // Get one ServerMember
+     * const serverMember = await prisma.serverMember.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ServerMemberFindUniqueOrThrowArgs>(args: SelectSubset<T, ServerMemberFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ServerMemberClient<$Result.GetResult<Prisma.$ServerMemberPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ServerMember that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ServerMemberFindFirstArgs} args - Arguments to find a ServerMember
+     * @example
+     * // Get one ServerMember
+     * const serverMember = await prisma.serverMember.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ServerMemberFindFirstArgs>(args?: SelectSubset<T, ServerMemberFindFirstArgs<ExtArgs>>): Prisma__ServerMemberClient<$Result.GetResult<Prisma.$ServerMemberPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ServerMember that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ServerMemberFindFirstOrThrowArgs} args - Arguments to find a ServerMember
+     * @example
+     * // Get one ServerMember
+     * const serverMember = await prisma.serverMember.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ServerMemberFindFirstOrThrowArgs>(args?: SelectSubset<T, ServerMemberFindFirstOrThrowArgs<ExtArgs>>): Prisma__ServerMemberClient<$Result.GetResult<Prisma.$ServerMemberPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ServerMembers that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ServerMemberFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ServerMembers
+     * const serverMembers = await prisma.serverMember.findMany()
+     * 
+     * // Get first 10 ServerMembers
+     * const serverMembers = await prisma.serverMember.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const serverMemberWithIdOnly = await prisma.serverMember.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ServerMemberFindManyArgs>(args?: SelectSubset<T, ServerMemberFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ServerMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ServerMember.
+     * @param {ServerMemberCreateArgs} args - Arguments to create a ServerMember.
+     * @example
+     * // Create one ServerMember
+     * const ServerMember = await prisma.serverMember.create({
+     *   data: {
+     *     // ... data to create a ServerMember
+     *   }
+     * })
+     * 
+     */
+    create<T extends ServerMemberCreateArgs>(args: SelectSubset<T, ServerMemberCreateArgs<ExtArgs>>): Prisma__ServerMemberClient<$Result.GetResult<Prisma.$ServerMemberPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ServerMembers.
+     * @param {ServerMemberCreateManyArgs} args - Arguments to create many ServerMembers.
+     * @example
+     * // Create many ServerMembers
+     * const serverMember = await prisma.serverMember.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ServerMemberCreateManyArgs>(args?: SelectSubset<T, ServerMemberCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ServerMembers and returns the data saved in the database.
+     * @param {ServerMemberCreateManyAndReturnArgs} args - Arguments to create many ServerMembers.
+     * @example
+     * // Create many ServerMembers
+     * const serverMember = await prisma.serverMember.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ServerMembers and only return the `id`
+     * const serverMemberWithIdOnly = await prisma.serverMember.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ServerMemberCreateManyAndReturnArgs>(args?: SelectSubset<T, ServerMemberCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ServerMemberPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ServerMember.
+     * @param {ServerMemberDeleteArgs} args - Arguments to delete one ServerMember.
+     * @example
+     * // Delete one ServerMember
+     * const ServerMember = await prisma.serverMember.delete({
+     *   where: {
+     *     // ... filter to delete one ServerMember
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ServerMemberDeleteArgs>(args: SelectSubset<T, ServerMemberDeleteArgs<ExtArgs>>): Prisma__ServerMemberClient<$Result.GetResult<Prisma.$ServerMemberPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ServerMember.
+     * @param {ServerMemberUpdateArgs} args - Arguments to update one ServerMember.
+     * @example
+     * // Update one ServerMember
+     * const serverMember = await prisma.serverMember.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ServerMemberUpdateArgs>(args: SelectSubset<T, ServerMemberUpdateArgs<ExtArgs>>): Prisma__ServerMemberClient<$Result.GetResult<Prisma.$ServerMemberPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ServerMembers.
+     * @param {ServerMemberDeleteManyArgs} args - Arguments to filter ServerMembers to delete.
+     * @example
+     * // Delete a few ServerMembers
+     * const { count } = await prisma.serverMember.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ServerMemberDeleteManyArgs>(args?: SelectSubset<T, ServerMemberDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ServerMembers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ServerMemberUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ServerMembers
+     * const serverMember = await prisma.serverMember.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ServerMemberUpdateManyArgs>(args: SelectSubset<T, ServerMemberUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ServerMembers and returns the data updated in the database.
+     * @param {ServerMemberUpdateManyAndReturnArgs} args - Arguments to update many ServerMembers.
+     * @example
+     * // Update many ServerMembers
+     * const serverMember = await prisma.serverMember.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ServerMembers and only return the `id`
+     * const serverMemberWithIdOnly = await prisma.serverMember.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ServerMemberUpdateManyAndReturnArgs>(args: SelectSubset<T, ServerMemberUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ServerMemberPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ServerMember.
+     * @param {ServerMemberUpsertArgs} args - Arguments to update or create a ServerMember.
+     * @example
+     * // Update or create a ServerMember
+     * const serverMember = await prisma.serverMember.upsert({
+     *   create: {
+     *     // ... data to create a ServerMember
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ServerMember we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ServerMemberUpsertArgs>(args: SelectSubset<T, ServerMemberUpsertArgs<ExtArgs>>): Prisma__ServerMemberClient<$Result.GetResult<Prisma.$ServerMemberPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ServerMembers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ServerMemberCountArgs} args - Arguments to filter ServerMembers to count.
+     * @example
+     * // Count the number of ServerMembers
+     * const count = await prisma.serverMember.count({
+     *   where: {
+     *     // ... the filter for the ServerMembers we want to count
+     *   }
+     * })
+    **/
+    count<T extends ServerMemberCountArgs>(
+      args?: Subset<T, ServerMemberCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ServerMemberCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ServerMember.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ServerMemberAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ServerMemberAggregateArgs>(args: Subset<T, ServerMemberAggregateArgs>): Prisma.PrismaPromise<GetServerMemberAggregateType<T>>
+
+    /**
+     * Group by ServerMember.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ServerMemberGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ServerMemberGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ServerMemberGroupByArgs['orderBy'] }
+        : { orderBy?: ServerMemberGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ServerMemberGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetServerMemberGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ServerMember model
+   */
+  readonly fields: ServerMemberFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ServerMember.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ServerMemberClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    server<T extends ServerDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ServerDefaultArgs<ExtArgs>>): Prisma__ServerClient<$Result.GetResult<Prisma.$ServerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    serverRoles<T extends ServerMember$serverRolesArgs<ExtArgs> = {}>(args?: Subset<T, ServerMember$serverRolesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$serverRolesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ServerMember model
+   */
+  interface ServerMemberFieldRefs {
+    readonly id: FieldRef<"ServerMember", 'String'>
+    readonly userId: FieldRef<"ServerMember", 'String'>
+    readonly serverId: FieldRef<"ServerMember", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ServerMember findUnique
+   */
+  export type ServerMemberFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ServerMember
+     */
+    select?: ServerMemberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ServerMember
+     */
+    omit?: ServerMemberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerMemberInclude<ExtArgs> | null
+    /**
+     * Filter, which ServerMember to fetch.
+     */
+    where: ServerMemberWhereUniqueInput
+  }
+
+  /**
+   * ServerMember findUniqueOrThrow
+   */
+  export type ServerMemberFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ServerMember
+     */
+    select?: ServerMemberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ServerMember
+     */
+    omit?: ServerMemberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerMemberInclude<ExtArgs> | null
+    /**
+     * Filter, which ServerMember to fetch.
+     */
+    where: ServerMemberWhereUniqueInput
+  }
+
+  /**
+   * ServerMember findFirst
+   */
+  export type ServerMemberFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ServerMember
+     */
+    select?: ServerMemberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ServerMember
+     */
+    omit?: ServerMemberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerMemberInclude<ExtArgs> | null
+    /**
+     * Filter, which ServerMember to fetch.
+     */
+    where?: ServerMemberWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ServerMembers to fetch.
+     */
+    orderBy?: ServerMemberOrderByWithRelationInput | ServerMemberOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ServerMembers.
+     */
+    cursor?: ServerMemberWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ServerMembers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ServerMembers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ServerMembers.
+     */
+    distinct?: ServerMemberScalarFieldEnum | ServerMemberScalarFieldEnum[]
+  }
+
+  /**
+   * ServerMember findFirstOrThrow
+   */
+  export type ServerMemberFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ServerMember
+     */
+    select?: ServerMemberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ServerMember
+     */
+    omit?: ServerMemberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerMemberInclude<ExtArgs> | null
+    /**
+     * Filter, which ServerMember to fetch.
+     */
+    where?: ServerMemberWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ServerMembers to fetch.
+     */
+    orderBy?: ServerMemberOrderByWithRelationInput | ServerMemberOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ServerMembers.
+     */
+    cursor?: ServerMemberWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ServerMembers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ServerMembers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ServerMembers.
+     */
+    distinct?: ServerMemberScalarFieldEnum | ServerMemberScalarFieldEnum[]
+  }
+
+  /**
+   * ServerMember findMany
+   */
+  export type ServerMemberFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ServerMember
+     */
+    select?: ServerMemberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ServerMember
+     */
+    omit?: ServerMemberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerMemberInclude<ExtArgs> | null
+    /**
+     * Filter, which ServerMembers to fetch.
+     */
+    where?: ServerMemberWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ServerMembers to fetch.
+     */
+    orderBy?: ServerMemberOrderByWithRelationInput | ServerMemberOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ServerMembers.
+     */
+    cursor?: ServerMemberWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ServerMembers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ServerMembers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ServerMembers.
+     */
+    distinct?: ServerMemberScalarFieldEnum | ServerMemberScalarFieldEnum[]
+  }
+
+  /**
+   * ServerMember create
+   */
+  export type ServerMemberCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ServerMember
+     */
+    select?: ServerMemberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ServerMember
+     */
+    omit?: ServerMemberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerMemberInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ServerMember.
+     */
+    data: XOR<ServerMemberCreateInput, ServerMemberUncheckedCreateInput>
+  }
+
+  /**
+   * ServerMember createMany
+   */
+  export type ServerMemberCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ServerMembers.
+     */
+    data: ServerMemberCreateManyInput | ServerMemberCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ServerMember createManyAndReturn
+   */
+  export type ServerMemberCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ServerMember
+     */
+    select?: ServerMemberSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ServerMember
+     */
+    omit?: ServerMemberOmit<ExtArgs> | null
+    /**
+     * The data used to create many ServerMembers.
+     */
+    data: ServerMemberCreateManyInput | ServerMemberCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerMemberIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ServerMember update
+   */
+  export type ServerMemberUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ServerMember
+     */
+    select?: ServerMemberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ServerMember
+     */
+    omit?: ServerMemberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerMemberInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ServerMember.
+     */
+    data: XOR<ServerMemberUpdateInput, ServerMemberUncheckedUpdateInput>
+    /**
+     * Choose, which ServerMember to update.
+     */
+    where: ServerMemberWhereUniqueInput
+  }
+
+  /**
+   * ServerMember updateMany
+   */
+  export type ServerMemberUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ServerMembers.
+     */
+    data: XOR<ServerMemberUpdateManyMutationInput, ServerMemberUncheckedUpdateManyInput>
+    /**
+     * Filter which ServerMembers to update
+     */
+    where?: ServerMemberWhereInput
+    /**
+     * Limit how many ServerMembers to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ServerMember updateManyAndReturn
+   */
+  export type ServerMemberUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ServerMember
+     */
+    select?: ServerMemberSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ServerMember
+     */
+    omit?: ServerMemberOmit<ExtArgs> | null
+    /**
+     * The data used to update ServerMembers.
+     */
+    data: XOR<ServerMemberUpdateManyMutationInput, ServerMemberUncheckedUpdateManyInput>
+    /**
+     * Filter which ServerMembers to update
+     */
+    where?: ServerMemberWhereInput
+    /**
+     * Limit how many ServerMembers to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerMemberIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ServerMember upsert
+   */
+  export type ServerMemberUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ServerMember
+     */
+    select?: ServerMemberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ServerMember
+     */
+    omit?: ServerMemberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerMemberInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ServerMember to update in case it exists.
+     */
+    where: ServerMemberWhereUniqueInput
+    /**
+     * In case the ServerMember found by the `where` argument doesn't exist, create a new ServerMember with this data.
+     */
+    create: XOR<ServerMemberCreateInput, ServerMemberUncheckedCreateInput>
+    /**
+     * In case the ServerMember was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ServerMemberUpdateInput, ServerMemberUncheckedUpdateInput>
+  }
+
+  /**
+   * ServerMember delete
+   */
+  export type ServerMemberDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ServerMember
+     */
+    select?: ServerMemberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ServerMember
+     */
+    omit?: ServerMemberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerMemberInclude<ExtArgs> | null
+    /**
+     * Filter which ServerMember to delete.
+     */
+    where: ServerMemberWhereUniqueInput
+  }
+
+  /**
+   * ServerMember deleteMany
+   */
+  export type ServerMemberDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ServerMembers to delete
+     */
+    where?: ServerMemberWhereInput
+    /**
+     * Limit how many ServerMembers to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ServerMember.serverRoles
+   */
+  export type ServerMember$serverRolesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the serverRoles
+     */
+    select?: serverRolesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the serverRoles
+     */
+    omit?: serverRolesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: serverRolesInclude<ExtArgs> | null
+    where?: serverRolesWhereInput
+    orderBy?: serverRolesOrderByWithRelationInput | serverRolesOrderByWithRelationInput[]
+    cursor?: serverRolesWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ServerRolesScalarFieldEnum | ServerRolesScalarFieldEnum[]
+  }
+
+  /**
+   * ServerMember without action
+   */
+  export type ServerMemberDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ServerMember
+     */
+    select?: ServerMemberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ServerMember
+     */
+    omit?: ServerMemberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerMemberInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model serverRoles
+   */
+
+  export type AggregateServerRoles = {
+    _count: ServerRolesCountAggregateOutputType | null
+    _min: ServerRolesMinAggregateOutputType | null
+    _max: ServerRolesMaxAggregateOutputType | null
+  }
+
+  export type ServerRolesMinAggregateOutputType = {
+    id: string | null
+    name: string | null
+    serverId: string | null
+  }
+
+  export type ServerRolesMaxAggregateOutputType = {
+    id: string | null
+    name: string | null
+    serverId: string | null
+  }
+
+  export type ServerRolesCountAggregateOutputType = {
+    id: number
+    name: number
+    serverId: number
+    _all: number
+  }
+
+
+  export type ServerRolesMinAggregateInputType = {
+    id?: true
+    name?: true
+    serverId?: true
+  }
+
+  export type ServerRolesMaxAggregateInputType = {
+    id?: true
+    name?: true
+    serverId?: true
+  }
+
+  export type ServerRolesCountAggregateInputType = {
+    id?: true
+    name?: true
+    serverId?: true
+    _all?: true
+  }
+
+  export type ServerRolesAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which serverRoles to aggregate.
+     */
+    where?: serverRolesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of serverRoles to fetch.
+     */
+    orderBy?: serverRolesOrderByWithRelationInput | serverRolesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: serverRolesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` serverRoles from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` serverRoles.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned serverRoles
+    **/
+    _count?: true | ServerRolesCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ServerRolesMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ServerRolesMaxAggregateInputType
+  }
+
+  export type GetServerRolesAggregateType<T extends ServerRolesAggregateArgs> = {
+        [P in keyof T & keyof AggregateServerRoles]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateServerRoles[P]>
+      : GetScalarType<T[P], AggregateServerRoles[P]>
+  }
+
+
+
+
+  export type serverRolesGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: serverRolesWhereInput
+    orderBy?: serverRolesOrderByWithAggregationInput | serverRolesOrderByWithAggregationInput[]
+    by: ServerRolesScalarFieldEnum[] | ServerRolesScalarFieldEnum
+    having?: serverRolesScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ServerRolesCountAggregateInputType | true
+    _min?: ServerRolesMinAggregateInputType
+    _max?: ServerRolesMaxAggregateInputType
+  }
+
+  export type ServerRolesGroupByOutputType = {
+    id: string
+    name: string
+    serverId: string
+    _count: ServerRolesCountAggregateOutputType | null
+    _min: ServerRolesMinAggregateOutputType | null
+    _max: ServerRolesMaxAggregateOutputType | null
+  }
+
+  type GetServerRolesGroupByPayload<T extends serverRolesGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ServerRolesGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ServerRolesGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ServerRolesGroupByOutputType[P]>
+            : GetScalarType<T[P], ServerRolesGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type serverRolesSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    serverId?: boolean
+    server?: boolean | ServerDefaultArgs<ExtArgs>
+    members?: boolean | serverRoles$membersArgs<ExtArgs>
+    _count?: boolean | ServerRolesCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["serverRoles"]>
+
+  export type serverRolesSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    serverId?: boolean
+    server?: boolean | ServerDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["serverRoles"]>
+
+  export type serverRolesSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    serverId?: boolean
+    server?: boolean | ServerDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["serverRoles"]>
+
+  export type serverRolesSelectScalar = {
+    id?: boolean
+    name?: boolean
+    serverId?: boolean
+  }
+
+  export type serverRolesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "serverId", ExtArgs["result"]["serverRoles"]>
+  export type serverRolesInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    server?: boolean | ServerDefaultArgs<ExtArgs>
+    members?: boolean | serverRoles$membersArgs<ExtArgs>
+    _count?: boolean | ServerRolesCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type serverRolesIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    server?: boolean | ServerDefaultArgs<ExtArgs>
+  }
+  export type serverRolesIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    server?: boolean | ServerDefaultArgs<ExtArgs>
+  }
+
+  export type $serverRolesPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "serverRoles"
+    objects: {
+      server: Prisma.$ServerPayload<ExtArgs>
+      members: Prisma.$ServerMemberPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      name: string
+      serverId: string
+    }, ExtArgs["result"]["serverRoles"]>
+    composites: {}
+  }
+
+  type serverRolesGetPayload<S extends boolean | null | undefined | serverRolesDefaultArgs> = $Result.GetResult<Prisma.$serverRolesPayload, S>
+
+  type serverRolesCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<serverRolesFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ServerRolesCountAggregateInputType | true
+    }
+
+  export interface serverRolesDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['serverRoles'], meta: { name: 'serverRoles' } }
+    /**
+     * Find zero or one ServerRoles that matches the filter.
+     * @param {serverRolesFindUniqueArgs} args - Arguments to find a ServerRoles
+     * @example
+     * // Get one ServerRoles
+     * const serverRoles = await prisma.serverRoles.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends serverRolesFindUniqueArgs>(args: SelectSubset<T, serverRolesFindUniqueArgs<ExtArgs>>): Prisma__serverRolesClient<$Result.GetResult<Prisma.$serverRolesPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ServerRoles that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {serverRolesFindUniqueOrThrowArgs} args - Arguments to find a ServerRoles
+     * @example
+     * // Get one ServerRoles
+     * const serverRoles = await prisma.serverRoles.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends serverRolesFindUniqueOrThrowArgs>(args: SelectSubset<T, serverRolesFindUniqueOrThrowArgs<ExtArgs>>): Prisma__serverRolesClient<$Result.GetResult<Prisma.$serverRolesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ServerRoles that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {serverRolesFindFirstArgs} args - Arguments to find a ServerRoles
+     * @example
+     * // Get one ServerRoles
+     * const serverRoles = await prisma.serverRoles.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends serverRolesFindFirstArgs>(args?: SelectSubset<T, serverRolesFindFirstArgs<ExtArgs>>): Prisma__serverRolesClient<$Result.GetResult<Prisma.$serverRolesPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ServerRoles that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {serverRolesFindFirstOrThrowArgs} args - Arguments to find a ServerRoles
+     * @example
+     * // Get one ServerRoles
+     * const serverRoles = await prisma.serverRoles.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends serverRolesFindFirstOrThrowArgs>(args?: SelectSubset<T, serverRolesFindFirstOrThrowArgs<ExtArgs>>): Prisma__serverRolesClient<$Result.GetResult<Prisma.$serverRolesPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ServerRoles that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {serverRolesFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ServerRoles
+     * const serverRoles = await prisma.serverRoles.findMany()
+     * 
+     * // Get first 10 ServerRoles
+     * const serverRoles = await prisma.serverRoles.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const serverRolesWithIdOnly = await prisma.serverRoles.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends serverRolesFindManyArgs>(args?: SelectSubset<T, serverRolesFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$serverRolesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ServerRoles.
+     * @param {serverRolesCreateArgs} args - Arguments to create a ServerRoles.
+     * @example
+     * // Create one ServerRoles
+     * const ServerRoles = await prisma.serverRoles.create({
+     *   data: {
+     *     // ... data to create a ServerRoles
+     *   }
+     * })
+     * 
+     */
+    create<T extends serverRolesCreateArgs>(args: SelectSubset<T, serverRolesCreateArgs<ExtArgs>>): Prisma__serverRolesClient<$Result.GetResult<Prisma.$serverRolesPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ServerRoles.
+     * @param {serverRolesCreateManyArgs} args - Arguments to create many ServerRoles.
+     * @example
+     * // Create many ServerRoles
+     * const serverRoles = await prisma.serverRoles.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends serverRolesCreateManyArgs>(args?: SelectSubset<T, serverRolesCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ServerRoles and returns the data saved in the database.
+     * @param {serverRolesCreateManyAndReturnArgs} args - Arguments to create many ServerRoles.
+     * @example
+     * // Create many ServerRoles
+     * const serverRoles = await prisma.serverRoles.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ServerRoles and only return the `id`
+     * const serverRolesWithIdOnly = await prisma.serverRoles.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends serverRolesCreateManyAndReturnArgs>(args?: SelectSubset<T, serverRolesCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$serverRolesPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ServerRoles.
+     * @param {serverRolesDeleteArgs} args - Arguments to delete one ServerRoles.
+     * @example
+     * // Delete one ServerRoles
+     * const ServerRoles = await prisma.serverRoles.delete({
+     *   where: {
+     *     // ... filter to delete one ServerRoles
+     *   }
+     * })
+     * 
+     */
+    delete<T extends serverRolesDeleteArgs>(args: SelectSubset<T, serverRolesDeleteArgs<ExtArgs>>): Prisma__serverRolesClient<$Result.GetResult<Prisma.$serverRolesPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ServerRoles.
+     * @param {serverRolesUpdateArgs} args - Arguments to update one ServerRoles.
+     * @example
+     * // Update one ServerRoles
+     * const serverRoles = await prisma.serverRoles.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends serverRolesUpdateArgs>(args: SelectSubset<T, serverRolesUpdateArgs<ExtArgs>>): Prisma__serverRolesClient<$Result.GetResult<Prisma.$serverRolesPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ServerRoles.
+     * @param {serverRolesDeleteManyArgs} args - Arguments to filter ServerRoles to delete.
+     * @example
+     * // Delete a few ServerRoles
+     * const { count } = await prisma.serverRoles.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends serverRolesDeleteManyArgs>(args?: SelectSubset<T, serverRolesDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ServerRoles.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {serverRolesUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ServerRoles
+     * const serverRoles = await prisma.serverRoles.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends serverRolesUpdateManyArgs>(args: SelectSubset<T, serverRolesUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ServerRoles and returns the data updated in the database.
+     * @param {serverRolesUpdateManyAndReturnArgs} args - Arguments to update many ServerRoles.
+     * @example
+     * // Update many ServerRoles
+     * const serverRoles = await prisma.serverRoles.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ServerRoles and only return the `id`
+     * const serverRolesWithIdOnly = await prisma.serverRoles.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends serverRolesUpdateManyAndReturnArgs>(args: SelectSubset<T, serverRolesUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$serverRolesPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ServerRoles.
+     * @param {serverRolesUpsertArgs} args - Arguments to update or create a ServerRoles.
+     * @example
+     * // Update or create a ServerRoles
+     * const serverRoles = await prisma.serverRoles.upsert({
+     *   create: {
+     *     // ... data to create a ServerRoles
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ServerRoles we want to update
+     *   }
+     * })
+     */
+    upsert<T extends serverRolesUpsertArgs>(args: SelectSubset<T, serverRolesUpsertArgs<ExtArgs>>): Prisma__serverRolesClient<$Result.GetResult<Prisma.$serverRolesPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ServerRoles.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {serverRolesCountArgs} args - Arguments to filter ServerRoles to count.
+     * @example
+     * // Count the number of ServerRoles
+     * const count = await prisma.serverRoles.count({
+     *   where: {
+     *     // ... the filter for the ServerRoles we want to count
+     *   }
+     * })
+    **/
+    count<T extends serverRolesCountArgs>(
+      args?: Subset<T, serverRolesCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ServerRolesCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ServerRoles.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ServerRolesAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ServerRolesAggregateArgs>(args: Subset<T, ServerRolesAggregateArgs>): Prisma.PrismaPromise<GetServerRolesAggregateType<T>>
+
+    /**
+     * Group by ServerRoles.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {serverRolesGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends serverRolesGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: serverRolesGroupByArgs['orderBy'] }
+        : { orderBy?: serverRolesGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, serverRolesGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetServerRolesGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the serverRoles model
+   */
+  readonly fields: serverRolesFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for serverRoles.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__serverRolesClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    server<T extends ServerDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ServerDefaultArgs<ExtArgs>>): Prisma__ServerClient<$Result.GetResult<Prisma.$ServerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    members<T extends serverRoles$membersArgs<ExtArgs> = {}>(args?: Subset<T, serverRoles$membersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ServerMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the serverRoles model
+   */
+  interface serverRolesFieldRefs {
+    readonly id: FieldRef<"serverRoles", 'String'>
+    readonly name: FieldRef<"serverRoles", 'String'>
+    readonly serverId: FieldRef<"serverRoles", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * serverRoles findUnique
+   */
+  export type serverRolesFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the serverRoles
+     */
+    select?: serverRolesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the serverRoles
+     */
+    omit?: serverRolesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: serverRolesInclude<ExtArgs> | null
+    /**
+     * Filter, which serverRoles to fetch.
+     */
+    where: serverRolesWhereUniqueInput
+  }
+
+  /**
+   * serverRoles findUniqueOrThrow
+   */
+  export type serverRolesFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the serverRoles
+     */
+    select?: serverRolesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the serverRoles
+     */
+    omit?: serverRolesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: serverRolesInclude<ExtArgs> | null
+    /**
+     * Filter, which serverRoles to fetch.
+     */
+    where: serverRolesWhereUniqueInput
+  }
+
+  /**
+   * serverRoles findFirst
+   */
+  export type serverRolesFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the serverRoles
+     */
+    select?: serverRolesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the serverRoles
+     */
+    omit?: serverRolesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: serverRolesInclude<ExtArgs> | null
+    /**
+     * Filter, which serverRoles to fetch.
+     */
+    where?: serverRolesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of serverRoles to fetch.
+     */
+    orderBy?: serverRolesOrderByWithRelationInput | serverRolesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for serverRoles.
+     */
+    cursor?: serverRolesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` serverRoles from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` serverRoles.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of serverRoles.
+     */
+    distinct?: ServerRolesScalarFieldEnum | ServerRolesScalarFieldEnum[]
+  }
+
+  /**
+   * serverRoles findFirstOrThrow
+   */
+  export type serverRolesFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the serverRoles
+     */
+    select?: serverRolesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the serverRoles
+     */
+    omit?: serverRolesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: serverRolesInclude<ExtArgs> | null
+    /**
+     * Filter, which serverRoles to fetch.
+     */
+    where?: serverRolesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of serverRoles to fetch.
+     */
+    orderBy?: serverRolesOrderByWithRelationInput | serverRolesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for serverRoles.
+     */
+    cursor?: serverRolesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` serverRoles from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` serverRoles.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of serverRoles.
+     */
+    distinct?: ServerRolesScalarFieldEnum | ServerRolesScalarFieldEnum[]
+  }
+
+  /**
+   * serverRoles findMany
+   */
+  export type serverRolesFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the serverRoles
+     */
+    select?: serverRolesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the serverRoles
+     */
+    omit?: serverRolesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: serverRolesInclude<ExtArgs> | null
+    /**
+     * Filter, which serverRoles to fetch.
+     */
+    where?: serverRolesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of serverRoles to fetch.
+     */
+    orderBy?: serverRolesOrderByWithRelationInput | serverRolesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing serverRoles.
+     */
+    cursor?: serverRolesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` serverRoles from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` serverRoles.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of serverRoles.
+     */
+    distinct?: ServerRolesScalarFieldEnum | ServerRolesScalarFieldEnum[]
+  }
+
+  /**
+   * serverRoles create
+   */
+  export type serverRolesCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the serverRoles
+     */
+    select?: serverRolesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the serverRoles
+     */
+    omit?: serverRolesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: serverRolesInclude<ExtArgs> | null
+    /**
+     * The data needed to create a serverRoles.
+     */
+    data: XOR<serverRolesCreateInput, serverRolesUncheckedCreateInput>
+  }
+
+  /**
+   * serverRoles createMany
+   */
+  export type serverRolesCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many serverRoles.
+     */
+    data: serverRolesCreateManyInput | serverRolesCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * serverRoles createManyAndReturn
+   */
+  export type serverRolesCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the serverRoles
+     */
+    select?: serverRolesSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the serverRoles
+     */
+    omit?: serverRolesOmit<ExtArgs> | null
+    /**
+     * The data used to create many serverRoles.
+     */
+    data: serverRolesCreateManyInput | serverRolesCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: serverRolesIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * serverRoles update
+   */
+  export type serverRolesUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the serverRoles
+     */
+    select?: serverRolesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the serverRoles
+     */
+    omit?: serverRolesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: serverRolesInclude<ExtArgs> | null
+    /**
+     * The data needed to update a serverRoles.
+     */
+    data: XOR<serverRolesUpdateInput, serverRolesUncheckedUpdateInput>
+    /**
+     * Choose, which serverRoles to update.
+     */
+    where: serverRolesWhereUniqueInput
+  }
+
+  /**
+   * serverRoles updateMany
+   */
+  export type serverRolesUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update serverRoles.
+     */
+    data: XOR<serverRolesUpdateManyMutationInput, serverRolesUncheckedUpdateManyInput>
+    /**
+     * Filter which serverRoles to update
+     */
+    where?: serverRolesWhereInput
+    /**
+     * Limit how many serverRoles to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * serverRoles updateManyAndReturn
+   */
+  export type serverRolesUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the serverRoles
+     */
+    select?: serverRolesSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the serverRoles
+     */
+    omit?: serverRolesOmit<ExtArgs> | null
+    /**
+     * The data used to update serverRoles.
+     */
+    data: XOR<serverRolesUpdateManyMutationInput, serverRolesUncheckedUpdateManyInput>
+    /**
+     * Filter which serverRoles to update
+     */
+    where?: serverRolesWhereInput
+    /**
+     * Limit how many serverRoles to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: serverRolesIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * serverRoles upsert
+   */
+  export type serverRolesUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the serverRoles
+     */
+    select?: serverRolesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the serverRoles
+     */
+    omit?: serverRolesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: serverRolesInclude<ExtArgs> | null
+    /**
+     * The filter to search for the serverRoles to update in case it exists.
+     */
+    where: serverRolesWhereUniqueInput
+    /**
+     * In case the serverRoles found by the `where` argument doesn't exist, create a new serverRoles with this data.
+     */
+    create: XOR<serverRolesCreateInput, serverRolesUncheckedCreateInput>
+    /**
+     * In case the serverRoles was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<serverRolesUpdateInput, serverRolesUncheckedUpdateInput>
+  }
+
+  /**
+   * serverRoles delete
+   */
+  export type serverRolesDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the serverRoles
+     */
+    select?: serverRolesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the serverRoles
+     */
+    omit?: serverRolesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: serverRolesInclude<ExtArgs> | null
+    /**
+     * Filter which serverRoles to delete.
+     */
+    where: serverRolesWhereUniqueInput
+  }
+
+  /**
+   * serverRoles deleteMany
+   */
+  export type serverRolesDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which serverRoles to delete
+     */
+    where?: serverRolesWhereInput
+    /**
+     * Limit how many serverRoles to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * serverRoles.members
+   */
+  export type serverRoles$membersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ServerMember
+     */
+    select?: ServerMemberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ServerMember
+     */
+    omit?: ServerMemberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerMemberInclude<ExtArgs> | null
+    where?: ServerMemberWhereInput
+    orderBy?: ServerMemberOrderByWithRelationInput | ServerMemberOrderByWithRelationInput[]
+    cursor?: ServerMemberWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ServerMemberScalarFieldEnum | ServerMemberScalarFieldEnum[]
+  }
+
+  /**
+   * serverRoles without action
+   */
+  export type serverRolesDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the serverRoles
+     */
+    select?: serverRolesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the serverRoles
+     */
+    omit?: serverRolesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: serverRolesInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Messages
+   */
+
+  export type AggregateMessages = {
+    _count: MessagesCountAggregateOutputType | null
+    _min: MessagesMinAggregateOutputType | null
+    _max: MessagesMaxAggregateOutputType | null
+  }
+
+  export type MessagesMinAggregateOutputType = {
+    id: string | null
+    content: string | null
+    channelId: string | null
+    authorId: string | null
+    createdAt: Date | null
+    pinned: boolean | null
+  }
+
+  export type MessagesMaxAggregateOutputType = {
+    id: string | null
+    content: string | null
+    channelId: string | null
+    authorId: string | null
+    createdAt: Date | null
+    pinned: boolean | null
+  }
+
+  export type MessagesCountAggregateOutputType = {
+    id: number
+    content: number
+    channelId: number
+    authorId: number
+    createdAt: number
+    pinned: number
+    _all: number
+  }
+
+
+  export type MessagesMinAggregateInputType = {
+    id?: true
+    content?: true
+    channelId?: true
+    authorId?: true
+    createdAt?: true
+    pinned?: true
+  }
+
+  export type MessagesMaxAggregateInputType = {
+    id?: true
+    content?: true
+    channelId?: true
+    authorId?: true
+    createdAt?: true
+    pinned?: true
+  }
+
+  export type MessagesCountAggregateInputType = {
+    id?: true
+    content?: true
+    channelId?: true
+    authorId?: true
+    createdAt?: true
+    pinned?: true
+    _all?: true
+  }
+
+  export type MessagesAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Messages to aggregate.
+     */
+    where?: MessagesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Messages to fetch.
+     */
+    orderBy?: MessagesOrderByWithRelationInput | MessagesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: MessagesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Messages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Messages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Messages
+    **/
+    _count?: true | MessagesCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: MessagesMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: MessagesMaxAggregateInputType
+  }
+
+  export type GetMessagesAggregateType<T extends MessagesAggregateArgs> = {
+        [P in keyof T & keyof AggregateMessages]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateMessages[P]>
+      : GetScalarType<T[P], AggregateMessages[P]>
+  }
+
+
+
+
+  export type MessagesGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MessagesWhereInput
+    orderBy?: MessagesOrderByWithAggregationInput | MessagesOrderByWithAggregationInput[]
+    by: MessagesScalarFieldEnum[] | MessagesScalarFieldEnum
+    having?: MessagesScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: MessagesCountAggregateInputType | true
+    _min?: MessagesMinAggregateInputType
+    _max?: MessagesMaxAggregateInputType
+  }
+
+  export type MessagesGroupByOutputType = {
+    id: string
+    content: string
+    channelId: string
+    authorId: string
+    createdAt: Date
+    pinned: boolean
+    _count: MessagesCountAggregateOutputType | null
+    _min: MessagesMinAggregateOutputType | null
+    _max: MessagesMaxAggregateOutputType | null
+  }
+
+  type GetMessagesGroupByPayload<T extends MessagesGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<MessagesGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof MessagesGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], MessagesGroupByOutputType[P]>
+            : GetScalarType<T[P], MessagesGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type MessagesSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    content?: boolean
+    channelId?: boolean
+    authorId?: boolean
+    createdAt?: boolean
+    pinned?: boolean
+    channel?: boolean | ChannelDefaultArgs<ExtArgs>
+    author?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["messages"]>
+
+  export type MessagesSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    content?: boolean
+    channelId?: boolean
+    authorId?: boolean
+    createdAt?: boolean
+    pinned?: boolean
+    channel?: boolean | ChannelDefaultArgs<ExtArgs>
+    author?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["messages"]>
+
+  export type MessagesSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    content?: boolean
+    channelId?: boolean
+    authorId?: boolean
+    createdAt?: boolean
+    pinned?: boolean
+    channel?: boolean | ChannelDefaultArgs<ExtArgs>
+    author?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["messages"]>
+
+  export type MessagesSelectScalar = {
+    id?: boolean
+    content?: boolean
+    channelId?: boolean
+    authorId?: boolean
+    createdAt?: boolean
+    pinned?: boolean
+  }
+
+  export type MessagesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "content" | "channelId" | "authorId" | "createdAt" | "pinned", ExtArgs["result"]["messages"]>
+  export type MessagesInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    channel?: boolean | ChannelDefaultArgs<ExtArgs>
+    author?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type MessagesIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    channel?: boolean | ChannelDefaultArgs<ExtArgs>
+    author?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type MessagesIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    channel?: boolean | ChannelDefaultArgs<ExtArgs>
+    author?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $MessagesPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Messages"
+    objects: {
+      channel: Prisma.$ChannelPayload<ExtArgs>
+      author: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      content: string
+      channelId: string
+      authorId: string
+      createdAt: Date
+      pinned: boolean
+    }, ExtArgs["result"]["messages"]>
+    composites: {}
+  }
+
+  type MessagesGetPayload<S extends boolean | null | undefined | MessagesDefaultArgs> = $Result.GetResult<Prisma.$MessagesPayload, S>
+
+  type MessagesCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<MessagesFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: MessagesCountAggregateInputType | true
+    }
+
+  export interface MessagesDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Messages'], meta: { name: 'Messages' } }
+    /**
+     * Find zero or one Messages that matches the filter.
+     * @param {MessagesFindUniqueArgs} args - Arguments to find a Messages
+     * @example
+     * // Get one Messages
+     * const messages = await prisma.messages.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends MessagesFindUniqueArgs>(args: SelectSubset<T, MessagesFindUniqueArgs<ExtArgs>>): Prisma__MessagesClient<$Result.GetResult<Prisma.$MessagesPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Messages that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {MessagesFindUniqueOrThrowArgs} args - Arguments to find a Messages
+     * @example
+     * // Get one Messages
+     * const messages = await prisma.messages.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends MessagesFindUniqueOrThrowArgs>(args: SelectSubset<T, MessagesFindUniqueOrThrowArgs<ExtArgs>>): Prisma__MessagesClient<$Result.GetResult<Prisma.$MessagesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Messages that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessagesFindFirstArgs} args - Arguments to find a Messages
+     * @example
+     * // Get one Messages
+     * const messages = await prisma.messages.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends MessagesFindFirstArgs>(args?: SelectSubset<T, MessagesFindFirstArgs<ExtArgs>>): Prisma__MessagesClient<$Result.GetResult<Prisma.$MessagesPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Messages that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessagesFindFirstOrThrowArgs} args - Arguments to find a Messages
+     * @example
+     * // Get one Messages
+     * const messages = await prisma.messages.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends MessagesFindFirstOrThrowArgs>(args?: SelectSubset<T, MessagesFindFirstOrThrowArgs<ExtArgs>>): Prisma__MessagesClient<$Result.GetResult<Prisma.$MessagesPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Messages that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessagesFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Messages
+     * const messages = await prisma.messages.findMany()
+     * 
+     * // Get first 10 Messages
+     * const messages = await prisma.messages.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const messagesWithIdOnly = await prisma.messages.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends MessagesFindManyArgs>(args?: SelectSubset<T, MessagesFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessagesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Messages.
+     * @param {MessagesCreateArgs} args - Arguments to create a Messages.
+     * @example
+     * // Create one Messages
+     * const Messages = await prisma.messages.create({
+     *   data: {
+     *     // ... data to create a Messages
+     *   }
+     * })
+     * 
+     */
+    create<T extends MessagesCreateArgs>(args: SelectSubset<T, MessagesCreateArgs<ExtArgs>>): Prisma__MessagesClient<$Result.GetResult<Prisma.$MessagesPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Messages.
+     * @param {MessagesCreateManyArgs} args - Arguments to create many Messages.
+     * @example
+     * // Create many Messages
+     * const messages = await prisma.messages.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends MessagesCreateManyArgs>(args?: SelectSubset<T, MessagesCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Messages and returns the data saved in the database.
+     * @param {MessagesCreateManyAndReturnArgs} args - Arguments to create many Messages.
+     * @example
+     * // Create many Messages
+     * const messages = await prisma.messages.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Messages and only return the `id`
+     * const messagesWithIdOnly = await prisma.messages.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends MessagesCreateManyAndReturnArgs>(args?: SelectSubset<T, MessagesCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessagesPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Messages.
+     * @param {MessagesDeleteArgs} args - Arguments to delete one Messages.
+     * @example
+     * // Delete one Messages
+     * const Messages = await prisma.messages.delete({
+     *   where: {
+     *     // ... filter to delete one Messages
+     *   }
+     * })
+     * 
+     */
+    delete<T extends MessagesDeleteArgs>(args: SelectSubset<T, MessagesDeleteArgs<ExtArgs>>): Prisma__MessagesClient<$Result.GetResult<Prisma.$MessagesPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Messages.
+     * @param {MessagesUpdateArgs} args - Arguments to update one Messages.
+     * @example
+     * // Update one Messages
+     * const messages = await prisma.messages.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends MessagesUpdateArgs>(args: SelectSubset<T, MessagesUpdateArgs<ExtArgs>>): Prisma__MessagesClient<$Result.GetResult<Prisma.$MessagesPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Messages.
+     * @param {MessagesDeleteManyArgs} args - Arguments to filter Messages to delete.
+     * @example
+     * // Delete a few Messages
+     * const { count } = await prisma.messages.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends MessagesDeleteManyArgs>(args?: SelectSubset<T, MessagesDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Messages.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessagesUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Messages
+     * const messages = await prisma.messages.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends MessagesUpdateManyArgs>(args: SelectSubset<T, MessagesUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Messages and returns the data updated in the database.
+     * @param {MessagesUpdateManyAndReturnArgs} args - Arguments to update many Messages.
+     * @example
+     * // Update many Messages
+     * const messages = await prisma.messages.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Messages and only return the `id`
+     * const messagesWithIdOnly = await prisma.messages.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends MessagesUpdateManyAndReturnArgs>(args: SelectSubset<T, MessagesUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessagesPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Messages.
+     * @param {MessagesUpsertArgs} args - Arguments to update or create a Messages.
+     * @example
+     * // Update or create a Messages
+     * const messages = await prisma.messages.upsert({
+     *   create: {
+     *     // ... data to create a Messages
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Messages we want to update
+     *   }
+     * })
+     */
+    upsert<T extends MessagesUpsertArgs>(args: SelectSubset<T, MessagesUpsertArgs<ExtArgs>>): Prisma__MessagesClient<$Result.GetResult<Prisma.$MessagesPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Messages.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessagesCountArgs} args - Arguments to filter Messages to count.
+     * @example
+     * // Count the number of Messages
+     * const count = await prisma.messages.count({
+     *   where: {
+     *     // ... the filter for the Messages we want to count
+     *   }
+     * })
+    **/
+    count<T extends MessagesCountArgs>(
+      args?: Subset<T, MessagesCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], MessagesCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Messages.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessagesAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends MessagesAggregateArgs>(args: Subset<T, MessagesAggregateArgs>): Prisma.PrismaPromise<GetMessagesAggregateType<T>>
+
+    /**
+     * Group by Messages.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessagesGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends MessagesGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: MessagesGroupByArgs['orderBy'] }
+        : { orderBy?: MessagesGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, MessagesGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetMessagesGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Messages model
+   */
+  readonly fields: MessagesFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Messages.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__MessagesClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    channel<T extends ChannelDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ChannelDefaultArgs<ExtArgs>>): Prisma__ChannelClient<$Result.GetResult<Prisma.$ChannelPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    author<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Messages model
+   */
+  interface MessagesFieldRefs {
+    readonly id: FieldRef<"Messages", 'String'>
+    readonly content: FieldRef<"Messages", 'String'>
+    readonly channelId: FieldRef<"Messages", 'String'>
+    readonly authorId: FieldRef<"Messages", 'String'>
+    readonly createdAt: FieldRef<"Messages", 'DateTime'>
+    readonly pinned: FieldRef<"Messages", 'Boolean'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Messages findUnique
+   */
+  export type MessagesFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Messages
+     */
+    select?: MessagesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Messages
+     */
+    omit?: MessagesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessagesInclude<ExtArgs> | null
+    /**
+     * Filter, which Messages to fetch.
+     */
+    where: MessagesWhereUniqueInput
+  }
+
+  /**
+   * Messages findUniqueOrThrow
+   */
+  export type MessagesFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Messages
+     */
+    select?: MessagesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Messages
+     */
+    omit?: MessagesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessagesInclude<ExtArgs> | null
+    /**
+     * Filter, which Messages to fetch.
+     */
+    where: MessagesWhereUniqueInput
+  }
+
+  /**
+   * Messages findFirst
+   */
+  export type MessagesFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Messages
+     */
+    select?: MessagesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Messages
+     */
+    omit?: MessagesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessagesInclude<ExtArgs> | null
+    /**
+     * Filter, which Messages to fetch.
+     */
+    where?: MessagesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Messages to fetch.
+     */
+    orderBy?: MessagesOrderByWithRelationInput | MessagesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Messages.
+     */
+    cursor?: MessagesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Messages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Messages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Messages.
+     */
+    distinct?: MessagesScalarFieldEnum | MessagesScalarFieldEnum[]
+  }
+
+  /**
+   * Messages findFirstOrThrow
+   */
+  export type MessagesFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Messages
+     */
+    select?: MessagesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Messages
+     */
+    omit?: MessagesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessagesInclude<ExtArgs> | null
+    /**
+     * Filter, which Messages to fetch.
+     */
+    where?: MessagesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Messages to fetch.
+     */
+    orderBy?: MessagesOrderByWithRelationInput | MessagesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Messages.
+     */
+    cursor?: MessagesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Messages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Messages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Messages.
+     */
+    distinct?: MessagesScalarFieldEnum | MessagesScalarFieldEnum[]
+  }
+
+  /**
+   * Messages findMany
+   */
+  export type MessagesFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Messages
+     */
+    select?: MessagesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Messages
+     */
+    omit?: MessagesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessagesInclude<ExtArgs> | null
+    /**
+     * Filter, which Messages to fetch.
+     */
+    where?: MessagesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Messages to fetch.
+     */
+    orderBy?: MessagesOrderByWithRelationInput | MessagesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Messages.
+     */
+    cursor?: MessagesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Messages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Messages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Messages.
+     */
+    distinct?: MessagesScalarFieldEnum | MessagesScalarFieldEnum[]
+  }
+
+  /**
+   * Messages create
+   */
+  export type MessagesCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Messages
+     */
+    select?: MessagesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Messages
+     */
+    omit?: MessagesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessagesInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Messages.
+     */
+    data: XOR<MessagesCreateInput, MessagesUncheckedCreateInput>
+  }
+
+  /**
+   * Messages createMany
+   */
+  export type MessagesCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Messages.
+     */
+    data: MessagesCreateManyInput | MessagesCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Messages createManyAndReturn
+   */
+  export type MessagesCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Messages
+     */
+    select?: MessagesSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Messages
+     */
+    omit?: MessagesOmit<ExtArgs> | null
+    /**
+     * The data used to create many Messages.
+     */
+    data: MessagesCreateManyInput | MessagesCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessagesIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Messages update
+   */
+  export type MessagesUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Messages
+     */
+    select?: MessagesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Messages
+     */
+    omit?: MessagesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessagesInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Messages.
+     */
+    data: XOR<MessagesUpdateInput, MessagesUncheckedUpdateInput>
+    /**
+     * Choose, which Messages to update.
+     */
+    where: MessagesWhereUniqueInput
+  }
+
+  /**
+   * Messages updateMany
+   */
+  export type MessagesUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Messages.
+     */
+    data: XOR<MessagesUpdateManyMutationInput, MessagesUncheckedUpdateManyInput>
+    /**
+     * Filter which Messages to update
+     */
+    where?: MessagesWhereInput
+    /**
+     * Limit how many Messages to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Messages updateManyAndReturn
+   */
+  export type MessagesUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Messages
+     */
+    select?: MessagesSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Messages
+     */
+    omit?: MessagesOmit<ExtArgs> | null
+    /**
+     * The data used to update Messages.
+     */
+    data: XOR<MessagesUpdateManyMutationInput, MessagesUncheckedUpdateManyInput>
+    /**
+     * Filter which Messages to update
+     */
+    where?: MessagesWhereInput
+    /**
+     * Limit how many Messages to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessagesIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Messages upsert
+   */
+  export type MessagesUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Messages
+     */
+    select?: MessagesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Messages
+     */
+    omit?: MessagesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessagesInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Messages to update in case it exists.
+     */
+    where: MessagesWhereUniqueInput
+    /**
+     * In case the Messages found by the `where` argument doesn't exist, create a new Messages with this data.
+     */
+    create: XOR<MessagesCreateInput, MessagesUncheckedCreateInput>
+    /**
+     * In case the Messages was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<MessagesUpdateInput, MessagesUncheckedUpdateInput>
+  }
+
+  /**
+   * Messages delete
+   */
+  export type MessagesDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Messages
+     */
+    select?: MessagesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Messages
+     */
+    omit?: MessagesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessagesInclude<ExtArgs> | null
+    /**
+     * Filter which Messages to delete.
+     */
+    where: MessagesWhereUniqueInput
+  }
+
+  /**
+   * Messages deleteMany
+   */
+  export type MessagesDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Messages to delete
+     */
+    where?: MessagesWhereInput
+    /**
+     * Limit how many Messages to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Messages without action
+   */
+  export type MessagesDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Messages
+     */
+    select?: MessagesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Messages
+     */
+    omit?: MessagesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessagesInclude<ExtArgs> | null
+  }
+
 
   /**
    * Model User
@@ -1360,6 +7475,9 @@ export namespace Prisma {
     updatedAt?: boolean
     sessions?: boolean | User$sessionsArgs<ExtArgs>
     accounts?: boolean | User$accountsArgs<ExtArgs>
+    messages?: boolean | User$messagesArgs<ExtArgs>
+    memberships?: boolean | User$membershipsArgs<ExtArgs>
+    channels?: boolean | User$channelsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -1397,6 +7515,9 @@ export namespace Prisma {
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     sessions?: boolean | User$sessionsArgs<ExtArgs>
     accounts?: boolean | User$accountsArgs<ExtArgs>
+    messages?: boolean | User$messagesArgs<ExtArgs>
+    memberships?: boolean | User$membershipsArgs<ExtArgs>
+    channels?: boolean | User$channelsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -1407,6 +7528,9 @@ export namespace Prisma {
     objects: {
       sessions: Prisma.$SessionPayload<ExtArgs>[]
       accounts: Prisma.$AccountPayload<ExtArgs>[]
+      messages: Prisma.$MessagesPayload<ExtArgs>[]
+      memberships: Prisma.$ServerMemberPayload<ExtArgs>[]
+      channels: Prisma.$ChannelPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -1812,6 +7936,9 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     sessions<T extends User$sessionsArgs<ExtArgs> = {}>(args?: Subset<T, User$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     accounts<T extends User$accountsArgs<ExtArgs> = {}>(args?: Subset<T, User$accountsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    messages<T extends User$messagesArgs<ExtArgs> = {}>(args?: Subset<T, User$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessagesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    memberships<T extends User$membershipsArgs<ExtArgs> = {}>(args?: Subset<T, User$membershipsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ServerMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    channels<T extends User$channelsArgs<ExtArgs> = {}>(args?: Subset<T, User$channelsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChannelPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2286,6 +8413,78 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: AccountScalarFieldEnum | AccountScalarFieldEnum[]
+  }
+
+  /**
+   * User.messages
+   */
+  export type User$messagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Messages
+     */
+    select?: MessagesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Messages
+     */
+    omit?: MessagesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessagesInclude<ExtArgs> | null
+    where?: MessagesWhereInput
+    orderBy?: MessagesOrderByWithRelationInput | MessagesOrderByWithRelationInput[]
+    cursor?: MessagesWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: MessagesScalarFieldEnum | MessagesScalarFieldEnum[]
+  }
+
+  /**
+   * User.memberships
+   */
+  export type User$membershipsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ServerMember
+     */
+    select?: ServerMemberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ServerMember
+     */
+    omit?: ServerMemberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerMemberInclude<ExtArgs> | null
+    where?: ServerMemberWhereInput
+    orderBy?: ServerMemberOrderByWithRelationInput | ServerMemberOrderByWithRelationInput[]
+    cursor?: ServerMemberWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ServerMemberScalarFieldEnum | ServerMemberScalarFieldEnum[]
+  }
+
+  /**
+   * User.channels
+   */
+  export type User$channelsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Channel
+     */
+    select?: ChannelSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Channel
+     */
+    omit?: ChannelOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelInclude<ExtArgs> | null
+    where?: ChannelWhereInput
+    orderBy?: ChannelOrderByWithRelationInput | ChannelOrderByWithRelationInput[]
+    cursor?: ChannelWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ChannelScalarFieldEnum | ChannelScalarFieldEnum[]
   }
 
   /**
@@ -5603,6 +11802,57 @@ export namespace Prisma {
   export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
 
 
+  export const ServerScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    picture: 'picture',
+    createdAt: 'createdAt'
+  };
+
+  export type ServerScalarFieldEnum = (typeof ServerScalarFieldEnum)[keyof typeof ServerScalarFieldEnum]
+
+
+  export const ChannelScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    serverId: 'serverId',
+    createdAt: 'createdAt',
+    type: 'type'
+  };
+
+  export type ChannelScalarFieldEnum = (typeof ChannelScalarFieldEnum)[keyof typeof ChannelScalarFieldEnum]
+
+
+  export const ServerMemberScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    serverId: 'serverId'
+  };
+
+  export type ServerMemberScalarFieldEnum = (typeof ServerMemberScalarFieldEnum)[keyof typeof ServerMemberScalarFieldEnum]
+
+
+  export const ServerRolesScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    serverId: 'serverId'
+  };
+
+  export type ServerRolesScalarFieldEnum = (typeof ServerRolesScalarFieldEnum)[keyof typeof ServerRolesScalarFieldEnum]
+
+
+  export const MessagesScalarFieldEnum: {
+    id: 'id',
+    content: 'content',
+    channelId: 'channelId',
+    authorId: 'authorId',
+    createdAt: 'createdAt',
+    pinned: 'pinned'
+  };
+
+  export type MessagesScalarFieldEnum = (typeof MessagesScalarFieldEnum)[keyof typeof MessagesScalarFieldEnum]
+
+
   export const UserScalarFieldEnum: {
     id: 'id',
     name: 'name',
@@ -5705,13 +11955,6 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'Boolean'
-   */
-  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
-    
-
-
-  /**
    * Reference to a field of type 'DateTime'
    */
   export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
@@ -5722,6 +11965,27 @@ export namespace Prisma {
    * Reference to a field of type 'DateTime[]'
    */
   export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'ChannelType'
+   */
+  export type EnumChannelTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ChannelType'>
+    
+
+
+  /**
+   * Reference to a field of type 'ChannelType[]'
+   */
+  export type ListEnumChannelTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ChannelType[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Boolean'
+   */
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 
@@ -5742,6 +12006,285 @@ export namespace Prisma {
    */
 
 
+  export type ServerWhereInput = {
+    AND?: ServerWhereInput | ServerWhereInput[]
+    OR?: ServerWhereInput[]
+    NOT?: ServerWhereInput | ServerWhereInput[]
+    id?: StringFilter<"Server"> | string
+    name?: StringFilter<"Server"> | string
+    picture?: StringNullableFilter<"Server"> | string | null
+    createdAt?: DateTimeFilter<"Server"> | Date | string
+    channels?: ChannelListRelationFilter
+    members?: ServerMemberListRelationFilter
+    roles?: ServerRolesListRelationFilter
+  }
+
+  export type ServerOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    picture?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    channels?: ChannelOrderByRelationAggregateInput
+    members?: ServerMemberOrderByRelationAggregateInput
+    roles?: serverRolesOrderByRelationAggregateInput
+  }
+
+  export type ServerWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: ServerWhereInput | ServerWhereInput[]
+    OR?: ServerWhereInput[]
+    NOT?: ServerWhereInput | ServerWhereInput[]
+    name?: StringFilter<"Server"> | string
+    picture?: StringNullableFilter<"Server"> | string | null
+    createdAt?: DateTimeFilter<"Server"> | Date | string
+    channels?: ChannelListRelationFilter
+    members?: ServerMemberListRelationFilter
+    roles?: ServerRolesListRelationFilter
+  }, "id">
+
+  export type ServerOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    picture?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: ServerCountOrderByAggregateInput
+    _max?: ServerMaxOrderByAggregateInput
+    _min?: ServerMinOrderByAggregateInput
+  }
+
+  export type ServerScalarWhereWithAggregatesInput = {
+    AND?: ServerScalarWhereWithAggregatesInput | ServerScalarWhereWithAggregatesInput[]
+    OR?: ServerScalarWhereWithAggregatesInput[]
+    NOT?: ServerScalarWhereWithAggregatesInput | ServerScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Server"> | string
+    name?: StringWithAggregatesFilter<"Server"> | string
+    picture?: StringNullableWithAggregatesFilter<"Server"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"Server"> | Date | string
+  }
+
+  export type ChannelWhereInput = {
+    AND?: ChannelWhereInput | ChannelWhereInput[]
+    OR?: ChannelWhereInput[]
+    NOT?: ChannelWhereInput | ChannelWhereInput[]
+    id?: StringFilter<"Channel"> | string
+    name?: StringFilter<"Channel"> | string
+    serverId?: StringFilter<"Channel"> | string
+    createdAt?: DateTimeFilter<"Channel"> | Date | string
+    type?: EnumChannelTypeFilter<"Channel"> | $Enums.ChannelType
+    server?: XOR<ServerScalarRelationFilter, ServerWhereInput>
+    messages?: MessagesListRelationFilter
+    users?: UserListRelationFilter
+  }
+
+  export type ChannelOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    serverId?: SortOrder
+    createdAt?: SortOrder
+    type?: SortOrder
+    server?: ServerOrderByWithRelationInput
+    messages?: MessagesOrderByRelationAggregateInput
+    users?: UserOrderByRelationAggregateInput
+  }
+
+  export type ChannelWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: ChannelWhereInput | ChannelWhereInput[]
+    OR?: ChannelWhereInput[]
+    NOT?: ChannelWhereInput | ChannelWhereInput[]
+    name?: StringFilter<"Channel"> | string
+    serverId?: StringFilter<"Channel"> | string
+    createdAt?: DateTimeFilter<"Channel"> | Date | string
+    type?: EnumChannelTypeFilter<"Channel"> | $Enums.ChannelType
+    server?: XOR<ServerScalarRelationFilter, ServerWhereInput>
+    messages?: MessagesListRelationFilter
+    users?: UserListRelationFilter
+  }, "id">
+
+  export type ChannelOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    serverId?: SortOrder
+    createdAt?: SortOrder
+    type?: SortOrder
+    _count?: ChannelCountOrderByAggregateInput
+    _max?: ChannelMaxOrderByAggregateInput
+    _min?: ChannelMinOrderByAggregateInput
+  }
+
+  export type ChannelScalarWhereWithAggregatesInput = {
+    AND?: ChannelScalarWhereWithAggregatesInput | ChannelScalarWhereWithAggregatesInput[]
+    OR?: ChannelScalarWhereWithAggregatesInput[]
+    NOT?: ChannelScalarWhereWithAggregatesInput | ChannelScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Channel"> | string
+    name?: StringWithAggregatesFilter<"Channel"> | string
+    serverId?: StringWithAggregatesFilter<"Channel"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"Channel"> | Date | string
+    type?: EnumChannelTypeWithAggregatesFilter<"Channel"> | $Enums.ChannelType
+  }
+
+  export type ServerMemberWhereInput = {
+    AND?: ServerMemberWhereInput | ServerMemberWhereInput[]
+    OR?: ServerMemberWhereInput[]
+    NOT?: ServerMemberWhereInput | ServerMemberWhereInput[]
+    id?: StringFilter<"ServerMember"> | string
+    userId?: StringFilter<"ServerMember"> | string
+    serverId?: StringFilter<"ServerMember"> | string
+    server?: XOR<ServerScalarRelationFilter, ServerWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    serverRoles?: ServerRolesListRelationFilter
+  }
+
+  export type ServerMemberOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    serverId?: SortOrder
+    server?: ServerOrderByWithRelationInput
+    user?: UserOrderByWithRelationInput
+    serverRoles?: serverRolesOrderByRelationAggregateInput
+  }
+
+  export type ServerMemberWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: ServerMemberWhereInput | ServerMemberWhereInput[]
+    OR?: ServerMemberWhereInput[]
+    NOT?: ServerMemberWhereInput | ServerMemberWhereInput[]
+    userId?: StringFilter<"ServerMember"> | string
+    serverId?: StringFilter<"ServerMember"> | string
+    server?: XOR<ServerScalarRelationFilter, ServerWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    serverRoles?: ServerRolesListRelationFilter
+  }, "id">
+
+  export type ServerMemberOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    serverId?: SortOrder
+    _count?: ServerMemberCountOrderByAggregateInput
+    _max?: ServerMemberMaxOrderByAggregateInput
+    _min?: ServerMemberMinOrderByAggregateInput
+  }
+
+  export type ServerMemberScalarWhereWithAggregatesInput = {
+    AND?: ServerMemberScalarWhereWithAggregatesInput | ServerMemberScalarWhereWithAggregatesInput[]
+    OR?: ServerMemberScalarWhereWithAggregatesInput[]
+    NOT?: ServerMemberScalarWhereWithAggregatesInput | ServerMemberScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ServerMember"> | string
+    userId?: StringWithAggregatesFilter<"ServerMember"> | string
+    serverId?: StringWithAggregatesFilter<"ServerMember"> | string
+  }
+
+  export type serverRolesWhereInput = {
+    AND?: serverRolesWhereInput | serverRolesWhereInput[]
+    OR?: serverRolesWhereInput[]
+    NOT?: serverRolesWhereInput | serverRolesWhereInput[]
+    id?: StringFilter<"serverRoles"> | string
+    name?: StringFilter<"serverRoles"> | string
+    serverId?: StringFilter<"serverRoles"> | string
+    server?: XOR<ServerScalarRelationFilter, ServerWhereInput>
+    members?: ServerMemberListRelationFilter
+  }
+
+  export type serverRolesOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    serverId?: SortOrder
+    server?: ServerOrderByWithRelationInput
+    members?: ServerMemberOrderByRelationAggregateInput
+  }
+
+  export type serverRolesWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: serverRolesWhereInput | serverRolesWhereInput[]
+    OR?: serverRolesWhereInput[]
+    NOT?: serverRolesWhereInput | serverRolesWhereInput[]
+    name?: StringFilter<"serverRoles"> | string
+    serverId?: StringFilter<"serverRoles"> | string
+    server?: XOR<ServerScalarRelationFilter, ServerWhereInput>
+    members?: ServerMemberListRelationFilter
+  }, "id">
+
+  export type serverRolesOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    serverId?: SortOrder
+    _count?: serverRolesCountOrderByAggregateInput
+    _max?: serverRolesMaxOrderByAggregateInput
+    _min?: serverRolesMinOrderByAggregateInput
+  }
+
+  export type serverRolesScalarWhereWithAggregatesInput = {
+    AND?: serverRolesScalarWhereWithAggregatesInput | serverRolesScalarWhereWithAggregatesInput[]
+    OR?: serverRolesScalarWhereWithAggregatesInput[]
+    NOT?: serverRolesScalarWhereWithAggregatesInput | serverRolesScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"serverRoles"> | string
+    name?: StringWithAggregatesFilter<"serverRoles"> | string
+    serverId?: StringWithAggregatesFilter<"serverRoles"> | string
+  }
+
+  export type MessagesWhereInput = {
+    AND?: MessagesWhereInput | MessagesWhereInput[]
+    OR?: MessagesWhereInput[]
+    NOT?: MessagesWhereInput | MessagesWhereInput[]
+    id?: StringFilter<"Messages"> | string
+    content?: StringFilter<"Messages"> | string
+    channelId?: StringFilter<"Messages"> | string
+    authorId?: StringFilter<"Messages"> | string
+    createdAt?: DateTimeFilter<"Messages"> | Date | string
+    pinned?: BoolFilter<"Messages"> | boolean
+    channel?: XOR<ChannelScalarRelationFilter, ChannelWhereInput>
+    author?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type MessagesOrderByWithRelationInput = {
+    id?: SortOrder
+    content?: SortOrder
+    channelId?: SortOrder
+    authorId?: SortOrder
+    createdAt?: SortOrder
+    pinned?: SortOrder
+    channel?: ChannelOrderByWithRelationInput
+    author?: UserOrderByWithRelationInput
+  }
+
+  export type MessagesWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: MessagesWhereInput | MessagesWhereInput[]
+    OR?: MessagesWhereInput[]
+    NOT?: MessagesWhereInput | MessagesWhereInput[]
+    content?: StringFilter<"Messages"> | string
+    channelId?: StringFilter<"Messages"> | string
+    authorId?: StringFilter<"Messages"> | string
+    createdAt?: DateTimeFilter<"Messages"> | Date | string
+    pinned?: BoolFilter<"Messages"> | boolean
+    channel?: XOR<ChannelScalarRelationFilter, ChannelWhereInput>
+    author?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id">
+
+  export type MessagesOrderByWithAggregationInput = {
+    id?: SortOrder
+    content?: SortOrder
+    channelId?: SortOrder
+    authorId?: SortOrder
+    createdAt?: SortOrder
+    pinned?: SortOrder
+    _count?: MessagesCountOrderByAggregateInput
+    _max?: MessagesMaxOrderByAggregateInput
+    _min?: MessagesMinOrderByAggregateInput
+  }
+
+  export type MessagesScalarWhereWithAggregatesInput = {
+    AND?: MessagesScalarWhereWithAggregatesInput | MessagesScalarWhereWithAggregatesInput[]
+    OR?: MessagesScalarWhereWithAggregatesInput[]
+    NOT?: MessagesScalarWhereWithAggregatesInput | MessagesScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Messages"> | string
+    content?: StringWithAggregatesFilter<"Messages"> | string
+    channelId?: StringWithAggregatesFilter<"Messages"> | string
+    authorId?: StringWithAggregatesFilter<"Messages"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"Messages"> | Date | string
+    pinned?: BoolWithAggregatesFilter<"Messages"> | boolean
+  }
+
   export type UserWhereInput = {
     AND?: UserWhereInput | UserWhereInput[]
     OR?: UserWhereInput[]
@@ -5755,6 +12298,9 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"User"> | Date | string
     sessions?: SessionListRelationFilter
     accounts?: AccountListRelationFilter
+    messages?: MessagesListRelationFilter
+    memberships?: ServerMemberListRelationFilter
+    channels?: ChannelListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -5767,6 +12313,9 @@ export namespace Prisma {
     updatedAt?: SortOrder
     sessions?: SessionOrderByRelationAggregateInput
     accounts?: AccountOrderByRelationAggregateInput
+    messages?: MessagesOrderByRelationAggregateInput
+    memberships?: ServerMemberOrderByRelationAggregateInput
+    channels?: ChannelOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -5782,6 +12331,9 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"User"> | Date | string
     sessions?: SessionListRelationFilter
     accounts?: AccountListRelationFilter
+    messages?: MessagesListRelationFilter
+    memberships?: ServerMemberListRelationFilter
+    channels?: ChannelListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -6032,6 +12584,280 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"Verification"> | Date | string
   }
 
+  export type ServerCreateInput = {
+    id?: string
+    name: string
+    picture?: string | null
+    createdAt?: Date | string
+    channels?: ChannelCreateNestedManyWithoutServerInput
+    members?: ServerMemberCreateNestedManyWithoutServerInput
+    roles?: serverRolesCreateNestedManyWithoutServerInput
+  }
+
+  export type ServerUncheckedCreateInput = {
+    id?: string
+    name: string
+    picture?: string | null
+    createdAt?: Date | string
+    channels?: ChannelUncheckedCreateNestedManyWithoutServerInput
+    members?: ServerMemberUncheckedCreateNestedManyWithoutServerInput
+    roles?: serverRolesUncheckedCreateNestedManyWithoutServerInput
+  }
+
+  export type ServerUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    picture?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    channels?: ChannelUpdateManyWithoutServerNestedInput
+    members?: ServerMemberUpdateManyWithoutServerNestedInput
+    roles?: serverRolesUpdateManyWithoutServerNestedInput
+  }
+
+  export type ServerUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    picture?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    channels?: ChannelUncheckedUpdateManyWithoutServerNestedInput
+    members?: ServerMemberUncheckedUpdateManyWithoutServerNestedInput
+    roles?: serverRolesUncheckedUpdateManyWithoutServerNestedInput
+  }
+
+  export type ServerCreateManyInput = {
+    id?: string
+    name: string
+    picture?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ServerUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    picture?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ServerUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    picture?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ChannelCreateInput = {
+    id?: string
+    name: string
+    createdAt?: Date | string
+    type: $Enums.ChannelType
+    server: ServerCreateNestedOneWithoutChannelsInput
+    messages?: MessagesCreateNestedManyWithoutChannelInput
+    users?: UserCreateNestedManyWithoutChannelsInput
+  }
+
+  export type ChannelUncheckedCreateInput = {
+    id?: string
+    name: string
+    serverId: string
+    createdAt?: Date | string
+    type: $Enums.ChannelType
+    messages?: MessagesUncheckedCreateNestedManyWithoutChannelInput
+    users?: UserUncheckedCreateNestedManyWithoutChannelsInput
+  }
+
+  export type ChannelUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    type?: EnumChannelTypeFieldUpdateOperationsInput | $Enums.ChannelType
+    server?: ServerUpdateOneRequiredWithoutChannelsNestedInput
+    messages?: MessagesUpdateManyWithoutChannelNestedInput
+    users?: UserUpdateManyWithoutChannelsNestedInput
+  }
+
+  export type ChannelUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    serverId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    type?: EnumChannelTypeFieldUpdateOperationsInput | $Enums.ChannelType
+    messages?: MessagesUncheckedUpdateManyWithoutChannelNestedInput
+    users?: UserUncheckedUpdateManyWithoutChannelsNestedInput
+  }
+
+  export type ChannelCreateManyInput = {
+    id?: string
+    name: string
+    serverId: string
+    createdAt?: Date | string
+    type: $Enums.ChannelType
+  }
+
+  export type ChannelUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    type?: EnumChannelTypeFieldUpdateOperationsInput | $Enums.ChannelType
+  }
+
+  export type ChannelUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    serverId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    type?: EnumChannelTypeFieldUpdateOperationsInput | $Enums.ChannelType
+  }
+
+  export type ServerMemberCreateInput = {
+    id?: string
+    server: ServerCreateNestedOneWithoutMembersInput
+    user: UserCreateNestedOneWithoutMembershipsInput
+    serverRoles?: serverRolesCreateNestedManyWithoutMembersInput
+  }
+
+  export type ServerMemberUncheckedCreateInput = {
+    id?: string
+    userId: string
+    serverId: string
+    serverRoles?: serverRolesUncheckedCreateNestedManyWithoutMembersInput
+  }
+
+  export type ServerMemberUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    server?: ServerUpdateOneRequiredWithoutMembersNestedInput
+    user?: UserUpdateOneRequiredWithoutMembershipsNestedInput
+    serverRoles?: serverRolesUpdateManyWithoutMembersNestedInput
+  }
+
+  export type ServerMemberUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    serverId?: StringFieldUpdateOperationsInput | string
+    serverRoles?: serverRolesUncheckedUpdateManyWithoutMembersNestedInput
+  }
+
+  export type ServerMemberCreateManyInput = {
+    id?: string
+    userId: string
+    serverId: string
+  }
+
+  export type ServerMemberUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type ServerMemberUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    serverId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type serverRolesCreateInput = {
+    id?: string
+    name: string
+    server: ServerCreateNestedOneWithoutRolesInput
+    members?: ServerMemberCreateNestedManyWithoutServerRolesInput
+  }
+
+  export type serverRolesUncheckedCreateInput = {
+    id?: string
+    name: string
+    serverId: string
+    members?: ServerMemberUncheckedCreateNestedManyWithoutServerRolesInput
+  }
+
+  export type serverRolesUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    server?: ServerUpdateOneRequiredWithoutRolesNestedInput
+    members?: ServerMemberUpdateManyWithoutServerRolesNestedInput
+  }
+
+  export type serverRolesUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    serverId?: StringFieldUpdateOperationsInput | string
+    members?: ServerMemberUncheckedUpdateManyWithoutServerRolesNestedInput
+  }
+
+  export type serverRolesCreateManyInput = {
+    id?: string
+    name: string
+    serverId: string
+  }
+
+  export type serverRolesUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type serverRolesUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    serverId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type MessagesCreateInput = {
+    id?: string
+    content: string
+    createdAt?: Date | string
+    pinned?: boolean
+    channel: ChannelCreateNestedOneWithoutMessagesInput
+    author: UserCreateNestedOneWithoutMessagesInput
+  }
+
+  export type MessagesUncheckedCreateInput = {
+    id?: string
+    content: string
+    channelId: string
+    authorId: string
+    createdAt?: Date | string
+    pinned?: boolean
+  }
+
+  export type MessagesUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    pinned?: BoolFieldUpdateOperationsInput | boolean
+    channel?: ChannelUpdateOneRequiredWithoutMessagesNestedInput
+    author?: UserUpdateOneRequiredWithoutMessagesNestedInput
+  }
+
+  export type MessagesUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    channelId?: StringFieldUpdateOperationsInput | string
+    authorId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    pinned?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type MessagesCreateManyInput = {
+    id?: string
+    content: string
+    channelId: string
+    authorId: string
+    createdAt?: Date | string
+    pinned?: boolean
+  }
+
+  export type MessagesUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    pinned?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type MessagesUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    channelId?: StringFieldUpdateOperationsInput | string
+    authorId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    pinned?: BoolFieldUpdateOperationsInput | boolean
+  }
+
   export type UserCreateInput = {
     id?: string
     name: string
@@ -6042,6 +12868,9 @@ export namespace Prisma {
     updatedAt?: Date | string
     sessions?: SessionCreateNestedManyWithoutUserInput
     accounts?: AccountCreateNestedManyWithoutUserInput
+    messages?: MessagesCreateNestedManyWithoutAuthorInput
+    memberships?: ServerMemberCreateNestedManyWithoutUserInput
+    channels?: ChannelCreateNestedManyWithoutUsersInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -6054,6 +12883,9 @@ export namespace Prisma {
     updatedAt?: Date | string
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    messages?: MessagesUncheckedCreateNestedManyWithoutAuthorInput
+    memberships?: ServerMemberUncheckedCreateNestedManyWithoutUserInput
+    channels?: ChannelUncheckedCreateNestedManyWithoutUsersInput
   }
 
   export type UserUpdateInput = {
@@ -6066,6 +12898,9 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUpdateManyWithoutUserNestedInput
     accounts?: AccountUpdateManyWithoutUserNestedInput
+    messages?: MessagesUpdateManyWithoutAuthorNestedInput
+    memberships?: ServerMemberUpdateManyWithoutUserNestedInput
+    channels?: ChannelUpdateManyWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -6078,6 +12913,9 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    messages?: MessagesUncheckedUpdateManyWithoutAuthorNestedInput
+    memberships?: ServerMemberUncheckedUpdateManyWithoutUserNestedInput
+    channels?: ChannelUncheckedUpdateManyWithoutUsersNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -6375,11 +13213,6 @@ export namespace Prisma {
     not?: NestedStringFilter<$PrismaModel> | string
   }
 
-  export type BoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
-  }
-
   export type StringNullableFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -6406,6 +13239,264 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
+  export type ChannelListRelationFilter = {
+    every?: ChannelWhereInput
+    some?: ChannelWhereInput
+    none?: ChannelWhereInput
+  }
+
+  export type ServerMemberListRelationFilter = {
+    every?: ServerMemberWhereInput
+    some?: ServerMemberWhereInput
+    none?: ServerMemberWhereInput
+  }
+
+  export type ServerRolesListRelationFilter = {
+    every?: serverRolesWhereInput
+    some?: serverRolesWhereInput
+    none?: serverRolesWhereInput
+  }
+
+  export type SortOrderInput = {
+    sort: SortOrder
+    nulls?: NullsOrder
+  }
+
+  export type ChannelOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ServerMemberOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type serverRolesOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ServerCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    picture?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ServerMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    picture?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ServerMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    picture?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type StringWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel>
+    in?: string[] | ListStringFieldRefInput<$PrismaModel>
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel>
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedStringWithAggregatesFilter<$PrismaModel> | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedStringFilter<$PrismaModel>
+    _max?: NestedStringFilter<$PrismaModel>
+  }
+
+  export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
+  export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedDateTimeFilter<$PrismaModel>
+    _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
+  export type EnumChannelTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.ChannelType | EnumChannelTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.ChannelType[] | ListEnumChannelTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ChannelType[] | ListEnumChannelTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumChannelTypeFilter<$PrismaModel> | $Enums.ChannelType
+  }
+
+  export type ServerScalarRelationFilter = {
+    is?: ServerWhereInput
+    isNot?: ServerWhereInput
+  }
+
+  export type MessagesListRelationFilter = {
+    every?: MessagesWhereInput
+    some?: MessagesWhereInput
+    none?: MessagesWhereInput
+  }
+
+  export type UserListRelationFilter = {
+    every?: UserWhereInput
+    some?: UserWhereInput
+    none?: UserWhereInput
+  }
+
+  export type MessagesOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type UserOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ChannelCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    serverId?: SortOrder
+    createdAt?: SortOrder
+    type?: SortOrder
+  }
+
+  export type ChannelMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    serverId?: SortOrder
+    createdAt?: SortOrder
+    type?: SortOrder
+  }
+
+  export type ChannelMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    serverId?: SortOrder
+    createdAt?: SortOrder
+    type?: SortOrder
+  }
+
+  export type EnumChannelTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ChannelType | EnumChannelTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.ChannelType[] | ListEnumChannelTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ChannelType[] | ListEnumChannelTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumChannelTypeWithAggregatesFilter<$PrismaModel> | $Enums.ChannelType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumChannelTypeFilter<$PrismaModel>
+    _max?: NestedEnumChannelTypeFilter<$PrismaModel>
+  }
+
+  export type UserScalarRelationFilter = {
+    is?: UserWhereInput
+    isNot?: UserWhereInput
+  }
+
+  export type ServerMemberCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    serverId?: SortOrder
+  }
+
+  export type ServerMemberMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    serverId?: SortOrder
+  }
+
+  export type ServerMemberMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    serverId?: SortOrder
+  }
+
+  export type serverRolesCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    serverId?: SortOrder
+  }
+
+  export type serverRolesMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    serverId?: SortOrder
+  }
+
+  export type serverRolesMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    serverId?: SortOrder
+  }
+
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type ChannelScalarRelationFilter = {
+    is?: ChannelWhereInput
+    isNot?: ChannelWhereInput
+  }
+
+  export type MessagesCountOrderByAggregateInput = {
+    id?: SortOrder
+    content?: SortOrder
+    channelId?: SortOrder
+    authorId?: SortOrder
+    createdAt?: SortOrder
+    pinned?: SortOrder
+  }
+
+  export type MessagesMaxOrderByAggregateInput = {
+    id?: SortOrder
+    content?: SortOrder
+    channelId?: SortOrder
+    authorId?: SortOrder
+    createdAt?: SortOrder
+    pinned?: SortOrder
+  }
+
+  export type MessagesMinOrderByAggregateInput = {
+    id?: SortOrder
+    content?: SortOrder
+    channelId?: SortOrder
+    authorId?: SortOrder
+    createdAt?: SortOrder
+    pinned?: SortOrder
+  }
+
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
   export type SessionListRelationFilter = {
     every?: SessionWhereInput
     some?: SessionWhereInput
@@ -6416,11 +13507,6 @@ export namespace Prisma {
     every?: AccountWhereInput
     some?: AccountWhereInput
     none?: AccountWhereInput
-  }
-
-  export type SortOrderInput = {
-    sort: SortOrder
-    nulls?: NullsOrder
   }
 
   export type SessionOrderByRelationAggregateInput = {
@@ -6459,69 +13545,6 @@ export namespace Prisma {
     image?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-  }
-
-  export type StringWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel>
-    in?: string[] | ListStringFieldRefInput<$PrismaModel>
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel>
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    mode?: QueryMode
-    not?: NestedStringWithAggregatesFilter<$PrismaModel> | string
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedStringFilter<$PrismaModel>
-    _max?: NestedStringFilter<$PrismaModel>
-  }
-
-  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
-  }
-
-  export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    mode?: QueryMode
-    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedStringNullableFilter<$PrismaModel>
-    _max?: NestedStringNullableFilter<$PrismaModel>
-  }
-
-  export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedDateTimeFilter<$PrismaModel>
-    _max?: NestedDateTimeFilter<$PrismaModel>
-  }
-
-  export type UserScalarRelationFilter = {
-    is?: UserWhereInput
-    isNot?: UserWhereInput
   }
 
   export type SessionCountOrderByAggregateInput = {
@@ -6657,6 +13680,392 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
+  export type ChannelCreateNestedManyWithoutServerInput = {
+    create?: XOR<ChannelCreateWithoutServerInput, ChannelUncheckedCreateWithoutServerInput> | ChannelCreateWithoutServerInput[] | ChannelUncheckedCreateWithoutServerInput[]
+    connectOrCreate?: ChannelCreateOrConnectWithoutServerInput | ChannelCreateOrConnectWithoutServerInput[]
+    createMany?: ChannelCreateManyServerInputEnvelope
+    connect?: ChannelWhereUniqueInput | ChannelWhereUniqueInput[]
+  }
+
+  export type ServerMemberCreateNestedManyWithoutServerInput = {
+    create?: XOR<ServerMemberCreateWithoutServerInput, ServerMemberUncheckedCreateWithoutServerInput> | ServerMemberCreateWithoutServerInput[] | ServerMemberUncheckedCreateWithoutServerInput[]
+    connectOrCreate?: ServerMemberCreateOrConnectWithoutServerInput | ServerMemberCreateOrConnectWithoutServerInput[]
+    createMany?: ServerMemberCreateManyServerInputEnvelope
+    connect?: ServerMemberWhereUniqueInput | ServerMemberWhereUniqueInput[]
+  }
+
+  export type serverRolesCreateNestedManyWithoutServerInput = {
+    create?: XOR<serverRolesCreateWithoutServerInput, serverRolesUncheckedCreateWithoutServerInput> | serverRolesCreateWithoutServerInput[] | serverRolesUncheckedCreateWithoutServerInput[]
+    connectOrCreate?: serverRolesCreateOrConnectWithoutServerInput | serverRolesCreateOrConnectWithoutServerInput[]
+    createMany?: serverRolesCreateManyServerInputEnvelope
+    connect?: serverRolesWhereUniqueInput | serverRolesWhereUniqueInput[]
+  }
+
+  export type ChannelUncheckedCreateNestedManyWithoutServerInput = {
+    create?: XOR<ChannelCreateWithoutServerInput, ChannelUncheckedCreateWithoutServerInput> | ChannelCreateWithoutServerInput[] | ChannelUncheckedCreateWithoutServerInput[]
+    connectOrCreate?: ChannelCreateOrConnectWithoutServerInput | ChannelCreateOrConnectWithoutServerInput[]
+    createMany?: ChannelCreateManyServerInputEnvelope
+    connect?: ChannelWhereUniqueInput | ChannelWhereUniqueInput[]
+  }
+
+  export type ServerMemberUncheckedCreateNestedManyWithoutServerInput = {
+    create?: XOR<ServerMemberCreateWithoutServerInput, ServerMemberUncheckedCreateWithoutServerInput> | ServerMemberCreateWithoutServerInput[] | ServerMemberUncheckedCreateWithoutServerInput[]
+    connectOrCreate?: ServerMemberCreateOrConnectWithoutServerInput | ServerMemberCreateOrConnectWithoutServerInput[]
+    createMany?: ServerMemberCreateManyServerInputEnvelope
+    connect?: ServerMemberWhereUniqueInput | ServerMemberWhereUniqueInput[]
+  }
+
+  export type serverRolesUncheckedCreateNestedManyWithoutServerInput = {
+    create?: XOR<serverRolesCreateWithoutServerInput, serverRolesUncheckedCreateWithoutServerInput> | serverRolesCreateWithoutServerInput[] | serverRolesUncheckedCreateWithoutServerInput[]
+    connectOrCreate?: serverRolesCreateOrConnectWithoutServerInput | serverRolesCreateOrConnectWithoutServerInput[]
+    createMany?: serverRolesCreateManyServerInputEnvelope
+    connect?: serverRolesWhereUniqueInput | serverRolesWhereUniqueInput[]
+  }
+
+  export type StringFieldUpdateOperationsInput = {
+    set?: string
+  }
+
+  export type NullableStringFieldUpdateOperationsInput = {
+    set?: string | null
+  }
+
+  export type DateTimeFieldUpdateOperationsInput = {
+    set?: Date | string
+  }
+
+  export type ChannelUpdateManyWithoutServerNestedInput = {
+    create?: XOR<ChannelCreateWithoutServerInput, ChannelUncheckedCreateWithoutServerInput> | ChannelCreateWithoutServerInput[] | ChannelUncheckedCreateWithoutServerInput[]
+    connectOrCreate?: ChannelCreateOrConnectWithoutServerInput | ChannelCreateOrConnectWithoutServerInput[]
+    upsert?: ChannelUpsertWithWhereUniqueWithoutServerInput | ChannelUpsertWithWhereUniqueWithoutServerInput[]
+    createMany?: ChannelCreateManyServerInputEnvelope
+    set?: ChannelWhereUniqueInput | ChannelWhereUniqueInput[]
+    disconnect?: ChannelWhereUniqueInput | ChannelWhereUniqueInput[]
+    delete?: ChannelWhereUniqueInput | ChannelWhereUniqueInput[]
+    connect?: ChannelWhereUniqueInput | ChannelWhereUniqueInput[]
+    update?: ChannelUpdateWithWhereUniqueWithoutServerInput | ChannelUpdateWithWhereUniqueWithoutServerInput[]
+    updateMany?: ChannelUpdateManyWithWhereWithoutServerInput | ChannelUpdateManyWithWhereWithoutServerInput[]
+    deleteMany?: ChannelScalarWhereInput | ChannelScalarWhereInput[]
+  }
+
+  export type ServerMemberUpdateManyWithoutServerNestedInput = {
+    create?: XOR<ServerMemberCreateWithoutServerInput, ServerMemberUncheckedCreateWithoutServerInput> | ServerMemberCreateWithoutServerInput[] | ServerMemberUncheckedCreateWithoutServerInput[]
+    connectOrCreate?: ServerMemberCreateOrConnectWithoutServerInput | ServerMemberCreateOrConnectWithoutServerInput[]
+    upsert?: ServerMemberUpsertWithWhereUniqueWithoutServerInput | ServerMemberUpsertWithWhereUniqueWithoutServerInput[]
+    createMany?: ServerMemberCreateManyServerInputEnvelope
+    set?: ServerMemberWhereUniqueInput | ServerMemberWhereUniqueInput[]
+    disconnect?: ServerMemberWhereUniqueInput | ServerMemberWhereUniqueInput[]
+    delete?: ServerMemberWhereUniqueInput | ServerMemberWhereUniqueInput[]
+    connect?: ServerMemberWhereUniqueInput | ServerMemberWhereUniqueInput[]
+    update?: ServerMemberUpdateWithWhereUniqueWithoutServerInput | ServerMemberUpdateWithWhereUniqueWithoutServerInput[]
+    updateMany?: ServerMemberUpdateManyWithWhereWithoutServerInput | ServerMemberUpdateManyWithWhereWithoutServerInput[]
+    deleteMany?: ServerMemberScalarWhereInput | ServerMemberScalarWhereInput[]
+  }
+
+  export type serverRolesUpdateManyWithoutServerNestedInput = {
+    create?: XOR<serverRolesCreateWithoutServerInput, serverRolesUncheckedCreateWithoutServerInput> | serverRolesCreateWithoutServerInput[] | serverRolesUncheckedCreateWithoutServerInput[]
+    connectOrCreate?: serverRolesCreateOrConnectWithoutServerInput | serverRolesCreateOrConnectWithoutServerInput[]
+    upsert?: serverRolesUpsertWithWhereUniqueWithoutServerInput | serverRolesUpsertWithWhereUniqueWithoutServerInput[]
+    createMany?: serverRolesCreateManyServerInputEnvelope
+    set?: serverRolesWhereUniqueInput | serverRolesWhereUniqueInput[]
+    disconnect?: serverRolesWhereUniqueInput | serverRolesWhereUniqueInput[]
+    delete?: serverRolesWhereUniqueInput | serverRolesWhereUniqueInput[]
+    connect?: serverRolesWhereUniqueInput | serverRolesWhereUniqueInput[]
+    update?: serverRolesUpdateWithWhereUniqueWithoutServerInput | serverRolesUpdateWithWhereUniqueWithoutServerInput[]
+    updateMany?: serverRolesUpdateManyWithWhereWithoutServerInput | serverRolesUpdateManyWithWhereWithoutServerInput[]
+    deleteMany?: serverRolesScalarWhereInput | serverRolesScalarWhereInput[]
+  }
+
+  export type ChannelUncheckedUpdateManyWithoutServerNestedInput = {
+    create?: XOR<ChannelCreateWithoutServerInput, ChannelUncheckedCreateWithoutServerInput> | ChannelCreateWithoutServerInput[] | ChannelUncheckedCreateWithoutServerInput[]
+    connectOrCreate?: ChannelCreateOrConnectWithoutServerInput | ChannelCreateOrConnectWithoutServerInput[]
+    upsert?: ChannelUpsertWithWhereUniqueWithoutServerInput | ChannelUpsertWithWhereUniqueWithoutServerInput[]
+    createMany?: ChannelCreateManyServerInputEnvelope
+    set?: ChannelWhereUniqueInput | ChannelWhereUniqueInput[]
+    disconnect?: ChannelWhereUniqueInput | ChannelWhereUniqueInput[]
+    delete?: ChannelWhereUniqueInput | ChannelWhereUniqueInput[]
+    connect?: ChannelWhereUniqueInput | ChannelWhereUniqueInput[]
+    update?: ChannelUpdateWithWhereUniqueWithoutServerInput | ChannelUpdateWithWhereUniqueWithoutServerInput[]
+    updateMany?: ChannelUpdateManyWithWhereWithoutServerInput | ChannelUpdateManyWithWhereWithoutServerInput[]
+    deleteMany?: ChannelScalarWhereInput | ChannelScalarWhereInput[]
+  }
+
+  export type ServerMemberUncheckedUpdateManyWithoutServerNestedInput = {
+    create?: XOR<ServerMemberCreateWithoutServerInput, ServerMemberUncheckedCreateWithoutServerInput> | ServerMemberCreateWithoutServerInput[] | ServerMemberUncheckedCreateWithoutServerInput[]
+    connectOrCreate?: ServerMemberCreateOrConnectWithoutServerInput | ServerMemberCreateOrConnectWithoutServerInput[]
+    upsert?: ServerMemberUpsertWithWhereUniqueWithoutServerInput | ServerMemberUpsertWithWhereUniqueWithoutServerInput[]
+    createMany?: ServerMemberCreateManyServerInputEnvelope
+    set?: ServerMemberWhereUniqueInput | ServerMemberWhereUniqueInput[]
+    disconnect?: ServerMemberWhereUniqueInput | ServerMemberWhereUniqueInput[]
+    delete?: ServerMemberWhereUniqueInput | ServerMemberWhereUniqueInput[]
+    connect?: ServerMemberWhereUniqueInput | ServerMemberWhereUniqueInput[]
+    update?: ServerMemberUpdateWithWhereUniqueWithoutServerInput | ServerMemberUpdateWithWhereUniqueWithoutServerInput[]
+    updateMany?: ServerMemberUpdateManyWithWhereWithoutServerInput | ServerMemberUpdateManyWithWhereWithoutServerInput[]
+    deleteMany?: ServerMemberScalarWhereInput | ServerMemberScalarWhereInput[]
+  }
+
+  export type serverRolesUncheckedUpdateManyWithoutServerNestedInput = {
+    create?: XOR<serverRolesCreateWithoutServerInput, serverRolesUncheckedCreateWithoutServerInput> | serverRolesCreateWithoutServerInput[] | serverRolesUncheckedCreateWithoutServerInput[]
+    connectOrCreate?: serverRolesCreateOrConnectWithoutServerInput | serverRolesCreateOrConnectWithoutServerInput[]
+    upsert?: serverRolesUpsertWithWhereUniqueWithoutServerInput | serverRolesUpsertWithWhereUniqueWithoutServerInput[]
+    createMany?: serverRolesCreateManyServerInputEnvelope
+    set?: serverRolesWhereUniqueInput | serverRolesWhereUniqueInput[]
+    disconnect?: serverRolesWhereUniqueInput | serverRolesWhereUniqueInput[]
+    delete?: serverRolesWhereUniqueInput | serverRolesWhereUniqueInput[]
+    connect?: serverRolesWhereUniqueInput | serverRolesWhereUniqueInput[]
+    update?: serverRolesUpdateWithWhereUniqueWithoutServerInput | serverRolesUpdateWithWhereUniqueWithoutServerInput[]
+    updateMany?: serverRolesUpdateManyWithWhereWithoutServerInput | serverRolesUpdateManyWithWhereWithoutServerInput[]
+    deleteMany?: serverRolesScalarWhereInput | serverRolesScalarWhereInput[]
+  }
+
+  export type ServerCreateNestedOneWithoutChannelsInput = {
+    create?: XOR<ServerCreateWithoutChannelsInput, ServerUncheckedCreateWithoutChannelsInput>
+    connectOrCreate?: ServerCreateOrConnectWithoutChannelsInput
+    connect?: ServerWhereUniqueInput
+  }
+
+  export type MessagesCreateNestedManyWithoutChannelInput = {
+    create?: XOR<MessagesCreateWithoutChannelInput, MessagesUncheckedCreateWithoutChannelInput> | MessagesCreateWithoutChannelInput[] | MessagesUncheckedCreateWithoutChannelInput[]
+    connectOrCreate?: MessagesCreateOrConnectWithoutChannelInput | MessagesCreateOrConnectWithoutChannelInput[]
+    createMany?: MessagesCreateManyChannelInputEnvelope
+    connect?: MessagesWhereUniqueInput | MessagesWhereUniqueInput[]
+  }
+
+  export type UserCreateNestedManyWithoutChannelsInput = {
+    create?: XOR<UserCreateWithoutChannelsInput, UserUncheckedCreateWithoutChannelsInput> | UserCreateWithoutChannelsInput[] | UserUncheckedCreateWithoutChannelsInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutChannelsInput | UserCreateOrConnectWithoutChannelsInput[]
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+  }
+
+  export type MessagesUncheckedCreateNestedManyWithoutChannelInput = {
+    create?: XOR<MessagesCreateWithoutChannelInput, MessagesUncheckedCreateWithoutChannelInput> | MessagesCreateWithoutChannelInput[] | MessagesUncheckedCreateWithoutChannelInput[]
+    connectOrCreate?: MessagesCreateOrConnectWithoutChannelInput | MessagesCreateOrConnectWithoutChannelInput[]
+    createMany?: MessagesCreateManyChannelInputEnvelope
+    connect?: MessagesWhereUniqueInput | MessagesWhereUniqueInput[]
+  }
+
+  export type UserUncheckedCreateNestedManyWithoutChannelsInput = {
+    create?: XOR<UserCreateWithoutChannelsInput, UserUncheckedCreateWithoutChannelsInput> | UserCreateWithoutChannelsInput[] | UserUncheckedCreateWithoutChannelsInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutChannelsInput | UserCreateOrConnectWithoutChannelsInput[]
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+  }
+
+  export type EnumChannelTypeFieldUpdateOperationsInput = {
+    set?: $Enums.ChannelType
+  }
+
+  export type ServerUpdateOneRequiredWithoutChannelsNestedInput = {
+    create?: XOR<ServerCreateWithoutChannelsInput, ServerUncheckedCreateWithoutChannelsInput>
+    connectOrCreate?: ServerCreateOrConnectWithoutChannelsInput
+    upsert?: ServerUpsertWithoutChannelsInput
+    connect?: ServerWhereUniqueInput
+    update?: XOR<XOR<ServerUpdateToOneWithWhereWithoutChannelsInput, ServerUpdateWithoutChannelsInput>, ServerUncheckedUpdateWithoutChannelsInput>
+  }
+
+  export type MessagesUpdateManyWithoutChannelNestedInput = {
+    create?: XOR<MessagesCreateWithoutChannelInput, MessagesUncheckedCreateWithoutChannelInput> | MessagesCreateWithoutChannelInput[] | MessagesUncheckedCreateWithoutChannelInput[]
+    connectOrCreate?: MessagesCreateOrConnectWithoutChannelInput | MessagesCreateOrConnectWithoutChannelInput[]
+    upsert?: MessagesUpsertWithWhereUniqueWithoutChannelInput | MessagesUpsertWithWhereUniqueWithoutChannelInput[]
+    createMany?: MessagesCreateManyChannelInputEnvelope
+    set?: MessagesWhereUniqueInput | MessagesWhereUniqueInput[]
+    disconnect?: MessagesWhereUniqueInput | MessagesWhereUniqueInput[]
+    delete?: MessagesWhereUniqueInput | MessagesWhereUniqueInput[]
+    connect?: MessagesWhereUniqueInput | MessagesWhereUniqueInput[]
+    update?: MessagesUpdateWithWhereUniqueWithoutChannelInput | MessagesUpdateWithWhereUniqueWithoutChannelInput[]
+    updateMany?: MessagesUpdateManyWithWhereWithoutChannelInput | MessagesUpdateManyWithWhereWithoutChannelInput[]
+    deleteMany?: MessagesScalarWhereInput | MessagesScalarWhereInput[]
+  }
+
+  export type UserUpdateManyWithoutChannelsNestedInput = {
+    create?: XOR<UserCreateWithoutChannelsInput, UserUncheckedCreateWithoutChannelsInput> | UserCreateWithoutChannelsInput[] | UserUncheckedCreateWithoutChannelsInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutChannelsInput | UserCreateOrConnectWithoutChannelsInput[]
+    upsert?: UserUpsertWithWhereUniqueWithoutChannelsInput | UserUpsertWithWhereUniqueWithoutChannelsInput[]
+    set?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    disconnect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    delete?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    update?: UserUpdateWithWhereUniqueWithoutChannelsInput | UserUpdateWithWhereUniqueWithoutChannelsInput[]
+    updateMany?: UserUpdateManyWithWhereWithoutChannelsInput | UserUpdateManyWithWhereWithoutChannelsInput[]
+    deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
+  }
+
+  export type MessagesUncheckedUpdateManyWithoutChannelNestedInput = {
+    create?: XOR<MessagesCreateWithoutChannelInput, MessagesUncheckedCreateWithoutChannelInput> | MessagesCreateWithoutChannelInput[] | MessagesUncheckedCreateWithoutChannelInput[]
+    connectOrCreate?: MessagesCreateOrConnectWithoutChannelInput | MessagesCreateOrConnectWithoutChannelInput[]
+    upsert?: MessagesUpsertWithWhereUniqueWithoutChannelInput | MessagesUpsertWithWhereUniqueWithoutChannelInput[]
+    createMany?: MessagesCreateManyChannelInputEnvelope
+    set?: MessagesWhereUniqueInput | MessagesWhereUniqueInput[]
+    disconnect?: MessagesWhereUniqueInput | MessagesWhereUniqueInput[]
+    delete?: MessagesWhereUniqueInput | MessagesWhereUniqueInput[]
+    connect?: MessagesWhereUniqueInput | MessagesWhereUniqueInput[]
+    update?: MessagesUpdateWithWhereUniqueWithoutChannelInput | MessagesUpdateWithWhereUniqueWithoutChannelInput[]
+    updateMany?: MessagesUpdateManyWithWhereWithoutChannelInput | MessagesUpdateManyWithWhereWithoutChannelInput[]
+    deleteMany?: MessagesScalarWhereInput | MessagesScalarWhereInput[]
+  }
+
+  export type UserUncheckedUpdateManyWithoutChannelsNestedInput = {
+    create?: XOR<UserCreateWithoutChannelsInput, UserUncheckedCreateWithoutChannelsInput> | UserCreateWithoutChannelsInput[] | UserUncheckedCreateWithoutChannelsInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutChannelsInput | UserCreateOrConnectWithoutChannelsInput[]
+    upsert?: UserUpsertWithWhereUniqueWithoutChannelsInput | UserUpsertWithWhereUniqueWithoutChannelsInput[]
+    set?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    disconnect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    delete?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    update?: UserUpdateWithWhereUniqueWithoutChannelsInput | UserUpdateWithWhereUniqueWithoutChannelsInput[]
+    updateMany?: UserUpdateManyWithWhereWithoutChannelsInput | UserUpdateManyWithWhereWithoutChannelsInput[]
+    deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
+  }
+
+  export type ServerCreateNestedOneWithoutMembersInput = {
+    create?: XOR<ServerCreateWithoutMembersInput, ServerUncheckedCreateWithoutMembersInput>
+    connectOrCreate?: ServerCreateOrConnectWithoutMembersInput
+    connect?: ServerWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutMembershipsInput = {
+    create?: XOR<UserCreateWithoutMembershipsInput, UserUncheckedCreateWithoutMembershipsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutMembershipsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type serverRolesCreateNestedManyWithoutMembersInput = {
+    create?: XOR<serverRolesCreateWithoutMembersInput, serverRolesUncheckedCreateWithoutMembersInput> | serverRolesCreateWithoutMembersInput[] | serverRolesUncheckedCreateWithoutMembersInput[]
+    connectOrCreate?: serverRolesCreateOrConnectWithoutMembersInput | serverRolesCreateOrConnectWithoutMembersInput[]
+    connect?: serverRolesWhereUniqueInput | serverRolesWhereUniqueInput[]
+  }
+
+  export type serverRolesUncheckedCreateNestedManyWithoutMembersInput = {
+    create?: XOR<serverRolesCreateWithoutMembersInput, serverRolesUncheckedCreateWithoutMembersInput> | serverRolesCreateWithoutMembersInput[] | serverRolesUncheckedCreateWithoutMembersInput[]
+    connectOrCreate?: serverRolesCreateOrConnectWithoutMembersInput | serverRolesCreateOrConnectWithoutMembersInput[]
+    connect?: serverRolesWhereUniqueInput | serverRolesWhereUniqueInput[]
+  }
+
+  export type ServerUpdateOneRequiredWithoutMembersNestedInput = {
+    create?: XOR<ServerCreateWithoutMembersInput, ServerUncheckedCreateWithoutMembersInput>
+    connectOrCreate?: ServerCreateOrConnectWithoutMembersInput
+    upsert?: ServerUpsertWithoutMembersInput
+    connect?: ServerWhereUniqueInput
+    update?: XOR<XOR<ServerUpdateToOneWithWhereWithoutMembersInput, ServerUpdateWithoutMembersInput>, ServerUncheckedUpdateWithoutMembersInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutMembershipsNestedInput = {
+    create?: XOR<UserCreateWithoutMembershipsInput, UserUncheckedCreateWithoutMembershipsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutMembershipsInput
+    upsert?: UserUpsertWithoutMembershipsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutMembershipsInput, UserUpdateWithoutMembershipsInput>, UserUncheckedUpdateWithoutMembershipsInput>
+  }
+
+  export type serverRolesUpdateManyWithoutMembersNestedInput = {
+    create?: XOR<serverRolesCreateWithoutMembersInput, serverRolesUncheckedCreateWithoutMembersInput> | serverRolesCreateWithoutMembersInput[] | serverRolesUncheckedCreateWithoutMembersInput[]
+    connectOrCreate?: serverRolesCreateOrConnectWithoutMembersInput | serverRolesCreateOrConnectWithoutMembersInput[]
+    upsert?: serverRolesUpsertWithWhereUniqueWithoutMembersInput | serverRolesUpsertWithWhereUniqueWithoutMembersInput[]
+    set?: serverRolesWhereUniqueInput | serverRolesWhereUniqueInput[]
+    disconnect?: serverRolesWhereUniqueInput | serverRolesWhereUniqueInput[]
+    delete?: serverRolesWhereUniqueInput | serverRolesWhereUniqueInput[]
+    connect?: serverRolesWhereUniqueInput | serverRolesWhereUniqueInput[]
+    update?: serverRolesUpdateWithWhereUniqueWithoutMembersInput | serverRolesUpdateWithWhereUniqueWithoutMembersInput[]
+    updateMany?: serverRolesUpdateManyWithWhereWithoutMembersInput | serverRolesUpdateManyWithWhereWithoutMembersInput[]
+    deleteMany?: serverRolesScalarWhereInput | serverRolesScalarWhereInput[]
+  }
+
+  export type serverRolesUncheckedUpdateManyWithoutMembersNestedInput = {
+    create?: XOR<serverRolesCreateWithoutMembersInput, serverRolesUncheckedCreateWithoutMembersInput> | serverRolesCreateWithoutMembersInput[] | serverRolesUncheckedCreateWithoutMembersInput[]
+    connectOrCreate?: serverRolesCreateOrConnectWithoutMembersInput | serverRolesCreateOrConnectWithoutMembersInput[]
+    upsert?: serverRolesUpsertWithWhereUniqueWithoutMembersInput | serverRolesUpsertWithWhereUniqueWithoutMembersInput[]
+    set?: serverRolesWhereUniqueInput | serverRolesWhereUniqueInput[]
+    disconnect?: serverRolesWhereUniqueInput | serverRolesWhereUniqueInput[]
+    delete?: serverRolesWhereUniqueInput | serverRolesWhereUniqueInput[]
+    connect?: serverRolesWhereUniqueInput | serverRolesWhereUniqueInput[]
+    update?: serverRolesUpdateWithWhereUniqueWithoutMembersInput | serverRolesUpdateWithWhereUniqueWithoutMembersInput[]
+    updateMany?: serverRolesUpdateManyWithWhereWithoutMembersInput | serverRolesUpdateManyWithWhereWithoutMembersInput[]
+    deleteMany?: serverRolesScalarWhereInput | serverRolesScalarWhereInput[]
+  }
+
+  export type ServerCreateNestedOneWithoutRolesInput = {
+    create?: XOR<ServerCreateWithoutRolesInput, ServerUncheckedCreateWithoutRolesInput>
+    connectOrCreate?: ServerCreateOrConnectWithoutRolesInput
+    connect?: ServerWhereUniqueInput
+  }
+
+  export type ServerMemberCreateNestedManyWithoutServerRolesInput = {
+    create?: XOR<ServerMemberCreateWithoutServerRolesInput, ServerMemberUncheckedCreateWithoutServerRolesInput> | ServerMemberCreateWithoutServerRolesInput[] | ServerMemberUncheckedCreateWithoutServerRolesInput[]
+    connectOrCreate?: ServerMemberCreateOrConnectWithoutServerRolesInput | ServerMemberCreateOrConnectWithoutServerRolesInput[]
+    connect?: ServerMemberWhereUniqueInput | ServerMemberWhereUniqueInput[]
+  }
+
+  export type ServerMemberUncheckedCreateNestedManyWithoutServerRolesInput = {
+    create?: XOR<ServerMemberCreateWithoutServerRolesInput, ServerMemberUncheckedCreateWithoutServerRolesInput> | ServerMemberCreateWithoutServerRolesInput[] | ServerMemberUncheckedCreateWithoutServerRolesInput[]
+    connectOrCreate?: ServerMemberCreateOrConnectWithoutServerRolesInput | ServerMemberCreateOrConnectWithoutServerRolesInput[]
+    connect?: ServerMemberWhereUniqueInput | ServerMemberWhereUniqueInput[]
+  }
+
+  export type ServerUpdateOneRequiredWithoutRolesNestedInput = {
+    create?: XOR<ServerCreateWithoutRolesInput, ServerUncheckedCreateWithoutRolesInput>
+    connectOrCreate?: ServerCreateOrConnectWithoutRolesInput
+    upsert?: ServerUpsertWithoutRolesInput
+    connect?: ServerWhereUniqueInput
+    update?: XOR<XOR<ServerUpdateToOneWithWhereWithoutRolesInput, ServerUpdateWithoutRolesInput>, ServerUncheckedUpdateWithoutRolesInput>
+  }
+
+  export type ServerMemberUpdateManyWithoutServerRolesNestedInput = {
+    create?: XOR<ServerMemberCreateWithoutServerRolesInput, ServerMemberUncheckedCreateWithoutServerRolesInput> | ServerMemberCreateWithoutServerRolesInput[] | ServerMemberUncheckedCreateWithoutServerRolesInput[]
+    connectOrCreate?: ServerMemberCreateOrConnectWithoutServerRolesInput | ServerMemberCreateOrConnectWithoutServerRolesInput[]
+    upsert?: ServerMemberUpsertWithWhereUniqueWithoutServerRolesInput | ServerMemberUpsertWithWhereUniqueWithoutServerRolesInput[]
+    set?: ServerMemberWhereUniqueInput | ServerMemberWhereUniqueInput[]
+    disconnect?: ServerMemberWhereUniqueInput | ServerMemberWhereUniqueInput[]
+    delete?: ServerMemberWhereUniqueInput | ServerMemberWhereUniqueInput[]
+    connect?: ServerMemberWhereUniqueInput | ServerMemberWhereUniqueInput[]
+    update?: ServerMemberUpdateWithWhereUniqueWithoutServerRolesInput | ServerMemberUpdateWithWhereUniqueWithoutServerRolesInput[]
+    updateMany?: ServerMemberUpdateManyWithWhereWithoutServerRolesInput | ServerMemberUpdateManyWithWhereWithoutServerRolesInput[]
+    deleteMany?: ServerMemberScalarWhereInput | ServerMemberScalarWhereInput[]
+  }
+
+  export type ServerMemberUncheckedUpdateManyWithoutServerRolesNestedInput = {
+    create?: XOR<ServerMemberCreateWithoutServerRolesInput, ServerMemberUncheckedCreateWithoutServerRolesInput> | ServerMemberCreateWithoutServerRolesInput[] | ServerMemberUncheckedCreateWithoutServerRolesInput[]
+    connectOrCreate?: ServerMemberCreateOrConnectWithoutServerRolesInput | ServerMemberCreateOrConnectWithoutServerRolesInput[]
+    upsert?: ServerMemberUpsertWithWhereUniqueWithoutServerRolesInput | ServerMemberUpsertWithWhereUniqueWithoutServerRolesInput[]
+    set?: ServerMemberWhereUniqueInput | ServerMemberWhereUniqueInput[]
+    disconnect?: ServerMemberWhereUniqueInput | ServerMemberWhereUniqueInput[]
+    delete?: ServerMemberWhereUniqueInput | ServerMemberWhereUniqueInput[]
+    connect?: ServerMemberWhereUniqueInput | ServerMemberWhereUniqueInput[]
+    update?: ServerMemberUpdateWithWhereUniqueWithoutServerRolesInput | ServerMemberUpdateWithWhereUniqueWithoutServerRolesInput[]
+    updateMany?: ServerMemberUpdateManyWithWhereWithoutServerRolesInput | ServerMemberUpdateManyWithWhereWithoutServerRolesInput[]
+    deleteMany?: ServerMemberScalarWhereInput | ServerMemberScalarWhereInput[]
+  }
+
+  export type ChannelCreateNestedOneWithoutMessagesInput = {
+    create?: XOR<ChannelCreateWithoutMessagesInput, ChannelUncheckedCreateWithoutMessagesInput>
+    connectOrCreate?: ChannelCreateOrConnectWithoutMessagesInput
+    connect?: ChannelWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutMessagesInput = {
+    create?: XOR<UserCreateWithoutMessagesInput, UserUncheckedCreateWithoutMessagesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutMessagesInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
+  }
+
+  export type ChannelUpdateOneRequiredWithoutMessagesNestedInput = {
+    create?: XOR<ChannelCreateWithoutMessagesInput, ChannelUncheckedCreateWithoutMessagesInput>
+    connectOrCreate?: ChannelCreateOrConnectWithoutMessagesInput
+    upsert?: ChannelUpsertWithoutMessagesInput
+    connect?: ChannelWhereUniqueInput
+    update?: XOR<XOR<ChannelUpdateToOneWithWhereWithoutMessagesInput, ChannelUpdateWithoutMessagesInput>, ChannelUncheckedUpdateWithoutMessagesInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutMessagesNestedInput = {
+    create?: XOR<UserCreateWithoutMessagesInput, UserUncheckedCreateWithoutMessagesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutMessagesInput
+    upsert?: UserUpsertWithoutMessagesInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutMessagesInput, UserUpdateWithoutMessagesInput>, UserUncheckedUpdateWithoutMessagesInput>
+  }
+
   export type SessionCreateNestedManyWithoutUserInput = {
     create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
     connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
@@ -6669,6 +14078,26 @@ export namespace Prisma {
     connectOrCreate?: AccountCreateOrConnectWithoutUserInput | AccountCreateOrConnectWithoutUserInput[]
     createMany?: AccountCreateManyUserInputEnvelope
     connect?: AccountWhereUniqueInput | AccountWhereUniqueInput[]
+  }
+
+  export type MessagesCreateNestedManyWithoutAuthorInput = {
+    create?: XOR<MessagesCreateWithoutAuthorInput, MessagesUncheckedCreateWithoutAuthorInput> | MessagesCreateWithoutAuthorInput[] | MessagesUncheckedCreateWithoutAuthorInput[]
+    connectOrCreate?: MessagesCreateOrConnectWithoutAuthorInput | MessagesCreateOrConnectWithoutAuthorInput[]
+    createMany?: MessagesCreateManyAuthorInputEnvelope
+    connect?: MessagesWhereUniqueInput | MessagesWhereUniqueInput[]
+  }
+
+  export type ServerMemberCreateNestedManyWithoutUserInput = {
+    create?: XOR<ServerMemberCreateWithoutUserInput, ServerMemberUncheckedCreateWithoutUserInput> | ServerMemberCreateWithoutUserInput[] | ServerMemberUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ServerMemberCreateOrConnectWithoutUserInput | ServerMemberCreateOrConnectWithoutUserInput[]
+    createMany?: ServerMemberCreateManyUserInputEnvelope
+    connect?: ServerMemberWhereUniqueInput | ServerMemberWhereUniqueInput[]
+  }
+
+  export type ChannelCreateNestedManyWithoutUsersInput = {
+    create?: XOR<ChannelCreateWithoutUsersInput, ChannelUncheckedCreateWithoutUsersInput> | ChannelCreateWithoutUsersInput[] | ChannelUncheckedCreateWithoutUsersInput[]
+    connectOrCreate?: ChannelCreateOrConnectWithoutUsersInput | ChannelCreateOrConnectWithoutUsersInput[]
+    connect?: ChannelWhereUniqueInput | ChannelWhereUniqueInput[]
   }
 
   export type SessionUncheckedCreateNestedManyWithoutUserInput = {
@@ -6685,20 +14114,24 @@ export namespace Prisma {
     connect?: AccountWhereUniqueInput | AccountWhereUniqueInput[]
   }
 
-  export type StringFieldUpdateOperationsInput = {
-    set?: string
+  export type MessagesUncheckedCreateNestedManyWithoutAuthorInput = {
+    create?: XOR<MessagesCreateWithoutAuthorInput, MessagesUncheckedCreateWithoutAuthorInput> | MessagesCreateWithoutAuthorInput[] | MessagesUncheckedCreateWithoutAuthorInput[]
+    connectOrCreate?: MessagesCreateOrConnectWithoutAuthorInput | MessagesCreateOrConnectWithoutAuthorInput[]
+    createMany?: MessagesCreateManyAuthorInputEnvelope
+    connect?: MessagesWhereUniqueInput | MessagesWhereUniqueInput[]
   }
 
-  export type BoolFieldUpdateOperationsInput = {
-    set?: boolean
+  export type ServerMemberUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<ServerMemberCreateWithoutUserInput, ServerMemberUncheckedCreateWithoutUserInput> | ServerMemberCreateWithoutUserInput[] | ServerMemberUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ServerMemberCreateOrConnectWithoutUserInput | ServerMemberCreateOrConnectWithoutUserInput[]
+    createMany?: ServerMemberCreateManyUserInputEnvelope
+    connect?: ServerMemberWhereUniqueInput | ServerMemberWhereUniqueInput[]
   }
 
-  export type NullableStringFieldUpdateOperationsInput = {
-    set?: string | null
-  }
-
-  export type DateTimeFieldUpdateOperationsInput = {
-    set?: Date | string
+  export type ChannelUncheckedCreateNestedManyWithoutUsersInput = {
+    create?: XOR<ChannelCreateWithoutUsersInput, ChannelUncheckedCreateWithoutUsersInput> | ChannelCreateWithoutUsersInput[] | ChannelUncheckedCreateWithoutUsersInput[]
+    connectOrCreate?: ChannelCreateOrConnectWithoutUsersInput | ChannelCreateOrConnectWithoutUsersInput[]
+    connect?: ChannelWhereUniqueInput | ChannelWhereUniqueInput[]
   }
 
   export type SessionUpdateManyWithoutUserNestedInput = {
@@ -6729,6 +14162,47 @@ export namespace Prisma {
     deleteMany?: AccountScalarWhereInput | AccountScalarWhereInput[]
   }
 
+  export type MessagesUpdateManyWithoutAuthorNestedInput = {
+    create?: XOR<MessagesCreateWithoutAuthorInput, MessagesUncheckedCreateWithoutAuthorInput> | MessagesCreateWithoutAuthorInput[] | MessagesUncheckedCreateWithoutAuthorInput[]
+    connectOrCreate?: MessagesCreateOrConnectWithoutAuthorInput | MessagesCreateOrConnectWithoutAuthorInput[]
+    upsert?: MessagesUpsertWithWhereUniqueWithoutAuthorInput | MessagesUpsertWithWhereUniqueWithoutAuthorInput[]
+    createMany?: MessagesCreateManyAuthorInputEnvelope
+    set?: MessagesWhereUniqueInput | MessagesWhereUniqueInput[]
+    disconnect?: MessagesWhereUniqueInput | MessagesWhereUniqueInput[]
+    delete?: MessagesWhereUniqueInput | MessagesWhereUniqueInput[]
+    connect?: MessagesWhereUniqueInput | MessagesWhereUniqueInput[]
+    update?: MessagesUpdateWithWhereUniqueWithoutAuthorInput | MessagesUpdateWithWhereUniqueWithoutAuthorInput[]
+    updateMany?: MessagesUpdateManyWithWhereWithoutAuthorInput | MessagesUpdateManyWithWhereWithoutAuthorInput[]
+    deleteMany?: MessagesScalarWhereInput | MessagesScalarWhereInput[]
+  }
+
+  export type ServerMemberUpdateManyWithoutUserNestedInput = {
+    create?: XOR<ServerMemberCreateWithoutUserInput, ServerMemberUncheckedCreateWithoutUserInput> | ServerMemberCreateWithoutUserInput[] | ServerMemberUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ServerMemberCreateOrConnectWithoutUserInput | ServerMemberCreateOrConnectWithoutUserInput[]
+    upsert?: ServerMemberUpsertWithWhereUniqueWithoutUserInput | ServerMemberUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: ServerMemberCreateManyUserInputEnvelope
+    set?: ServerMemberWhereUniqueInput | ServerMemberWhereUniqueInput[]
+    disconnect?: ServerMemberWhereUniqueInput | ServerMemberWhereUniqueInput[]
+    delete?: ServerMemberWhereUniqueInput | ServerMemberWhereUniqueInput[]
+    connect?: ServerMemberWhereUniqueInput | ServerMemberWhereUniqueInput[]
+    update?: ServerMemberUpdateWithWhereUniqueWithoutUserInput | ServerMemberUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: ServerMemberUpdateManyWithWhereWithoutUserInput | ServerMemberUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: ServerMemberScalarWhereInput | ServerMemberScalarWhereInput[]
+  }
+
+  export type ChannelUpdateManyWithoutUsersNestedInput = {
+    create?: XOR<ChannelCreateWithoutUsersInput, ChannelUncheckedCreateWithoutUsersInput> | ChannelCreateWithoutUsersInput[] | ChannelUncheckedCreateWithoutUsersInput[]
+    connectOrCreate?: ChannelCreateOrConnectWithoutUsersInput | ChannelCreateOrConnectWithoutUsersInput[]
+    upsert?: ChannelUpsertWithWhereUniqueWithoutUsersInput | ChannelUpsertWithWhereUniqueWithoutUsersInput[]
+    set?: ChannelWhereUniqueInput | ChannelWhereUniqueInput[]
+    disconnect?: ChannelWhereUniqueInput | ChannelWhereUniqueInput[]
+    delete?: ChannelWhereUniqueInput | ChannelWhereUniqueInput[]
+    connect?: ChannelWhereUniqueInput | ChannelWhereUniqueInput[]
+    update?: ChannelUpdateWithWhereUniqueWithoutUsersInput | ChannelUpdateWithWhereUniqueWithoutUsersInput[]
+    updateMany?: ChannelUpdateManyWithWhereWithoutUsersInput | ChannelUpdateManyWithWhereWithoutUsersInput[]
+    deleteMany?: ChannelScalarWhereInput | ChannelScalarWhereInput[]
+  }
+
   export type SessionUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
     connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
@@ -6755,6 +14229,47 @@ export namespace Prisma {
     update?: AccountUpdateWithWhereUniqueWithoutUserInput | AccountUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: AccountUpdateManyWithWhereWithoutUserInput | AccountUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: AccountScalarWhereInput | AccountScalarWhereInput[]
+  }
+
+  export type MessagesUncheckedUpdateManyWithoutAuthorNestedInput = {
+    create?: XOR<MessagesCreateWithoutAuthorInput, MessagesUncheckedCreateWithoutAuthorInput> | MessagesCreateWithoutAuthorInput[] | MessagesUncheckedCreateWithoutAuthorInput[]
+    connectOrCreate?: MessagesCreateOrConnectWithoutAuthorInput | MessagesCreateOrConnectWithoutAuthorInput[]
+    upsert?: MessagesUpsertWithWhereUniqueWithoutAuthorInput | MessagesUpsertWithWhereUniqueWithoutAuthorInput[]
+    createMany?: MessagesCreateManyAuthorInputEnvelope
+    set?: MessagesWhereUniqueInput | MessagesWhereUniqueInput[]
+    disconnect?: MessagesWhereUniqueInput | MessagesWhereUniqueInput[]
+    delete?: MessagesWhereUniqueInput | MessagesWhereUniqueInput[]
+    connect?: MessagesWhereUniqueInput | MessagesWhereUniqueInput[]
+    update?: MessagesUpdateWithWhereUniqueWithoutAuthorInput | MessagesUpdateWithWhereUniqueWithoutAuthorInput[]
+    updateMany?: MessagesUpdateManyWithWhereWithoutAuthorInput | MessagesUpdateManyWithWhereWithoutAuthorInput[]
+    deleteMany?: MessagesScalarWhereInput | MessagesScalarWhereInput[]
+  }
+
+  export type ServerMemberUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<ServerMemberCreateWithoutUserInput, ServerMemberUncheckedCreateWithoutUserInput> | ServerMemberCreateWithoutUserInput[] | ServerMemberUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ServerMemberCreateOrConnectWithoutUserInput | ServerMemberCreateOrConnectWithoutUserInput[]
+    upsert?: ServerMemberUpsertWithWhereUniqueWithoutUserInput | ServerMemberUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: ServerMemberCreateManyUserInputEnvelope
+    set?: ServerMemberWhereUniqueInput | ServerMemberWhereUniqueInput[]
+    disconnect?: ServerMemberWhereUniqueInput | ServerMemberWhereUniqueInput[]
+    delete?: ServerMemberWhereUniqueInput | ServerMemberWhereUniqueInput[]
+    connect?: ServerMemberWhereUniqueInput | ServerMemberWhereUniqueInput[]
+    update?: ServerMemberUpdateWithWhereUniqueWithoutUserInput | ServerMemberUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: ServerMemberUpdateManyWithWhereWithoutUserInput | ServerMemberUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: ServerMemberScalarWhereInput | ServerMemberScalarWhereInput[]
+  }
+
+  export type ChannelUncheckedUpdateManyWithoutUsersNestedInput = {
+    create?: XOR<ChannelCreateWithoutUsersInput, ChannelUncheckedCreateWithoutUsersInput> | ChannelCreateWithoutUsersInput[] | ChannelUncheckedCreateWithoutUsersInput[]
+    connectOrCreate?: ChannelCreateOrConnectWithoutUsersInput | ChannelCreateOrConnectWithoutUsersInput[]
+    upsert?: ChannelUpsertWithWhereUniqueWithoutUsersInput | ChannelUpsertWithWhereUniqueWithoutUsersInput[]
+    set?: ChannelWhereUniqueInput | ChannelWhereUniqueInput[]
+    disconnect?: ChannelWhereUniqueInput | ChannelWhereUniqueInput[]
+    delete?: ChannelWhereUniqueInput | ChannelWhereUniqueInput[]
+    connect?: ChannelWhereUniqueInput | ChannelWhereUniqueInput[]
+    update?: ChannelUpdateWithWhereUniqueWithoutUsersInput | ChannelUpdateWithWhereUniqueWithoutUsersInput[]
+    updateMany?: ChannelUpdateManyWithWhereWithoutUsersInput | ChannelUpdateManyWithWhereWithoutUsersInput[]
+    deleteMany?: ChannelScalarWhereInput | ChannelScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutSessionsInput = {
@@ -6801,11 +14316,6 @@ export namespace Prisma {
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
     not?: NestedStringFilter<$PrismaModel> | string
-  }
-
-  export type NestedBoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
   export type NestedStringNullableFilter<$PrismaModel = never> = {
@@ -6861,14 +14371,6 @@ export namespace Prisma {
     not?: NestedIntFilter<$PrismaModel> | number
   }
 
-  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
-  }
-
   export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -6911,6 +14413,36 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type NestedEnumChannelTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.ChannelType | EnumChannelTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.ChannelType[] | ListEnumChannelTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ChannelType[] | ListEnumChannelTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumChannelTypeFilter<$PrismaModel> | $Enums.ChannelType
+  }
+
+  export type NestedEnumChannelTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ChannelType | EnumChannelTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.ChannelType[] | ListEnumChannelTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ChannelType[] | ListEnumChannelTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumChannelTypeWithAggregatesFilter<$PrismaModel> | $Enums.ChannelType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumChannelTypeFilter<$PrismaModel>
+    _max?: NestedEnumChannelTypeFilter<$PrismaModel>
+  }
+
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
   export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
@@ -6934,6 +14466,689 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedDateTimeNullableFilter<$PrismaModel>
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type ChannelCreateWithoutServerInput = {
+    id?: string
+    name: string
+    createdAt?: Date | string
+    type: $Enums.ChannelType
+    messages?: MessagesCreateNestedManyWithoutChannelInput
+    users?: UserCreateNestedManyWithoutChannelsInput
+  }
+
+  export type ChannelUncheckedCreateWithoutServerInput = {
+    id?: string
+    name: string
+    createdAt?: Date | string
+    type: $Enums.ChannelType
+    messages?: MessagesUncheckedCreateNestedManyWithoutChannelInput
+    users?: UserUncheckedCreateNestedManyWithoutChannelsInput
+  }
+
+  export type ChannelCreateOrConnectWithoutServerInput = {
+    where: ChannelWhereUniqueInput
+    create: XOR<ChannelCreateWithoutServerInput, ChannelUncheckedCreateWithoutServerInput>
+  }
+
+  export type ChannelCreateManyServerInputEnvelope = {
+    data: ChannelCreateManyServerInput | ChannelCreateManyServerInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ServerMemberCreateWithoutServerInput = {
+    id?: string
+    user: UserCreateNestedOneWithoutMembershipsInput
+    serverRoles?: serverRolesCreateNestedManyWithoutMembersInput
+  }
+
+  export type ServerMemberUncheckedCreateWithoutServerInput = {
+    id?: string
+    userId: string
+    serverRoles?: serverRolesUncheckedCreateNestedManyWithoutMembersInput
+  }
+
+  export type ServerMemberCreateOrConnectWithoutServerInput = {
+    where: ServerMemberWhereUniqueInput
+    create: XOR<ServerMemberCreateWithoutServerInput, ServerMemberUncheckedCreateWithoutServerInput>
+  }
+
+  export type ServerMemberCreateManyServerInputEnvelope = {
+    data: ServerMemberCreateManyServerInput | ServerMemberCreateManyServerInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type serverRolesCreateWithoutServerInput = {
+    id?: string
+    name: string
+    members?: ServerMemberCreateNestedManyWithoutServerRolesInput
+  }
+
+  export type serverRolesUncheckedCreateWithoutServerInput = {
+    id?: string
+    name: string
+    members?: ServerMemberUncheckedCreateNestedManyWithoutServerRolesInput
+  }
+
+  export type serverRolesCreateOrConnectWithoutServerInput = {
+    where: serverRolesWhereUniqueInput
+    create: XOR<serverRolesCreateWithoutServerInput, serverRolesUncheckedCreateWithoutServerInput>
+  }
+
+  export type serverRolesCreateManyServerInputEnvelope = {
+    data: serverRolesCreateManyServerInput | serverRolesCreateManyServerInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ChannelUpsertWithWhereUniqueWithoutServerInput = {
+    where: ChannelWhereUniqueInput
+    update: XOR<ChannelUpdateWithoutServerInput, ChannelUncheckedUpdateWithoutServerInput>
+    create: XOR<ChannelCreateWithoutServerInput, ChannelUncheckedCreateWithoutServerInput>
+  }
+
+  export type ChannelUpdateWithWhereUniqueWithoutServerInput = {
+    where: ChannelWhereUniqueInput
+    data: XOR<ChannelUpdateWithoutServerInput, ChannelUncheckedUpdateWithoutServerInput>
+  }
+
+  export type ChannelUpdateManyWithWhereWithoutServerInput = {
+    where: ChannelScalarWhereInput
+    data: XOR<ChannelUpdateManyMutationInput, ChannelUncheckedUpdateManyWithoutServerInput>
+  }
+
+  export type ChannelScalarWhereInput = {
+    AND?: ChannelScalarWhereInput | ChannelScalarWhereInput[]
+    OR?: ChannelScalarWhereInput[]
+    NOT?: ChannelScalarWhereInput | ChannelScalarWhereInput[]
+    id?: StringFilter<"Channel"> | string
+    name?: StringFilter<"Channel"> | string
+    serverId?: StringFilter<"Channel"> | string
+    createdAt?: DateTimeFilter<"Channel"> | Date | string
+    type?: EnumChannelTypeFilter<"Channel"> | $Enums.ChannelType
+  }
+
+  export type ServerMemberUpsertWithWhereUniqueWithoutServerInput = {
+    where: ServerMemberWhereUniqueInput
+    update: XOR<ServerMemberUpdateWithoutServerInput, ServerMemberUncheckedUpdateWithoutServerInput>
+    create: XOR<ServerMemberCreateWithoutServerInput, ServerMemberUncheckedCreateWithoutServerInput>
+  }
+
+  export type ServerMemberUpdateWithWhereUniqueWithoutServerInput = {
+    where: ServerMemberWhereUniqueInput
+    data: XOR<ServerMemberUpdateWithoutServerInput, ServerMemberUncheckedUpdateWithoutServerInput>
+  }
+
+  export type ServerMemberUpdateManyWithWhereWithoutServerInput = {
+    where: ServerMemberScalarWhereInput
+    data: XOR<ServerMemberUpdateManyMutationInput, ServerMemberUncheckedUpdateManyWithoutServerInput>
+  }
+
+  export type ServerMemberScalarWhereInput = {
+    AND?: ServerMemberScalarWhereInput | ServerMemberScalarWhereInput[]
+    OR?: ServerMemberScalarWhereInput[]
+    NOT?: ServerMemberScalarWhereInput | ServerMemberScalarWhereInput[]
+    id?: StringFilter<"ServerMember"> | string
+    userId?: StringFilter<"ServerMember"> | string
+    serverId?: StringFilter<"ServerMember"> | string
+  }
+
+  export type serverRolesUpsertWithWhereUniqueWithoutServerInput = {
+    where: serverRolesWhereUniqueInput
+    update: XOR<serverRolesUpdateWithoutServerInput, serverRolesUncheckedUpdateWithoutServerInput>
+    create: XOR<serverRolesCreateWithoutServerInput, serverRolesUncheckedCreateWithoutServerInput>
+  }
+
+  export type serverRolesUpdateWithWhereUniqueWithoutServerInput = {
+    where: serverRolesWhereUniqueInput
+    data: XOR<serverRolesUpdateWithoutServerInput, serverRolesUncheckedUpdateWithoutServerInput>
+  }
+
+  export type serverRolesUpdateManyWithWhereWithoutServerInput = {
+    where: serverRolesScalarWhereInput
+    data: XOR<serverRolesUpdateManyMutationInput, serverRolesUncheckedUpdateManyWithoutServerInput>
+  }
+
+  export type serverRolesScalarWhereInput = {
+    AND?: serverRolesScalarWhereInput | serverRolesScalarWhereInput[]
+    OR?: serverRolesScalarWhereInput[]
+    NOT?: serverRolesScalarWhereInput | serverRolesScalarWhereInput[]
+    id?: StringFilter<"serverRoles"> | string
+    name?: StringFilter<"serverRoles"> | string
+    serverId?: StringFilter<"serverRoles"> | string
+  }
+
+  export type ServerCreateWithoutChannelsInput = {
+    id?: string
+    name: string
+    picture?: string | null
+    createdAt?: Date | string
+    members?: ServerMemberCreateNestedManyWithoutServerInput
+    roles?: serverRolesCreateNestedManyWithoutServerInput
+  }
+
+  export type ServerUncheckedCreateWithoutChannelsInput = {
+    id?: string
+    name: string
+    picture?: string | null
+    createdAt?: Date | string
+    members?: ServerMemberUncheckedCreateNestedManyWithoutServerInput
+    roles?: serverRolesUncheckedCreateNestedManyWithoutServerInput
+  }
+
+  export type ServerCreateOrConnectWithoutChannelsInput = {
+    where: ServerWhereUniqueInput
+    create: XOR<ServerCreateWithoutChannelsInput, ServerUncheckedCreateWithoutChannelsInput>
+  }
+
+  export type MessagesCreateWithoutChannelInput = {
+    id?: string
+    content: string
+    createdAt?: Date | string
+    pinned?: boolean
+    author: UserCreateNestedOneWithoutMessagesInput
+  }
+
+  export type MessagesUncheckedCreateWithoutChannelInput = {
+    id?: string
+    content: string
+    authorId: string
+    createdAt?: Date | string
+    pinned?: boolean
+  }
+
+  export type MessagesCreateOrConnectWithoutChannelInput = {
+    where: MessagesWhereUniqueInput
+    create: XOR<MessagesCreateWithoutChannelInput, MessagesUncheckedCreateWithoutChannelInput>
+  }
+
+  export type MessagesCreateManyChannelInputEnvelope = {
+    data: MessagesCreateManyChannelInput | MessagesCreateManyChannelInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type UserCreateWithoutChannelsInput = {
+    id?: string
+    name: string
+    email: string
+    emailVerified?: boolean
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    messages?: MessagesCreateNestedManyWithoutAuthorInput
+    memberships?: ServerMemberCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutChannelsInput = {
+    id?: string
+    name: string
+    email: string
+    emailVerified?: boolean
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    messages?: MessagesUncheckedCreateNestedManyWithoutAuthorInput
+    memberships?: ServerMemberUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutChannelsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutChannelsInput, UserUncheckedCreateWithoutChannelsInput>
+  }
+
+  export type ServerUpsertWithoutChannelsInput = {
+    update: XOR<ServerUpdateWithoutChannelsInput, ServerUncheckedUpdateWithoutChannelsInput>
+    create: XOR<ServerCreateWithoutChannelsInput, ServerUncheckedCreateWithoutChannelsInput>
+    where?: ServerWhereInput
+  }
+
+  export type ServerUpdateToOneWithWhereWithoutChannelsInput = {
+    where?: ServerWhereInput
+    data: XOR<ServerUpdateWithoutChannelsInput, ServerUncheckedUpdateWithoutChannelsInput>
+  }
+
+  export type ServerUpdateWithoutChannelsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    picture?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: ServerMemberUpdateManyWithoutServerNestedInput
+    roles?: serverRolesUpdateManyWithoutServerNestedInput
+  }
+
+  export type ServerUncheckedUpdateWithoutChannelsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    picture?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: ServerMemberUncheckedUpdateManyWithoutServerNestedInput
+    roles?: serverRolesUncheckedUpdateManyWithoutServerNestedInput
+  }
+
+  export type MessagesUpsertWithWhereUniqueWithoutChannelInput = {
+    where: MessagesWhereUniqueInput
+    update: XOR<MessagesUpdateWithoutChannelInput, MessagesUncheckedUpdateWithoutChannelInput>
+    create: XOR<MessagesCreateWithoutChannelInput, MessagesUncheckedCreateWithoutChannelInput>
+  }
+
+  export type MessagesUpdateWithWhereUniqueWithoutChannelInput = {
+    where: MessagesWhereUniqueInput
+    data: XOR<MessagesUpdateWithoutChannelInput, MessagesUncheckedUpdateWithoutChannelInput>
+  }
+
+  export type MessagesUpdateManyWithWhereWithoutChannelInput = {
+    where: MessagesScalarWhereInput
+    data: XOR<MessagesUpdateManyMutationInput, MessagesUncheckedUpdateManyWithoutChannelInput>
+  }
+
+  export type MessagesScalarWhereInput = {
+    AND?: MessagesScalarWhereInput | MessagesScalarWhereInput[]
+    OR?: MessagesScalarWhereInput[]
+    NOT?: MessagesScalarWhereInput | MessagesScalarWhereInput[]
+    id?: StringFilter<"Messages"> | string
+    content?: StringFilter<"Messages"> | string
+    channelId?: StringFilter<"Messages"> | string
+    authorId?: StringFilter<"Messages"> | string
+    createdAt?: DateTimeFilter<"Messages"> | Date | string
+    pinned?: BoolFilter<"Messages"> | boolean
+  }
+
+  export type UserUpsertWithWhereUniqueWithoutChannelsInput = {
+    where: UserWhereUniqueInput
+    update: XOR<UserUpdateWithoutChannelsInput, UserUncheckedUpdateWithoutChannelsInput>
+    create: XOR<UserCreateWithoutChannelsInput, UserUncheckedCreateWithoutChannelsInput>
+  }
+
+  export type UserUpdateWithWhereUniqueWithoutChannelsInput = {
+    where: UserWhereUniqueInput
+    data: XOR<UserUpdateWithoutChannelsInput, UserUncheckedUpdateWithoutChannelsInput>
+  }
+
+  export type UserUpdateManyWithWhereWithoutChannelsInput = {
+    where: UserScalarWhereInput
+    data: XOR<UserUpdateManyMutationInput, UserUncheckedUpdateManyWithoutChannelsInput>
+  }
+
+  export type UserScalarWhereInput = {
+    AND?: UserScalarWhereInput | UserScalarWhereInput[]
+    OR?: UserScalarWhereInput[]
+    NOT?: UserScalarWhereInput | UserScalarWhereInput[]
+    id?: StringFilter<"User"> | string
+    name?: StringFilter<"User"> | string
+    email?: StringFilter<"User"> | string
+    emailVerified?: BoolFilter<"User"> | boolean
+    image?: StringNullableFilter<"User"> | string | null
+    createdAt?: DateTimeFilter<"User"> | Date | string
+    updatedAt?: DateTimeFilter<"User"> | Date | string
+  }
+
+  export type ServerCreateWithoutMembersInput = {
+    id?: string
+    name: string
+    picture?: string | null
+    createdAt?: Date | string
+    channels?: ChannelCreateNestedManyWithoutServerInput
+    roles?: serverRolesCreateNestedManyWithoutServerInput
+  }
+
+  export type ServerUncheckedCreateWithoutMembersInput = {
+    id?: string
+    name: string
+    picture?: string | null
+    createdAt?: Date | string
+    channels?: ChannelUncheckedCreateNestedManyWithoutServerInput
+    roles?: serverRolesUncheckedCreateNestedManyWithoutServerInput
+  }
+
+  export type ServerCreateOrConnectWithoutMembersInput = {
+    where: ServerWhereUniqueInput
+    create: XOR<ServerCreateWithoutMembersInput, ServerUncheckedCreateWithoutMembersInput>
+  }
+
+  export type UserCreateWithoutMembershipsInput = {
+    id?: string
+    name: string
+    email: string
+    emailVerified?: boolean
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    messages?: MessagesCreateNestedManyWithoutAuthorInput
+    channels?: ChannelCreateNestedManyWithoutUsersInput
+  }
+
+  export type UserUncheckedCreateWithoutMembershipsInput = {
+    id?: string
+    name: string
+    email: string
+    emailVerified?: boolean
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    messages?: MessagesUncheckedCreateNestedManyWithoutAuthorInput
+    channels?: ChannelUncheckedCreateNestedManyWithoutUsersInput
+  }
+
+  export type UserCreateOrConnectWithoutMembershipsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutMembershipsInput, UserUncheckedCreateWithoutMembershipsInput>
+  }
+
+  export type serverRolesCreateWithoutMembersInput = {
+    id?: string
+    name: string
+    server: ServerCreateNestedOneWithoutRolesInput
+  }
+
+  export type serverRolesUncheckedCreateWithoutMembersInput = {
+    id?: string
+    name: string
+    serverId: string
+  }
+
+  export type serverRolesCreateOrConnectWithoutMembersInput = {
+    where: serverRolesWhereUniqueInput
+    create: XOR<serverRolesCreateWithoutMembersInput, serverRolesUncheckedCreateWithoutMembersInput>
+  }
+
+  export type ServerUpsertWithoutMembersInput = {
+    update: XOR<ServerUpdateWithoutMembersInput, ServerUncheckedUpdateWithoutMembersInput>
+    create: XOR<ServerCreateWithoutMembersInput, ServerUncheckedCreateWithoutMembersInput>
+    where?: ServerWhereInput
+  }
+
+  export type ServerUpdateToOneWithWhereWithoutMembersInput = {
+    where?: ServerWhereInput
+    data: XOR<ServerUpdateWithoutMembersInput, ServerUncheckedUpdateWithoutMembersInput>
+  }
+
+  export type ServerUpdateWithoutMembersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    picture?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    channels?: ChannelUpdateManyWithoutServerNestedInput
+    roles?: serverRolesUpdateManyWithoutServerNestedInput
+  }
+
+  export type ServerUncheckedUpdateWithoutMembersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    picture?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    channels?: ChannelUncheckedUpdateManyWithoutServerNestedInput
+    roles?: serverRolesUncheckedUpdateManyWithoutServerNestedInput
+  }
+
+  export type UserUpsertWithoutMembershipsInput = {
+    update: XOR<UserUpdateWithoutMembershipsInput, UserUncheckedUpdateWithoutMembershipsInput>
+    create: XOR<UserCreateWithoutMembershipsInput, UserUncheckedCreateWithoutMembershipsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutMembershipsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutMembershipsInput, UserUncheckedUpdateWithoutMembershipsInput>
+  }
+
+  export type UserUpdateWithoutMembershipsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    messages?: MessagesUpdateManyWithoutAuthorNestedInput
+    channels?: ChannelUpdateManyWithoutUsersNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutMembershipsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    messages?: MessagesUncheckedUpdateManyWithoutAuthorNestedInput
+    channels?: ChannelUncheckedUpdateManyWithoutUsersNestedInput
+  }
+
+  export type serverRolesUpsertWithWhereUniqueWithoutMembersInput = {
+    where: serverRolesWhereUniqueInput
+    update: XOR<serverRolesUpdateWithoutMembersInput, serverRolesUncheckedUpdateWithoutMembersInput>
+    create: XOR<serverRolesCreateWithoutMembersInput, serverRolesUncheckedCreateWithoutMembersInput>
+  }
+
+  export type serverRolesUpdateWithWhereUniqueWithoutMembersInput = {
+    where: serverRolesWhereUniqueInput
+    data: XOR<serverRolesUpdateWithoutMembersInput, serverRolesUncheckedUpdateWithoutMembersInput>
+  }
+
+  export type serverRolesUpdateManyWithWhereWithoutMembersInput = {
+    where: serverRolesScalarWhereInput
+    data: XOR<serverRolesUpdateManyMutationInput, serverRolesUncheckedUpdateManyWithoutMembersInput>
+  }
+
+  export type ServerCreateWithoutRolesInput = {
+    id?: string
+    name: string
+    picture?: string | null
+    createdAt?: Date | string
+    channels?: ChannelCreateNestedManyWithoutServerInput
+    members?: ServerMemberCreateNestedManyWithoutServerInput
+  }
+
+  export type ServerUncheckedCreateWithoutRolesInput = {
+    id?: string
+    name: string
+    picture?: string | null
+    createdAt?: Date | string
+    channels?: ChannelUncheckedCreateNestedManyWithoutServerInput
+    members?: ServerMemberUncheckedCreateNestedManyWithoutServerInput
+  }
+
+  export type ServerCreateOrConnectWithoutRolesInput = {
+    where: ServerWhereUniqueInput
+    create: XOR<ServerCreateWithoutRolesInput, ServerUncheckedCreateWithoutRolesInput>
+  }
+
+  export type ServerMemberCreateWithoutServerRolesInput = {
+    id?: string
+    server: ServerCreateNestedOneWithoutMembersInput
+    user: UserCreateNestedOneWithoutMembershipsInput
+  }
+
+  export type ServerMemberUncheckedCreateWithoutServerRolesInput = {
+    id?: string
+    userId: string
+    serverId: string
+  }
+
+  export type ServerMemberCreateOrConnectWithoutServerRolesInput = {
+    where: ServerMemberWhereUniqueInput
+    create: XOR<ServerMemberCreateWithoutServerRolesInput, ServerMemberUncheckedCreateWithoutServerRolesInput>
+  }
+
+  export type ServerUpsertWithoutRolesInput = {
+    update: XOR<ServerUpdateWithoutRolesInput, ServerUncheckedUpdateWithoutRolesInput>
+    create: XOR<ServerCreateWithoutRolesInput, ServerUncheckedCreateWithoutRolesInput>
+    where?: ServerWhereInput
+  }
+
+  export type ServerUpdateToOneWithWhereWithoutRolesInput = {
+    where?: ServerWhereInput
+    data: XOR<ServerUpdateWithoutRolesInput, ServerUncheckedUpdateWithoutRolesInput>
+  }
+
+  export type ServerUpdateWithoutRolesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    picture?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    channels?: ChannelUpdateManyWithoutServerNestedInput
+    members?: ServerMemberUpdateManyWithoutServerNestedInput
+  }
+
+  export type ServerUncheckedUpdateWithoutRolesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    picture?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    channels?: ChannelUncheckedUpdateManyWithoutServerNestedInput
+    members?: ServerMemberUncheckedUpdateManyWithoutServerNestedInput
+  }
+
+  export type ServerMemberUpsertWithWhereUniqueWithoutServerRolesInput = {
+    where: ServerMemberWhereUniqueInput
+    update: XOR<ServerMemberUpdateWithoutServerRolesInput, ServerMemberUncheckedUpdateWithoutServerRolesInput>
+    create: XOR<ServerMemberCreateWithoutServerRolesInput, ServerMemberUncheckedCreateWithoutServerRolesInput>
+  }
+
+  export type ServerMemberUpdateWithWhereUniqueWithoutServerRolesInput = {
+    where: ServerMemberWhereUniqueInput
+    data: XOR<ServerMemberUpdateWithoutServerRolesInput, ServerMemberUncheckedUpdateWithoutServerRolesInput>
+  }
+
+  export type ServerMemberUpdateManyWithWhereWithoutServerRolesInput = {
+    where: ServerMemberScalarWhereInput
+    data: XOR<ServerMemberUpdateManyMutationInput, ServerMemberUncheckedUpdateManyWithoutServerRolesInput>
+  }
+
+  export type ChannelCreateWithoutMessagesInput = {
+    id?: string
+    name: string
+    createdAt?: Date | string
+    type: $Enums.ChannelType
+    server: ServerCreateNestedOneWithoutChannelsInput
+    users?: UserCreateNestedManyWithoutChannelsInput
+  }
+
+  export type ChannelUncheckedCreateWithoutMessagesInput = {
+    id?: string
+    name: string
+    serverId: string
+    createdAt?: Date | string
+    type: $Enums.ChannelType
+    users?: UserUncheckedCreateNestedManyWithoutChannelsInput
+  }
+
+  export type ChannelCreateOrConnectWithoutMessagesInput = {
+    where: ChannelWhereUniqueInput
+    create: XOR<ChannelCreateWithoutMessagesInput, ChannelUncheckedCreateWithoutMessagesInput>
+  }
+
+  export type UserCreateWithoutMessagesInput = {
+    id?: string
+    name: string
+    email: string
+    emailVerified?: boolean
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    memberships?: ServerMemberCreateNestedManyWithoutUserInput
+    channels?: ChannelCreateNestedManyWithoutUsersInput
+  }
+
+  export type UserUncheckedCreateWithoutMessagesInput = {
+    id?: string
+    name: string
+    email: string
+    emailVerified?: boolean
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    memberships?: ServerMemberUncheckedCreateNestedManyWithoutUserInput
+    channels?: ChannelUncheckedCreateNestedManyWithoutUsersInput
+  }
+
+  export type UserCreateOrConnectWithoutMessagesInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutMessagesInput, UserUncheckedCreateWithoutMessagesInput>
+  }
+
+  export type ChannelUpsertWithoutMessagesInput = {
+    update: XOR<ChannelUpdateWithoutMessagesInput, ChannelUncheckedUpdateWithoutMessagesInput>
+    create: XOR<ChannelCreateWithoutMessagesInput, ChannelUncheckedCreateWithoutMessagesInput>
+    where?: ChannelWhereInput
+  }
+
+  export type ChannelUpdateToOneWithWhereWithoutMessagesInput = {
+    where?: ChannelWhereInput
+    data: XOR<ChannelUpdateWithoutMessagesInput, ChannelUncheckedUpdateWithoutMessagesInput>
+  }
+
+  export type ChannelUpdateWithoutMessagesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    type?: EnumChannelTypeFieldUpdateOperationsInput | $Enums.ChannelType
+    server?: ServerUpdateOneRequiredWithoutChannelsNestedInput
+    users?: UserUpdateManyWithoutChannelsNestedInput
+  }
+
+  export type ChannelUncheckedUpdateWithoutMessagesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    serverId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    type?: EnumChannelTypeFieldUpdateOperationsInput | $Enums.ChannelType
+    users?: UserUncheckedUpdateManyWithoutChannelsNestedInput
+  }
+
+  export type UserUpsertWithoutMessagesInput = {
+    update: XOR<UserUpdateWithoutMessagesInput, UserUncheckedUpdateWithoutMessagesInput>
+    create: XOR<UserCreateWithoutMessagesInput, UserUncheckedCreateWithoutMessagesInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutMessagesInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutMessagesInput, UserUncheckedUpdateWithoutMessagesInput>
+  }
+
+  export type UserUpdateWithoutMessagesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    memberships?: ServerMemberUpdateManyWithoutUserNestedInput
+    channels?: ChannelUpdateManyWithoutUsersNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutMessagesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    memberships?: ServerMemberUncheckedUpdateManyWithoutUserNestedInput
+    channels?: ChannelUncheckedUpdateManyWithoutUsersNestedInput
   }
 
   export type SessionCreateWithoutUserInput = {
@@ -7006,6 +15221,77 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type MessagesCreateWithoutAuthorInput = {
+    id?: string
+    content: string
+    createdAt?: Date | string
+    pinned?: boolean
+    channel: ChannelCreateNestedOneWithoutMessagesInput
+  }
+
+  export type MessagesUncheckedCreateWithoutAuthorInput = {
+    id?: string
+    content: string
+    channelId: string
+    createdAt?: Date | string
+    pinned?: boolean
+  }
+
+  export type MessagesCreateOrConnectWithoutAuthorInput = {
+    where: MessagesWhereUniqueInput
+    create: XOR<MessagesCreateWithoutAuthorInput, MessagesUncheckedCreateWithoutAuthorInput>
+  }
+
+  export type MessagesCreateManyAuthorInputEnvelope = {
+    data: MessagesCreateManyAuthorInput | MessagesCreateManyAuthorInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ServerMemberCreateWithoutUserInput = {
+    id?: string
+    server: ServerCreateNestedOneWithoutMembersInput
+    serverRoles?: serverRolesCreateNestedManyWithoutMembersInput
+  }
+
+  export type ServerMemberUncheckedCreateWithoutUserInput = {
+    id?: string
+    serverId: string
+    serverRoles?: serverRolesUncheckedCreateNestedManyWithoutMembersInput
+  }
+
+  export type ServerMemberCreateOrConnectWithoutUserInput = {
+    where: ServerMemberWhereUniqueInput
+    create: XOR<ServerMemberCreateWithoutUserInput, ServerMemberUncheckedCreateWithoutUserInput>
+  }
+
+  export type ServerMemberCreateManyUserInputEnvelope = {
+    data: ServerMemberCreateManyUserInput | ServerMemberCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ChannelCreateWithoutUsersInput = {
+    id?: string
+    name: string
+    createdAt?: Date | string
+    type: $Enums.ChannelType
+    server: ServerCreateNestedOneWithoutChannelsInput
+    messages?: MessagesCreateNestedManyWithoutChannelInput
+  }
+
+  export type ChannelUncheckedCreateWithoutUsersInput = {
+    id?: string
+    name: string
+    serverId: string
+    createdAt?: Date | string
+    type: $Enums.ChannelType
+    messages?: MessagesUncheckedCreateNestedManyWithoutChannelInput
+  }
+
+  export type ChannelCreateOrConnectWithoutUsersInput = {
+    where: ChannelWhereUniqueInput
+    create: XOR<ChannelCreateWithoutUsersInput, ChannelUncheckedCreateWithoutUsersInput>
+  }
+
   export type SessionUpsertWithWhereUniqueWithoutUserInput = {
     where: SessionWhereUniqueInput
     update: XOR<SessionUpdateWithoutUserInput, SessionUncheckedUpdateWithoutUserInput>
@@ -7071,6 +15357,54 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Account"> | Date | string
   }
 
+  export type MessagesUpsertWithWhereUniqueWithoutAuthorInput = {
+    where: MessagesWhereUniqueInput
+    update: XOR<MessagesUpdateWithoutAuthorInput, MessagesUncheckedUpdateWithoutAuthorInput>
+    create: XOR<MessagesCreateWithoutAuthorInput, MessagesUncheckedCreateWithoutAuthorInput>
+  }
+
+  export type MessagesUpdateWithWhereUniqueWithoutAuthorInput = {
+    where: MessagesWhereUniqueInput
+    data: XOR<MessagesUpdateWithoutAuthorInput, MessagesUncheckedUpdateWithoutAuthorInput>
+  }
+
+  export type MessagesUpdateManyWithWhereWithoutAuthorInput = {
+    where: MessagesScalarWhereInput
+    data: XOR<MessagesUpdateManyMutationInput, MessagesUncheckedUpdateManyWithoutAuthorInput>
+  }
+
+  export type ServerMemberUpsertWithWhereUniqueWithoutUserInput = {
+    where: ServerMemberWhereUniqueInput
+    update: XOR<ServerMemberUpdateWithoutUserInput, ServerMemberUncheckedUpdateWithoutUserInput>
+    create: XOR<ServerMemberCreateWithoutUserInput, ServerMemberUncheckedCreateWithoutUserInput>
+  }
+
+  export type ServerMemberUpdateWithWhereUniqueWithoutUserInput = {
+    where: ServerMemberWhereUniqueInput
+    data: XOR<ServerMemberUpdateWithoutUserInput, ServerMemberUncheckedUpdateWithoutUserInput>
+  }
+
+  export type ServerMemberUpdateManyWithWhereWithoutUserInput = {
+    where: ServerMemberScalarWhereInput
+    data: XOR<ServerMemberUpdateManyMutationInput, ServerMemberUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type ChannelUpsertWithWhereUniqueWithoutUsersInput = {
+    where: ChannelWhereUniqueInput
+    update: XOR<ChannelUpdateWithoutUsersInput, ChannelUncheckedUpdateWithoutUsersInput>
+    create: XOR<ChannelCreateWithoutUsersInput, ChannelUncheckedCreateWithoutUsersInput>
+  }
+
+  export type ChannelUpdateWithWhereUniqueWithoutUsersInput = {
+    where: ChannelWhereUniqueInput
+    data: XOR<ChannelUpdateWithoutUsersInput, ChannelUncheckedUpdateWithoutUsersInput>
+  }
+
+  export type ChannelUpdateManyWithWhereWithoutUsersInput = {
+    where: ChannelScalarWhereInput
+    data: XOR<ChannelUpdateManyMutationInput, ChannelUncheckedUpdateManyWithoutUsersInput>
+  }
+
   export type UserCreateWithoutSessionsInput = {
     id?: string
     name: string
@@ -7080,6 +15414,9 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountCreateNestedManyWithoutUserInput
+    messages?: MessagesCreateNestedManyWithoutAuthorInput
+    memberships?: ServerMemberCreateNestedManyWithoutUserInput
+    channels?: ChannelCreateNestedManyWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutSessionsInput = {
@@ -7091,6 +15428,9 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    messages?: MessagesUncheckedCreateNestedManyWithoutAuthorInput
+    memberships?: ServerMemberUncheckedCreateNestedManyWithoutUserInput
+    channels?: ChannelUncheckedCreateNestedManyWithoutUsersInput
   }
 
   export type UserCreateOrConnectWithoutSessionsInput = {
@@ -7118,6 +15458,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountUpdateManyWithoutUserNestedInput
+    messages?: MessagesUpdateManyWithoutAuthorNestedInput
+    memberships?: ServerMemberUpdateManyWithoutUserNestedInput
+    channels?: ChannelUpdateManyWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -7129,6 +15472,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    messages?: MessagesUncheckedUpdateManyWithoutAuthorNestedInput
+    memberships?: ServerMemberUncheckedUpdateManyWithoutUserNestedInput
+    channels?: ChannelUncheckedUpdateManyWithoutUsersNestedInput
   }
 
   export type UserCreateWithoutAccountsInput = {
@@ -7140,6 +15486,9 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionCreateNestedManyWithoutUserInput
+    messages?: MessagesCreateNestedManyWithoutAuthorInput
+    memberships?: ServerMemberCreateNestedManyWithoutUserInput
+    channels?: ChannelCreateNestedManyWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutAccountsInput = {
@@ -7151,6 +15500,9 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    messages?: MessagesUncheckedCreateNestedManyWithoutAuthorInput
+    memberships?: ServerMemberUncheckedCreateNestedManyWithoutUserInput
+    channels?: ChannelUncheckedCreateNestedManyWithoutUsersInput
   }
 
   export type UserCreateOrConnectWithoutAccountsInput = {
@@ -7178,6 +15530,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUpdateManyWithoutUserNestedInput
+    messages?: MessagesUpdateManyWithoutAuthorNestedInput
+    memberships?: ServerMemberUpdateManyWithoutUserNestedInput
+    channels?: ChannelUpdateManyWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -7189,6 +15544,191 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    messages?: MessagesUncheckedUpdateManyWithoutAuthorNestedInput
+    memberships?: ServerMemberUncheckedUpdateManyWithoutUserNestedInput
+    channels?: ChannelUncheckedUpdateManyWithoutUsersNestedInput
+  }
+
+  export type ChannelCreateManyServerInput = {
+    id?: string
+    name: string
+    createdAt?: Date | string
+    type: $Enums.ChannelType
+  }
+
+  export type ServerMemberCreateManyServerInput = {
+    id?: string
+    userId: string
+  }
+
+  export type serverRolesCreateManyServerInput = {
+    id?: string
+    name: string
+  }
+
+  export type ChannelUpdateWithoutServerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    type?: EnumChannelTypeFieldUpdateOperationsInput | $Enums.ChannelType
+    messages?: MessagesUpdateManyWithoutChannelNestedInput
+    users?: UserUpdateManyWithoutChannelsNestedInput
+  }
+
+  export type ChannelUncheckedUpdateWithoutServerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    type?: EnumChannelTypeFieldUpdateOperationsInput | $Enums.ChannelType
+    messages?: MessagesUncheckedUpdateManyWithoutChannelNestedInput
+    users?: UserUncheckedUpdateManyWithoutChannelsNestedInput
+  }
+
+  export type ChannelUncheckedUpdateManyWithoutServerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    type?: EnumChannelTypeFieldUpdateOperationsInput | $Enums.ChannelType
+  }
+
+  export type ServerMemberUpdateWithoutServerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    user?: UserUpdateOneRequiredWithoutMembershipsNestedInput
+    serverRoles?: serverRolesUpdateManyWithoutMembersNestedInput
+  }
+
+  export type ServerMemberUncheckedUpdateWithoutServerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    serverRoles?: serverRolesUncheckedUpdateManyWithoutMembersNestedInput
+  }
+
+  export type ServerMemberUncheckedUpdateManyWithoutServerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type serverRolesUpdateWithoutServerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    members?: ServerMemberUpdateManyWithoutServerRolesNestedInput
+  }
+
+  export type serverRolesUncheckedUpdateWithoutServerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    members?: ServerMemberUncheckedUpdateManyWithoutServerRolesNestedInput
+  }
+
+  export type serverRolesUncheckedUpdateManyWithoutServerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type MessagesCreateManyChannelInput = {
+    id?: string
+    content: string
+    authorId: string
+    createdAt?: Date | string
+    pinned?: boolean
+  }
+
+  export type MessagesUpdateWithoutChannelInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    pinned?: BoolFieldUpdateOperationsInput | boolean
+    author?: UserUpdateOneRequiredWithoutMessagesNestedInput
+  }
+
+  export type MessagesUncheckedUpdateWithoutChannelInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    authorId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    pinned?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type MessagesUncheckedUpdateManyWithoutChannelInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    authorId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    pinned?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type UserUpdateWithoutChannelsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    messages?: MessagesUpdateManyWithoutAuthorNestedInput
+    memberships?: ServerMemberUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutChannelsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    messages?: MessagesUncheckedUpdateManyWithoutAuthorNestedInput
+    memberships?: ServerMemberUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateManyWithoutChannelsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type serverRolesUpdateWithoutMembersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    server?: ServerUpdateOneRequiredWithoutRolesNestedInput
+  }
+
+  export type serverRolesUncheckedUpdateWithoutMembersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    serverId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type serverRolesUncheckedUpdateManyWithoutMembersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    serverId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type ServerMemberUpdateWithoutServerRolesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    server?: ServerUpdateOneRequiredWithoutMembersNestedInput
+    user?: UserUpdateOneRequiredWithoutMembershipsNestedInput
+  }
+
+  export type ServerMemberUncheckedUpdateWithoutServerRolesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    serverId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type ServerMemberUncheckedUpdateManyWithoutServerRolesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    serverId?: StringFieldUpdateOperationsInput | string
   }
 
   export type SessionCreateManyUserInput = {
@@ -7214,6 +15754,19 @@ export namespace Prisma {
     password?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+  }
+
+  export type MessagesCreateManyAuthorInput = {
+    id?: string
+    content: string
+    channelId: string
+    createdAt?: Date | string
+    pinned?: boolean
+  }
+
+  export type ServerMemberCreateManyUserInput = {
+    id?: string
+    serverId: string
   }
 
   export type SessionUpdateWithoutUserInput = {
@@ -7289,6 +15842,73 @@ export namespace Prisma {
     password?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MessagesUpdateWithoutAuthorInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    pinned?: BoolFieldUpdateOperationsInput | boolean
+    channel?: ChannelUpdateOneRequiredWithoutMessagesNestedInput
+  }
+
+  export type MessagesUncheckedUpdateWithoutAuthorInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    channelId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    pinned?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type MessagesUncheckedUpdateManyWithoutAuthorInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    channelId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    pinned?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type ServerMemberUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    server?: ServerUpdateOneRequiredWithoutMembersNestedInput
+    serverRoles?: serverRolesUpdateManyWithoutMembersNestedInput
+  }
+
+  export type ServerMemberUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    serverId?: StringFieldUpdateOperationsInput | string
+    serverRoles?: serverRolesUncheckedUpdateManyWithoutMembersNestedInput
+  }
+
+  export type ServerMemberUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    serverId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type ChannelUpdateWithoutUsersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    type?: EnumChannelTypeFieldUpdateOperationsInput | $Enums.ChannelType
+    server?: ServerUpdateOneRequiredWithoutChannelsNestedInput
+    messages?: MessagesUpdateManyWithoutChannelNestedInput
+  }
+
+  export type ChannelUncheckedUpdateWithoutUsersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    serverId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    type?: EnumChannelTypeFieldUpdateOperationsInput | $Enums.ChannelType
+    messages?: MessagesUncheckedUpdateManyWithoutChannelNestedInput
+  }
+
+  export type ChannelUncheckedUpdateManyWithoutUsersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    serverId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    type?: EnumChannelTypeFieldUpdateOperationsInput | $Enums.ChannelType
   }
 
 

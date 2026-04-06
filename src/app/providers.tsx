@@ -17,7 +17,7 @@ export const Providers = ({ children }: ProvidersProps) => {
   // In production, don't wrap with ClerkProvider
   if (isProduction) {
     return (
-      <MantineProvider defaultColorScheme="light">
+      <MantineProvider defaultColorScheme="dark">
         <QueryClientProvider client={queryClient}>
             {children}
         </QueryClientProvider>
@@ -27,7 +27,7 @@ export const Providers = ({ children }: ProvidersProps) => {
 
   // In development, include ClerkProvider
   return (
-      <MantineProvider defaultColorScheme="light">
+      <MantineProvider defaultColorScheme="dark">
         <QueryClientProvider client={queryClient}>
             {children}
         </QueryClientProvider>

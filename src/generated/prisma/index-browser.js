@@ -120,6 +120,42 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
+exports.Prisma.ServerScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  picture: 'picture',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.ChannelScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  serverId: 'serverId',
+  createdAt: 'createdAt',
+  type: 'type'
+};
+
+exports.Prisma.ServerMemberScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  serverId: 'serverId'
+};
+
+exports.Prisma.ServerRolesScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  serverId: 'serverId'
+};
+
+exports.Prisma.MessagesScalarFieldEnum = {
+  id: 'id',
+  content: 'content',
+  channelId: 'channelId',
+  authorId: 'authorId',
+  createdAt: 'createdAt',
+  pinned: 'pinned'
+};
+
 exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -180,9 +216,17 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
-
+exports.ChannelType = exports.$Enums.ChannelType = {
+  TEXT: 'TEXT',
+  VOICE: 'VOICE'
+};
 
 exports.Prisma.ModelName = {
+  Server: 'Server',
+  Channel: 'Channel',
+  ServerMember: 'ServerMember',
+  serverRoles: 'serverRoles',
+  Messages: 'Messages',
   User: 'User',
   Session: 'Session',
   Account: 'Account',
