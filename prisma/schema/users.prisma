@@ -11,6 +11,7 @@ model User {
   messages      Messages[]
   memberships   ServerMember[]
   channels      Channel[] @relation("ChannelUsers")
+  createdInvites ServerInvite[]
 
   @@unique([email])
   @@map("user")

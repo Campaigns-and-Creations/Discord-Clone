@@ -1,14 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
 
 import { signUp, useSession } from "@/utils/auth-client";
 
 export default function SignUpPage() {
     const router = useRouter();
+    const searchParams = useSearchParams();
     const { data: session, isPending } = useSession();
+    const nextPath = searchParams.get("next") || "/";
+    const signInPath = `/auth/sign-in?next=${encodeURIComponent(nextPath)}`;
 
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
@@ -18,9 +21,9 @@ export default function SignUpPage() {
 
     useEffect(() => {
         if (session?.user) {
-            router.replace("/");
+            router.replace(nextPath);
         }
-    }, [router, session]);
+    }, [nextPath, router, session]);
 
     async function onSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
@@ -29,7 +32,7 @@ export default function SignUpPage() {
 
         try {
             const result = await signUp.email({
-                callbackURL: "/auth/sign-in",
+                callbackURL: signInPath,
                 email,
                 name,
                 password,
@@ -40,7 +43,7 @@ export default function SignUpPage() {
                 return;
             }
 
-            router.push("/auth/sign-in");
+            router.push(signInPath);
         } catch (submitError) {
             setError(submitError instanceof Error ? submitError.message : "Sign up failed.");
         } finally {
@@ -108,7 +111,7 @@ export default function SignUpPage() {
 
                 <p className="mt-4 text-sm text-zinc-600">
                     Already have an account?{" "}
-                    <Link className="font-medium text-zinc-900 underline" href="/auth/sign-in">
+                    <Link className="font-medium text-zinc-900 underline" href={signInPath}>
                         Sign in
                     </Link>
                 </p>

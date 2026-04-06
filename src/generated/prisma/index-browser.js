@@ -164,6 +164,18 @@ exports.Prisma.MessagesScalarFieldEnum = {
   pinned: 'pinned'
 };
 
+exports.Prisma.ServerInviteScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  serverId: 'serverId',
+  creatorId: 'creatorId',
+  expiresAt: 'expiresAt',
+  maxUses: 'maxUses',
+  currentUses: 'currentUses',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -251,6 +263,7 @@ exports.Prisma.ModelName = {
   ServerRoles: 'ServerRoles',
   ServerRolePermission: 'ServerRolePermission',
   Messages: 'Messages',
+  ServerInvite: 'ServerInvite',
   User: 'User',
   Session: 'Session',
   Account: 'Account',

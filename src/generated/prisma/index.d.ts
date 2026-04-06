@@ -44,6 +44,11 @@ export type ServerRolePermission = $Result.DefaultSelection<Prisma.$ServerRolePe
  */
 export type Messages = $Result.DefaultSelection<Prisma.$MessagesPayload>
 /**
+ * Model ServerInvite
+ * 
+ */
+export type ServerInvite = $Result.DefaultSelection<Prisma.$ServerInvitePayload>
+/**
  * Model User
  * 
  */
@@ -283,6 +288,16 @@ export class PrismaClient<
     * ```
     */
   get messages(): Prisma.MessagesDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.serverInvite`: Exposes CRUD operations for the **ServerInvite** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ServerInvites
+    * const serverInvites = await prisma.serverInvite.findMany()
+    * ```
+    */
+  get serverInvite(): Prisma.ServerInviteDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.user`: Exposes CRUD operations for the **User** model.
@@ -763,6 +778,7 @@ export namespace Prisma {
     ServerRoles: 'ServerRoles',
     ServerRolePermission: 'ServerRolePermission',
     Messages: 'Messages',
+    ServerInvite: 'ServerInvite',
     User: 'User',
     Session: 'Session',
     Account: 'Account',
@@ -782,7 +798,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "server" | "channel" | "serverMember" | "serverRoles" | "serverRolePermission" | "messages" | "user" | "session" | "account" | "verification"
+      modelProps: "server" | "channel" | "serverMember" | "serverRoles" | "serverRolePermission" | "messages" | "serverInvite" | "user" | "session" | "account" | "verification"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1230,6 +1246,80 @@ export namespace Prisma {
           }
         }
       }
+      ServerInvite: {
+        payload: Prisma.$ServerInvitePayload<ExtArgs>
+        fields: Prisma.ServerInviteFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ServerInviteFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerInvitePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ServerInviteFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerInvitePayload>
+          }
+          findFirst: {
+            args: Prisma.ServerInviteFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerInvitePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ServerInviteFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerInvitePayload>
+          }
+          findMany: {
+            args: Prisma.ServerInviteFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerInvitePayload>[]
+          }
+          create: {
+            args: Prisma.ServerInviteCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerInvitePayload>
+          }
+          createMany: {
+            args: Prisma.ServerInviteCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ServerInviteCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerInvitePayload>[]
+          }
+          delete: {
+            args: Prisma.ServerInviteDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerInvitePayload>
+          }
+          update: {
+            args: Prisma.ServerInviteUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerInvitePayload>
+          }
+          deleteMany: {
+            args: Prisma.ServerInviteDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ServerInviteUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ServerInviteUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerInvitePayload>[]
+          }
+          upsert: {
+            args: Prisma.ServerInviteUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerInvitePayload>
+          }
+          aggregate: {
+            args: Prisma.ServerInviteAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateServerInvite>
+          }
+          groupBy: {
+            args: Prisma.ServerInviteGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ServerInviteGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ServerInviteCountArgs<ExtArgs>
+            result: $Utils.Optional<ServerInviteCountAggregateOutputType> | number
+          }
+        }
+      }
       User: {
         payload: Prisma.$UserPayload<ExtArgs>
         fields: Prisma.UserFieldRefs
@@ -1640,6 +1730,7 @@ export namespace Prisma {
     serverRoles?: ServerRolesOmit
     serverRolePermission?: ServerRolePermissionOmit
     messages?: MessagesOmit
+    serverInvite?: ServerInviteOmit
     user?: UserOmit
     session?: SessionOmit
     account?: AccountOmit
@@ -1727,12 +1818,14 @@ export namespace Prisma {
     channels: number
     members: number
     roles: number
+    invites: number
   }
 
   export type ServerCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     channels?: boolean | ServerCountOutputTypeCountChannelsArgs
     members?: boolean | ServerCountOutputTypeCountMembersArgs
     roles?: boolean | ServerCountOutputTypeCountRolesArgs
+    invites?: boolean | ServerCountOutputTypeCountInvitesArgs
   }
 
   // Custom InputTypes
@@ -1765,6 +1858,13 @@ export namespace Prisma {
    */
   export type ServerCountOutputTypeCountRolesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ServerRolesWhereInput
+  }
+
+  /**
+   * ServerCountOutputType without action
+   */
+  export type ServerCountOutputTypeCountInvitesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ServerInviteWhereInput
   }
 
 
@@ -1889,6 +1989,7 @@ export namespace Prisma {
     messages: number
     memberships: number
     channels: number
+    createdInvites: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -1897,6 +1998,7 @@ export namespace Prisma {
     messages?: boolean | UserCountOutputTypeCountMessagesArgs
     memberships?: boolean | UserCountOutputTypeCountMembershipsArgs
     channels?: boolean | UserCountOutputTypeCountChannelsArgs
+    createdInvites?: boolean | UserCountOutputTypeCountCreatedInvitesArgs
   }
 
   // Custom InputTypes
@@ -1943,6 +2045,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountChannelsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ChannelWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountCreatedInvitesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ServerInviteWhereInput
   }
 
 
@@ -2109,6 +2218,7 @@ export namespace Prisma {
     channels?: boolean | Server$channelsArgs<ExtArgs>
     members?: boolean | Server$membersArgs<ExtArgs>
     roles?: boolean | Server$rolesArgs<ExtArgs>
+    invites?: boolean | Server$invitesArgs<ExtArgs>
     _count?: boolean | ServerCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["server"]>
 
@@ -2138,6 +2248,7 @@ export namespace Prisma {
     channels?: boolean | Server$channelsArgs<ExtArgs>
     members?: boolean | Server$membersArgs<ExtArgs>
     roles?: boolean | Server$rolesArgs<ExtArgs>
+    invites?: boolean | Server$invitesArgs<ExtArgs>
     _count?: boolean | ServerCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ServerIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -2149,6 +2260,7 @@ export namespace Prisma {
       channels: Prisma.$ChannelPayload<ExtArgs>[]
       members: Prisma.$ServerMemberPayload<ExtArgs>[]
       roles: Prisma.$ServerRolesPayload<ExtArgs>[]
+      invites: Prisma.$ServerInvitePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -2552,6 +2664,7 @@ export namespace Prisma {
     channels<T extends Server$channelsArgs<ExtArgs> = {}>(args?: Subset<T, Server$channelsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChannelPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     members<T extends Server$membersArgs<ExtArgs> = {}>(args?: Subset<T, Server$membersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ServerMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     roles<T extends Server$rolesArgs<ExtArgs> = {}>(args?: Subset<T, Server$rolesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ServerRolesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    invites<T extends Server$invitesArgs<ExtArgs> = {}>(args?: Subset<T, Server$invitesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ServerInvitePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3047,6 +3160,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ServerRolesScalarFieldEnum | ServerRolesScalarFieldEnum[]
+  }
+
+  /**
+   * Server.invites
+   */
+  export type Server$invitesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ServerInvite
+     */
+    select?: ServerInviteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ServerInvite
+     */
+    omit?: ServerInviteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerInviteInclude<ExtArgs> | null
+    where?: ServerInviteWhereInput
+    orderBy?: ServerInviteOrderByWithRelationInput | ServerInviteOrderByWithRelationInput[]
+    cursor?: ServerInviteWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ServerInviteScalarFieldEnum | ServerInviteScalarFieldEnum[]
   }
 
   /**
@@ -8541,6 +8678,1186 @@ export namespace Prisma {
 
 
   /**
+   * Model ServerInvite
+   */
+
+  export type AggregateServerInvite = {
+    _count: ServerInviteCountAggregateOutputType | null
+    _avg: ServerInviteAvgAggregateOutputType | null
+    _sum: ServerInviteSumAggregateOutputType | null
+    _min: ServerInviteMinAggregateOutputType | null
+    _max: ServerInviteMaxAggregateOutputType | null
+  }
+
+  export type ServerInviteAvgAggregateOutputType = {
+    maxUses: number | null
+    currentUses: number | null
+  }
+
+  export type ServerInviteSumAggregateOutputType = {
+    maxUses: number | null
+    currentUses: number | null
+  }
+
+  export type ServerInviteMinAggregateOutputType = {
+    id: string | null
+    code: string | null
+    serverId: string | null
+    creatorId: string | null
+    expiresAt: Date | null
+    maxUses: number | null
+    currentUses: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ServerInviteMaxAggregateOutputType = {
+    id: string | null
+    code: string | null
+    serverId: string | null
+    creatorId: string | null
+    expiresAt: Date | null
+    maxUses: number | null
+    currentUses: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ServerInviteCountAggregateOutputType = {
+    id: number
+    code: number
+    serverId: number
+    creatorId: number
+    expiresAt: number
+    maxUses: number
+    currentUses: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type ServerInviteAvgAggregateInputType = {
+    maxUses?: true
+    currentUses?: true
+  }
+
+  export type ServerInviteSumAggregateInputType = {
+    maxUses?: true
+    currentUses?: true
+  }
+
+  export type ServerInviteMinAggregateInputType = {
+    id?: true
+    code?: true
+    serverId?: true
+    creatorId?: true
+    expiresAt?: true
+    maxUses?: true
+    currentUses?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ServerInviteMaxAggregateInputType = {
+    id?: true
+    code?: true
+    serverId?: true
+    creatorId?: true
+    expiresAt?: true
+    maxUses?: true
+    currentUses?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ServerInviteCountAggregateInputType = {
+    id?: true
+    code?: true
+    serverId?: true
+    creatorId?: true
+    expiresAt?: true
+    maxUses?: true
+    currentUses?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type ServerInviteAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ServerInvite to aggregate.
+     */
+    where?: ServerInviteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ServerInvites to fetch.
+     */
+    orderBy?: ServerInviteOrderByWithRelationInput | ServerInviteOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ServerInviteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ServerInvites from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ServerInvites.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ServerInvites
+    **/
+    _count?: true | ServerInviteCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ServerInviteAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ServerInviteSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ServerInviteMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ServerInviteMaxAggregateInputType
+  }
+
+  export type GetServerInviteAggregateType<T extends ServerInviteAggregateArgs> = {
+        [P in keyof T & keyof AggregateServerInvite]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateServerInvite[P]>
+      : GetScalarType<T[P], AggregateServerInvite[P]>
+  }
+
+
+
+
+  export type ServerInviteGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ServerInviteWhereInput
+    orderBy?: ServerInviteOrderByWithAggregationInput | ServerInviteOrderByWithAggregationInput[]
+    by: ServerInviteScalarFieldEnum[] | ServerInviteScalarFieldEnum
+    having?: ServerInviteScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ServerInviteCountAggregateInputType | true
+    _avg?: ServerInviteAvgAggregateInputType
+    _sum?: ServerInviteSumAggregateInputType
+    _min?: ServerInviteMinAggregateInputType
+    _max?: ServerInviteMaxAggregateInputType
+  }
+
+  export type ServerInviteGroupByOutputType = {
+    id: string
+    code: string
+    serverId: string
+    creatorId: string | null
+    expiresAt: Date | null
+    maxUses: number | null
+    currentUses: number
+    createdAt: Date
+    updatedAt: Date
+    _count: ServerInviteCountAggregateOutputType | null
+    _avg: ServerInviteAvgAggregateOutputType | null
+    _sum: ServerInviteSumAggregateOutputType | null
+    _min: ServerInviteMinAggregateOutputType | null
+    _max: ServerInviteMaxAggregateOutputType | null
+  }
+
+  type GetServerInviteGroupByPayload<T extends ServerInviteGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ServerInviteGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ServerInviteGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ServerInviteGroupByOutputType[P]>
+            : GetScalarType<T[P], ServerInviteGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ServerInviteSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    code?: boolean
+    serverId?: boolean
+    creatorId?: boolean
+    expiresAt?: boolean
+    maxUses?: boolean
+    currentUses?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    server?: boolean | ServerDefaultArgs<ExtArgs>
+    creator?: boolean | ServerInvite$creatorArgs<ExtArgs>
+  }, ExtArgs["result"]["serverInvite"]>
+
+  export type ServerInviteSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    code?: boolean
+    serverId?: boolean
+    creatorId?: boolean
+    expiresAt?: boolean
+    maxUses?: boolean
+    currentUses?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    server?: boolean | ServerDefaultArgs<ExtArgs>
+    creator?: boolean | ServerInvite$creatorArgs<ExtArgs>
+  }, ExtArgs["result"]["serverInvite"]>
+
+  export type ServerInviteSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    code?: boolean
+    serverId?: boolean
+    creatorId?: boolean
+    expiresAt?: boolean
+    maxUses?: boolean
+    currentUses?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    server?: boolean | ServerDefaultArgs<ExtArgs>
+    creator?: boolean | ServerInvite$creatorArgs<ExtArgs>
+  }, ExtArgs["result"]["serverInvite"]>
+
+  export type ServerInviteSelectScalar = {
+    id?: boolean
+    code?: boolean
+    serverId?: boolean
+    creatorId?: boolean
+    expiresAt?: boolean
+    maxUses?: boolean
+    currentUses?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type ServerInviteOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "code" | "serverId" | "creatorId" | "expiresAt" | "maxUses" | "currentUses" | "createdAt" | "updatedAt", ExtArgs["result"]["serverInvite"]>
+  export type ServerInviteInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    server?: boolean | ServerDefaultArgs<ExtArgs>
+    creator?: boolean | ServerInvite$creatorArgs<ExtArgs>
+  }
+  export type ServerInviteIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    server?: boolean | ServerDefaultArgs<ExtArgs>
+    creator?: boolean | ServerInvite$creatorArgs<ExtArgs>
+  }
+  export type ServerInviteIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    server?: boolean | ServerDefaultArgs<ExtArgs>
+    creator?: boolean | ServerInvite$creatorArgs<ExtArgs>
+  }
+
+  export type $ServerInvitePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ServerInvite"
+    objects: {
+      server: Prisma.$ServerPayload<ExtArgs>
+      creator: Prisma.$UserPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      code: string
+      serverId: string
+      creatorId: string | null
+      expiresAt: Date | null
+      maxUses: number | null
+      currentUses: number
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["serverInvite"]>
+    composites: {}
+  }
+
+  type ServerInviteGetPayload<S extends boolean | null | undefined | ServerInviteDefaultArgs> = $Result.GetResult<Prisma.$ServerInvitePayload, S>
+
+  type ServerInviteCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ServerInviteFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ServerInviteCountAggregateInputType | true
+    }
+
+  export interface ServerInviteDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ServerInvite'], meta: { name: 'ServerInvite' } }
+    /**
+     * Find zero or one ServerInvite that matches the filter.
+     * @param {ServerInviteFindUniqueArgs} args - Arguments to find a ServerInvite
+     * @example
+     * // Get one ServerInvite
+     * const serverInvite = await prisma.serverInvite.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ServerInviteFindUniqueArgs>(args: SelectSubset<T, ServerInviteFindUniqueArgs<ExtArgs>>): Prisma__ServerInviteClient<$Result.GetResult<Prisma.$ServerInvitePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ServerInvite that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ServerInviteFindUniqueOrThrowArgs} args - Arguments to find a ServerInvite
+     * @example
+     * // Get one ServerInvite
+     * const serverInvite = await prisma.serverInvite.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ServerInviteFindUniqueOrThrowArgs>(args: SelectSubset<T, ServerInviteFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ServerInviteClient<$Result.GetResult<Prisma.$ServerInvitePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ServerInvite that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ServerInviteFindFirstArgs} args - Arguments to find a ServerInvite
+     * @example
+     * // Get one ServerInvite
+     * const serverInvite = await prisma.serverInvite.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ServerInviteFindFirstArgs>(args?: SelectSubset<T, ServerInviteFindFirstArgs<ExtArgs>>): Prisma__ServerInviteClient<$Result.GetResult<Prisma.$ServerInvitePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ServerInvite that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ServerInviteFindFirstOrThrowArgs} args - Arguments to find a ServerInvite
+     * @example
+     * // Get one ServerInvite
+     * const serverInvite = await prisma.serverInvite.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ServerInviteFindFirstOrThrowArgs>(args?: SelectSubset<T, ServerInviteFindFirstOrThrowArgs<ExtArgs>>): Prisma__ServerInviteClient<$Result.GetResult<Prisma.$ServerInvitePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ServerInvites that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ServerInviteFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ServerInvites
+     * const serverInvites = await prisma.serverInvite.findMany()
+     * 
+     * // Get first 10 ServerInvites
+     * const serverInvites = await prisma.serverInvite.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const serverInviteWithIdOnly = await prisma.serverInvite.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ServerInviteFindManyArgs>(args?: SelectSubset<T, ServerInviteFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ServerInvitePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ServerInvite.
+     * @param {ServerInviteCreateArgs} args - Arguments to create a ServerInvite.
+     * @example
+     * // Create one ServerInvite
+     * const ServerInvite = await prisma.serverInvite.create({
+     *   data: {
+     *     // ... data to create a ServerInvite
+     *   }
+     * })
+     * 
+     */
+    create<T extends ServerInviteCreateArgs>(args: SelectSubset<T, ServerInviteCreateArgs<ExtArgs>>): Prisma__ServerInviteClient<$Result.GetResult<Prisma.$ServerInvitePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ServerInvites.
+     * @param {ServerInviteCreateManyArgs} args - Arguments to create many ServerInvites.
+     * @example
+     * // Create many ServerInvites
+     * const serverInvite = await prisma.serverInvite.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ServerInviteCreateManyArgs>(args?: SelectSubset<T, ServerInviteCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ServerInvites and returns the data saved in the database.
+     * @param {ServerInviteCreateManyAndReturnArgs} args - Arguments to create many ServerInvites.
+     * @example
+     * // Create many ServerInvites
+     * const serverInvite = await prisma.serverInvite.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ServerInvites and only return the `id`
+     * const serverInviteWithIdOnly = await prisma.serverInvite.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ServerInviteCreateManyAndReturnArgs>(args?: SelectSubset<T, ServerInviteCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ServerInvitePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ServerInvite.
+     * @param {ServerInviteDeleteArgs} args - Arguments to delete one ServerInvite.
+     * @example
+     * // Delete one ServerInvite
+     * const ServerInvite = await prisma.serverInvite.delete({
+     *   where: {
+     *     // ... filter to delete one ServerInvite
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ServerInviteDeleteArgs>(args: SelectSubset<T, ServerInviteDeleteArgs<ExtArgs>>): Prisma__ServerInviteClient<$Result.GetResult<Prisma.$ServerInvitePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ServerInvite.
+     * @param {ServerInviteUpdateArgs} args - Arguments to update one ServerInvite.
+     * @example
+     * // Update one ServerInvite
+     * const serverInvite = await prisma.serverInvite.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ServerInviteUpdateArgs>(args: SelectSubset<T, ServerInviteUpdateArgs<ExtArgs>>): Prisma__ServerInviteClient<$Result.GetResult<Prisma.$ServerInvitePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ServerInvites.
+     * @param {ServerInviteDeleteManyArgs} args - Arguments to filter ServerInvites to delete.
+     * @example
+     * // Delete a few ServerInvites
+     * const { count } = await prisma.serverInvite.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ServerInviteDeleteManyArgs>(args?: SelectSubset<T, ServerInviteDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ServerInvites.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ServerInviteUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ServerInvites
+     * const serverInvite = await prisma.serverInvite.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ServerInviteUpdateManyArgs>(args: SelectSubset<T, ServerInviteUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ServerInvites and returns the data updated in the database.
+     * @param {ServerInviteUpdateManyAndReturnArgs} args - Arguments to update many ServerInvites.
+     * @example
+     * // Update many ServerInvites
+     * const serverInvite = await prisma.serverInvite.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ServerInvites and only return the `id`
+     * const serverInviteWithIdOnly = await prisma.serverInvite.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ServerInviteUpdateManyAndReturnArgs>(args: SelectSubset<T, ServerInviteUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ServerInvitePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ServerInvite.
+     * @param {ServerInviteUpsertArgs} args - Arguments to update or create a ServerInvite.
+     * @example
+     * // Update or create a ServerInvite
+     * const serverInvite = await prisma.serverInvite.upsert({
+     *   create: {
+     *     // ... data to create a ServerInvite
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ServerInvite we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ServerInviteUpsertArgs>(args: SelectSubset<T, ServerInviteUpsertArgs<ExtArgs>>): Prisma__ServerInviteClient<$Result.GetResult<Prisma.$ServerInvitePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ServerInvites.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ServerInviteCountArgs} args - Arguments to filter ServerInvites to count.
+     * @example
+     * // Count the number of ServerInvites
+     * const count = await prisma.serverInvite.count({
+     *   where: {
+     *     // ... the filter for the ServerInvites we want to count
+     *   }
+     * })
+    **/
+    count<T extends ServerInviteCountArgs>(
+      args?: Subset<T, ServerInviteCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ServerInviteCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ServerInvite.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ServerInviteAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ServerInviteAggregateArgs>(args: Subset<T, ServerInviteAggregateArgs>): Prisma.PrismaPromise<GetServerInviteAggregateType<T>>
+
+    /**
+     * Group by ServerInvite.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ServerInviteGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ServerInviteGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ServerInviteGroupByArgs['orderBy'] }
+        : { orderBy?: ServerInviteGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ServerInviteGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetServerInviteGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ServerInvite model
+   */
+  readonly fields: ServerInviteFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ServerInvite.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ServerInviteClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    server<T extends ServerDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ServerDefaultArgs<ExtArgs>>): Prisma__ServerClient<$Result.GetResult<Prisma.$ServerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    creator<T extends ServerInvite$creatorArgs<ExtArgs> = {}>(args?: Subset<T, ServerInvite$creatorArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ServerInvite model
+   */
+  interface ServerInviteFieldRefs {
+    readonly id: FieldRef<"ServerInvite", 'String'>
+    readonly code: FieldRef<"ServerInvite", 'String'>
+    readonly serverId: FieldRef<"ServerInvite", 'String'>
+    readonly creatorId: FieldRef<"ServerInvite", 'String'>
+    readonly expiresAt: FieldRef<"ServerInvite", 'DateTime'>
+    readonly maxUses: FieldRef<"ServerInvite", 'Int'>
+    readonly currentUses: FieldRef<"ServerInvite", 'Int'>
+    readonly createdAt: FieldRef<"ServerInvite", 'DateTime'>
+    readonly updatedAt: FieldRef<"ServerInvite", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ServerInvite findUnique
+   */
+  export type ServerInviteFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ServerInvite
+     */
+    select?: ServerInviteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ServerInvite
+     */
+    omit?: ServerInviteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerInviteInclude<ExtArgs> | null
+    /**
+     * Filter, which ServerInvite to fetch.
+     */
+    where: ServerInviteWhereUniqueInput
+  }
+
+  /**
+   * ServerInvite findUniqueOrThrow
+   */
+  export type ServerInviteFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ServerInvite
+     */
+    select?: ServerInviteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ServerInvite
+     */
+    omit?: ServerInviteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerInviteInclude<ExtArgs> | null
+    /**
+     * Filter, which ServerInvite to fetch.
+     */
+    where: ServerInviteWhereUniqueInput
+  }
+
+  /**
+   * ServerInvite findFirst
+   */
+  export type ServerInviteFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ServerInvite
+     */
+    select?: ServerInviteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ServerInvite
+     */
+    omit?: ServerInviteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerInviteInclude<ExtArgs> | null
+    /**
+     * Filter, which ServerInvite to fetch.
+     */
+    where?: ServerInviteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ServerInvites to fetch.
+     */
+    orderBy?: ServerInviteOrderByWithRelationInput | ServerInviteOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ServerInvites.
+     */
+    cursor?: ServerInviteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ServerInvites from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ServerInvites.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ServerInvites.
+     */
+    distinct?: ServerInviteScalarFieldEnum | ServerInviteScalarFieldEnum[]
+  }
+
+  /**
+   * ServerInvite findFirstOrThrow
+   */
+  export type ServerInviteFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ServerInvite
+     */
+    select?: ServerInviteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ServerInvite
+     */
+    omit?: ServerInviteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerInviteInclude<ExtArgs> | null
+    /**
+     * Filter, which ServerInvite to fetch.
+     */
+    where?: ServerInviteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ServerInvites to fetch.
+     */
+    orderBy?: ServerInviteOrderByWithRelationInput | ServerInviteOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ServerInvites.
+     */
+    cursor?: ServerInviteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ServerInvites from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ServerInvites.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ServerInvites.
+     */
+    distinct?: ServerInviteScalarFieldEnum | ServerInviteScalarFieldEnum[]
+  }
+
+  /**
+   * ServerInvite findMany
+   */
+  export type ServerInviteFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ServerInvite
+     */
+    select?: ServerInviteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ServerInvite
+     */
+    omit?: ServerInviteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerInviteInclude<ExtArgs> | null
+    /**
+     * Filter, which ServerInvites to fetch.
+     */
+    where?: ServerInviteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ServerInvites to fetch.
+     */
+    orderBy?: ServerInviteOrderByWithRelationInput | ServerInviteOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ServerInvites.
+     */
+    cursor?: ServerInviteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ServerInvites from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ServerInvites.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ServerInvites.
+     */
+    distinct?: ServerInviteScalarFieldEnum | ServerInviteScalarFieldEnum[]
+  }
+
+  /**
+   * ServerInvite create
+   */
+  export type ServerInviteCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ServerInvite
+     */
+    select?: ServerInviteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ServerInvite
+     */
+    omit?: ServerInviteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerInviteInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ServerInvite.
+     */
+    data: XOR<ServerInviteCreateInput, ServerInviteUncheckedCreateInput>
+  }
+
+  /**
+   * ServerInvite createMany
+   */
+  export type ServerInviteCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ServerInvites.
+     */
+    data: ServerInviteCreateManyInput | ServerInviteCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ServerInvite createManyAndReturn
+   */
+  export type ServerInviteCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ServerInvite
+     */
+    select?: ServerInviteSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ServerInvite
+     */
+    omit?: ServerInviteOmit<ExtArgs> | null
+    /**
+     * The data used to create many ServerInvites.
+     */
+    data: ServerInviteCreateManyInput | ServerInviteCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerInviteIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ServerInvite update
+   */
+  export type ServerInviteUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ServerInvite
+     */
+    select?: ServerInviteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ServerInvite
+     */
+    omit?: ServerInviteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerInviteInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ServerInvite.
+     */
+    data: XOR<ServerInviteUpdateInput, ServerInviteUncheckedUpdateInput>
+    /**
+     * Choose, which ServerInvite to update.
+     */
+    where: ServerInviteWhereUniqueInput
+  }
+
+  /**
+   * ServerInvite updateMany
+   */
+  export type ServerInviteUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ServerInvites.
+     */
+    data: XOR<ServerInviteUpdateManyMutationInput, ServerInviteUncheckedUpdateManyInput>
+    /**
+     * Filter which ServerInvites to update
+     */
+    where?: ServerInviteWhereInput
+    /**
+     * Limit how many ServerInvites to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ServerInvite updateManyAndReturn
+   */
+  export type ServerInviteUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ServerInvite
+     */
+    select?: ServerInviteSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ServerInvite
+     */
+    omit?: ServerInviteOmit<ExtArgs> | null
+    /**
+     * The data used to update ServerInvites.
+     */
+    data: XOR<ServerInviteUpdateManyMutationInput, ServerInviteUncheckedUpdateManyInput>
+    /**
+     * Filter which ServerInvites to update
+     */
+    where?: ServerInviteWhereInput
+    /**
+     * Limit how many ServerInvites to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerInviteIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ServerInvite upsert
+   */
+  export type ServerInviteUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ServerInvite
+     */
+    select?: ServerInviteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ServerInvite
+     */
+    omit?: ServerInviteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerInviteInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ServerInvite to update in case it exists.
+     */
+    where: ServerInviteWhereUniqueInput
+    /**
+     * In case the ServerInvite found by the `where` argument doesn't exist, create a new ServerInvite with this data.
+     */
+    create: XOR<ServerInviteCreateInput, ServerInviteUncheckedCreateInput>
+    /**
+     * In case the ServerInvite was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ServerInviteUpdateInput, ServerInviteUncheckedUpdateInput>
+  }
+
+  /**
+   * ServerInvite delete
+   */
+  export type ServerInviteDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ServerInvite
+     */
+    select?: ServerInviteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ServerInvite
+     */
+    omit?: ServerInviteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerInviteInclude<ExtArgs> | null
+    /**
+     * Filter which ServerInvite to delete.
+     */
+    where: ServerInviteWhereUniqueInput
+  }
+
+  /**
+   * ServerInvite deleteMany
+   */
+  export type ServerInviteDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ServerInvites to delete
+     */
+    where?: ServerInviteWhereInput
+    /**
+     * Limit how many ServerInvites to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ServerInvite.creator
+   */
+  export type ServerInvite$creatorArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * ServerInvite without action
+   */
+  export type ServerInviteDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ServerInvite
+     */
+    select?: ServerInviteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ServerInvite
+     */
+    omit?: ServerInviteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerInviteInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model User
    */
 
@@ -8725,6 +10042,7 @@ export namespace Prisma {
     messages?: boolean | User$messagesArgs<ExtArgs>
     memberships?: boolean | User$membershipsArgs<ExtArgs>
     channels?: boolean | User$channelsArgs<ExtArgs>
+    createdInvites?: boolean | User$createdInvitesArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -8765,6 +10083,7 @@ export namespace Prisma {
     messages?: boolean | User$messagesArgs<ExtArgs>
     memberships?: boolean | User$membershipsArgs<ExtArgs>
     channels?: boolean | User$channelsArgs<ExtArgs>
+    createdInvites?: boolean | User$createdInvitesArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -8778,6 +10097,7 @@ export namespace Prisma {
       messages: Prisma.$MessagesPayload<ExtArgs>[]
       memberships: Prisma.$ServerMemberPayload<ExtArgs>[]
       channels: Prisma.$ChannelPayload<ExtArgs>[]
+      createdInvites: Prisma.$ServerInvitePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -9186,6 +10506,7 @@ export namespace Prisma {
     messages<T extends User$messagesArgs<ExtArgs> = {}>(args?: Subset<T, User$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessagesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     memberships<T extends User$membershipsArgs<ExtArgs> = {}>(args?: Subset<T, User$membershipsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ServerMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     channels<T extends User$channelsArgs<ExtArgs> = {}>(args?: Subset<T, User$channelsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChannelPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    createdInvites<T extends User$createdInvitesArgs<ExtArgs> = {}>(args?: Subset<T, User$createdInvitesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ServerInvitePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -9732,6 +11053,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ChannelScalarFieldEnum | ChannelScalarFieldEnum[]
+  }
+
+  /**
+   * User.createdInvites
+   */
+  export type User$createdInvitesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ServerInvite
+     */
+    select?: ServerInviteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ServerInvite
+     */
+    omit?: ServerInviteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerInviteInclude<ExtArgs> | null
+    where?: ServerInviteWhereInput
+    orderBy?: ServerInviteOrderByWithRelationInput | ServerInviteOrderByWithRelationInput[]
+    cursor?: ServerInviteWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ServerInviteScalarFieldEnum | ServerInviteScalarFieldEnum[]
   }
 
   /**
@@ -13111,6 +14456,21 @@ export namespace Prisma {
   export type MessagesScalarFieldEnum = (typeof MessagesScalarFieldEnum)[keyof typeof MessagesScalarFieldEnum]
 
 
+  export const ServerInviteScalarFieldEnum: {
+    id: 'id',
+    code: 'code',
+    serverId: 'serverId',
+    creatorId: 'creatorId',
+    expiresAt: 'expiresAt',
+    maxUses: 'maxUses',
+    currentUses: 'currentUses',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type ServerInviteScalarFieldEnum = (typeof ServerInviteScalarFieldEnum)[keyof typeof ServerInviteScalarFieldEnum]
+
+
   export const UserScalarFieldEnum: {
     id: 'id',
     name: 'name',
@@ -13303,6 +14663,7 @@ export namespace Prisma {
     channels?: ChannelListRelationFilter
     members?: ServerMemberListRelationFilter
     roles?: ServerRolesListRelationFilter
+    invites?: ServerInviteListRelationFilter
   }
 
   export type ServerOrderByWithRelationInput = {
@@ -13313,6 +14674,7 @@ export namespace Prisma {
     channels?: ChannelOrderByRelationAggregateInput
     members?: ServerMemberOrderByRelationAggregateInput
     roles?: ServerRolesOrderByRelationAggregateInput
+    invites?: ServerInviteOrderByRelationAggregateInput
   }
 
   export type ServerWhereUniqueInput = Prisma.AtLeast<{
@@ -13326,6 +14688,7 @@ export namespace Prisma {
     channels?: ChannelListRelationFilter
     members?: ServerMemberListRelationFilter
     roles?: ServerRolesListRelationFilter
+    invites?: ServerInviteListRelationFilter
   }, "id">
 
   export type ServerOrderByWithAggregationInput = {
@@ -13633,6 +14996,86 @@ export namespace Prisma {
     pinned?: BoolWithAggregatesFilter<"Messages"> | boolean
   }
 
+  export type ServerInviteWhereInput = {
+    AND?: ServerInviteWhereInput | ServerInviteWhereInput[]
+    OR?: ServerInviteWhereInput[]
+    NOT?: ServerInviteWhereInput | ServerInviteWhereInput[]
+    id?: StringFilter<"ServerInvite"> | string
+    code?: StringFilter<"ServerInvite"> | string
+    serverId?: StringFilter<"ServerInvite"> | string
+    creatorId?: StringNullableFilter<"ServerInvite"> | string | null
+    expiresAt?: DateTimeNullableFilter<"ServerInvite"> | Date | string | null
+    maxUses?: IntNullableFilter<"ServerInvite"> | number | null
+    currentUses?: IntFilter<"ServerInvite"> | number
+    createdAt?: DateTimeFilter<"ServerInvite"> | Date | string
+    updatedAt?: DateTimeFilter<"ServerInvite"> | Date | string
+    server?: XOR<ServerScalarRelationFilter, ServerWhereInput>
+    creator?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }
+
+  export type ServerInviteOrderByWithRelationInput = {
+    id?: SortOrder
+    code?: SortOrder
+    serverId?: SortOrder
+    creatorId?: SortOrderInput | SortOrder
+    expiresAt?: SortOrderInput | SortOrder
+    maxUses?: SortOrderInput | SortOrder
+    currentUses?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    server?: ServerOrderByWithRelationInput
+    creator?: UserOrderByWithRelationInput
+  }
+
+  export type ServerInviteWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    code?: string
+    AND?: ServerInviteWhereInput | ServerInviteWhereInput[]
+    OR?: ServerInviteWhereInput[]
+    NOT?: ServerInviteWhereInput | ServerInviteWhereInput[]
+    serverId?: StringFilter<"ServerInvite"> | string
+    creatorId?: StringNullableFilter<"ServerInvite"> | string | null
+    expiresAt?: DateTimeNullableFilter<"ServerInvite"> | Date | string | null
+    maxUses?: IntNullableFilter<"ServerInvite"> | number | null
+    currentUses?: IntFilter<"ServerInvite"> | number
+    createdAt?: DateTimeFilter<"ServerInvite"> | Date | string
+    updatedAt?: DateTimeFilter<"ServerInvite"> | Date | string
+    server?: XOR<ServerScalarRelationFilter, ServerWhereInput>
+    creator?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }, "id" | "code">
+
+  export type ServerInviteOrderByWithAggregationInput = {
+    id?: SortOrder
+    code?: SortOrder
+    serverId?: SortOrder
+    creatorId?: SortOrderInput | SortOrder
+    expiresAt?: SortOrderInput | SortOrder
+    maxUses?: SortOrderInput | SortOrder
+    currentUses?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: ServerInviteCountOrderByAggregateInput
+    _avg?: ServerInviteAvgOrderByAggregateInput
+    _max?: ServerInviteMaxOrderByAggregateInput
+    _min?: ServerInviteMinOrderByAggregateInput
+    _sum?: ServerInviteSumOrderByAggregateInput
+  }
+
+  export type ServerInviteScalarWhereWithAggregatesInput = {
+    AND?: ServerInviteScalarWhereWithAggregatesInput | ServerInviteScalarWhereWithAggregatesInput[]
+    OR?: ServerInviteScalarWhereWithAggregatesInput[]
+    NOT?: ServerInviteScalarWhereWithAggregatesInput | ServerInviteScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ServerInvite"> | string
+    code?: StringWithAggregatesFilter<"ServerInvite"> | string
+    serverId?: StringWithAggregatesFilter<"ServerInvite"> | string
+    creatorId?: StringNullableWithAggregatesFilter<"ServerInvite"> | string | null
+    expiresAt?: DateTimeNullableWithAggregatesFilter<"ServerInvite"> | Date | string | null
+    maxUses?: IntNullableWithAggregatesFilter<"ServerInvite"> | number | null
+    currentUses?: IntWithAggregatesFilter<"ServerInvite"> | number
+    createdAt?: DateTimeWithAggregatesFilter<"ServerInvite"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"ServerInvite"> | Date | string
+  }
+
   export type UserWhereInput = {
     AND?: UserWhereInput | UserWhereInput[]
     OR?: UserWhereInput[]
@@ -13649,6 +15092,7 @@ export namespace Prisma {
     messages?: MessagesListRelationFilter
     memberships?: ServerMemberListRelationFilter
     channels?: ChannelListRelationFilter
+    createdInvites?: ServerInviteListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -13664,6 +15108,7 @@ export namespace Prisma {
     messages?: MessagesOrderByRelationAggregateInput
     memberships?: ServerMemberOrderByRelationAggregateInput
     channels?: ChannelOrderByRelationAggregateInput
+    createdInvites?: ServerInviteOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -13682,6 +15127,7 @@ export namespace Prisma {
     messages?: MessagesListRelationFilter
     memberships?: ServerMemberListRelationFilter
     channels?: ChannelListRelationFilter
+    createdInvites?: ServerInviteListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -13940,6 +15386,7 @@ export namespace Prisma {
     channels?: ChannelCreateNestedManyWithoutServerInput
     members?: ServerMemberCreateNestedManyWithoutServerInput
     roles?: ServerRolesCreateNestedManyWithoutServerInput
+    invites?: ServerInviteCreateNestedManyWithoutServerInput
   }
 
   export type ServerUncheckedCreateInput = {
@@ -13950,6 +15397,7 @@ export namespace Prisma {
     channels?: ChannelUncheckedCreateNestedManyWithoutServerInput
     members?: ServerMemberUncheckedCreateNestedManyWithoutServerInput
     roles?: ServerRolesUncheckedCreateNestedManyWithoutServerInput
+    invites?: ServerInviteUncheckedCreateNestedManyWithoutServerInput
   }
 
   export type ServerUpdateInput = {
@@ -13960,6 +15408,7 @@ export namespace Prisma {
     channels?: ChannelUpdateManyWithoutServerNestedInput
     members?: ServerMemberUpdateManyWithoutServerNestedInput
     roles?: ServerRolesUpdateManyWithoutServerNestedInput
+    invites?: ServerInviteUpdateManyWithoutServerNestedInput
   }
 
   export type ServerUncheckedUpdateInput = {
@@ -13970,6 +15419,7 @@ export namespace Prisma {
     channels?: ChannelUncheckedUpdateManyWithoutServerNestedInput
     members?: ServerMemberUncheckedUpdateManyWithoutServerNestedInput
     roles?: ServerRolesUncheckedUpdateManyWithoutServerNestedInput
+    invites?: ServerInviteUncheckedUpdateManyWithoutServerNestedInput
   }
 
   export type ServerCreateManyInput = {
@@ -14265,6 +15715,88 @@ export namespace Prisma {
     pinned?: BoolFieldUpdateOperationsInput | boolean
   }
 
+  export type ServerInviteCreateInput = {
+    id?: string
+    code: string
+    expiresAt?: Date | string | null
+    maxUses?: number | null
+    currentUses?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    server: ServerCreateNestedOneWithoutInvitesInput
+    creator?: UserCreateNestedOneWithoutCreatedInvitesInput
+  }
+
+  export type ServerInviteUncheckedCreateInput = {
+    id?: string
+    code: string
+    serverId: string
+    creatorId?: string | null
+    expiresAt?: Date | string | null
+    maxUses?: number | null
+    currentUses?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ServerInviteUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    maxUses?: NullableIntFieldUpdateOperationsInput | number | null
+    currentUses?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    server?: ServerUpdateOneRequiredWithoutInvitesNestedInput
+    creator?: UserUpdateOneWithoutCreatedInvitesNestedInput
+  }
+
+  export type ServerInviteUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    serverId?: StringFieldUpdateOperationsInput | string
+    creatorId?: NullableStringFieldUpdateOperationsInput | string | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    maxUses?: NullableIntFieldUpdateOperationsInput | number | null
+    currentUses?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ServerInviteCreateManyInput = {
+    id?: string
+    code: string
+    serverId: string
+    creatorId?: string | null
+    expiresAt?: Date | string | null
+    maxUses?: number | null
+    currentUses?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ServerInviteUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    maxUses?: NullableIntFieldUpdateOperationsInput | number | null
+    currentUses?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ServerInviteUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    serverId?: StringFieldUpdateOperationsInput | string
+    creatorId?: NullableStringFieldUpdateOperationsInput | string | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    maxUses?: NullableIntFieldUpdateOperationsInput | number | null
+    currentUses?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type UserCreateInput = {
     id?: string
     name: string
@@ -14278,6 +15810,7 @@ export namespace Prisma {
     messages?: MessagesCreateNestedManyWithoutAuthorInput
     memberships?: ServerMemberCreateNestedManyWithoutUserInput
     channels?: ChannelCreateNestedManyWithoutUsersInput
+    createdInvites?: ServerInviteCreateNestedManyWithoutCreatorInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -14293,6 +15826,7 @@ export namespace Prisma {
     messages?: MessagesUncheckedCreateNestedManyWithoutAuthorInput
     memberships?: ServerMemberUncheckedCreateNestedManyWithoutUserInput
     channels?: ChannelUncheckedCreateNestedManyWithoutUsersInput
+    createdInvites?: ServerInviteUncheckedCreateNestedManyWithoutCreatorInput
   }
 
   export type UserUpdateInput = {
@@ -14308,6 +15842,7 @@ export namespace Prisma {
     messages?: MessagesUpdateManyWithoutAuthorNestedInput
     memberships?: ServerMemberUpdateManyWithoutUserNestedInput
     channels?: ChannelUpdateManyWithoutUsersNestedInput
+    createdInvites?: ServerInviteUpdateManyWithoutCreatorNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -14323,6 +15858,7 @@ export namespace Prisma {
     messages?: MessagesUncheckedUpdateManyWithoutAuthorNestedInput
     memberships?: ServerMemberUncheckedUpdateManyWithoutUserNestedInput
     channels?: ChannelUncheckedUpdateManyWithoutUsersNestedInput
+    createdInvites?: ServerInviteUncheckedUpdateManyWithoutCreatorNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -14664,6 +16200,12 @@ export namespace Prisma {
     none?: ServerRolesWhereInput
   }
 
+  export type ServerInviteListRelationFilter = {
+    every?: ServerInviteWhereInput
+    some?: ServerInviteWhereInput
+    none?: ServerInviteWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -14678,6 +16220,10 @@ export namespace Prisma {
   }
 
   export type ServerRolesOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ServerInviteOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -15030,6 +16576,84 @@ export namespace Prisma {
     _max?: NestedBoolFilter<$PrismaModel>
   }
 
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type UserNullableScalarRelationFilter = {
+    is?: UserWhereInput | null
+    isNot?: UserWhereInput | null
+  }
+
+  export type ServerInviteCountOrderByAggregateInput = {
+    id?: SortOrder
+    code?: SortOrder
+    serverId?: SortOrder
+    creatorId?: SortOrder
+    expiresAt?: SortOrder
+    maxUses?: SortOrder
+    currentUses?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ServerInviteAvgOrderByAggregateInput = {
+    maxUses?: SortOrder
+    currentUses?: SortOrder
+  }
+
+  export type ServerInviteMaxOrderByAggregateInput = {
+    id?: SortOrder
+    code?: SortOrder
+    serverId?: SortOrder
+    creatorId?: SortOrder
+    expiresAt?: SortOrder
+    maxUses?: SortOrder
+    currentUses?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ServerInviteMinOrderByAggregateInput = {
+    id?: SortOrder
+    code?: SortOrder
+    serverId?: SortOrder
+    creatorId?: SortOrder
+    expiresAt?: SortOrder
+    maxUses?: SortOrder
+    currentUses?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ServerInviteSumOrderByAggregateInput = {
+    maxUses?: SortOrder
+    currentUses?: SortOrder
+  }
+
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
   export type SessionListRelationFilter = {
     every?: SessionWhereInput
     some?: SessionWhereInput
@@ -15209,6 +16833,13 @@ export namespace Prisma {
     connect?: ServerRolesWhereUniqueInput | ServerRolesWhereUniqueInput[]
   }
 
+  export type ServerInviteCreateNestedManyWithoutServerInput = {
+    create?: XOR<ServerInviteCreateWithoutServerInput, ServerInviteUncheckedCreateWithoutServerInput> | ServerInviteCreateWithoutServerInput[] | ServerInviteUncheckedCreateWithoutServerInput[]
+    connectOrCreate?: ServerInviteCreateOrConnectWithoutServerInput | ServerInviteCreateOrConnectWithoutServerInput[]
+    createMany?: ServerInviteCreateManyServerInputEnvelope
+    connect?: ServerInviteWhereUniqueInput | ServerInviteWhereUniqueInput[]
+  }
+
   export type ChannelUncheckedCreateNestedManyWithoutServerInput = {
     create?: XOR<ChannelCreateWithoutServerInput, ChannelUncheckedCreateWithoutServerInput> | ChannelCreateWithoutServerInput[] | ChannelUncheckedCreateWithoutServerInput[]
     connectOrCreate?: ChannelCreateOrConnectWithoutServerInput | ChannelCreateOrConnectWithoutServerInput[]
@@ -15228,6 +16859,13 @@ export namespace Prisma {
     connectOrCreate?: ServerRolesCreateOrConnectWithoutServerInput | ServerRolesCreateOrConnectWithoutServerInput[]
     createMany?: ServerRolesCreateManyServerInputEnvelope
     connect?: ServerRolesWhereUniqueInput | ServerRolesWhereUniqueInput[]
+  }
+
+  export type ServerInviteUncheckedCreateNestedManyWithoutServerInput = {
+    create?: XOR<ServerInviteCreateWithoutServerInput, ServerInviteUncheckedCreateWithoutServerInput> | ServerInviteCreateWithoutServerInput[] | ServerInviteUncheckedCreateWithoutServerInput[]
+    connectOrCreate?: ServerInviteCreateOrConnectWithoutServerInput | ServerInviteCreateOrConnectWithoutServerInput[]
+    createMany?: ServerInviteCreateManyServerInputEnvelope
+    connect?: ServerInviteWhereUniqueInput | ServerInviteWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -15284,6 +16922,20 @@ export namespace Prisma {
     deleteMany?: ServerRolesScalarWhereInput | ServerRolesScalarWhereInput[]
   }
 
+  export type ServerInviteUpdateManyWithoutServerNestedInput = {
+    create?: XOR<ServerInviteCreateWithoutServerInput, ServerInviteUncheckedCreateWithoutServerInput> | ServerInviteCreateWithoutServerInput[] | ServerInviteUncheckedCreateWithoutServerInput[]
+    connectOrCreate?: ServerInviteCreateOrConnectWithoutServerInput | ServerInviteCreateOrConnectWithoutServerInput[]
+    upsert?: ServerInviteUpsertWithWhereUniqueWithoutServerInput | ServerInviteUpsertWithWhereUniqueWithoutServerInput[]
+    createMany?: ServerInviteCreateManyServerInputEnvelope
+    set?: ServerInviteWhereUniqueInput | ServerInviteWhereUniqueInput[]
+    disconnect?: ServerInviteWhereUniqueInput | ServerInviteWhereUniqueInput[]
+    delete?: ServerInviteWhereUniqueInput | ServerInviteWhereUniqueInput[]
+    connect?: ServerInviteWhereUniqueInput | ServerInviteWhereUniqueInput[]
+    update?: ServerInviteUpdateWithWhereUniqueWithoutServerInput | ServerInviteUpdateWithWhereUniqueWithoutServerInput[]
+    updateMany?: ServerInviteUpdateManyWithWhereWithoutServerInput | ServerInviteUpdateManyWithWhereWithoutServerInput[]
+    deleteMany?: ServerInviteScalarWhereInput | ServerInviteScalarWhereInput[]
+  }
+
   export type ChannelUncheckedUpdateManyWithoutServerNestedInput = {
     create?: XOR<ChannelCreateWithoutServerInput, ChannelUncheckedCreateWithoutServerInput> | ChannelCreateWithoutServerInput[] | ChannelUncheckedCreateWithoutServerInput[]
     connectOrCreate?: ChannelCreateOrConnectWithoutServerInput | ChannelCreateOrConnectWithoutServerInput[]
@@ -15324,6 +16976,20 @@ export namespace Prisma {
     update?: ServerRolesUpdateWithWhereUniqueWithoutServerInput | ServerRolesUpdateWithWhereUniqueWithoutServerInput[]
     updateMany?: ServerRolesUpdateManyWithWhereWithoutServerInput | ServerRolesUpdateManyWithWhereWithoutServerInput[]
     deleteMany?: ServerRolesScalarWhereInput | ServerRolesScalarWhereInput[]
+  }
+
+  export type ServerInviteUncheckedUpdateManyWithoutServerNestedInput = {
+    create?: XOR<ServerInviteCreateWithoutServerInput, ServerInviteUncheckedCreateWithoutServerInput> | ServerInviteCreateWithoutServerInput[] | ServerInviteUncheckedCreateWithoutServerInput[]
+    connectOrCreate?: ServerInviteCreateOrConnectWithoutServerInput | ServerInviteCreateOrConnectWithoutServerInput[]
+    upsert?: ServerInviteUpsertWithWhereUniqueWithoutServerInput | ServerInviteUpsertWithWhereUniqueWithoutServerInput[]
+    createMany?: ServerInviteCreateManyServerInputEnvelope
+    set?: ServerInviteWhereUniqueInput | ServerInviteWhereUniqueInput[]
+    disconnect?: ServerInviteWhereUniqueInput | ServerInviteWhereUniqueInput[]
+    delete?: ServerInviteWhereUniqueInput | ServerInviteWhereUniqueInput[]
+    connect?: ServerInviteWhereUniqueInput | ServerInviteWhereUniqueInput[]
+    update?: ServerInviteUpdateWithWhereUniqueWithoutServerInput | ServerInviteUpdateWithWhereUniqueWithoutServerInput[]
+    updateMany?: ServerInviteUpdateManyWithWhereWithoutServerInput | ServerInviteUpdateManyWithWhereWithoutServerInput[]
+    deleteMany?: ServerInviteScalarWhereInput | ServerInviteScalarWhereInput[]
   }
 
   export type ServerCreateNestedOneWithoutChannelsInput = {
@@ -15646,6 +17312,44 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutMessagesInput, UserUpdateWithoutMessagesInput>, UserUncheckedUpdateWithoutMessagesInput>
   }
 
+  export type ServerCreateNestedOneWithoutInvitesInput = {
+    create?: XOR<ServerCreateWithoutInvitesInput, ServerUncheckedCreateWithoutInvitesInput>
+    connectOrCreate?: ServerCreateOrConnectWithoutInvitesInput
+    connect?: ServerWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutCreatedInvitesInput = {
+    create?: XOR<UserCreateWithoutCreatedInvitesInput, UserUncheckedCreateWithoutCreatedInvitesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCreatedInvitesInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type ServerUpdateOneRequiredWithoutInvitesNestedInput = {
+    create?: XOR<ServerCreateWithoutInvitesInput, ServerUncheckedCreateWithoutInvitesInput>
+    connectOrCreate?: ServerCreateOrConnectWithoutInvitesInput
+    upsert?: ServerUpsertWithoutInvitesInput
+    connect?: ServerWhereUniqueInput
+    update?: XOR<XOR<ServerUpdateToOneWithWhereWithoutInvitesInput, ServerUpdateWithoutInvitesInput>, ServerUncheckedUpdateWithoutInvitesInput>
+  }
+
+  export type UserUpdateOneWithoutCreatedInvitesNestedInput = {
+    create?: XOR<UserCreateWithoutCreatedInvitesInput, UserUncheckedCreateWithoutCreatedInvitesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCreatedInvitesInput
+    upsert?: UserUpsertWithoutCreatedInvitesInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCreatedInvitesInput, UserUpdateWithoutCreatedInvitesInput>, UserUncheckedUpdateWithoutCreatedInvitesInput>
+  }
+
   export type SessionCreateNestedManyWithoutUserInput = {
     create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
     connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
@@ -15680,6 +17384,13 @@ export namespace Prisma {
     connect?: ChannelWhereUniqueInput | ChannelWhereUniqueInput[]
   }
 
+  export type ServerInviteCreateNestedManyWithoutCreatorInput = {
+    create?: XOR<ServerInviteCreateWithoutCreatorInput, ServerInviteUncheckedCreateWithoutCreatorInput> | ServerInviteCreateWithoutCreatorInput[] | ServerInviteUncheckedCreateWithoutCreatorInput[]
+    connectOrCreate?: ServerInviteCreateOrConnectWithoutCreatorInput | ServerInviteCreateOrConnectWithoutCreatorInput[]
+    createMany?: ServerInviteCreateManyCreatorInputEnvelope
+    connect?: ServerInviteWhereUniqueInput | ServerInviteWhereUniqueInput[]
+  }
+
   export type SessionUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
     connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
@@ -15712,6 +17423,13 @@ export namespace Prisma {
     create?: XOR<ChannelCreateWithoutUsersInput, ChannelUncheckedCreateWithoutUsersInput> | ChannelCreateWithoutUsersInput[] | ChannelUncheckedCreateWithoutUsersInput[]
     connectOrCreate?: ChannelCreateOrConnectWithoutUsersInput | ChannelCreateOrConnectWithoutUsersInput[]
     connect?: ChannelWhereUniqueInput | ChannelWhereUniqueInput[]
+  }
+
+  export type ServerInviteUncheckedCreateNestedManyWithoutCreatorInput = {
+    create?: XOR<ServerInviteCreateWithoutCreatorInput, ServerInviteUncheckedCreateWithoutCreatorInput> | ServerInviteCreateWithoutCreatorInput[] | ServerInviteUncheckedCreateWithoutCreatorInput[]
+    connectOrCreate?: ServerInviteCreateOrConnectWithoutCreatorInput | ServerInviteCreateOrConnectWithoutCreatorInput[]
+    createMany?: ServerInviteCreateManyCreatorInputEnvelope
+    connect?: ServerInviteWhereUniqueInput | ServerInviteWhereUniqueInput[]
   }
 
   export type SessionUpdateManyWithoutUserNestedInput = {
@@ -15783,6 +17501,20 @@ export namespace Prisma {
     deleteMany?: ChannelScalarWhereInput | ChannelScalarWhereInput[]
   }
 
+  export type ServerInviteUpdateManyWithoutCreatorNestedInput = {
+    create?: XOR<ServerInviteCreateWithoutCreatorInput, ServerInviteUncheckedCreateWithoutCreatorInput> | ServerInviteCreateWithoutCreatorInput[] | ServerInviteUncheckedCreateWithoutCreatorInput[]
+    connectOrCreate?: ServerInviteCreateOrConnectWithoutCreatorInput | ServerInviteCreateOrConnectWithoutCreatorInput[]
+    upsert?: ServerInviteUpsertWithWhereUniqueWithoutCreatorInput | ServerInviteUpsertWithWhereUniqueWithoutCreatorInput[]
+    createMany?: ServerInviteCreateManyCreatorInputEnvelope
+    set?: ServerInviteWhereUniqueInput | ServerInviteWhereUniqueInput[]
+    disconnect?: ServerInviteWhereUniqueInput | ServerInviteWhereUniqueInput[]
+    delete?: ServerInviteWhereUniqueInput | ServerInviteWhereUniqueInput[]
+    connect?: ServerInviteWhereUniqueInput | ServerInviteWhereUniqueInput[]
+    update?: ServerInviteUpdateWithWhereUniqueWithoutCreatorInput | ServerInviteUpdateWithWhereUniqueWithoutCreatorInput[]
+    updateMany?: ServerInviteUpdateManyWithWhereWithoutCreatorInput | ServerInviteUpdateManyWithWhereWithoutCreatorInput[]
+    deleteMany?: ServerInviteScalarWhereInput | ServerInviteScalarWhereInput[]
+  }
+
   export type SessionUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
     connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
@@ -15850,6 +17582,20 @@ export namespace Prisma {
     update?: ChannelUpdateWithWhereUniqueWithoutUsersInput | ChannelUpdateWithWhereUniqueWithoutUsersInput[]
     updateMany?: ChannelUpdateManyWithWhereWithoutUsersInput | ChannelUpdateManyWithWhereWithoutUsersInput[]
     deleteMany?: ChannelScalarWhereInput | ChannelScalarWhereInput[]
+  }
+
+  export type ServerInviteUncheckedUpdateManyWithoutCreatorNestedInput = {
+    create?: XOR<ServerInviteCreateWithoutCreatorInput, ServerInviteUncheckedCreateWithoutCreatorInput> | ServerInviteCreateWithoutCreatorInput[] | ServerInviteUncheckedCreateWithoutCreatorInput[]
+    connectOrCreate?: ServerInviteCreateOrConnectWithoutCreatorInput | ServerInviteCreateOrConnectWithoutCreatorInput[]
+    upsert?: ServerInviteUpsertWithWhereUniqueWithoutCreatorInput | ServerInviteUpsertWithWhereUniqueWithoutCreatorInput[]
+    createMany?: ServerInviteCreateManyCreatorInputEnvelope
+    set?: ServerInviteWhereUniqueInput | ServerInviteWhereUniqueInput[]
+    disconnect?: ServerInviteWhereUniqueInput | ServerInviteWhereUniqueInput[]
+    delete?: ServerInviteWhereUniqueInput | ServerInviteWhereUniqueInput[]
+    connect?: ServerInviteWhereUniqueInput | ServerInviteWhereUniqueInput[]
+    update?: ServerInviteUpdateWithWhereUniqueWithoutCreatorInput | ServerInviteUpdateWithWhereUniqueWithoutCreatorInput[]
+    updateMany?: ServerInviteUpdateManyWithWhereWithoutCreatorInput | ServerInviteUpdateManyWithWhereWithoutCreatorInput[]
+    deleteMany?: ServerInviteScalarWhereInput | ServerInviteScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutSessionsInput = {
@@ -16088,6 +17834,33 @@ export namespace Prisma {
     _max?: NestedBoolFilter<$PrismaModel>
   }
 
+  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
   export type ChannelCreateWithoutServerInput = {
     id?: string
     name: string
@@ -16163,6 +17936,38 @@ export namespace Prisma {
 
   export type ServerRolesCreateManyServerInputEnvelope = {
     data: ServerRolesCreateManyServerInput | ServerRolesCreateManyServerInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ServerInviteCreateWithoutServerInput = {
+    id?: string
+    code: string
+    expiresAt?: Date | string | null
+    maxUses?: number | null
+    currentUses?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    creator?: UserCreateNestedOneWithoutCreatedInvitesInput
+  }
+
+  export type ServerInviteUncheckedCreateWithoutServerInput = {
+    id?: string
+    code: string
+    creatorId?: string | null
+    expiresAt?: Date | string | null
+    maxUses?: number | null
+    currentUses?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ServerInviteCreateOrConnectWithoutServerInput = {
+    where: ServerInviteWhereUniqueInput
+    create: XOR<ServerInviteCreateWithoutServerInput, ServerInviteUncheckedCreateWithoutServerInput>
+  }
+
+  export type ServerInviteCreateManyServerInputEnvelope = {
+    data: ServerInviteCreateManyServerInput | ServerInviteCreateManyServerInput[]
     skipDuplicates?: boolean
   }
 
@@ -16245,6 +18050,37 @@ export namespace Prisma {
     serverId?: StringFilter<"ServerRoles"> | string
   }
 
+  export type ServerInviteUpsertWithWhereUniqueWithoutServerInput = {
+    where: ServerInviteWhereUniqueInput
+    update: XOR<ServerInviteUpdateWithoutServerInput, ServerInviteUncheckedUpdateWithoutServerInput>
+    create: XOR<ServerInviteCreateWithoutServerInput, ServerInviteUncheckedCreateWithoutServerInput>
+  }
+
+  export type ServerInviteUpdateWithWhereUniqueWithoutServerInput = {
+    where: ServerInviteWhereUniqueInput
+    data: XOR<ServerInviteUpdateWithoutServerInput, ServerInviteUncheckedUpdateWithoutServerInput>
+  }
+
+  export type ServerInviteUpdateManyWithWhereWithoutServerInput = {
+    where: ServerInviteScalarWhereInput
+    data: XOR<ServerInviteUpdateManyMutationInput, ServerInviteUncheckedUpdateManyWithoutServerInput>
+  }
+
+  export type ServerInviteScalarWhereInput = {
+    AND?: ServerInviteScalarWhereInput | ServerInviteScalarWhereInput[]
+    OR?: ServerInviteScalarWhereInput[]
+    NOT?: ServerInviteScalarWhereInput | ServerInviteScalarWhereInput[]
+    id?: StringFilter<"ServerInvite"> | string
+    code?: StringFilter<"ServerInvite"> | string
+    serverId?: StringFilter<"ServerInvite"> | string
+    creatorId?: StringNullableFilter<"ServerInvite"> | string | null
+    expiresAt?: DateTimeNullableFilter<"ServerInvite"> | Date | string | null
+    maxUses?: IntNullableFilter<"ServerInvite"> | number | null
+    currentUses?: IntFilter<"ServerInvite"> | number
+    createdAt?: DateTimeFilter<"ServerInvite"> | Date | string
+    updatedAt?: DateTimeFilter<"ServerInvite"> | Date | string
+  }
+
   export type ServerCreateWithoutChannelsInput = {
     id?: string
     name: string
@@ -16252,6 +18088,7 @@ export namespace Prisma {
     createdAt?: Date | string
     members?: ServerMemberCreateNestedManyWithoutServerInput
     roles?: ServerRolesCreateNestedManyWithoutServerInput
+    invites?: ServerInviteCreateNestedManyWithoutServerInput
   }
 
   export type ServerUncheckedCreateWithoutChannelsInput = {
@@ -16261,6 +18098,7 @@ export namespace Prisma {
     createdAt?: Date | string
     members?: ServerMemberUncheckedCreateNestedManyWithoutServerInput
     roles?: ServerRolesUncheckedCreateNestedManyWithoutServerInput
+    invites?: ServerInviteUncheckedCreateNestedManyWithoutServerInput
   }
 
   export type ServerCreateOrConnectWithoutChannelsInput = {
@@ -16306,6 +18144,7 @@ export namespace Prisma {
     accounts?: AccountCreateNestedManyWithoutUserInput
     messages?: MessagesCreateNestedManyWithoutAuthorInput
     memberships?: ServerMemberCreateNestedManyWithoutUserInput
+    createdInvites?: ServerInviteCreateNestedManyWithoutCreatorInput
   }
 
   export type UserUncheckedCreateWithoutChannelsInput = {
@@ -16320,6 +18159,7 @@ export namespace Prisma {
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     messages?: MessagesUncheckedCreateNestedManyWithoutAuthorInput
     memberships?: ServerMemberUncheckedCreateNestedManyWithoutUserInput
+    createdInvites?: ServerInviteUncheckedCreateNestedManyWithoutCreatorInput
   }
 
   export type UserCreateOrConnectWithoutChannelsInput = {
@@ -16345,6 +18185,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     members?: ServerMemberUpdateManyWithoutServerNestedInput
     roles?: ServerRolesUpdateManyWithoutServerNestedInput
+    invites?: ServerInviteUpdateManyWithoutServerNestedInput
   }
 
   export type ServerUncheckedUpdateWithoutChannelsInput = {
@@ -16354,6 +18195,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     members?: ServerMemberUncheckedUpdateManyWithoutServerNestedInput
     roles?: ServerRolesUncheckedUpdateManyWithoutServerNestedInput
+    invites?: ServerInviteUncheckedUpdateManyWithoutServerNestedInput
   }
 
   export type MessagesUpsertWithWhereUniqueWithoutChannelInput = {
@@ -16420,6 +18262,7 @@ export namespace Prisma {
     createdAt?: Date | string
     channels?: ChannelCreateNestedManyWithoutServerInput
     roles?: ServerRolesCreateNestedManyWithoutServerInput
+    invites?: ServerInviteCreateNestedManyWithoutServerInput
   }
 
   export type ServerUncheckedCreateWithoutMembersInput = {
@@ -16429,6 +18272,7 @@ export namespace Prisma {
     createdAt?: Date | string
     channels?: ChannelUncheckedCreateNestedManyWithoutServerInput
     roles?: ServerRolesUncheckedCreateNestedManyWithoutServerInput
+    invites?: ServerInviteUncheckedCreateNestedManyWithoutServerInput
   }
 
   export type ServerCreateOrConnectWithoutMembersInput = {
@@ -16448,6 +18292,7 @@ export namespace Prisma {
     accounts?: AccountCreateNestedManyWithoutUserInput
     messages?: MessagesCreateNestedManyWithoutAuthorInput
     channels?: ChannelCreateNestedManyWithoutUsersInput
+    createdInvites?: ServerInviteCreateNestedManyWithoutCreatorInput
   }
 
   export type UserUncheckedCreateWithoutMembershipsInput = {
@@ -16462,6 +18307,7 @@ export namespace Prisma {
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     messages?: MessagesUncheckedCreateNestedManyWithoutAuthorInput
     channels?: ChannelUncheckedCreateNestedManyWithoutUsersInput
+    createdInvites?: ServerInviteUncheckedCreateNestedManyWithoutCreatorInput
   }
 
   export type UserCreateOrConnectWithoutMembershipsInput = {
@@ -16508,6 +18354,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     channels?: ChannelUpdateManyWithoutServerNestedInput
     roles?: ServerRolesUpdateManyWithoutServerNestedInput
+    invites?: ServerInviteUpdateManyWithoutServerNestedInput
   }
 
   export type ServerUncheckedUpdateWithoutMembersInput = {
@@ -16517,6 +18364,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     channels?: ChannelUncheckedUpdateManyWithoutServerNestedInput
     roles?: ServerRolesUncheckedUpdateManyWithoutServerNestedInput
+    invites?: ServerInviteUncheckedUpdateManyWithoutServerNestedInput
   }
 
   export type UserUpsertWithoutMembershipsInput = {
@@ -16542,6 +18390,7 @@ export namespace Prisma {
     accounts?: AccountUpdateManyWithoutUserNestedInput
     messages?: MessagesUpdateManyWithoutAuthorNestedInput
     channels?: ChannelUpdateManyWithoutUsersNestedInput
+    createdInvites?: ServerInviteUpdateManyWithoutCreatorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMembershipsInput = {
@@ -16556,6 +18405,7 @@ export namespace Prisma {
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     messages?: MessagesUncheckedUpdateManyWithoutAuthorNestedInput
     channels?: ChannelUncheckedUpdateManyWithoutUsersNestedInput
+    createdInvites?: ServerInviteUncheckedUpdateManyWithoutCreatorNestedInput
   }
 
   export type ServerRolesUpsertWithWhereUniqueWithoutMembersInput = {
@@ -16581,6 +18431,7 @@ export namespace Prisma {
     createdAt?: Date | string
     channels?: ChannelCreateNestedManyWithoutServerInput
     members?: ServerMemberCreateNestedManyWithoutServerInput
+    invites?: ServerInviteCreateNestedManyWithoutServerInput
   }
 
   export type ServerUncheckedCreateWithoutRolesInput = {
@@ -16590,6 +18441,7 @@ export namespace Prisma {
     createdAt?: Date | string
     channels?: ChannelUncheckedCreateNestedManyWithoutServerInput
     members?: ServerMemberUncheckedCreateNestedManyWithoutServerInput
+    invites?: ServerInviteUncheckedCreateNestedManyWithoutServerInput
   }
 
   export type ServerCreateOrConnectWithoutRolesInput = {
@@ -16654,6 +18506,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     channels?: ChannelUpdateManyWithoutServerNestedInput
     members?: ServerMemberUpdateManyWithoutServerNestedInput
+    invites?: ServerInviteUpdateManyWithoutServerNestedInput
   }
 
   export type ServerUncheckedUpdateWithoutRolesInput = {
@@ -16663,6 +18516,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     channels?: ChannelUncheckedUpdateManyWithoutServerNestedInput
     members?: ServerMemberUncheckedUpdateManyWithoutServerNestedInput
+    invites?: ServerInviteUncheckedUpdateManyWithoutServerNestedInput
   }
 
   export type ServerMemberUpsertWithWhereUniqueWithoutServerRolesInput = {
@@ -16789,6 +18643,7 @@ export namespace Prisma {
     accounts?: AccountCreateNestedManyWithoutUserInput
     memberships?: ServerMemberCreateNestedManyWithoutUserInput
     channels?: ChannelCreateNestedManyWithoutUsersInput
+    createdInvites?: ServerInviteCreateNestedManyWithoutCreatorInput
   }
 
   export type UserUncheckedCreateWithoutMessagesInput = {
@@ -16803,6 +18658,7 @@ export namespace Prisma {
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     memberships?: ServerMemberUncheckedCreateNestedManyWithoutUserInput
     channels?: ChannelUncheckedCreateNestedManyWithoutUsersInput
+    createdInvites?: ServerInviteUncheckedCreateNestedManyWithoutCreatorInput
   }
 
   export type UserCreateOrConnectWithoutMessagesInput = {
@@ -16862,6 +18718,7 @@ export namespace Prisma {
     accounts?: AccountUpdateManyWithoutUserNestedInput
     memberships?: ServerMemberUpdateManyWithoutUserNestedInput
     channels?: ChannelUpdateManyWithoutUsersNestedInput
+    createdInvites?: ServerInviteUpdateManyWithoutCreatorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMessagesInput = {
@@ -16874,6 +18731,139 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    memberships?: ServerMemberUncheckedUpdateManyWithoutUserNestedInput
+    channels?: ChannelUncheckedUpdateManyWithoutUsersNestedInput
+    createdInvites?: ServerInviteUncheckedUpdateManyWithoutCreatorNestedInput
+  }
+
+  export type ServerCreateWithoutInvitesInput = {
+    id?: string
+    name: string
+    picture?: string | null
+    createdAt?: Date | string
+    channels?: ChannelCreateNestedManyWithoutServerInput
+    members?: ServerMemberCreateNestedManyWithoutServerInput
+    roles?: ServerRolesCreateNestedManyWithoutServerInput
+  }
+
+  export type ServerUncheckedCreateWithoutInvitesInput = {
+    id?: string
+    name: string
+    picture?: string | null
+    createdAt?: Date | string
+    channels?: ChannelUncheckedCreateNestedManyWithoutServerInput
+    members?: ServerMemberUncheckedCreateNestedManyWithoutServerInput
+    roles?: ServerRolesUncheckedCreateNestedManyWithoutServerInput
+  }
+
+  export type ServerCreateOrConnectWithoutInvitesInput = {
+    where: ServerWhereUniqueInput
+    create: XOR<ServerCreateWithoutInvitesInput, ServerUncheckedCreateWithoutInvitesInput>
+  }
+
+  export type UserCreateWithoutCreatedInvitesInput = {
+    id?: string
+    name: string
+    email: string
+    emailVerified?: boolean
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    messages?: MessagesCreateNestedManyWithoutAuthorInput
+    memberships?: ServerMemberCreateNestedManyWithoutUserInput
+    channels?: ChannelCreateNestedManyWithoutUsersInput
+  }
+
+  export type UserUncheckedCreateWithoutCreatedInvitesInput = {
+    id?: string
+    name: string
+    email: string
+    emailVerified?: boolean
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    messages?: MessagesUncheckedCreateNestedManyWithoutAuthorInput
+    memberships?: ServerMemberUncheckedCreateNestedManyWithoutUserInput
+    channels?: ChannelUncheckedCreateNestedManyWithoutUsersInput
+  }
+
+  export type UserCreateOrConnectWithoutCreatedInvitesInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutCreatedInvitesInput, UserUncheckedCreateWithoutCreatedInvitesInput>
+  }
+
+  export type ServerUpsertWithoutInvitesInput = {
+    update: XOR<ServerUpdateWithoutInvitesInput, ServerUncheckedUpdateWithoutInvitesInput>
+    create: XOR<ServerCreateWithoutInvitesInput, ServerUncheckedCreateWithoutInvitesInput>
+    where?: ServerWhereInput
+  }
+
+  export type ServerUpdateToOneWithWhereWithoutInvitesInput = {
+    where?: ServerWhereInput
+    data: XOR<ServerUpdateWithoutInvitesInput, ServerUncheckedUpdateWithoutInvitesInput>
+  }
+
+  export type ServerUpdateWithoutInvitesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    picture?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    channels?: ChannelUpdateManyWithoutServerNestedInput
+    members?: ServerMemberUpdateManyWithoutServerNestedInput
+    roles?: ServerRolesUpdateManyWithoutServerNestedInput
+  }
+
+  export type ServerUncheckedUpdateWithoutInvitesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    picture?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    channels?: ChannelUncheckedUpdateManyWithoutServerNestedInput
+    members?: ServerMemberUncheckedUpdateManyWithoutServerNestedInput
+    roles?: ServerRolesUncheckedUpdateManyWithoutServerNestedInput
+  }
+
+  export type UserUpsertWithoutCreatedInvitesInput = {
+    update: XOR<UserUpdateWithoutCreatedInvitesInput, UserUncheckedUpdateWithoutCreatedInvitesInput>
+    create: XOR<UserCreateWithoutCreatedInvitesInput, UserUncheckedCreateWithoutCreatedInvitesInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutCreatedInvitesInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutCreatedInvitesInput, UserUncheckedUpdateWithoutCreatedInvitesInput>
+  }
+
+  export type UserUpdateWithoutCreatedInvitesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    messages?: MessagesUpdateManyWithoutAuthorNestedInput
+    memberships?: ServerMemberUpdateManyWithoutUserNestedInput
+    channels?: ChannelUpdateManyWithoutUsersNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutCreatedInvitesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    messages?: MessagesUncheckedUpdateManyWithoutAuthorNestedInput
     memberships?: ServerMemberUncheckedUpdateManyWithoutUserNestedInput
     channels?: ChannelUncheckedUpdateManyWithoutUsersNestedInput
   }
@@ -17021,6 +19011,38 @@ export namespace Prisma {
     create: XOR<ChannelCreateWithoutUsersInput, ChannelUncheckedCreateWithoutUsersInput>
   }
 
+  export type ServerInviteCreateWithoutCreatorInput = {
+    id?: string
+    code: string
+    expiresAt?: Date | string | null
+    maxUses?: number | null
+    currentUses?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    server: ServerCreateNestedOneWithoutInvitesInput
+  }
+
+  export type ServerInviteUncheckedCreateWithoutCreatorInput = {
+    id?: string
+    code: string
+    serverId: string
+    expiresAt?: Date | string | null
+    maxUses?: number | null
+    currentUses?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ServerInviteCreateOrConnectWithoutCreatorInput = {
+    where: ServerInviteWhereUniqueInput
+    create: XOR<ServerInviteCreateWithoutCreatorInput, ServerInviteUncheckedCreateWithoutCreatorInput>
+  }
+
+  export type ServerInviteCreateManyCreatorInputEnvelope = {
+    data: ServerInviteCreateManyCreatorInput | ServerInviteCreateManyCreatorInput[]
+    skipDuplicates?: boolean
+  }
+
   export type SessionUpsertWithWhereUniqueWithoutUserInput = {
     where: SessionWhereUniqueInput
     update: XOR<SessionUpdateWithoutUserInput, SessionUncheckedUpdateWithoutUserInput>
@@ -17134,6 +19156,22 @@ export namespace Prisma {
     data: XOR<ChannelUpdateManyMutationInput, ChannelUncheckedUpdateManyWithoutUsersInput>
   }
 
+  export type ServerInviteUpsertWithWhereUniqueWithoutCreatorInput = {
+    where: ServerInviteWhereUniqueInput
+    update: XOR<ServerInviteUpdateWithoutCreatorInput, ServerInviteUncheckedUpdateWithoutCreatorInput>
+    create: XOR<ServerInviteCreateWithoutCreatorInput, ServerInviteUncheckedCreateWithoutCreatorInput>
+  }
+
+  export type ServerInviteUpdateWithWhereUniqueWithoutCreatorInput = {
+    where: ServerInviteWhereUniqueInput
+    data: XOR<ServerInviteUpdateWithoutCreatorInput, ServerInviteUncheckedUpdateWithoutCreatorInput>
+  }
+
+  export type ServerInviteUpdateManyWithWhereWithoutCreatorInput = {
+    where: ServerInviteScalarWhereInput
+    data: XOR<ServerInviteUpdateManyMutationInput, ServerInviteUncheckedUpdateManyWithoutCreatorInput>
+  }
+
   export type UserCreateWithoutSessionsInput = {
     id?: string
     name: string
@@ -17146,6 +19184,7 @@ export namespace Prisma {
     messages?: MessagesCreateNestedManyWithoutAuthorInput
     memberships?: ServerMemberCreateNestedManyWithoutUserInput
     channels?: ChannelCreateNestedManyWithoutUsersInput
+    createdInvites?: ServerInviteCreateNestedManyWithoutCreatorInput
   }
 
   export type UserUncheckedCreateWithoutSessionsInput = {
@@ -17160,6 +19199,7 @@ export namespace Prisma {
     messages?: MessagesUncheckedCreateNestedManyWithoutAuthorInput
     memberships?: ServerMemberUncheckedCreateNestedManyWithoutUserInput
     channels?: ChannelUncheckedCreateNestedManyWithoutUsersInput
+    createdInvites?: ServerInviteUncheckedCreateNestedManyWithoutCreatorInput
   }
 
   export type UserCreateOrConnectWithoutSessionsInput = {
@@ -17190,6 +19230,7 @@ export namespace Prisma {
     messages?: MessagesUpdateManyWithoutAuthorNestedInput
     memberships?: ServerMemberUpdateManyWithoutUserNestedInput
     channels?: ChannelUpdateManyWithoutUsersNestedInput
+    createdInvites?: ServerInviteUpdateManyWithoutCreatorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -17204,6 +19245,7 @@ export namespace Prisma {
     messages?: MessagesUncheckedUpdateManyWithoutAuthorNestedInput
     memberships?: ServerMemberUncheckedUpdateManyWithoutUserNestedInput
     channels?: ChannelUncheckedUpdateManyWithoutUsersNestedInput
+    createdInvites?: ServerInviteUncheckedUpdateManyWithoutCreatorNestedInput
   }
 
   export type UserCreateWithoutAccountsInput = {
@@ -17218,6 +19260,7 @@ export namespace Prisma {
     messages?: MessagesCreateNestedManyWithoutAuthorInput
     memberships?: ServerMemberCreateNestedManyWithoutUserInput
     channels?: ChannelCreateNestedManyWithoutUsersInput
+    createdInvites?: ServerInviteCreateNestedManyWithoutCreatorInput
   }
 
   export type UserUncheckedCreateWithoutAccountsInput = {
@@ -17232,6 +19275,7 @@ export namespace Prisma {
     messages?: MessagesUncheckedCreateNestedManyWithoutAuthorInput
     memberships?: ServerMemberUncheckedCreateNestedManyWithoutUserInput
     channels?: ChannelUncheckedCreateNestedManyWithoutUsersInput
+    createdInvites?: ServerInviteUncheckedCreateNestedManyWithoutCreatorInput
   }
 
   export type UserCreateOrConnectWithoutAccountsInput = {
@@ -17262,6 +19306,7 @@ export namespace Prisma {
     messages?: MessagesUpdateManyWithoutAuthorNestedInput
     memberships?: ServerMemberUpdateManyWithoutUserNestedInput
     channels?: ChannelUpdateManyWithoutUsersNestedInput
+    createdInvites?: ServerInviteUpdateManyWithoutCreatorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -17276,6 +19321,7 @@ export namespace Prisma {
     messages?: MessagesUncheckedUpdateManyWithoutAuthorNestedInput
     memberships?: ServerMemberUncheckedUpdateManyWithoutUserNestedInput
     channels?: ChannelUncheckedUpdateManyWithoutUsersNestedInput
+    createdInvites?: ServerInviteUncheckedUpdateManyWithoutCreatorNestedInput
   }
 
   export type ChannelCreateManyServerInput = {
@@ -17295,6 +19341,17 @@ export namespace Prisma {
     id?: string
     name: string
     position?: number
+  }
+
+  export type ServerInviteCreateManyServerInput = {
+    id?: string
+    code: string
+    creatorId?: string | null
+    expiresAt?: Date | string | null
+    maxUses?: number | null
+    currentUses?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type ChannelUpdateWithoutServerInput = {
@@ -17364,6 +19421,39 @@ export namespace Prisma {
     position?: IntFieldUpdateOperationsInput | number
   }
 
+  export type ServerInviteUpdateWithoutServerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    maxUses?: NullableIntFieldUpdateOperationsInput | number | null
+    currentUses?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    creator?: UserUpdateOneWithoutCreatedInvitesNestedInput
+  }
+
+  export type ServerInviteUncheckedUpdateWithoutServerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    creatorId?: NullableStringFieldUpdateOperationsInput | string | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    maxUses?: NullableIntFieldUpdateOperationsInput | number | null
+    currentUses?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ServerInviteUncheckedUpdateManyWithoutServerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    creatorId?: NullableStringFieldUpdateOperationsInput | string | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    maxUses?: NullableIntFieldUpdateOperationsInput | number | null
+    currentUses?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type MessagesCreateManyChannelInput = {
     id?: string
     content: string
@@ -17408,6 +19498,7 @@ export namespace Prisma {
     accounts?: AccountUpdateManyWithoutUserNestedInput
     messages?: MessagesUpdateManyWithoutAuthorNestedInput
     memberships?: ServerMemberUpdateManyWithoutUserNestedInput
+    createdInvites?: ServerInviteUpdateManyWithoutCreatorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutChannelsInput = {
@@ -17422,6 +19513,7 @@ export namespace Prisma {
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     messages?: MessagesUncheckedUpdateManyWithoutAuthorNestedInput
     memberships?: ServerMemberUncheckedUpdateManyWithoutUserNestedInput
+    createdInvites?: ServerInviteUncheckedUpdateManyWithoutCreatorNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutChannelsInput = {
@@ -17535,6 +19627,17 @@ export namespace Prisma {
     id?: string
     serverId: string
     timeoutUntil?: Date | string | null
+  }
+
+  export type ServerInviteCreateManyCreatorInput = {
+    id?: string
+    code: string
+    serverId: string
+    expiresAt?: Date | string | null
+    maxUses?: number | null
+    currentUses?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type SessionUpdateWithoutUserInput = {
@@ -17680,6 +19783,39 @@ export namespace Prisma {
     serverId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     type?: EnumChannelTypeFieldUpdateOperationsInput | $Enums.ChannelType
+  }
+
+  export type ServerInviteUpdateWithoutCreatorInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    maxUses?: NullableIntFieldUpdateOperationsInput | number | null
+    currentUses?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    server?: ServerUpdateOneRequiredWithoutInvitesNestedInput
+  }
+
+  export type ServerInviteUncheckedUpdateWithoutCreatorInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    serverId?: StringFieldUpdateOperationsInput | string
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    maxUses?: NullableIntFieldUpdateOperationsInput | number | null
+    currentUses?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ServerInviteUncheckedUpdateManyWithoutCreatorInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    serverId?: StringFieldUpdateOperationsInput | string
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    maxUses?: NullableIntFieldUpdateOperationsInput | number | null
+    currentUses?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 

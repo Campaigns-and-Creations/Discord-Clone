@@ -20,6 +20,7 @@ model Server {
   channels  Channel[]
   members   ServerMember[]
   roles     ServerRoles[]
+  invites   ServerInvite[]
 }
 
 model Channel {
@@ -75,6 +76,23 @@ model Messages {
   pinned    Boolean  @default(false)
 }
 
+model ServerInvite {
+  id          String    @id @default(uuid())
+  code        String    @unique @db.VarChar(12)
+  serverId    String
+  server      Server    @relation(fields: [serverId], references: [id], onDelete: Cascade)
+  creatorId   String?
+  creator     User?     @relation(fields: [creatorId], references: [id], onDelete: SetNull)
+  expiresAt   DateTime?
+  maxUses     Int?
+  currentUses Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([serverId])
+  @@index([expiresAt])
+}
+
 enum ChannelType {
   TEXT
   VOICE
@@ -96,18 +114,19 @@ enum Permission {
 }
 
 model User {
-  id            String         @id @default(uuid())
-  name          String
-  email         String
-  emailVerified Boolean        @default(false)
-  image         String?
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  sessions      Session[]
-  accounts      Account[]
-  messages      Messages[]
-  memberships   ServerMember[]
-  channels      Channel[]      @relation("ChannelUsers")
+  id             String         @id @default(uuid())
+  name           String
+  email          String
+  emailVerified  Boolean        @default(false)
+  image          String?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  sessions       Session[]
+  accounts       Account[]
+  messages       Messages[]
+  memberships    ServerMember[]
+  channels       Channel[]      @relation("ChannelUsers")
+  createdInvites ServerInvite[]
 
   @@unique([email])
   @@map("user")

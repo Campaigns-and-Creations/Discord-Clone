@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 const PUBLIC_AUTH_PATHS = new Set(["/auth/sign-in", "/auth/sign-up"]);
+const PUBLIC_INVITE_PATH = /^\/invite\/[^/]+$/;
 
 function isStaticAsset(pathname: string): boolean {
     return /\.(?:svg|png|jpg|jpeg|gif|webp|ico|css|js|map|txt|xml)$/i.test(pathname);
@@ -27,6 +28,11 @@ export function middleware(request: NextRequest) {
 
     const isAuthenticated = hasAuthSessionCookie(request);
     const isPublicAuthPath = PUBLIC_AUTH_PATHS.has(pathname);
+    const isPublicInvitePath = PUBLIC_INVITE_PATH.test(pathname);
+
+    if (isPublicInvitePath) {
+        return NextResponse.next();
+    }
 
     if (isPublicAuthPath) {
         if (isAuthenticated) {

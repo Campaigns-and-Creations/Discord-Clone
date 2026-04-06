@@ -1,6 +1,7 @@
 "use server";
 
 import { ChannelDal } from "@/dal/channel";
+import { InviteDal } from "@/dal/invite";
 import { MessagesDal } from "@/dal/messages";
 import { ServerMemberDal } from "@/dal/serverMember";
 import { ServerDal } from "@/dal/server";
@@ -155,6 +156,140 @@ export async function inviteMember(serverId: string, email: string) {
       },
     },
   });
+}
+
+export async function createInviteLink(
+  serverId: string,
+  options?: {
+    expiresInHours?: number | null;
+    maxUses?: number | null;
+  },
+) {
+  const sessionUser = await requireUser();
+
+  const isMember = await ServerMemberDal.isUserMemberOfServer(sessionUser.id, serverId);
+  if (!isMember) {
+    throw new Error("Forbidden");
+  }
+
+  const canInvite = await hasServerPermission(sessionUser.id, serverId, Permission.CREATE_INVITE);
+  if (!canInvite) {
+    throw new Error("Forbidden");
+  }
+
+  const expiresInHours = options?.expiresInHours ?? null;
+  const maxUses = options?.maxUses ?? null;
+
+  if (expiresInHours !== null) {
+    if (!Number.isFinite(expiresInHours) || expiresInHours <= 0 || expiresInHours > 24 * 365) {
+      throw new Error("expiresInHours must be between 1 and 8760.");
+    }
+  }
+
+  if (maxUses !== null) {
+    if (!Number.isInteger(maxUses) || maxUses <= 0 || maxUses > 100_000) {
+      throw new Error("maxUses must be between 1 and 100000.");
+    }
+  }
+
+  const expiresAt = expiresInHours !== null
+    ? new Date(Date.now() + expiresInHours * 60 * 60 * 1000)
+    : null;
+
+  const invite = await InviteDal.createInvite(serverId, sessionUser.id, {
+    expiresAt,
+    maxUses,
+  });
+
+  return {
+    id: invite.id,
+    code: invite.code,
+    invitePath: `/invite/${invite.code}`,
+    expiresAt: invite.expiresAt ? toIsoString(invite.expiresAt) : null,
+    maxUses: invite.maxUses,
+    currentUses: invite.currentUses,
+    createdAt: toIsoString(invite.createdAt),
+  };
+}
+
+export async function getInvitePreview(code: string) {
+  const normalizedCode = code.trim();
+
+  if (!normalizedCode) {
+    throw new Error("Invite code is required.");
+  }
+
+  const invite = await InviteDal.getByCode(normalizedCode);
+  if (!invite) {
+    return {
+      found: false,
+      active: false,
+      reason: "Invite not found.",
+    };
+  }
+
+  const now = new Date();
+  const isExpired = Boolean(invite.expiresAt && invite.expiresAt <= now);
+  const isExhausted = invite.maxUses !== null && invite.currentUses >= invite.maxUses;
+  const active = !isExpired && !isExhausted;
+
+  return {
+    found: true,
+    active,
+    reason: isExpired
+      ? "Invite has expired."
+      : isExhausted
+        ? "Invite has reached the usage limit."
+        : null,
+    invite: {
+      code: invite.code,
+      server: {
+        id: invite.server.id,
+        name: invite.server.name,
+        picture: invite.server.picture,
+        createdAt: toIsoString(invite.server.createdAt),
+      },
+      expiresAt: invite.expiresAt ? toIsoString(invite.expiresAt) : null,
+      maxUses: invite.maxUses,
+      currentUses: invite.currentUses,
+      createdAt: toIsoString(invite.createdAt),
+    },
+  };
+}
+
+export async function joinServerViaInvite(code: string) {
+  const sessionUser = await requireUser();
+  const normalizedCode = code.trim();
+
+  if (!normalizedCode) {
+    throw new Error("Invite code is required.");
+  }
+
+  return InviteDal.redeemInvite(normalizedCode, sessionUser.id);
+}
+
+export async function revokeInvite(serverId: string, inviteId: string) {
+  const sessionUser = await requireUser();
+
+  const isMember = await ServerMemberDal.isUserMemberOfServer(sessionUser.id, serverId);
+  if (!isMember) {
+    throw new Error("Forbidden");
+  }
+
+  const canManageInvites = await hasServerPermission(
+    sessionUser.id,
+    serverId,
+    Permission.CREATE_INVITE,
+  );
+
+  if (!canManageInvites) {
+    throw new Error("Forbidden");
+  }
+
+  const deleted = await InviteDal.revokeInvite(inviteId, serverId);
+  if (deleted.count !== 1) {
+    throw new Error("Invite not found.");
+  }
 }
 
 export async function sendMessage(serverId: string, channelId: string, content: string) {

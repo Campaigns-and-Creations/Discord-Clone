@@ -3,8 +3,8 @@
 import {
   createServer,
   createChannel,
+  createInviteLink,
   deleteMessage,
-  inviteMember,
   sendMessage,
   setMessagePinned,
 } from "@/app/actions";
@@ -26,6 +26,7 @@ import {
   Textarea,
   Text,
   TextInput,
+  Select,
   Title,
   Tooltip,
   UnstyledButton,
@@ -60,6 +61,8 @@ export default function HomeClient({ initialData }: HomeClientProps) {
   const [createModalOpened, setCreateModalOpened] = useState(false);
   const [createChannelModalOpened, setCreateChannelModalOpened] = useState(false);
   const [inviteModalOpened, setInviteModalOpened] = useState(false);
+  const [latestInviteLink, setLatestInviteLink] = useState<string | null>(null);
+  const [linkCopied, setLinkCopied] = useState(false);
   const [isSigningOut, setIsSigningOut] = useState(false);
   const [messageDraft, setMessageDraft] = useState("");
 
@@ -104,17 +107,25 @@ export default function HomeClient({ initialData }: HomeClientProps) {
 
   const inviteForm = useForm({
     initialValues: {
-      email: "",
+      expirationPreset: "never",
+      maxUses: "",
     },
     validate: {
-      email: (value) => {
+      expirationPreset: (value) => {
+        return value ? null : "Please select an expiration option.";
+      },
+      maxUses: (value) => {
         const normalized = value.trim();
+
         if (!normalized) {
-          return "Email is required";
+          return null;
         }
-        if (!/^\S+@\S+\.\S+$/.test(normalized)) {
-          return "Please enter a valid email";
+
+        const parsed = Number(normalized);
+        if (!Number.isInteger(parsed) || parsed <= 0 || parsed > 100000) {
+          return "Max uses must be a whole number between 1 and 100000.";
         }
+
         return null;
       },
     },
@@ -193,12 +204,16 @@ export default function HomeClient({ initialData }: HomeClientProps) {
     },
   });
 
-  const inviteMemberMutation = useMutation({
-    mutationFn: async (payload: { serverId: string; email: string }) =>
-      inviteMember(payload.serverId, payload.email),
-    onSuccess: async () => {
-      setInviteModalOpened(false);
-      inviteForm.reset();
+  const createInviteLinkMutation = useMutation({
+    mutationFn: async (payload: { serverId: string; expiresInHours: number | null; maxUses: number | null }) =>
+      createInviteLink(payload.serverId, {
+        expiresInHours: payload.expiresInHours,
+        maxUses: payload.maxUses,
+      }),
+    onSuccess: async (result) => {
+      const inviteUrl = `${window.location.origin}${result.invitePath}`;
+      setLatestInviteLink(inviteUrl);
+      setLinkCopied(false);
       await queryClient.invalidateQueries({ queryKey: ["discord", "home-data"] });
     },
   });
@@ -335,8 +350,12 @@ export default function HomeClient({ initialData }: HomeClientProps) {
 
       <Modal
         opened={inviteModalOpened}
-        onClose={() => setInviteModalOpened(false)}
-        title="Invite Member"
+        onClose={() => {
+          setInviteModalOpened(false);
+          setLatestInviteLink(null);
+          setLinkCopied(false);
+        }}
+        title="Create Invite Link"
         centered
       >
         <form
@@ -345,25 +364,78 @@ export default function HomeClient({ initialData }: HomeClientProps) {
               return;
             }
 
-            await inviteMemberMutation.mutateAsync({
+            const expiresInHours =
+              values.expirationPreset === "24h"
+                ? 24
+                : values.expirationPreset === "7d"
+                  ? 24 * 7
+                  : values.expirationPreset === "30d"
+                    ? 24 * 30
+                    : null;
+
+            const normalizedMaxUses = values.maxUses.trim();
+            const maxUses = normalizedMaxUses ? Number(normalizedMaxUses) : null;
+
+            await createInviteLinkMutation.mutateAsync({
               serverId: selectedServer.id,
-              email: values.email.trim().toLowerCase(),
+              expiresInHours,
+              maxUses,
             });
           })}
         >
           <Stack gap="sm">
-            <TextInput
-              label="User Email"
-              placeholder="name@example.com"
+            <Select
+              label="Expiration"
               withAsterisk
-              {...inviteForm.getInputProps("email")}
+              data={[
+                { value: "never", label: "Never" },
+                { value: "24h", label: "24 hours" },
+                { value: "7d", label: "7 days" },
+                { value: "30d", label: "30 days" },
+              ]}
+              {...inviteForm.getInputProps("expirationPreset")}
             />
+            <TextInput
+              label="Max Uses"
+              description="Leave empty for unlimited uses"
+              placeholder="Unlimited"
+              {...inviteForm.getInputProps("maxUses")}
+            />
+
+            {latestInviteLink ? (
+              <Stack gap={6}>
+                <Text size="xs" c="gray.4">
+                  Share this link to let people join the server.
+                </Text>
+                <TextInput value={latestInviteLink} readOnly />
+                <Group justify="flex-end">
+                  <Button
+                    size="xs"
+                    variant="light"
+                    onClick={async () => {
+                      await navigator.clipboard.writeText(latestInviteLink);
+                      setLinkCopied(true);
+                    }}
+                  >
+                    {linkCopied ? "Copied" : "Copy Link"}
+                  </Button>
+                </Group>
+              </Stack>
+            ) : null}
+
             <Group justify="flex-end" mt="sm">
-              <Button variant="default" onClick={() => setInviteModalOpened(false)}>
+              <Button
+                variant="default"
+                onClick={() => {
+                  setInviteModalOpened(false);
+                  setLatestInviteLink(null);
+                  setLinkCopied(false);
+                }}
+              >
                 Cancel
               </Button>
-              <Button type="submit" loading={inviteMemberMutation.isPending}>
-                Send Invite
+              <Button type="submit" loading={createInviteLinkMutation.isPending}>
+                Create Link
               </Button>
             </Group>
           </Stack>

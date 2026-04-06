@@ -1,14 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
 
 import { signIn, useSession } from "@/utils/auth-client";
 
 export default function SignInPage() {
 	const router = useRouter();
+	const searchParams = useSearchParams();
 	const { data: session, isPending } = useSession();
+	const nextPath = searchParams.get("next") || searchParams.get("from") || "/";
 
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
@@ -17,9 +19,9 @@ export default function SignInPage() {
 
 	useEffect(() => {
 		if (session?.user) {
-			router.replace("/");
+			router.replace(nextPath);
 		}
-	}, [router, session]);
+	}, [nextPath, router, session]);
 
 	async function onSubmit(event: FormEvent<HTMLFormElement>) {
 		event.preventDefault();
@@ -28,7 +30,7 @@ export default function SignInPage() {
 
 		try {
 			const result = await signIn.email({
-				callbackURL: "/",
+				callbackURL: nextPath,
 				email,
 				password,
 				rememberMe: true,
@@ -39,7 +41,7 @@ export default function SignInPage() {
 				return;
 			}
 
-			router.push("/");
+			router.push(nextPath);
 		} catch (submitError) {
 			setError(submitError instanceof Error ? submitError.message : "Sign in failed.");
 		} finally {
@@ -93,7 +95,7 @@ export default function SignInPage() {
 
 				<p className="mt-4 text-sm text-zinc-600">
 					No account yet?{" "}
-					<Link className="font-medium text-zinc-900 underline" href="/auth/sign-up">
+					<Link className="font-medium text-zinc-900 underline" href={`/auth/sign-up?next=${encodeURIComponent(nextPath)}`}>
 						Create one
 					</Link>
 				</p>
