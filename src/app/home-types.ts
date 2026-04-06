@@ -1,3 +1,5 @@
+import type { ChannelType, Permission } from "@/generated/prisma/client";
+
 export type HomeUser = {
   id: string;
   name: string;
@@ -21,7 +23,7 @@ export type HomeMessage = {
 export type HomeChannel = {
   id: string;
   name: string;
-  type: "TEXT" | "VOICE";
+  type: ChannelType;
   createdAt: string;
   serverId: string;
   isPublic: boolean;
@@ -33,7 +35,7 @@ export type HomeRole = {
   id: string;
   name: string;
   position: number;
-  permissions: string[];
+  permissions: Permission[];
 };
 
 export type HomeServerMember = {
@@ -52,7 +54,7 @@ export type HomeServer = {
   createdAt: string;
   membershipId: string | null;
   roleNames: string[];
-  permissions: string[];
+  permissions: Permission[];
   capabilities: {
     canManageServer: boolean;
     canCreateChannels: boolean;

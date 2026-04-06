@@ -1,4 +1,4 @@
-import { Permission } from "@/generated/prisma";
+import { Permission } from "@/generated/prisma/client";
 import { ChannelDal } from "@/dal/channel";
 import { ServerRolesDal } from "@/dal/serverRoles";
 

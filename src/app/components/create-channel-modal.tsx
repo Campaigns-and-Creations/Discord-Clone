@@ -1,5 +1,6 @@
 import { Button, Group, Modal, MultiSelect, SegmentedControl, Stack, Switch, TextInput } from "@mantine/core";
 import type { UseFormReturnType } from "@mantine/form";
+import { ChannelType, type ChannelType as ChannelTypeValue } from "@/generated/prisma/client";
 
 type RoleOption = {
   value: string;
@@ -8,7 +9,7 @@ type RoleOption = {
 
 type CreateChannelFormValues = {
   name: string;
-  type: "TEXT" | "VOICE";
+  type: ChannelType;
   isPublic: boolean;
   allowedRoleIds: string[];
 };
@@ -36,14 +37,18 @@ export function CreateChannelModal({
         <Stack gap="sm">
           <SegmentedControl
             data={[
-              { label: "Text", value: "TEXT" },
-              { label: "Voice", value: "VOICE" },
+              { label: "Text", value: ChannelType.TEXT },
+              { label: "Voice", value: ChannelType.VOICE },
             ]}
             {...form.getInputProps("type")}
           />
           <TextInput
             label="Channel Name"
-            placeholder={form.values.type === "VOICE" ? "for example: standup-room" : "for example: announcements"}
+            placeholder={
+              form.values.type === ChannelType.VOICE
+                ? "for example: standup-room"
+                : "for example: announcements"
+            }
             withAsterisk
             {...form.getInputProps("name")}
           />

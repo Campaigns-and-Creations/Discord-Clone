@@ -4,7 +4,7 @@ import { MessagesDal } from "@/dal/messages";
 import { ServerDal } from "@/dal/server";
 import { ServerMemberDal } from "@/dal/serverMember";
 import { ServerRolesDal } from "@/dal/serverRoles";
-import { Permission } from "@/generated/prisma";
+import { Permission } from "@/generated/prisma/client";
 import { UserDal } from "@/dal/user";
 import { getMembershipPermissions } from "@/utils/permissions";
 import { getServerUser } from "@/utils/session";

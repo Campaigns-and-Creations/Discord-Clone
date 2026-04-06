@@ -1,4 +1,5 @@
 import type { HomePageData, HomeServer } from "@/app/home-types";
+import { ChannelType } from "@/generated/prisma/client";
 import {
   ActionIcon,
   Avatar,
@@ -151,7 +152,7 @@ export function HomeSidebar({
                     {selectedServer.channels.map((channel) => {
                       const isSelected = channel.id === selectedChannelId;
                       const channelLabel =
-                        channel.type === "VOICE" ? (
+                        channel.type === ChannelType.VOICE ? (
                           <Group gap={6} wrap="nowrap" align="center">
                             <SpeakerHighIcon size={14} />
                             <Text span size="sm" c="inherit" truncate="end">

@@ -1,4 +1,4 @@
-import { Permission } from "@/generated/prisma";
+import { Permission } from "@/generated/prisma/client";
 
 export const DEFAULT_SERVER_ROLES: Array<{
   name: string;

@@ -21,7 +21,7 @@ import { HomeSidebar } from "@/app/components/home-sidebar";
 import { InviteModal } from "@/app/components/invite-modal";
 import { ManageRolesModal } from "@/app/components/manage-roles-modal";
 import type { HomePageData } from "@/app/home-types";
-import { Permission } from "@/generated/prisma";
+import { ChannelType, Permission } from "@/generated/prisma/client";
 import { signOut } from "@/utils/auth-client";
 import { Box, Group } from "@mantine/core";
 import { useForm } from "@mantine/form";
@@ -41,7 +41,7 @@ function formatServerBadge(name: string): string {
     .toUpperCase();
 }
 
-const PERMISSION_OPTIONS = Object.values(Permission).map((permission) => ({
+const PERMISSION_OPTIONS = (Object.values(Permission) as Permission[]).map((permission) => ({
   value: permission,
   label: permission,
 }));
@@ -85,7 +85,7 @@ export default function HomeClient({ initialData }: HomeClientProps) {
   const createChannelForm = useForm({
     initialValues: {
       name: "",
-      type: "TEXT" as "TEXT" | "VOICE",
+      type: ChannelType.TEXT as ChannelType,
       isPublic: true,
       allowedRoleIds: [] as string[],
     },
@@ -255,7 +255,7 @@ export default function HomeClient({ initialData }: HomeClientProps) {
     mutationFn: async (payload: {
       serverId: string;
       name: string;
-      type: "TEXT" | "VOICE";
+      type: ChannelType;
       isPublic: boolean;
       allowedRoleIds: string[];
     }) =>

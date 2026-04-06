@@ -1,4 +1,5 @@
 import { prisma } from "@/utils/prisma";
+import { ChannelType } from "@/generated/prisma/client";
 import { DEFAULT_SERVER_ROLES } from "@/utils/default-role-permissions";
 
 export class ServerDal {
@@ -101,7 +102,7 @@ export class ServerDal {
         data: {
           name: "general",
           serverId: server.id,
-          type: "TEXT",
+          type: ChannelType.TEXT,
         },
       });
 

@@ -1,6 +1,7 @@
 import type { HomeChannel, HomeServer } from "@/app/home-types";
 import { StreamVideoProvider } from "@/app/components/stream-video-provider";
 import { VoiceCallPanel } from "@/app/components/voice-call-panel";
+import { ChannelType } from "@/generated/prisma/client";
 import {
   ActionIcon,
   Avatar,
@@ -70,7 +71,7 @@ export function HomeChatPanel({
           </Group>
         </Box>
 
-        {selectedChannel?.type === "VOICE" && selectedServer ? (
+        {selectedChannel?.type === ChannelType.VOICE && selectedServer ? (
           <Box flex={1} p="md">
             <StreamVideoProvider user={currentUser}>
               <VoiceCallPanel

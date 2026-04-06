@@ -1,4 +1,4 @@
-import { Permission } from "@/generated/prisma";
+import { Permission } from "@/generated/prisma/client";
 import { prisma } from "@/utils/prisma";
 
 export class ServerRolesDal {

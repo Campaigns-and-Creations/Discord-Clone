@@ -7,7 +7,7 @@ import { ServerMemberDal } from "@/dal/serverMember";
 import { ServerRolesDal } from "@/dal/serverRoles";
 import { ServerDal } from "@/dal/server";
 import { UserDal } from "@/dal/user";
-import { Permission } from "@/generated/prisma";
+import { ChannelType, Permission } from "@/generated/prisma/client";
 import {
   canAccessChannel,
   canModerateTarget,
@@ -76,7 +76,7 @@ export async function createServer(serverName: string): Promise<HomeServer> {
     createdAt: toIsoString(result.server.createdAt),
     membershipId: result.membershipId,
     roleNames: [result.ownerRole.name],
-    permissions: ["ADMINISTRATOR"],
+    permissions: [Permission.ADMINISTRATOR],
     capabilities: {
       canManageServer: true,
       canCreateChannels: true,
@@ -91,7 +91,7 @@ export async function createServer(serverName: string): Promise<HomeServer> {
         id: result.ownerRole.id,
         name: result.ownerRole.name,
         position: result.ownerRole.position,
-        permissions: ["ADMINISTRATOR"],
+        permissions: [Permission.ADMINISTRATOR],
       },
     ],
     members: [
@@ -122,7 +122,7 @@ export async function createServer(serverName: string): Promise<HomeServer> {
 export async function createChannel(
   serverId: string,
   channelName: string,
-  type: "TEXT" | "VOICE" = "TEXT",
+  type: ChannelType = ChannelType.TEXT,
   access?: {
     isPublic?: boolean;
     allowedRoleIds?: string[];

@@ -1,4 +1,5 @@
 import { prisma } from "@/utils/prisma";
+import type { ChannelType } from "@/generated/prisma/client";
 
 export class ChannelDal {
   static async listByServerId(serverId: string) {
@@ -84,7 +85,7 @@ export class ChannelDal {
   static async createInServer(
     serverId: string,
     name: string,
-    type: "TEXT" | "VOICE",
+    type: ChannelType,
     options?: { isPublic: boolean; allowedRoleIds: string[] },
   ) {
     const isPublic = options?.isPublic ?? true;
