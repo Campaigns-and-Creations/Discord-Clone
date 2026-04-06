@@ -26,4 +26,21 @@ export class ChannelDal {
       },
     });
   }
+
+  static async createInServer(serverId: string, name: string, type: "TEXT" | "VOICE") {
+    return prisma.channel.create({
+      data: {
+        serverId,
+        name,
+        type,
+      },
+      select: {
+        id: true,
+        name: true,
+        type: true,
+        createdAt: true,
+        serverId: true,
+      },
+    });
+  }
 }

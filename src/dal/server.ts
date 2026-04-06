@@ -1,4 +1,5 @@
 import { prisma } from "@/utils/prisma";
+import { DEFAULT_SERVER_ROLES } from "@/utils/default-role-permissions";
 
 export class ServerDal {
   static async listForUser(userId: string) {
@@ -22,7 +23,9 @@ export class ServerDal {
               select: {
                 id: true,
                 name: true,
+                position: true,
               },
+              orderBy: { position: "desc" },
             },
           },
           take: 1,
@@ -61,12 +64,25 @@ export class ServerDal {
         },
       });
 
-      const ownerRole = await tx.serverRoles.create({
-        data: {
-          name: "Owner",
-          serverId: server.id,
-        },
-      });
+      const createdRoles = await Promise.all(
+        DEFAULT_SERVER_ROLES.map((roleSeed) =>
+          tx.serverRoles.create({
+            data: {
+              name: roleSeed.name,
+              position: roleSeed.position,
+              serverId: server.id,
+              permissions: {
+                create: roleSeed.permissions.map((permission) => ({ permission })),
+              },
+            },
+          }),
+        ),
+      );
+
+      const ownerRole = createdRoles.find((role) => role.name === "Owner");
+      if (!ownerRole) {
+        throw new Error("Failed to create owner role for server.");
+      }
 
       await tx.serverMember.update({
         where: {

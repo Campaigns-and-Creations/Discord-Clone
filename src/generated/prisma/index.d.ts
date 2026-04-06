@@ -29,10 +29,15 @@ export type Channel = $Result.DefaultSelection<Prisma.$ChannelPayload>
  */
 export type ServerMember = $Result.DefaultSelection<Prisma.$ServerMemberPayload>
 /**
- * Model serverRoles
+ * Model ServerRoles
  * 
  */
-export type serverRoles = $Result.DefaultSelection<Prisma.$serverRolesPayload>
+export type ServerRoles = $Result.DefaultSelection<Prisma.$ServerRolesPayload>
+/**
+ * Model ServerRolePermission
+ * 
+ */
+export type ServerRolePermission = $Result.DefaultSelection<Prisma.$ServerRolePermissionPayload>
 /**
  * Model Messages
  * 
@@ -70,11 +75,33 @@ export namespace $Enums {
 
 export type ChannelType = (typeof ChannelType)[keyof typeof ChannelType]
 
+
+export const Permission: {
+  ADMINISTRATOR: 'ADMINISTRATOR',
+  MANAGE_SERVER: 'MANAGE_SERVER',
+  MANAGE_CHANNELS: 'MANAGE_CHANNELS',
+  CREATE_INVITE: 'CREATE_INVITE',
+  MANAGE_MESSAGES: 'MANAGE_MESSAGES',
+  PIN_MESSAGES: 'PIN_MESSAGES',
+  MODERATE_MEMBERS: 'MODERATE_MEMBERS',
+  KICK_MEMBERS: 'KICK_MEMBERS',
+  BAN_MEMBERS: 'BAN_MEMBERS',
+  VIEW_CHANNEL: 'VIEW_CHANNEL',
+  SEND_MESSAGES: 'SEND_MESSAGES',
+  READ_MESSAGE_HISTORY: 'READ_MESSAGE_HISTORY'
+};
+
+export type Permission = (typeof Permission)[keyof typeof Permission]
+
 }
 
 export type ChannelType = $Enums.ChannelType
 
 export const ChannelType: typeof $Enums.ChannelType
+
+export type Permission = $Enums.Permission
+
+export const Permission: typeof $Enums.Permission
 
 /**
  * ##  Prisma Client ʲˢ
@@ -228,14 +255,24 @@ export class PrismaClient<
   get serverMember(): Prisma.ServerMemberDelegate<ExtArgs, ClientOptions>;
 
   /**
-   * `prisma.serverRoles`: Exposes CRUD operations for the **serverRoles** model.
+   * `prisma.serverRoles`: Exposes CRUD operations for the **ServerRoles** model.
     * Example usage:
     * ```ts
     * // Fetch zero or more ServerRoles
     * const serverRoles = await prisma.serverRoles.findMany()
     * ```
     */
-  get serverRoles(): Prisma.serverRolesDelegate<ExtArgs, ClientOptions>;
+  get serverRoles(): Prisma.ServerRolesDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.serverRolePermission`: Exposes CRUD operations for the **ServerRolePermission** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ServerRolePermissions
+    * const serverRolePermissions = await prisma.serverRolePermission.findMany()
+    * ```
+    */
+  get serverRolePermission(): Prisma.ServerRolePermissionDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.messages`: Exposes CRUD operations for the **Messages** model.
@@ -723,7 +760,8 @@ export namespace Prisma {
     Server: 'Server',
     Channel: 'Channel',
     ServerMember: 'ServerMember',
-    serverRoles: 'serverRoles',
+    ServerRoles: 'ServerRoles',
+    ServerRolePermission: 'ServerRolePermission',
     Messages: 'Messages',
     User: 'User',
     Session: 'Session',
@@ -744,7 +782,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "server" | "channel" | "serverMember" | "serverRoles" | "messages" | "user" | "session" | "account" | "verification"
+      modelProps: "server" | "channel" | "serverMember" | "serverRoles" | "serverRolePermission" | "messages" | "user" | "session" | "account" | "verification"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -970,77 +1008,151 @@ export namespace Prisma {
           }
         }
       }
-      serverRoles: {
-        payload: Prisma.$serverRolesPayload<ExtArgs>
-        fields: Prisma.serverRolesFieldRefs
+      ServerRoles: {
+        payload: Prisma.$ServerRolesPayload<ExtArgs>
+        fields: Prisma.ServerRolesFieldRefs
         operations: {
           findUnique: {
-            args: Prisma.serverRolesFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$serverRolesPayload> | null
+            args: Prisma.ServerRolesFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerRolesPayload> | null
           }
           findUniqueOrThrow: {
-            args: Prisma.serverRolesFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$serverRolesPayload>
+            args: Prisma.ServerRolesFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerRolesPayload>
           }
           findFirst: {
-            args: Prisma.serverRolesFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$serverRolesPayload> | null
+            args: Prisma.ServerRolesFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerRolesPayload> | null
           }
           findFirstOrThrow: {
-            args: Prisma.serverRolesFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$serverRolesPayload>
+            args: Prisma.ServerRolesFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerRolesPayload>
           }
           findMany: {
-            args: Prisma.serverRolesFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$serverRolesPayload>[]
+            args: Prisma.ServerRolesFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerRolesPayload>[]
           }
           create: {
-            args: Prisma.serverRolesCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$serverRolesPayload>
+            args: Prisma.ServerRolesCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerRolesPayload>
           }
           createMany: {
-            args: Prisma.serverRolesCreateManyArgs<ExtArgs>
+            args: Prisma.ServerRolesCreateManyArgs<ExtArgs>
             result: BatchPayload
           }
           createManyAndReturn: {
-            args: Prisma.serverRolesCreateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$serverRolesPayload>[]
+            args: Prisma.ServerRolesCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerRolesPayload>[]
           }
           delete: {
-            args: Prisma.serverRolesDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$serverRolesPayload>
+            args: Prisma.ServerRolesDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerRolesPayload>
           }
           update: {
-            args: Prisma.serverRolesUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$serverRolesPayload>
+            args: Prisma.ServerRolesUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerRolesPayload>
           }
           deleteMany: {
-            args: Prisma.serverRolesDeleteManyArgs<ExtArgs>
+            args: Prisma.ServerRolesDeleteManyArgs<ExtArgs>
             result: BatchPayload
           }
           updateMany: {
-            args: Prisma.serverRolesUpdateManyArgs<ExtArgs>
+            args: Prisma.ServerRolesUpdateManyArgs<ExtArgs>
             result: BatchPayload
           }
           updateManyAndReturn: {
-            args: Prisma.serverRolesUpdateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$serverRolesPayload>[]
+            args: Prisma.ServerRolesUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerRolesPayload>[]
           }
           upsert: {
-            args: Prisma.serverRolesUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$serverRolesPayload>
+            args: Prisma.ServerRolesUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerRolesPayload>
           }
           aggregate: {
             args: Prisma.ServerRolesAggregateArgs<ExtArgs>
             result: $Utils.Optional<AggregateServerRoles>
           }
           groupBy: {
-            args: Prisma.serverRolesGroupByArgs<ExtArgs>
+            args: Prisma.ServerRolesGroupByArgs<ExtArgs>
             result: $Utils.Optional<ServerRolesGroupByOutputType>[]
           }
           count: {
-            args: Prisma.serverRolesCountArgs<ExtArgs>
+            args: Prisma.ServerRolesCountArgs<ExtArgs>
             result: $Utils.Optional<ServerRolesCountAggregateOutputType> | number
+          }
+        }
+      }
+      ServerRolePermission: {
+        payload: Prisma.$ServerRolePermissionPayload<ExtArgs>
+        fields: Prisma.ServerRolePermissionFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ServerRolePermissionFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerRolePermissionPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ServerRolePermissionFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerRolePermissionPayload>
+          }
+          findFirst: {
+            args: Prisma.ServerRolePermissionFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerRolePermissionPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ServerRolePermissionFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerRolePermissionPayload>
+          }
+          findMany: {
+            args: Prisma.ServerRolePermissionFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerRolePermissionPayload>[]
+          }
+          create: {
+            args: Prisma.ServerRolePermissionCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerRolePermissionPayload>
+          }
+          createMany: {
+            args: Prisma.ServerRolePermissionCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ServerRolePermissionCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerRolePermissionPayload>[]
+          }
+          delete: {
+            args: Prisma.ServerRolePermissionDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerRolePermissionPayload>
+          }
+          update: {
+            args: Prisma.ServerRolePermissionUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerRolePermissionPayload>
+          }
+          deleteMany: {
+            args: Prisma.ServerRolePermissionDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ServerRolePermissionUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ServerRolePermissionUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerRolePermissionPayload>[]
+          }
+          upsert: {
+            args: Prisma.ServerRolePermissionUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerRolePermissionPayload>
+          }
+          aggregate: {
+            args: Prisma.ServerRolePermissionAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateServerRolePermission>
+          }
+          groupBy: {
+            args: Prisma.ServerRolePermissionGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ServerRolePermissionGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ServerRolePermissionCountArgs<ExtArgs>
+            result: $Utils.Optional<ServerRolePermissionCountAggregateOutputType> | number
           }
         }
       }
@@ -1525,7 +1637,8 @@ export namespace Prisma {
     server?: ServerOmit
     channel?: ChannelOmit
     serverMember?: ServerMemberOmit
-    serverRoles?: serverRolesOmit
+    serverRoles?: ServerRolesOmit
+    serverRolePermission?: ServerRolePermissionOmit
     messages?: MessagesOmit
     user?: UserOmit
     session?: SessionOmit
@@ -1651,7 +1764,7 @@ export namespace Prisma {
    * ServerCountOutputType without action
    */
   export type ServerCountOutputTypeCountRolesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: serverRolesWhereInput
+    where?: ServerRolesWhereInput
   }
 
 
@@ -1722,7 +1835,7 @@ export namespace Prisma {
    * ServerMemberCountOutputType without action
    */
   export type ServerMemberCountOutputTypeCountServerRolesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: serverRolesWhereInput
+    where?: ServerRolesWhereInput
   }
 
 
@@ -1732,10 +1845,12 @@ export namespace Prisma {
 
   export type ServerRolesCountOutputType = {
     members: number
+    permissions: number
   }
 
   export type ServerRolesCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     members?: boolean | ServerRolesCountOutputTypeCountMembersArgs
+    permissions?: boolean | ServerRolesCountOutputTypeCountPermissionsArgs
   }
 
   // Custom InputTypes
@@ -1754,6 +1869,13 @@ export namespace Prisma {
    */
   export type ServerRolesCountOutputTypeCountMembersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ServerMemberWhereInput
+  }
+
+  /**
+   * ServerRolesCountOutputType without action
+   */
+  export type ServerRolesCountOutputTypeCountPermissionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ServerRolePermissionWhereInput
   }
 
 
@@ -2026,7 +2148,7 @@ export namespace Prisma {
     objects: {
       channels: Prisma.$ChannelPayload<ExtArgs>[]
       members: Prisma.$ServerMemberPayload<ExtArgs>[]
-      roles: Prisma.$serverRolesPayload<ExtArgs>[]
+      roles: Prisma.$ServerRolesPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -2429,7 +2551,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     channels<T extends Server$channelsArgs<ExtArgs> = {}>(args?: Subset<T, Server$channelsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChannelPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     members<T extends Server$membersArgs<ExtArgs> = {}>(args?: Subset<T, Server$membersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ServerMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    roles<T extends Server$rolesArgs<ExtArgs> = {}>(args?: Subset<T, Server$rolesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$serverRolesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    roles<T extends Server$rolesArgs<ExtArgs> = {}>(args?: Subset<T, Server$rolesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ServerRolesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2908,20 +3030,20 @@ export namespace Prisma {
    */
   export type Server$rolesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the serverRoles
+     * Select specific fields to fetch from the ServerRoles
      */
-    select?: serverRolesSelect<ExtArgs> | null
+    select?: ServerRolesSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the serverRoles
+     * Omit specific fields from the ServerRoles
      */
-    omit?: serverRolesOmit<ExtArgs> | null
+    omit?: ServerRolesOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: serverRolesInclude<ExtArgs> | null
-    where?: serverRolesWhereInput
-    orderBy?: serverRolesOrderByWithRelationInput | serverRolesOrderByWithRelationInput[]
-    cursor?: serverRolesWhereUniqueInput
+    include?: ServerRolesInclude<ExtArgs> | null
+    where?: ServerRolesWhereInput
+    orderBy?: ServerRolesOrderByWithRelationInput | ServerRolesOrderByWithRelationInput[]
+    cursor?: ServerRolesWhereUniqueInput
     take?: number
     skip?: number
     distinct?: ServerRolesScalarFieldEnum | ServerRolesScalarFieldEnum[]
@@ -4081,18 +4203,21 @@ export namespace Prisma {
     id: string | null
     userId: string | null
     serverId: string | null
+    timeoutUntil: Date | null
   }
 
   export type ServerMemberMaxAggregateOutputType = {
     id: string | null
     userId: string | null
     serverId: string | null
+    timeoutUntil: Date | null
   }
 
   export type ServerMemberCountAggregateOutputType = {
     id: number
     userId: number
     serverId: number
+    timeoutUntil: number
     _all: number
   }
 
@@ -4101,18 +4226,21 @@ export namespace Prisma {
     id?: true
     userId?: true
     serverId?: true
+    timeoutUntil?: true
   }
 
   export type ServerMemberMaxAggregateInputType = {
     id?: true
     userId?: true
     serverId?: true
+    timeoutUntil?: true
   }
 
   export type ServerMemberCountAggregateInputType = {
     id?: true
     userId?: true
     serverId?: true
+    timeoutUntil?: true
     _all?: true
   }
 
@@ -4192,6 +4320,7 @@ export namespace Prisma {
     id: string
     userId: string
     serverId: string
+    timeoutUntil: Date | null
     _count: ServerMemberCountAggregateOutputType | null
     _min: ServerMemberMinAggregateOutputType | null
     _max: ServerMemberMaxAggregateOutputType | null
@@ -4215,6 +4344,7 @@ export namespace Prisma {
     id?: boolean
     userId?: boolean
     serverId?: boolean
+    timeoutUntil?: boolean
     server?: boolean | ServerDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
     serverRoles?: boolean | ServerMember$serverRolesArgs<ExtArgs>
@@ -4225,6 +4355,7 @@ export namespace Prisma {
     id?: boolean
     userId?: boolean
     serverId?: boolean
+    timeoutUntil?: boolean
     server?: boolean | ServerDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["serverMember"]>
@@ -4233,6 +4364,7 @@ export namespace Prisma {
     id?: boolean
     userId?: boolean
     serverId?: boolean
+    timeoutUntil?: boolean
     server?: boolean | ServerDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["serverMember"]>
@@ -4241,9 +4373,10 @@ export namespace Prisma {
     id?: boolean
     userId?: boolean
     serverId?: boolean
+    timeoutUntil?: boolean
   }
 
-  export type ServerMemberOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "serverId", ExtArgs["result"]["serverMember"]>
+  export type ServerMemberOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "serverId" | "timeoutUntil", ExtArgs["result"]["serverMember"]>
   export type ServerMemberInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     server?: boolean | ServerDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -4264,12 +4397,13 @@ export namespace Prisma {
     objects: {
       server: Prisma.$ServerPayload<ExtArgs>
       user: Prisma.$UserPayload<ExtArgs>
-      serverRoles: Prisma.$serverRolesPayload<ExtArgs>[]
+      serverRoles: Prisma.$ServerRolesPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       userId: string
       serverId: string
+      timeoutUntil: Date | null
     }, ExtArgs["result"]["serverMember"]>
     composites: {}
   }
@@ -4666,7 +4800,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     server<T extends ServerDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ServerDefaultArgs<ExtArgs>>): Prisma__ServerClient<$Result.GetResult<Prisma.$ServerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    serverRoles<T extends ServerMember$serverRolesArgs<ExtArgs> = {}>(args?: Subset<T, ServerMember$serverRolesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$serverRolesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    serverRoles<T extends ServerMember$serverRolesArgs<ExtArgs> = {}>(args?: Subset<T, ServerMember$serverRolesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ServerRolesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4699,6 +4833,7 @@ export namespace Prisma {
     readonly id: FieldRef<"ServerMember", 'String'>
     readonly userId: FieldRef<"ServerMember", 'String'>
     readonly serverId: FieldRef<"ServerMember", 'String'>
+    readonly timeoutUntil: FieldRef<"ServerMember", 'DateTime'>
   }
     
 
@@ -5104,20 +5239,20 @@ export namespace Prisma {
    */
   export type ServerMember$serverRolesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the serverRoles
+     * Select specific fields to fetch from the ServerRoles
      */
-    select?: serverRolesSelect<ExtArgs> | null
+    select?: ServerRolesSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the serverRoles
+     * Omit specific fields from the ServerRoles
      */
-    omit?: serverRolesOmit<ExtArgs> | null
+    omit?: ServerRolesOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: serverRolesInclude<ExtArgs> | null
-    where?: serverRolesWhereInput
-    orderBy?: serverRolesOrderByWithRelationInput | serverRolesOrderByWithRelationInput[]
-    cursor?: serverRolesWhereUniqueInput
+    include?: ServerRolesInclude<ExtArgs> | null
+    where?: ServerRolesWhereInput
+    orderBy?: ServerRolesOrderByWithRelationInput | ServerRolesOrderByWithRelationInput[]
+    cursor?: ServerRolesWhereUniqueInput
     take?: number
     skip?: number
     distinct?: ServerRolesScalarFieldEnum | ServerRolesScalarFieldEnum[]
@@ -5143,89 +5278,125 @@ export namespace Prisma {
 
 
   /**
-   * Model serverRoles
+   * Model ServerRoles
    */
 
   export type AggregateServerRoles = {
     _count: ServerRolesCountAggregateOutputType | null
+    _avg: ServerRolesAvgAggregateOutputType | null
+    _sum: ServerRolesSumAggregateOutputType | null
     _min: ServerRolesMinAggregateOutputType | null
     _max: ServerRolesMaxAggregateOutputType | null
+  }
+
+  export type ServerRolesAvgAggregateOutputType = {
+    position: number | null
+  }
+
+  export type ServerRolesSumAggregateOutputType = {
+    position: number | null
   }
 
   export type ServerRolesMinAggregateOutputType = {
     id: string | null
     name: string | null
+    position: number | null
     serverId: string | null
   }
 
   export type ServerRolesMaxAggregateOutputType = {
     id: string | null
     name: string | null
+    position: number | null
     serverId: string | null
   }
 
   export type ServerRolesCountAggregateOutputType = {
     id: number
     name: number
+    position: number
     serverId: number
     _all: number
   }
 
 
+  export type ServerRolesAvgAggregateInputType = {
+    position?: true
+  }
+
+  export type ServerRolesSumAggregateInputType = {
+    position?: true
+  }
+
   export type ServerRolesMinAggregateInputType = {
     id?: true
     name?: true
+    position?: true
     serverId?: true
   }
 
   export type ServerRolesMaxAggregateInputType = {
     id?: true
     name?: true
+    position?: true
     serverId?: true
   }
 
   export type ServerRolesCountAggregateInputType = {
     id?: true
     name?: true
+    position?: true
     serverId?: true
     _all?: true
   }
 
   export type ServerRolesAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Filter which serverRoles to aggregate.
+     * Filter which ServerRoles to aggregate.
      */
-    where?: serverRolesWhereInput
+    where?: ServerRolesWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of serverRoles to fetch.
+     * Determine the order of ServerRoles to fetch.
      */
-    orderBy?: serverRolesOrderByWithRelationInput | serverRolesOrderByWithRelationInput[]
+    orderBy?: ServerRolesOrderByWithRelationInput | ServerRolesOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the start position
      */
-    cursor?: serverRolesWhereUniqueInput
+    cursor?: ServerRolesWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` serverRoles from the position of the cursor.
+     * Take `±n` ServerRoles from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` serverRoles.
+     * Skip the first `n` ServerRoles.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
-     * Count returned serverRoles
+     * Count returned ServerRoles
     **/
     _count?: true | ServerRolesCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ServerRolesAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ServerRolesSumAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
@@ -5251,14 +5422,16 @@ export namespace Prisma {
 
 
 
-  export type serverRolesGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: serverRolesWhereInput
-    orderBy?: serverRolesOrderByWithAggregationInput | serverRolesOrderByWithAggregationInput[]
+  export type ServerRolesGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ServerRolesWhereInput
+    orderBy?: ServerRolesOrderByWithAggregationInput | ServerRolesOrderByWithAggregationInput[]
     by: ServerRolesScalarFieldEnum[] | ServerRolesScalarFieldEnum
-    having?: serverRolesScalarWhereWithAggregatesInput
+    having?: ServerRolesScalarWhereWithAggregatesInput
     take?: number
     skip?: number
     _count?: ServerRolesCountAggregateInputType | true
+    _avg?: ServerRolesAvgAggregateInputType
+    _sum?: ServerRolesSumAggregateInputType
     _min?: ServerRolesMinAggregateInputType
     _max?: ServerRolesMaxAggregateInputType
   }
@@ -5266,13 +5439,16 @@ export namespace Prisma {
   export type ServerRolesGroupByOutputType = {
     id: string
     name: string
+    position: number
     serverId: string
     _count: ServerRolesCountAggregateOutputType | null
+    _avg: ServerRolesAvgAggregateOutputType | null
+    _sum: ServerRolesSumAggregateOutputType | null
     _min: ServerRolesMinAggregateOutputType | null
     _max: ServerRolesMaxAggregateOutputType | null
   }
 
-  type GetServerRolesGroupByPayload<T extends serverRolesGroupByArgs> = Prisma.PrismaPromise<
+  type GetServerRolesGroupByPayload<T extends ServerRolesGroupByArgs> = Prisma.PrismaPromise<
     Array<
       PickEnumerable<ServerRolesGroupByOutputType, T['by']> &
         {
@@ -5286,74 +5462,82 @@ export namespace Prisma {
     >
 
 
-  export type serverRolesSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type ServerRolesSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    position?: boolean
     serverId?: boolean
     server?: boolean | ServerDefaultArgs<ExtArgs>
-    members?: boolean | serverRoles$membersArgs<ExtArgs>
+    members?: boolean | ServerRoles$membersArgs<ExtArgs>
+    permissions?: boolean | ServerRoles$permissionsArgs<ExtArgs>
     _count?: boolean | ServerRolesCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["serverRoles"]>
 
-  export type serverRolesSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type ServerRolesSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    position?: boolean
     serverId?: boolean
     server?: boolean | ServerDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["serverRoles"]>
 
-  export type serverRolesSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type ServerRolesSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    position?: boolean
     serverId?: boolean
     server?: boolean | ServerDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["serverRoles"]>
 
-  export type serverRolesSelectScalar = {
+  export type ServerRolesSelectScalar = {
     id?: boolean
     name?: boolean
+    position?: boolean
     serverId?: boolean
   }
 
-  export type serverRolesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "serverId", ExtArgs["result"]["serverRoles"]>
-  export type serverRolesInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ServerRolesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "position" | "serverId", ExtArgs["result"]["serverRoles"]>
+  export type ServerRolesInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     server?: boolean | ServerDefaultArgs<ExtArgs>
-    members?: boolean | serverRoles$membersArgs<ExtArgs>
+    members?: boolean | ServerRoles$membersArgs<ExtArgs>
+    permissions?: boolean | ServerRoles$permissionsArgs<ExtArgs>
     _count?: boolean | ServerRolesCountOutputTypeDefaultArgs<ExtArgs>
   }
-  export type serverRolesIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ServerRolesIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     server?: boolean | ServerDefaultArgs<ExtArgs>
   }
-  export type serverRolesIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ServerRolesIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     server?: boolean | ServerDefaultArgs<ExtArgs>
   }
 
-  export type $serverRolesPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "serverRoles"
+  export type $ServerRolesPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ServerRoles"
     objects: {
       server: Prisma.$ServerPayload<ExtArgs>
       members: Prisma.$ServerMemberPayload<ExtArgs>[]
+      permissions: Prisma.$ServerRolePermissionPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       name: string
+      position: number
       serverId: string
     }, ExtArgs["result"]["serverRoles"]>
     composites: {}
   }
 
-  type serverRolesGetPayload<S extends boolean | null | undefined | serverRolesDefaultArgs> = $Result.GetResult<Prisma.$serverRolesPayload, S>
+  type ServerRolesGetPayload<S extends boolean | null | undefined | ServerRolesDefaultArgs> = $Result.GetResult<Prisma.$ServerRolesPayload, S>
 
-  type serverRolesCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<serverRolesFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+  type ServerRolesCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ServerRolesFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
       select?: ServerRolesCountAggregateInputType | true
     }
 
-  export interface serverRolesDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['serverRoles'], meta: { name: 'serverRoles' } }
+  export interface ServerRolesDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ServerRoles'], meta: { name: 'ServerRoles' } }
     /**
      * Find zero or one ServerRoles that matches the filter.
-     * @param {serverRolesFindUniqueArgs} args - Arguments to find a ServerRoles
+     * @param {ServerRolesFindUniqueArgs} args - Arguments to find a ServerRoles
      * @example
      * // Get one ServerRoles
      * const serverRoles = await prisma.serverRoles.findUnique({
@@ -5362,12 +5546,12 @@ export namespace Prisma {
      *   }
      * })
      */
-    findUnique<T extends serverRolesFindUniqueArgs>(args: SelectSubset<T, serverRolesFindUniqueArgs<ExtArgs>>): Prisma__serverRolesClient<$Result.GetResult<Prisma.$serverRolesPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    findUnique<T extends ServerRolesFindUniqueArgs>(args: SelectSubset<T, ServerRolesFindUniqueArgs<ExtArgs>>): Prisma__ServerRolesClient<$Result.GetResult<Prisma.$ServerRolesPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
     /**
      * Find one ServerRoles that matches the filter or throw an error with `error.code='P2025'`
      * if no matches were found.
-     * @param {serverRolesFindUniqueOrThrowArgs} args - Arguments to find a ServerRoles
+     * @param {ServerRolesFindUniqueOrThrowArgs} args - Arguments to find a ServerRoles
      * @example
      * // Get one ServerRoles
      * const serverRoles = await prisma.serverRoles.findUniqueOrThrow({
@@ -5376,13 +5560,13 @@ export namespace Prisma {
      *   }
      * })
      */
-    findUniqueOrThrow<T extends serverRolesFindUniqueOrThrowArgs>(args: SelectSubset<T, serverRolesFindUniqueOrThrowArgs<ExtArgs>>): Prisma__serverRolesClient<$Result.GetResult<Prisma.$serverRolesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    findUniqueOrThrow<T extends ServerRolesFindUniqueOrThrowArgs>(args: SelectSubset<T, ServerRolesFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ServerRolesClient<$Result.GetResult<Prisma.$ServerRolesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
      * Find the first ServerRoles that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {serverRolesFindFirstArgs} args - Arguments to find a ServerRoles
+     * @param {ServerRolesFindFirstArgs} args - Arguments to find a ServerRoles
      * @example
      * // Get one ServerRoles
      * const serverRoles = await prisma.serverRoles.findFirst({
@@ -5391,14 +5575,14 @@ export namespace Prisma {
      *   }
      * })
      */
-    findFirst<T extends serverRolesFindFirstArgs>(args?: SelectSubset<T, serverRolesFindFirstArgs<ExtArgs>>): Prisma__serverRolesClient<$Result.GetResult<Prisma.$serverRolesPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    findFirst<T extends ServerRolesFindFirstArgs>(args?: SelectSubset<T, ServerRolesFindFirstArgs<ExtArgs>>): Prisma__ServerRolesClient<$Result.GetResult<Prisma.$ServerRolesPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
     /**
      * Find the first ServerRoles that matches the filter or
      * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {serverRolesFindFirstOrThrowArgs} args - Arguments to find a ServerRoles
+     * @param {ServerRolesFindFirstOrThrowArgs} args - Arguments to find a ServerRoles
      * @example
      * // Get one ServerRoles
      * const serverRoles = await prisma.serverRoles.findFirstOrThrow({
@@ -5407,13 +5591,13 @@ export namespace Prisma {
      *   }
      * })
      */
-    findFirstOrThrow<T extends serverRolesFindFirstOrThrowArgs>(args?: SelectSubset<T, serverRolesFindFirstOrThrowArgs<ExtArgs>>): Prisma__serverRolesClient<$Result.GetResult<Prisma.$serverRolesPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    findFirstOrThrow<T extends ServerRolesFindFirstOrThrowArgs>(args?: SelectSubset<T, ServerRolesFindFirstOrThrowArgs<ExtArgs>>): Prisma__ServerRolesClient<$Result.GetResult<Prisma.$ServerRolesPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
      * Find zero or more ServerRoles that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {serverRolesFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @param {ServerRolesFindManyArgs} args - Arguments to filter and select certain fields only.
      * @example
      * // Get all ServerRoles
      * const serverRoles = await prisma.serverRoles.findMany()
@@ -5425,11 +5609,11 @@ export namespace Prisma {
      * const serverRolesWithIdOnly = await prisma.serverRoles.findMany({ select: { id: true } })
      * 
      */
-    findMany<T extends serverRolesFindManyArgs>(args?: SelectSubset<T, serverRolesFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$serverRolesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+    findMany<T extends ServerRolesFindManyArgs>(args?: SelectSubset<T, ServerRolesFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ServerRolesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
 
     /**
      * Create a ServerRoles.
-     * @param {serverRolesCreateArgs} args - Arguments to create a ServerRoles.
+     * @param {ServerRolesCreateArgs} args - Arguments to create a ServerRoles.
      * @example
      * // Create one ServerRoles
      * const ServerRoles = await prisma.serverRoles.create({
@@ -5439,11 +5623,11 @@ export namespace Prisma {
      * })
      * 
      */
-    create<T extends serverRolesCreateArgs>(args: SelectSubset<T, serverRolesCreateArgs<ExtArgs>>): Prisma__serverRolesClient<$Result.GetResult<Prisma.$serverRolesPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    create<T extends ServerRolesCreateArgs>(args: SelectSubset<T, ServerRolesCreateArgs<ExtArgs>>): Prisma__ServerRolesClient<$Result.GetResult<Prisma.$ServerRolesPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
      * Create many ServerRoles.
-     * @param {serverRolesCreateManyArgs} args - Arguments to create many ServerRoles.
+     * @param {ServerRolesCreateManyArgs} args - Arguments to create many ServerRoles.
      * @example
      * // Create many ServerRoles
      * const serverRoles = await prisma.serverRoles.createMany({
@@ -5453,11 +5637,11 @@ export namespace Prisma {
      * })
      *     
      */
-    createMany<T extends serverRolesCreateManyArgs>(args?: SelectSubset<T, serverRolesCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    createMany<T extends ServerRolesCreateManyArgs>(args?: SelectSubset<T, ServerRolesCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
      * Create many ServerRoles and returns the data saved in the database.
-     * @param {serverRolesCreateManyAndReturnArgs} args - Arguments to create many ServerRoles.
+     * @param {ServerRolesCreateManyAndReturnArgs} args - Arguments to create many ServerRoles.
      * @example
      * // Create many ServerRoles
      * const serverRoles = await prisma.serverRoles.createManyAndReturn({
@@ -5477,11 +5661,11 @@ export namespace Prisma {
      * Read more here: https://pris.ly/d/null-undefined
      * 
      */
-    createManyAndReturn<T extends serverRolesCreateManyAndReturnArgs>(args?: SelectSubset<T, serverRolesCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$serverRolesPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+    createManyAndReturn<T extends ServerRolesCreateManyAndReturnArgs>(args?: SelectSubset<T, ServerRolesCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ServerRolesPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
 
     /**
      * Delete a ServerRoles.
-     * @param {serverRolesDeleteArgs} args - Arguments to delete one ServerRoles.
+     * @param {ServerRolesDeleteArgs} args - Arguments to delete one ServerRoles.
      * @example
      * // Delete one ServerRoles
      * const ServerRoles = await prisma.serverRoles.delete({
@@ -5491,11 +5675,11 @@ export namespace Prisma {
      * })
      * 
      */
-    delete<T extends serverRolesDeleteArgs>(args: SelectSubset<T, serverRolesDeleteArgs<ExtArgs>>): Prisma__serverRolesClient<$Result.GetResult<Prisma.$serverRolesPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    delete<T extends ServerRolesDeleteArgs>(args: SelectSubset<T, ServerRolesDeleteArgs<ExtArgs>>): Prisma__ServerRolesClient<$Result.GetResult<Prisma.$ServerRolesPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
      * Update one ServerRoles.
-     * @param {serverRolesUpdateArgs} args - Arguments to update one ServerRoles.
+     * @param {ServerRolesUpdateArgs} args - Arguments to update one ServerRoles.
      * @example
      * // Update one ServerRoles
      * const serverRoles = await prisma.serverRoles.update({
@@ -5508,11 +5692,11 @@ export namespace Prisma {
      * })
      * 
      */
-    update<T extends serverRolesUpdateArgs>(args: SelectSubset<T, serverRolesUpdateArgs<ExtArgs>>): Prisma__serverRolesClient<$Result.GetResult<Prisma.$serverRolesPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    update<T extends ServerRolesUpdateArgs>(args: SelectSubset<T, ServerRolesUpdateArgs<ExtArgs>>): Prisma__ServerRolesClient<$Result.GetResult<Prisma.$ServerRolesPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
      * Delete zero or more ServerRoles.
-     * @param {serverRolesDeleteManyArgs} args - Arguments to filter ServerRoles to delete.
+     * @param {ServerRolesDeleteManyArgs} args - Arguments to filter ServerRoles to delete.
      * @example
      * // Delete a few ServerRoles
      * const { count } = await prisma.serverRoles.deleteMany({
@@ -5522,13 +5706,13 @@ export namespace Prisma {
      * })
      * 
      */
-    deleteMany<T extends serverRolesDeleteManyArgs>(args?: SelectSubset<T, serverRolesDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    deleteMany<T extends ServerRolesDeleteManyArgs>(args?: SelectSubset<T, ServerRolesDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
      * Update zero or more ServerRoles.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {serverRolesUpdateManyArgs} args - Arguments to update one or more rows.
+     * @param {ServerRolesUpdateManyArgs} args - Arguments to update one or more rows.
      * @example
      * // Update many ServerRoles
      * const serverRoles = await prisma.serverRoles.updateMany({
@@ -5541,11 +5725,11 @@ export namespace Prisma {
      * })
      * 
      */
-    updateMany<T extends serverRolesUpdateManyArgs>(args: SelectSubset<T, serverRolesUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    updateMany<T extends ServerRolesUpdateManyArgs>(args: SelectSubset<T, ServerRolesUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
      * Update zero or more ServerRoles and returns the data updated in the database.
-     * @param {serverRolesUpdateManyAndReturnArgs} args - Arguments to update many ServerRoles.
+     * @param {ServerRolesUpdateManyAndReturnArgs} args - Arguments to update many ServerRoles.
      * @example
      * // Update many ServerRoles
      * const serverRoles = await prisma.serverRoles.updateManyAndReturn({
@@ -5571,11 +5755,11 @@ export namespace Prisma {
      * Read more here: https://pris.ly/d/null-undefined
      * 
      */
-    updateManyAndReturn<T extends serverRolesUpdateManyAndReturnArgs>(args: SelectSubset<T, serverRolesUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$serverRolesPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+    updateManyAndReturn<T extends ServerRolesUpdateManyAndReturnArgs>(args: SelectSubset<T, ServerRolesUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ServerRolesPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
     /**
      * Create or update one ServerRoles.
-     * @param {serverRolesUpsertArgs} args - Arguments to update or create a ServerRoles.
+     * @param {ServerRolesUpsertArgs} args - Arguments to update or create a ServerRoles.
      * @example
      * // Update or create a ServerRoles
      * const serverRoles = await prisma.serverRoles.upsert({
@@ -5590,14 +5774,14 @@ export namespace Prisma {
      *   }
      * })
      */
-    upsert<T extends serverRolesUpsertArgs>(args: SelectSubset<T, serverRolesUpsertArgs<ExtArgs>>): Prisma__serverRolesClient<$Result.GetResult<Prisma.$serverRolesPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    upsert<T extends ServerRolesUpsertArgs>(args: SelectSubset<T, ServerRolesUpsertArgs<ExtArgs>>): Prisma__ServerRolesClient<$Result.GetResult<Prisma.$ServerRolesPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
 
     /**
      * Count the number of ServerRoles.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {serverRolesCountArgs} args - Arguments to filter ServerRoles to count.
+     * @param {ServerRolesCountArgs} args - Arguments to filter ServerRoles to count.
      * @example
      * // Count the number of ServerRoles
      * const count = await prisma.serverRoles.count({
@@ -5606,8 +5790,8 @@ export namespace Prisma {
      *   }
      * })
     **/
-    count<T extends serverRolesCountArgs>(
-      args?: Subset<T, serverRolesCountArgs>,
+    count<T extends ServerRolesCountArgs>(
+      args?: Subset<T, ServerRolesCountArgs>,
     ): Prisma.PrismaPromise<
       T extends $Utils.Record<'select', any>
         ? T['select'] extends true
@@ -5646,7 +5830,7 @@ export namespace Prisma {
      * Group by ServerRoles.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {serverRolesGroupByArgs} args - Group by arguments.
+     * @param {ServerRolesGroupByArgs} args - Group by arguments.
      * @example
      * // Group by city, order by createdAt, get count
      * const result = await prisma.user.groupBy({
@@ -5661,14 +5845,14 @@ export namespace Prisma {
      * 
     **/
     groupBy<
-      T extends serverRolesGroupByArgs,
+      T extends ServerRolesGroupByArgs,
       HasSelectOrTake extends Or<
         Extends<'skip', Keys<T>>,
         Extends<'take', Keys<T>>
       >,
       OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: serverRolesGroupByArgs['orderBy'] }
-        : { orderBy?: serverRolesGroupByArgs['orderBy'] },
+        ? { orderBy: ServerRolesGroupByArgs['orderBy'] }
+        : { orderBy?: ServerRolesGroupByArgs['orderBy'] },
       OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
       ByFields extends MaybeTupleToUnion<T['by']>,
       ByValid extends Has<ByFields, OrderFields>,
@@ -5717,23 +5901,24 @@ export namespace Prisma {
             ? never
             : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
         }[OrderFields]
-    >(args: SubsetIntersection<T, serverRolesGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetServerRolesGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+    >(args: SubsetIntersection<T, ServerRolesGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetServerRolesGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
   /**
-   * Fields of the serverRoles model
+   * Fields of the ServerRoles model
    */
-  readonly fields: serverRolesFieldRefs;
+  readonly fields: ServerRolesFieldRefs;
   }
 
   /**
-   * The delegate class that acts as a "Promise-like" for serverRoles.
+   * The delegate class that acts as a "Promise-like" for ServerRoles.
    * Why is this prefixed with `Prisma__`?
    * Because we want to prevent naming conflicts as mentioned in
    * https://github.com/prisma/prisma-client-js/issues/707
    */
-  export interface Prisma__serverRolesClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+  export interface Prisma__ServerRolesClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     server<T extends ServerDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ServerDefaultArgs<ExtArgs>>): Prisma__ServerClient<$Result.GetResult<Prisma.$ServerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    members<T extends serverRoles$membersArgs<ExtArgs> = {}>(args?: Subset<T, serverRoles$membersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ServerMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    members<T extends ServerRoles$membersArgs<ExtArgs> = {}>(args?: Subset<T, ServerRoles$membersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ServerMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    permissions<T extends ServerRoles$permissionsArgs<ExtArgs> = {}>(args?: Subset<T, ServerRoles$permissionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ServerRolePermissionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5760,416 +5945,417 @@ export namespace Prisma {
 
 
   /**
-   * Fields of the serverRoles model
+   * Fields of the ServerRoles model
    */
-  interface serverRolesFieldRefs {
-    readonly id: FieldRef<"serverRoles", 'String'>
-    readonly name: FieldRef<"serverRoles", 'String'>
-    readonly serverId: FieldRef<"serverRoles", 'String'>
+  interface ServerRolesFieldRefs {
+    readonly id: FieldRef<"ServerRoles", 'String'>
+    readonly name: FieldRef<"ServerRoles", 'String'>
+    readonly position: FieldRef<"ServerRoles", 'Int'>
+    readonly serverId: FieldRef<"ServerRoles", 'String'>
   }
     
 
   // Custom InputTypes
   /**
-   * serverRoles findUnique
+   * ServerRoles findUnique
    */
-  export type serverRolesFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ServerRolesFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the serverRoles
+     * Select specific fields to fetch from the ServerRoles
      */
-    select?: serverRolesSelect<ExtArgs> | null
+    select?: ServerRolesSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the serverRoles
+     * Omit specific fields from the ServerRoles
      */
-    omit?: serverRolesOmit<ExtArgs> | null
+    omit?: ServerRolesOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: serverRolesInclude<ExtArgs> | null
+    include?: ServerRolesInclude<ExtArgs> | null
     /**
-     * Filter, which serverRoles to fetch.
+     * Filter, which ServerRoles to fetch.
      */
-    where: serverRolesWhereUniqueInput
+    where: ServerRolesWhereUniqueInput
   }
 
   /**
-   * serverRoles findUniqueOrThrow
+   * ServerRoles findUniqueOrThrow
    */
-  export type serverRolesFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ServerRolesFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the serverRoles
+     * Select specific fields to fetch from the ServerRoles
      */
-    select?: serverRolesSelect<ExtArgs> | null
+    select?: ServerRolesSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the serverRoles
+     * Omit specific fields from the ServerRoles
      */
-    omit?: serverRolesOmit<ExtArgs> | null
+    omit?: ServerRolesOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: serverRolesInclude<ExtArgs> | null
+    include?: ServerRolesInclude<ExtArgs> | null
     /**
-     * Filter, which serverRoles to fetch.
+     * Filter, which ServerRoles to fetch.
      */
-    where: serverRolesWhereUniqueInput
+    where: ServerRolesWhereUniqueInput
   }
 
   /**
-   * serverRoles findFirst
+   * ServerRoles findFirst
    */
-  export type serverRolesFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ServerRolesFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the serverRoles
+     * Select specific fields to fetch from the ServerRoles
      */
-    select?: serverRolesSelect<ExtArgs> | null
+    select?: ServerRolesSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the serverRoles
+     * Omit specific fields from the ServerRoles
      */
-    omit?: serverRolesOmit<ExtArgs> | null
+    omit?: ServerRolesOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: serverRolesInclude<ExtArgs> | null
+    include?: ServerRolesInclude<ExtArgs> | null
     /**
-     * Filter, which serverRoles to fetch.
+     * Filter, which ServerRoles to fetch.
      */
-    where?: serverRolesWhereInput
+    where?: ServerRolesWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of serverRoles to fetch.
+     * Determine the order of ServerRoles to fetch.
      */
-    orderBy?: serverRolesOrderByWithRelationInput | serverRolesOrderByWithRelationInput[]
+    orderBy?: ServerRolesOrderByWithRelationInput | ServerRolesOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for searching for serverRoles.
+     * Sets the position for searching for ServerRoles.
      */
-    cursor?: serverRolesWhereUniqueInput
+    cursor?: ServerRolesWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` serverRoles from the position of the cursor.
+     * Take `±n` ServerRoles from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` serverRoles.
+     * Skip the first `n` ServerRoles.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
-     * Filter by unique combinations of serverRoles.
+     * Filter by unique combinations of ServerRoles.
      */
     distinct?: ServerRolesScalarFieldEnum | ServerRolesScalarFieldEnum[]
   }
 
   /**
-   * serverRoles findFirstOrThrow
+   * ServerRoles findFirstOrThrow
    */
-  export type serverRolesFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ServerRolesFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the serverRoles
+     * Select specific fields to fetch from the ServerRoles
      */
-    select?: serverRolesSelect<ExtArgs> | null
+    select?: ServerRolesSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the serverRoles
+     * Omit specific fields from the ServerRoles
      */
-    omit?: serverRolesOmit<ExtArgs> | null
+    omit?: ServerRolesOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: serverRolesInclude<ExtArgs> | null
+    include?: ServerRolesInclude<ExtArgs> | null
     /**
-     * Filter, which serverRoles to fetch.
+     * Filter, which ServerRoles to fetch.
      */
-    where?: serverRolesWhereInput
+    where?: ServerRolesWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of serverRoles to fetch.
+     * Determine the order of ServerRoles to fetch.
      */
-    orderBy?: serverRolesOrderByWithRelationInput | serverRolesOrderByWithRelationInput[]
+    orderBy?: ServerRolesOrderByWithRelationInput | ServerRolesOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for searching for serverRoles.
+     * Sets the position for searching for ServerRoles.
      */
-    cursor?: serverRolesWhereUniqueInput
+    cursor?: ServerRolesWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` serverRoles from the position of the cursor.
+     * Take `±n` ServerRoles from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` serverRoles.
+     * Skip the first `n` ServerRoles.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
-     * Filter by unique combinations of serverRoles.
+     * Filter by unique combinations of ServerRoles.
      */
     distinct?: ServerRolesScalarFieldEnum | ServerRolesScalarFieldEnum[]
   }
 
   /**
-   * serverRoles findMany
+   * ServerRoles findMany
    */
-  export type serverRolesFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ServerRolesFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the serverRoles
+     * Select specific fields to fetch from the ServerRoles
      */
-    select?: serverRolesSelect<ExtArgs> | null
+    select?: ServerRolesSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the serverRoles
+     * Omit specific fields from the ServerRoles
      */
-    omit?: serverRolesOmit<ExtArgs> | null
+    omit?: ServerRolesOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: serverRolesInclude<ExtArgs> | null
+    include?: ServerRolesInclude<ExtArgs> | null
     /**
-     * Filter, which serverRoles to fetch.
+     * Filter, which ServerRoles to fetch.
      */
-    where?: serverRolesWhereInput
+    where?: ServerRolesWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of serverRoles to fetch.
+     * Determine the order of ServerRoles to fetch.
      */
-    orderBy?: serverRolesOrderByWithRelationInput | serverRolesOrderByWithRelationInput[]
+    orderBy?: ServerRolesOrderByWithRelationInput | ServerRolesOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for listing serverRoles.
+     * Sets the position for listing ServerRoles.
      */
-    cursor?: serverRolesWhereUniqueInput
+    cursor?: ServerRolesWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` serverRoles from the position of the cursor.
+     * Take `±n` ServerRoles from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` serverRoles.
+     * Skip the first `n` ServerRoles.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
-     * Filter by unique combinations of serverRoles.
+     * Filter by unique combinations of ServerRoles.
      */
     distinct?: ServerRolesScalarFieldEnum | ServerRolesScalarFieldEnum[]
   }
 
   /**
-   * serverRoles create
+   * ServerRoles create
    */
-  export type serverRolesCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ServerRolesCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the serverRoles
+     * Select specific fields to fetch from the ServerRoles
      */
-    select?: serverRolesSelect<ExtArgs> | null
+    select?: ServerRolesSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the serverRoles
+     * Omit specific fields from the ServerRoles
      */
-    omit?: serverRolesOmit<ExtArgs> | null
+    omit?: ServerRolesOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: serverRolesInclude<ExtArgs> | null
+    include?: ServerRolesInclude<ExtArgs> | null
     /**
-     * The data needed to create a serverRoles.
+     * The data needed to create a ServerRoles.
      */
-    data: XOR<serverRolesCreateInput, serverRolesUncheckedCreateInput>
+    data: XOR<ServerRolesCreateInput, ServerRolesUncheckedCreateInput>
   }
 
   /**
-   * serverRoles createMany
+   * ServerRoles createMany
    */
-  export type serverRolesCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ServerRolesCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * The data used to create many serverRoles.
+     * The data used to create many ServerRoles.
      */
-    data: serverRolesCreateManyInput | serverRolesCreateManyInput[]
+    data: ServerRolesCreateManyInput | ServerRolesCreateManyInput[]
     skipDuplicates?: boolean
   }
 
   /**
-   * serverRoles createManyAndReturn
+   * ServerRoles createManyAndReturn
    */
-  export type serverRolesCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ServerRolesCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the serverRoles
+     * Select specific fields to fetch from the ServerRoles
      */
-    select?: serverRolesSelectCreateManyAndReturn<ExtArgs> | null
+    select?: ServerRolesSelectCreateManyAndReturn<ExtArgs> | null
     /**
-     * Omit specific fields from the serverRoles
+     * Omit specific fields from the ServerRoles
      */
-    omit?: serverRolesOmit<ExtArgs> | null
+    omit?: ServerRolesOmit<ExtArgs> | null
     /**
-     * The data used to create many serverRoles.
+     * The data used to create many ServerRoles.
      */
-    data: serverRolesCreateManyInput | serverRolesCreateManyInput[]
+    data: ServerRolesCreateManyInput | ServerRolesCreateManyInput[]
     skipDuplicates?: boolean
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: serverRolesIncludeCreateManyAndReturn<ExtArgs> | null
+    include?: ServerRolesIncludeCreateManyAndReturn<ExtArgs> | null
   }
 
   /**
-   * serverRoles update
+   * ServerRoles update
    */
-  export type serverRolesUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ServerRolesUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the serverRoles
+     * Select specific fields to fetch from the ServerRoles
      */
-    select?: serverRolesSelect<ExtArgs> | null
+    select?: ServerRolesSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the serverRoles
+     * Omit specific fields from the ServerRoles
      */
-    omit?: serverRolesOmit<ExtArgs> | null
+    omit?: ServerRolesOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: serverRolesInclude<ExtArgs> | null
+    include?: ServerRolesInclude<ExtArgs> | null
     /**
-     * The data needed to update a serverRoles.
+     * The data needed to update a ServerRoles.
      */
-    data: XOR<serverRolesUpdateInput, serverRolesUncheckedUpdateInput>
+    data: XOR<ServerRolesUpdateInput, ServerRolesUncheckedUpdateInput>
     /**
-     * Choose, which serverRoles to update.
+     * Choose, which ServerRoles to update.
      */
-    where: serverRolesWhereUniqueInput
+    where: ServerRolesWhereUniqueInput
   }
 
   /**
-   * serverRoles updateMany
+   * ServerRoles updateMany
    */
-  export type serverRolesUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ServerRolesUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * The data used to update serverRoles.
+     * The data used to update ServerRoles.
      */
-    data: XOR<serverRolesUpdateManyMutationInput, serverRolesUncheckedUpdateManyInput>
+    data: XOR<ServerRolesUpdateManyMutationInput, ServerRolesUncheckedUpdateManyInput>
     /**
-     * Filter which serverRoles to update
+     * Filter which ServerRoles to update
      */
-    where?: serverRolesWhereInput
+    where?: ServerRolesWhereInput
     /**
-     * Limit how many serverRoles to update.
+     * Limit how many ServerRoles to update.
      */
     limit?: number
   }
 
   /**
-   * serverRoles updateManyAndReturn
+   * ServerRoles updateManyAndReturn
    */
-  export type serverRolesUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ServerRolesUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the serverRoles
+     * Select specific fields to fetch from the ServerRoles
      */
-    select?: serverRolesSelectUpdateManyAndReturn<ExtArgs> | null
+    select?: ServerRolesSelectUpdateManyAndReturn<ExtArgs> | null
     /**
-     * Omit specific fields from the serverRoles
+     * Omit specific fields from the ServerRoles
      */
-    omit?: serverRolesOmit<ExtArgs> | null
+    omit?: ServerRolesOmit<ExtArgs> | null
     /**
-     * The data used to update serverRoles.
+     * The data used to update ServerRoles.
      */
-    data: XOR<serverRolesUpdateManyMutationInput, serverRolesUncheckedUpdateManyInput>
+    data: XOR<ServerRolesUpdateManyMutationInput, ServerRolesUncheckedUpdateManyInput>
     /**
-     * Filter which serverRoles to update
+     * Filter which ServerRoles to update
      */
-    where?: serverRolesWhereInput
+    where?: ServerRolesWhereInput
     /**
-     * Limit how many serverRoles to update.
+     * Limit how many ServerRoles to update.
      */
     limit?: number
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: serverRolesIncludeUpdateManyAndReturn<ExtArgs> | null
+    include?: ServerRolesIncludeUpdateManyAndReturn<ExtArgs> | null
   }
 
   /**
-   * serverRoles upsert
+   * ServerRoles upsert
    */
-  export type serverRolesUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ServerRolesUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the serverRoles
+     * Select specific fields to fetch from the ServerRoles
      */
-    select?: serverRolesSelect<ExtArgs> | null
+    select?: ServerRolesSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the serverRoles
+     * Omit specific fields from the ServerRoles
      */
-    omit?: serverRolesOmit<ExtArgs> | null
+    omit?: ServerRolesOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: serverRolesInclude<ExtArgs> | null
+    include?: ServerRolesInclude<ExtArgs> | null
     /**
-     * The filter to search for the serverRoles to update in case it exists.
+     * The filter to search for the ServerRoles to update in case it exists.
      */
-    where: serverRolesWhereUniqueInput
+    where: ServerRolesWhereUniqueInput
     /**
-     * In case the serverRoles found by the `where` argument doesn't exist, create a new serverRoles with this data.
+     * In case the ServerRoles found by the `where` argument doesn't exist, create a new ServerRoles with this data.
      */
-    create: XOR<serverRolesCreateInput, serverRolesUncheckedCreateInput>
+    create: XOR<ServerRolesCreateInput, ServerRolesUncheckedCreateInput>
     /**
-     * In case the serverRoles was found with the provided `where` argument, update it with this data.
+     * In case the ServerRoles was found with the provided `where` argument, update it with this data.
      */
-    update: XOR<serverRolesUpdateInput, serverRolesUncheckedUpdateInput>
+    update: XOR<ServerRolesUpdateInput, ServerRolesUncheckedUpdateInput>
   }
 
   /**
-   * serverRoles delete
+   * ServerRoles delete
    */
-  export type serverRolesDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ServerRolesDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the serverRoles
+     * Select specific fields to fetch from the ServerRoles
      */
-    select?: serverRolesSelect<ExtArgs> | null
+    select?: ServerRolesSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the serverRoles
+     * Omit specific fields from the ServerRoles
      */
-    omit?: serverRolesOmit<ExtArgs> | null
+    omit?: ServerRolesOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: serverRolesInclude<ExtArgs> | null
+    include?: ServerRolesInclude<ExtArgs> | null
     /**
-     * Filter which serverRoles to delete.
+     * Filter which ServerRoles to delete.
      */
-    where: serverRolesWhereUniqueInput
+    where: ServerRolesWhereUniqueInput
   }
 
   /**
-   * serverRoles deleteMany
+   * ServerRoles deleteMany
    */
-  export type serverRolesDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ServerRolesDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Filter which serverRoles to delete
+     * Filter which ServerRoles to delete
      */
-    where?: serverRolesWhereInput
+    where?: ServerRolesWhereInput
     /**
-     * Limit how many serverRoles to delete.
+     * Limit how many ServerRoles to delete.
      */
     limit?: number
   }
 
   /**
-   * serverRoles.members
+   * ServerRoles.members
    */
-  export type serverRoles$membersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ServerRoles$membersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the ServerMember
      */
@@ -6191,21 +6377,1082 @@ export namespace Prisma {
   }
 
   /**
-   * serverRoles without action
+   * ServerRoles.permissions
    */
-  export type serverRolesDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ServerRoles$permissionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the serverRoles
+     * Select specific fields to fetch from the ServerRolePermission
      */
-    select?: serverRolesSelect<ExtArgs> | null
+    select?: ServerRolePermissionSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the serverRoles
+     * Omit specific fields from the ServerRolePermission
      */
-    omit?: serverRolesOmit<ExtArgs> | null
+    omit?: ServerRolePermissionOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: serverRolesInclude<ExtArgs> | null
+    include?: ServerRolePermissionInclude<ExtArgs> | null
+    where?: ServerRolePermissionWhereInput
+    orderBy?: ServerRolePermissionOrderByWithRelationInput | ServerRolePermissionOrderByWithRelationInput[]
+    cursor?: ServerRolePermissionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ServerRolePermissionScalarFieldEnum | ServerRolePermissionScalarFieldEnum[]
+  }
+
+  /**
+   * ServerRoles without action
+   */
+  export type ServerRolesDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ServerRoles
+     */
+    select?: ServerRolesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ServerRoles
+     */
+    omit?: ServerRolesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerRolesInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ServerRolePermission
+   */
+
+  export type AggregateServerRolePermission = {
+    _count: ServerRolePermissionCountAggregateOutputType | null
+    _min: ServerRolePermissionMinAggregateOutputType | null
+    _max: ServerRolePermissionMaxAggregateOutputType | null
+  }
+
+  export type ServerRolePermissionMinAggregateOutputType = {
+    id: string | null
+    roleId: string | null
+    permission: $Enums.Permission | null
+  }
+
+  export type ServerRolePermissionMaxAggregateOutputType = {
+    id: string | null
+    roleId: string | null
+    permission: $Enums.Permission | null
+  }
+
+  export type ServerRolePermissionCountAggregateOutputType = {
+    id: number
+    roleId: number
+    permission: number
+    _all: number
+  }
+
+
+  export type ServerRolePermissionMinAggregateInputType = {
+    id?: true
+    roleId?: true
+    permission?: true
+  }
+
+  export type ServerRolePermissionMaxAggregateInputType = {
+    id?: true
+    roleId?: true
+    permission?: true
+  }
+
+  export type ServerRolePermissionCountAggregateInputType = {
+    id?: true
+    roleId?: true
+    permission?: true
+    _all?: true
+  }
+
+  export type ServerRolePermissionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ServerRolePermission to aggregate.
+     */
+    where?: ServerRolePermissionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ServerRolePermissions to fetch.
+     */
+    orderBy?: ServerRolePermissionOrderByWithRelationInput | ServerRolePermissionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ServerRolePermissionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ServerRolePermissions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ServerRolePermissions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ServerRolePermissions
+    **/
+    _count?: true | ServerRolePermissionCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ServerRolePermissionMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ServerRolePermissionMaxAggregateInputType
+  }
+
+  export type GetServerRolePermissionAggregateType<T extends ServerRolePermissionAggregateArgs> = {
+        [P in keyof T & keyof AggregateServerRolePermission]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateServerRolePermission[P]>
+      : GetScalarType<T[P], AggregateServerRolePermission[P]>
+  }
+
+
+
+
+  export type ServerRolePermissionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ServerRolePermissionWhereInput
+    orderBy?: ServerRolePermissionOrderByWithAggregationInput | ServerRolePermissionOrderByWithAggregationInput[]
+    by: ServerRolePermissionScalarFieldEnum[] | ServerRolePermissionScalarFieldEnum
+    having?: ServerRolePermissionScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ServerRolePermissionCountAggregateInputType | true
+    _min?: ServerRolePermissionMinAggregateInputType
+    _max?: ServerRolePermissionMaxAggregateInputType
+  }
+
+  export type ServerRolePermissionGroupByOutputType = {
+    id: string
+    roleId: string
+    permission: $Enums.Permission
+    _count: ServerRolePermissionCountAggregateOutputType | null
+    _min: ServerRolePermissionMinAggregateOutputType | null
+    _max: ServerRolePermissionMaxAggregateOutputType | null
+  }
+
+  type GetServerRolePermissionGroupByPayload<T extends ServerRolePermissionGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ServerRolePermissionGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ServerRolePermissionGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ServerRolePermissionGroupByOutputType[P]>
+            : GetScalarType<T[P], ServerRolePermissionGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ServerRolePermissionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    roleId?: boolean
+    permission?: boolean
+    role?: boolean | ServerRolesDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["serverRolePermission"]>
+
+  export type ServerRolePermissionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    roleId?: boolean
+    permission?: boolean
+    role?: boolean | ServerRolesDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["serverRolePermission"]>
+
+  export type ServerRolePermissionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    roleId?: boolean
+    permission?: boolean
+    role?: boolean | ServerRolesDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["serverRolePermission"]>
+
+  export type ServerRolePermissionSelectScalar = {
+    id?: boolean
+    roleId?: boolean
+    permission?: boolean
+  }
+
+  export type ServerRolePermissionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "roleId" | "permission", ExtArgs["result"]["serverRolePermission"]>
+  export type ServerRolePermissionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    role?: boolean | ServerRolesDefaultArgs<ExtArgs>
+  }
+  export type ServerRolePermissionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    role?: boolean | ServerRolesDefaultArgs<ExtArgs>
+  }
+  export type ServerRolePermissionIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    role?: boolean | ServerRolesDefaultArgs<ExtArgs>
+  }
+
+  export type $ServerRolePermissionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ServerRolePermission"
+    objects: {
+      role: Prisma.$ServerRolesPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      roleId: string
+      permission: $Enums.Permission
+    }, ExtArgs["result"]["serverRolePermission"]>
+    composites: {}
+  }
+
+  type ServerRolePermissionGetPayload<S extends boolean | null | undefined | ServerRolePermissionDefaultArgs> = $Result.GetResult<Prisma.$ServerRolePermissionPayload, S>
+
+  type ServerRolePermissionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ServerRolePermissionFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ServerRolePermissionCountAggregateInputType | true
+    }
+
+  export interface ServerRolePermissionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ServerRolePermission'], meta: { name: 'ServerRolePermission' } }
+    /**
+     * Find zero or one ServerRolePermission that matches the filter.
+     * @param {ServerRolePermissionFindUniqueArgs} args - Arguments to find a ServerRolePermission
+     * @example
+     * // Get one ServerRolePermission
+     * const serverRolePermission = await prisma.serverRolePermission.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ServerRolePermissionFindUniqueArgs>(args: SelectSubset<T, ServerRolePermissionFindUniqueArgs<ExtArgs>>): Prisma__ServerRolePermissionClient<$Result.GetResult<Prisma.$ServerRolePermissionPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ServerRolePermission that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ServerRolePermissionFindUniqueOrThrowArgs} args - Arguments to find a ServerRolePermission
+     * @example
+     * // Get one ServerRolePermission
+     * const serverRolePermission = await prisma.serverRolePermission.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ServerRolePermissionFindUniqueOrThrowArgs>(args: SelectSubset<T, ServerRolePermissionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ServerRolePermissionClient<$Result.GetResult<Prisma.$ServerRolePermissionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ServerRolePermission that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ServerRolePermissionFindFirstArgs} args - Arguments to find a ServerRolePermission
+     * @example
+     * // Get one ServerRolePermission
+     * const serverRolePermission = await prisma.serverRolePermission.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ServerRolePermissionFindFirstArgs>(args?: SelectSubset<T, ServerRolePermissionFindFirstArgs<ExtArgs>>): Prisma__ServerRolePermissionClient<$Result.GetResult<Prisma.$ServerRolePermissionPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ServerRolePermission that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ServerRolePermissionFindFirstOrThrowArgs} args - Arguments to find a ServerRolePermission
+     * @example
+     * // Get one ServerRolePermission
+     * const serverRolePermission = await prisma.serverRolePermission.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ServerRolePermissionFindFirstOrThrowArgs>(args?: SelectSubset<T, ServerRolePermissionFindFirstOrThrowArgs<ExtArgs>>): Prisma__ServerRolePermissionClient<$Result.GetResult<Prisma.$ServerRolePermissionPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ServerRolePermissions that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ServerRolePermissionFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ServerRolePermissions
+     * const serverRolePermissions = await prisma.serverRolePermission.findMany()
+     * 
+     * // Get first 10 ServerRolePermissions
+     * const serverRolePermissions = await prisma.serverRolePermission.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const serverRolePermissionWithIdOnly = await prisma.serverRolePermission.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ServerRolePermissionFindManyArgs>(args?: SelectSubset<T, ServerRolePermissionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ServerRolePermissionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ServerRolePermission.
+     * @param {ServerRolePermissionCreateArgs} args - Arguments to create a ServerRolePermission.
+     * @example
+     * // Create one ServerRolePermission
+     * const ServerRolePermission = await prisma.serverRolePermission.create({
+     *   data: {
+     *     // ... data to create a ServerRolePermission
+     *   }
+     * })
+     * 
+     */
+    create<T extends ServerRolePermissionCreateArgs>(args: SelectSubset<T, ServerRolePermissionCreateArgs<ExtArgs>>): Prisma__ServerRolePermissionClient<$Result.GetResult<Prisma.$ServerRolePermissionPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ServerRolePermissions.
+     * @param {ServerRolePermissionCreateManyArgs} args - Arguments to create many ServerRolePermissions.
+     * @example
+     * // Create many ServerRolePermissions
+     * const serverRolePermission = await prisma.serverRolePermission.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ServerRolePermissionCreateManyArgs>(args?: SelectSubset<T, ServerRolePermissionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ServerRolePermissions and returns the data saved in the database.
+     * @param {ServerRolePermissionCreateManyAndReturnArgs} args - Arguments to create many ServerRolePermissions.
+     * @example
+     * // Create many ServerRolePermissions
+     * const serverRolePermission = await prisma.serverRolePermission.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ServerRolePermissions and only return the `id`
+     * const serverRolePermissionWithIdOnly = await prisma.serverRolePermission.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ServerRolePermissionCreateManyAndReturnArgs>(args?: SelectSubset<T, ServerRolePermissionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ServerRolePermissionPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ServerRolePermission.
+     * @param {ServerRolePermissionDeleteArgs} args - Arguments to delete one ServerRolePermission.
+     * @example
+     * // Delete one ServerRolePermission
+     * const ServerRolePermission = await prisma.serverRolePermission.delete({
+     *   where: {
+     *     // ... filter to delete one ServerRolePermission
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ServerRolePermissionDeleteArgs>(args: SelectSubset<T, ServerRolePermissionDeleteArgs<ExtArgs>>): Prisma__ServerRolePermissionClient<$Result.GetResult<Prisma.$ServerRolePermissionPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ServerRolePermission.
+     * @param {ServerRolePermissionUpdateArgs} args - Arguments to update one ServerRolePermission.
+     * @example
+     * // Update one ServerRolePermission
+     * const serverRolePermission = await prisma.serverRolePermission.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ServerRolePermissionUpdateArgs>(args: SelectSubset<T, ServerRolePermissionUpdateArgs<ExtArgs>>): Prisma__ServerRolePermissionClient<$Result.GetResult<Prisma.$ServerRolePermissionPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ServerRolePermissions.
+     * @param {ServerRolePermissionDeleteManyArgs} args - Arguments to filter ServerRolePermissions to delete.
+     * @example
+     * // Delete a few ServerRolePermissions
+     * const { count } = await prisma.serverRolePermission.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ServerRolePermissionDeleteManyArgs>(args?: SelectSubset<T, ServerRolePermissionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ServerRolePermissions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ServerRolePermissionUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ServerRolePermissions
+     * const serverRolePermission = await prisma.serverRolePermission.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ServerRolePermissionUpdateManyArgs>(args: SelectSubset<T, ServerRolePermissionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ServerRolePermissions and returns the data updated in the database.
+     * @param {ServerRolePermissionUpdateManyAndReturnArgs} args - Arguments to update many ServerRolePermissions.
+     * @example
+     * // Update many ServerRolePermissions
+     * const serverRolePermission = await prisma.serverRolePermission.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ServerRolePermissions and only return the `id`
+     * const serverRolePermissionWithIdOnly = await prisma.serverRolePermission.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ServerRolePermissionUpdateManyAndReturnArgs>(args: SelectSubset<T, ServerRolePermissionUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ServerRolePermissionPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ServerRolePermission.
+     * @param {ServerRolePermissionUpsertArgs} args - Arguments to update or create a ServerRolePermission.
+     * @example
+     * // Update or create a ServerRolePermission
+     * const serverRolePermission = await prisma.serverRolePermission.upsert({
+     *   create: {
+     *     // ... data to create a ServerRolePermission
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ServerRolePermission we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ServerRolePermissionUpsertArgs>(args: SelectSubset<T, ServerRolePermissionUpsertArgs<ExtArgs>>): Prisma__ServerRolePermissionClient<$Result.GetResult<Prisma.$ServerRolePermissionPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ServerRolePermissions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ServerRolePermissionCountArgs} args - Arguments to filter ServerRolePermissions to count.
+     * @example
+     * // Count the number of ServerRolePermissions
+     * const count = await prisma.serverRolePermission.count({
+     *   where: {
+     *     // ... the filter for the ServerRolePermissions we want to count
+     *   }
+     * })
+    **/
+    count<T extends ServerRolePermissionCountArgs>(
+      args?: Subset<T, ServerRolePermissionCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ServerRolePermissionCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ServerRolePermission.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ServerRolePermissionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ServerRolePermissionAggregateArgs>(args: Subset<T, ServerRolePermissionAggregateArgs>): Prisma.PrismaPromise<GetServerRolePermissionAggregateType<T>>
+
+    /**
+     * Group by ServerRolePermission.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ServerRolePermissionGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ServerRolePermissionGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ServerRolePermissionGroupByArgs['orderBy'] }
+        : { orderBy?: ServerRolePermissionGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ServerRolePermissionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetServerRolePermissionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ServerRolePermission model
+   */
+  readonly fields: ServerRolePermissionFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ServerRolePermission.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ServerRolePermissionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    role<T extends ServerRolesDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ServerRolesDefaultArgs<ExtArgs>>): Prisma__ServerRolesClient<$Result.GetResult<Prisma.$ServerRolesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ServerRolePermission model
+   */
+  interface ServerRolePermissionFieldRefs {
+    readonly id: FieldRef<"ServerRolePermission", 'String'>
+    readonly roleId: FieldRef<"ServerRolePermission", 'String'>
+    readonly permission: FieldRef<"ServerRolePermission", 'Permission'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ServerRolePermission findUnique
+   */
+  export type ServerRolePermissionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ServerRolePermission
+     */
+    select?: ServerRolePermissionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ServerRolePermission
+     */
+    omit?: ServerRolePermissionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerRolePermissionInclude<ExtArgs> | null
+    /**
+     * Filter, which ServerRolePermission to fetch.
+     */
+    where: ServerRolePermissionWhereUniqueInput
+  }
+
+  /**
+   * ServerRolePermission findUniqueOrThrow
+   */
+  export type ServerRolePermissionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ServerRolePermission
+     */
+    select?: ServerRolePermissionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ServerRolePermission
+     */
+    omit?: ServerRolePermissionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerRolePermissionInclude<ExtArgs> | null
+    /**
+     * Filter, which ServerRolePermission to fetch.
+     */
+    where: ServerRolePermissionWhereUniqueInput
+  }
+
+  /**
+   * ServerRolePermission findFirst
+   */
+  export type ServerRolePermissionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ServerRolePermission
+     */
+    select?: ServerRolePermissionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ServerRolePermission
+     */
+    omit?: ServerRolePermissionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerRolePermissionInclude<ExtArgs> | null
+    /**
+     * Filter, which ServerRolePermission to fetch.
+     */
+    where?: ServerRolePermissionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ServerRolePermissions to fetch.
+     */
+    orderBy?: ServerRolePermissionOrderByWithRelationInput | ServerRolePermissionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ServerRolePermissions.
+     */
+    cursor?: ServerRolePermissionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ServerRolePermissions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ServerRolePermissions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ServerRolePermissions.
+     */
+    distinct?: ServerRolePermissionScalarFieldEnum | ServerRolePermissionScalarFieldEnum[]
+  }
+
+  /**
+   * ServerRolePermission findFirstOrThrow
+   */
+  export type ServerRolePermissionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ServerRolePermission
+     */
+    select?: ServerRolePermissionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ServerRolePermission
+     */
+    omit?: ServerRolePermissionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerRolePermissionInclude<ExtArgs> | null
+    /**
+     * Filter, which ServerRolePermission to fetch.
+     */
+    where?: ServerRolePermissionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ServerRolePermissions to fetch.
+     */
+    orderBy?: ServerRolePermissionOrderByWithRelationInput | ServerRolePermissionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ServerRolePermissions.
+     */
+    cursor?: ServerRolePermissionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ServerRolePermissions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ServerRolePermissions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ServerRolePermissions.
+     */
+    distinct?: ServerRolePermissionScalarFieldEnum | ServerRolePermissionScalarFieldEnum[]
+  }
+
+  /**
+   * ServerRolePermission findMany
+   */
+  export type ServerRolePermissionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ServerRolePermission
+     */
+    select?: ServerRolePermissionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ServerRolePermission
+     */
+    omit?: ServerRolePermissionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerRolePermissionInclude<ExtArgs> | null
+    /**
+     * Filter, which ServerRolePermissions to fetch.
+     */
+    where?: ServerRolePermissionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ServerRolePermissions to fetch.
+     */
+    orderBy?: ServerRolePermissionOrderByWithRelationInput | ServerRolePermissionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ServerRolePermissions.
+     */
+    cursor?: ServerRolePermissionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ServerRolePermissions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ServerRolePermissions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ServerRolePermissions.
+     */
+    distinct?: ServerRolePermissionScalarFieldEnum | ServerRolePermissionScalarFieldEnum[]
+  }
+
+  /**
+   * ServerRolePermission create
+   */
+  export type ServerRolePermissionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ServerRolePermission
+     */
+    select?: ServerRolePermissionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ServerRolePermission
+     */
+    omit?: ServerRolePermissionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerRolePermissionInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ServerRolePermission.
+     */
+    data: XOR<ServerRolePermissionCreateInput, ServerRolePermissionUncheckedCreateInput>
+  }
+
+  /**
+   * ServerRolePermission createMany
+   */
+  export type ServerRolePermissionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ServerRolePermissions.
+     */
+    data: ServerRolePermissionCreateManyInput | ServerRolePermissionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ServerRolePermission createManyAndReturn
+   */
+  export type ServerRolePermissionCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ServerRolePermission
+     */
+    select?: ServerRolePermissionSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ServerRolePermission
+     */
+    omit?: ServerRolePermissionOmit<ExtArgs> | null
+    /**
+     * The data used to create many ServerRolePermissions.
+     */
+    data: ServerRolePermissionCreateManyInput | ServerRolePermissionCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerRolePermissionIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ServerRolePermission update
+   */
+  export type ServerRolePermissionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ServerRolePermission
+     */
+    select?: ServerRolePermissionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ServerRolePermission
+     */
+    omit?: ServerRolePermissionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerRolePermissionInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ServerRolePermission.
+     */
+    data: XOR<ServerRolePermissionUpdateInput, ServerRolePermissionUncheckedUpdateInput>
+    /**
+     * Choose, which ServerRolePermission to update.
+     */
+    where: ServerRolePermissionWhereUniqueInput
+  }
+
+  /**
+   * ServerRolePermission updateMany
+   */
+  export type ServerRolePermissionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ServerRolePermissions.
+     */
+    data: XOR<ServerRolePermissionUpdateManyMutationInput, ServerRolePermissionUncheckedUpdateManyInput>
+    /**
+     * Filter which ServerRolePermissions to update
+     */
+    where?: ServerRolePermissionWhereInput
+    /**
+     * Limit how many ServerRolePermissions to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ServerRolePermission updateManyAndReturn
+   */
+  export type ServerRolePermissionUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ServerRolePermission
+     */
+    select?: ServerRolePermissionSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ServerRolePermission
+     */
+    omit?: ServerRolePermissionOmit<ExtArgs> | null
+    /**
+     * The data used to update ServerRolePermissions.
+     */
+    data: XOR<ServerRolePermissionUpdateManyMutationInput, ServerRolePermissionUncheckedUpdateManyInput>
+    /**
+     * Filter which ServerRolePermissions to update
+     */
+    where?: ServerRolePermissionWhereInput
+    /**
+     * Limit how many ServerRolePermissions to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerRolePermissionIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ServerRolePermission upsert
+   */
+  export type ServerRolePermissionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ServerRolePermission
+     */
+    select?: ServerRolePermissionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ServerRolePermission
+     */
+    omit?: ServerRolePermissionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerRolePermissionInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ServerRolePermission to update in case it exists.
+     */
+    where: ServerRolePermissionWhereUniqueInput
+    /**
+     * In case the ServerRolePermission found by the `where` argument doesn't exist, create a new ServerRolePermission with this data.
+     */
+    create: XOR<ServerRolePermissionCreateInput, ServerRolePermissionUncheckedCreateInput>
+    /**
+     * In case the ServerRolePermission was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ServerRolePermissionUpdateInput, ServerRolePermissionUncheckedUpdateInput>
+  }
+
+  /**
+   * ServerRolePermission delete
+   */
+  export type ServerRolePermissionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ServerRolePermission
+     */
+    select?: ServerRolePermissionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ServerRolePermission
+     */
+    omit?: ServerRolePermissionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerRolePermissionInclude<ExtArgs> | null
+    /**
+     * Filter which ServerRolePermission to delete.
+     */
+    where: ServerRolePermissionWhereUniqueInput
+  }
+
+  /**
+   * ServerRolePermission deleteMany
+   */
+  export type ServerRolePermissionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ServerRolePermissions to delete
+     */
+    where?: ServerRolePermissionWhereInput
+    /**
+     * Limit how many ServerRolePermissions to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ServerRolePermission without action
+   */
+  export type ServerRolePermissionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ServerRolePermission
+     */
+    select?: ServerRolePermissionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ServerRolePermission
+     */
+    omit?: ServerRolePermissionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerRolePermissionInclude<ExtArgs> | null
   }
 
 
@@ -11826,7 +13073,8 @@ export namespace Prisma {
   export const ServerMemberScalarFieldEnum: {
     id: 'id',
     userId: 'userId',
-    serverId: 'serverId'
+    serverId: 'serverId',
+    timeoutUntil: 'timeoutUntil'
   };
 
   export type ServerMemberScalarFieldEnum = (typeof ServerMemberScalarFieldEnum)[keyof typeof ServerMemberScalarFieldEnum]
@@ -11835,10 +13083,20 @@ export namespace Prisma {
   export const ServerRolesScalarFieldEnum: {
     id: 'id',
     name: 'name',
+    position: 'position',
     serverId: 'serverId'
   };
 
   export type ServerRolesScalarFieldEnum = (typeof ServerRolesScalarFieldEnum)[keyof typeof ServerRolesScalarFieldEnum]
+
+
+  export const ServerRolePermissionScalarFieldEnum: {
+    id: 'id',
+    roleId: 'roleId',
+    permission: 'permission'
+  };
+
+  export type ServerRolePermissionScalarFieldEnum = (typeof ServerRolePermissionScalarFieldEnum)[keyof typeof ServerRolePermissionScalarFieldEnum]
 
 
   export const MessagesScalarFieldEnum: {
@@ -11983,13 +13241,6 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'Boolean'
-   */
-  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
-    
-
-
-  /**
    * Reference to a field of type 'Int'
    */
   export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
@@ -12000,6 +13251,41 @@ export namespace Prisma {
    * Reference to a field of type 'Int[]'
    */
   export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Permission'
+   */
+  export type EnumPermissionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Permission'>
+    
+
+
+  /**
+   * Reference to a field of type 'Permission[]'
+   */
+  export type ListEnumPermissionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Permission[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Boolean'
+   */
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float'
+   */
+  export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float[]'
+   */
+  export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
     
   /**
    * Deep Input Types
@@ -12026,7 +13312,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     channels?: ChannelOrderByRelationAggregateInput
     members?: ServerMemberOrderByRelationAggregateInput
-    roles?: serverRolesOrderByRelationAggregateInput
+    roles?: ServerRolesOrderByRelationAggregateInput
   }
 
   export type ServerWhereUniqueInput = Prisma.AtLeast<{
@@ -12130,6 +13416,7 @@ export namespace Prisma {
     id?: StringFilter<"ServerMember"> | string
     userId?: StringFilter<"ServerMember"> | string
     serverId?: StringFilter<"ServerMember"> | string
+    timeoutUntil?: DateTimeNullableFilter<"ServerMember"> | Date | string | null
     server?: XOR<ServerScalarRelationFilter, ServerWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     serverRoles?: ServerRolesListRelationFilter
@@ -12139,9 +13426,10 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     serverId?: SortOrder
+    timeoutUntil?: SortOrderInput | SortOrder
     server?: ServerOrderByWithRelationInput
     user?: UserOrderByWithRelationInput
-    serverRoles?: serverRolesOrderByRelationAggregateInput
+    serverRoles?: ServerRolesOrderByRelationAggregateInput
   }
 
   export type ServerMemberWhereUniqueInput = Prisma.AtLeast<{
@@ -12151,6 +13439,7 @@ export namespace Prisma {
     NOT?: ServerMemberWhereInput | ServerMemberWhereInput[]
     userId?: StringFilter<"ServerMember"> | string
     serverId?: StringFilter<"ServerMember"> | string
+    timeoutUntil?: DateTimeNullableFilter<"ServerMember"> | Date | string | null
     server?: XOR<ServerScalarRelationFilter, ServerWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     serverRoles?: ServerRolesListRelationFilter
@@ -12160,6 +13449,7 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     serverId?: SortOrder
+    timeoutUntil?: SortOrderInput | SortOrder
     _count?: ServerMemberCountOrderByAggregateInput
     _max?: ServerMemberMaxOrderByAggregateInput
     _min?: ServerMemberMinOrderByAggregateInput
@@ -12172,54 +13462,112 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"ServerMember"> | string
     userId?: StringWithAggregatesFilter<"ServerMember"> | string
     serverId?: StringWithAggregatesFilter<"ServerMember"> | string
+    timeoutUntil?: DateTimeNullableWithAggregatesFilter<"ServerMember"> | Date | string | null
   }
 
-  export type serverRolesWhereInput = {
-    AND?: serverRolesWhereInput | serverRolesWhereInput[]
-    OR?: serverRolesWhereInput[]
-    NOT?: serverRolesWhereInput | serverRolesWhereInput[]
-    id?: StringFilter<"serverRoles"> | string
-    name?: StringFilter<"serverRoles"> | string
-    serverId?: StringFilter<"serverRoles"> | string
+  export type ServerRolesWhereInput = {
+    AND?: ServerRolesWhereInput | ServerRolesWhereInput[]
+    OR?: ServerRolesWhereInput[]
+    NOT?: ServerRolesWhereInput | ServerRolesWhereInput[]
+    id?: StringFilter<"ServerRoles"> | string
+    name?: StringFilter<"ServerRoles"> | string
+    position?: IntFilter<"ServerRoles"> | number
+    serverId?: StringFilter<"ServerRoles"> | string
     server?: XOR<ServerScalarRelationFilter, ServerWhereInput>
     members?: ServerMemberListRelationFilter
+    permissions?: ServerRolePermissionListRelationFilter
   }
 
-  export type serverRolesOrderByWithRelationInput = {
+  export type ServerRolesOrderByWithRelationInput = {
     id?: SortOrder
     name?: SortOrder
+    position?: SortOrder
     serverId?: SortOrder
     server?: ServerOrderByWithRelationInput
     members?: ServerMemberOrderByRelationAggregateInput
+    permissions?: ServerRolePermissionOrderByRelationAggregateInput
   }
 
-  export type serverRolesWhereUniqueInput = Prisma.AtLeast<{
+  export type ServerRolesWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    AND?: serverRolesWhereInput | serverRolesWhereInput[]
-    OR?: serverRolesWhereInput[]
-    NOT?: serverRolesWhereInput | serverRolesWhereInput[]
-    name?: StringFilter<"serverRoles"> | string
-    serverId?: StringFilter<"serverRoles"> | string
+    serverId_name?: ServerRolesServerIdNameCompoundUniqueInput
+    AND?: ServerRolesWhereInput | ServerRolesWhereInput[]
+    OR?: ServerRolesWhereInput[]
+    NOT?: ServerRolesWhereInput | ServerRolesWhereInput[]
+    name?: StringFilter<"ServerRoles"> | string
+    position?: IntFilter<"ServerRoles"> | number
+    serverId?: StringFilter<"ServerRoles"> | string
     server?: XOR<ServerScalarRelationFilter, ServerWhereInput>
     members?: ServerMemberListRelationFilter
-  }, "id">
+    permissions?: ServerRolePermissionListRelationFilter
+  }, "id" | "serverId_name">
 
-  export type serverRolesOrderByWithAggregationInput = {
+  export type ServerRolesOrderByWithAggregationInput = {
     id?: SortOrder
     name?: SortOrder
+    position?: SortOrder
     serverId?: SortOrder
-    _count?: serverRolesCountOrderByAggregateInput
-    _max?: serverRolesMaxOrderByAggregateInput
-    _min?: serverRolesMinOrderByAggregateInput
+    _count?: ServerRolesCountOrderByAggregateInput
+    _avg?: ServerRolesAvgOrderByAggregateInput
+    _max?: ServerRolesMaxOrderByAggregateInput
+    _min?: ServerRolesMinOrderByAggregateInput
+    _sum?: ServerRolesSumOrderByAggregateInput
   }
 
-  export type serverRolesScalarWhereWithAggregatesInput = {
-    AND?: serverRolesScalarWhereWithAggregatesInput | serverRolesScalarWhereWithAggregatesInput[]
-    OR?: serverRolesScalarWhereWithAggregatesInput[]
-    NOT?: serverRolesScalarWhereWithAggregatesInput | serverRolesScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"serverRoles"> | string
-    name?: StringWithAggregatesFilter<"serverRoles"> | string
-    serverId?: StringWithAggregatesFilter<"serverRoles"> | string
+  export type ServerRolesScalarWhereWithAggregatesInput = {
+    AND?: ServerRolesScalarWhereWithAggregatesInput | ServerRolesScalarWhereWithAggregatesInput[]
+    OR?: ServerRolesScalarWhereWithAggregatesInput[]
+    NOT?: ServerRolesScalarWhereWithAggregatesInput | ServerRolesScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ServerRoles"> | string
+    name?: StringWithAggregatesFilter<"ServerRoles"> | string
+    position?: IntWithAggregatesFilter<"ServerRoles"> | number
+    serverId?: StringWithAggregatesFilter<"ServerRoles"> | string
+  }
+
+  export type ServerRolePermissionWhereInput = {
+    AND?: ServerRolePermissionWhereInput | ServerRolePermissionWhereInput[]
+    OR?: ServerRolePermissionWhereInput[]
+    NOT?: ServerRolePermissionWhereInput | ServerRolePermissionWhereInput[]
+    id?: StringFilter<"ServerRolePermission"> | string
+    roleId?: StringFilter<"ServerRolePermission"> | string
+    permission?: EnumPermissionFilter<"ServerRolePermission"> | $Enums.Permission
+    role?: XOR<ServerRolesScalarRelationFilter, ServerRolesWhereInput>
+  }
+
+  export type ServerRolePermissionOrderByWithRelationInput = {
+    id?: SortOrder
+    roleId?: SortOrder
+    permission?: SortOrder
+    role?: ServerRolesOrderByWithRelationInput
+  }
+
+  export type ServerRolePermissionWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    roleId_permission?: ServerRolePermissionRoleIdPermissionCompoundUniqueInput
+    AND?: ServerRolePermissionWhereInput | ServerRolePermissionWhereInput[]
+    OR?: ServerRolePermissionWhereInput[]
+    NOT?: ServerRolePermissionWhereInput | ServerRolePermissionWhereInput[]
+    roleId?: StringFilter<"ServerRolePermission"> | string
+    permission?: EnumPermissionFilter<"ServerRolePermission"> | $Enums.Permission
+    role?: XOR<ServerRolesScalarRelationFilter, ServerRolesWhereInput>
+  }, "id" | "roleId_permission">
+
+  export type ServerRolePermissionOrderByWithAggregationInput = {
+    id?: SortOrder
+    roleId?: SortOrder
+    permission?: SortOrder
+    _count?: ServerRolePermissionCountOrderByAggregateInput
+    _max?: ServerRolePermissionMaxOrderByAggregateInput
+    _min?: ServerRolePermissionMinOrderByAggregateInput
+  }
+
+  export type ServerRolePermissionScalarWhereWithAggregatesInput = {
+    AND?: ServerRolePermissionScalarWhereWithAggregatesInput | ServerRolePermissionScalarWhereWithAggregatesInput[]
+    OR?: ServerRolePermissionScalarWhereWithAggregatesInput[]
+    NOT?: ServerRolePermissionScalarWhereWithAggregatesInput | ServerRolePermissionScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ServerRolePermission"> | string
+    roleId?: StringWithAggregatesFilter<"ServerRolePermission"> | string
+    permission?: EnumPermissionWithAggregatesFilter<"ServerRolePermission"> | $Enums.Permission
   }
 
   export type MessagesWhereInput = {
@@ -12591,7 +13939,7 @@ export namespace Prisma {
     createdAt?: Date | string
     channels?: ChannelCreateNestedManyWithoutServerInput
     members?: ServerMemberCreateNestedManyWithoutServerInput
-    roles?: serverRolesCreateNestedManyWithoutServerInput
+    roles?: ServerRolesCreateNestedManyWithoutServerInput
   }
 
   export type ServerUncheckedCreateInput = {
@@ -12601,7 +13949,7 @@ export namespace Prisma {
     createdAt?: Date | string
     channels?: ChannelUncheckedCreateNestedManyWithoutServerInput
     members?: ServerMemberUncheckedCreateNestedManyWithoutServerInput
-    roles?: serverRolesUncheckedCreateNestedManyWithoutServerInput
+    roles?: ServerRolesUncheckedCreateNestedManyWithoutServerInput
   }
 
   export type ServerUpdateInput = {
@@ -12611,7 +13959,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     channels?: ChannelUpdateManyWithoutServerNestedInput
     members?: ServerMemberUpdateManyWithoutServerNestedInput
-    roles?: serverRolesUpdateManyWithoutServerNestedInput
+    roles?: ServerRolesUpdateManyWithoutServerNestedInput
   }
 
   export type ServerUncheckedUpdateInput = {
@@ -12621,7 +13969,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     channels?: ChannelUncheckedUpdateManyWithoutServerNestedInput
     members?: ServerMemberUncheckedUpdateManyWithoutServerNestedInput
-    roles?: serverRolesUncheckedUpdateManyWithoutServerNestedInput
+    roles?: ServerRolesUncheckedUpdateManyWithoutServerNestedInput
   }
 
   export type ServerCreateManyInput = {
@@ -12710,91 +14058,150 @@ export namespace Prisma {
 
   export type ServerMemberCreateInput = {
     id?: string
+    timeoutUntil?: Date | string | null
     server: ServerCreateNestedOneWithoutMembersInput
     user: UserCreateNestedOneWithoutMembershipsInput
-    serverRoles?: serverRolesCreateNestedManyWithoutMembersInput
+    serverRoles?: ServerRolesCreateNestedManyWithoutMembersInput
   }
 
   export type ServerMemberUncheckedCreateInput = {
     id?: string
     userId: string
     serverId: string
-    serverRoles?: serverRolesUncheckedCreateNestedManyWithoutMembersInput
+    timeoutUntil?: Date | string | null
+    serverRoles?: ServerRolesUncheckedCreateNestedManyWithoutMembersInput
   }
 
   export type ServerMemberUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    timeoutUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     server?: ServerUpdateOneRequiredWithoutMembersNestedInput
     user?: UserUpdateOneRequiredWithoutMembershipsNestedInput
-    serverRoles?: serverRolesUpdateManyWithoutMembersNestedInput
+    serverRoles?: ServerRolesUpdateManyWithoutMembersNestedInput
   }
 
   export type ServerMemberUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     serverId?: StringFieldUpdateOperationsInput | string
-    serverRoles?: serverRolesUncheckedUpdateManyWithoutMembersNestedInput
+    timeoutUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    serverRoles?: ServerRolesUncheckedUpdateManyWithoutMembersNestedInput
   }
 
   export type ServerMemberCreateManyInput = {
     id?: string
     userId: string
     serverId: string
+    timeoutUntil?: Date | string | null
   }
 
   export type ServerMemberUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    timeoutUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type ServerMemberUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     serverId?: StringFieldUpdateOperationsInput | string
+    timeoutUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
-  export type serverRolesCreateInput = {
+  export type ServerRolesCreateInput = {
     id?: string
     name: string
+    position?: number
     server: ServerCreateNestedOneWithoutRolesInput
     members?: ServerMemberCreateNestedManyWithoutServerRolesInput
+    permissions?: ServerRolePermissionCreateNestedManyWithoutRoleInput
   }
 
-  export type serverRolesUncheckedCreateInput = {
+  export type ServerRolesUncheckedCreateInput = {
     id?: string
     name: string
+    position?: number
     serverId: string
     members?: ServerMemberUncheckedCreateNestedManyWithoutServerRolesInput
+    permissions?: ServerRolePermissionUncheckedCreateNestedManyWithoutRoleInput
   }
 
-  export type serverRolesUpdateInput = {
+  export type ServerRolesUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    position?: IntFieldUpdateOperationsInput | number
     server?: ServerUpdateOneRequiredWithoutRolesNestedInput
     members?: ServerMemberUpdateManyWithoutServerRolesNestedInput
+    permissions?: ServerRolePermissionUpdateManyWithoutRoleNestedInput
   }
 
-  export type serverRolesUncheckedUpdateInput = {
+  export type ServerRolesUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    position?: IntFieldUpdateOperationsInput | number
     serverId?: StringFieldUpdateOperationsInput | string
     members?: ServerMemberUncheckedUpdateManyWithoutServerRolesNestedInput
+    permissions?: ServerRolePermissionUncheckedUpdateManyWithoutRoleNestedInput
   }
 
-  export type serverRolesCreateManyInput = {
+  export type ServerRolesCreateManyInput = {
     id?: string
     name: string
+    position?: number
     serverId: string
   }
 
-  export type serverRolesUpdateManyMutationInput = {
+  export type ServerRolesUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    position?: IntFieldUpdateOperationsInput | number
   }
 
-  export type serverRolesUncheckedUpdateManyInput = {
+  export type ServerRolesUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    position?: IntFieldUpdateOperationsInput | number
     serverId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type ServerRolePermissionCreateInput = {
+    id?: string
+    permission: $Enums.Permission
+    role: ServerRolesCreateNestedOneWithoutPermissionsInput
+  }
+
+  export type ServerRolePermissionUncheckedCreateInput = {
+    id?: string
+    roleId: string
+    permission: $Enums.Permission
+  }
+
+  export type ServerRolePermissionUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    permission?: EnumPermissionFieldUpdateOperationsInput | $Enums.Permission
+    role?: ServerRolesUpdateOneRequiredWithoutPermissionsNestedInput
+  }
+
+  export type ServerRolePermissionUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    roleId?: StringFieldUpdateOperationsInput | string
+    permission?: EnumPermissionFieldUpdateOperationsInput | $Enums.Permission
+  }
+
+  export type ServerRolePermissionCreateManyInput = {
+    id?: string
+    roleId: string
+    permission: $Enums.Permission
+  }
+
+  export type ServerRolePermissionUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    permission?: EnumPermissionFieldUpdateOperationsInput | $Enums.Permission
+  }
+
+  export type ServerRolePermissionUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    roleId?: StringFieldUpdateOperationsInput | string
+    permission?: EnumPermissionFieldUpdateOperationsInput | $Enums.Permission
   }
 
   export type MessagesCreateInput = {
@@ -13252,9 +14659,9 @@ export namespace Prisma {
   }
 
   export type ServerRolesListRelationFilter = {
-    every?: serverRolesWhereInput
-    some?: serverRolesWhereInput
-    none?: serverRolesWhereInput
+    every?: ServerRolesWhereInput
+    some?: ServerRolesWhereInput
+    none?: ServerRolesWhereInput
   }
 
   export type SortOrderInput = {
@@ -13270,7 +14677,7 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
-  export type serverRolesOrderByRelationAggregateInput = {
+  export type ServerRolesOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -13411,6 +14818,17 @@ export namespace Prisma {
     _max?: NestedEnumChannelTypeFilter<$PrismaModel>
   }
 
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
   export type UserScalarRelationFilter = {
     is?: UserWhereInput
     isNot?: UserWhereInput
@@ -13420,36 +14838,151 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     serverId?: SortOrder
+    timeoutUntil?: SortOrder
   }
 
   export type ServerMemberMaxOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
     serverId?: SortOrder
+    timeoutUntil?: SortOrder
   }
 
   export type ServerMemberMinOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
     serverId?: SortOrder
+    timeoutUntil?: SortOrder
   }
 
-  export type serverRolesCountOrderByAggregateInput = {
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type IntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+
+  export type ServerRolePermissionListRelationFilter = {
+    every?: ServerRolePermissionWhereInput
+    some?: ServerRolePermissionWhereInput
+    none?: ServerRolePermissionWhereInput
+  }
+
+  export type ServerRolePermissionOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ServerRolesServerIdNameCompoundUniqueInput = {
+    serverId: string
+    name: string
+  }
+
+  export type ServerRolesCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    position?: SortOrder
     serverId?: SortOrder
   }
 
-  export type serverRolesMaxOrderByAggregateInput = {
+  export type ServerRolesAvgOrderByAggregateInput = {
+    position?: SortOrder
+  }
+
+  export type ServerRolesMaxOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    position?: SortOrder
     serverId?: SortOrder
   }
 
-  export type serverRolesMinOrderByAggregateInput = {
+  export type ServerRolesMinOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    position?: SortOrder
     serverId?: SortOrder
+  }
+
+  export type ServerRolesSumOrderByAggregateInput = {
+    position?: SortOrder
+  }
+
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type EnumPermissionFilter<$PrismaModel = never> = {
+    equals?: $Enums.Permission | EnumPermissionFieldRefInput<$PrismaModel>
+    in?: $Enums.Permission[] | ListEnumPermissionFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Permission[] | ListEnumPermissionFieldRefInput<$PrismaModel>
+    not?: NestedEnumPermissionFilter<$PrismaModel> | $Enums.Permission
+  }
+
+  export type ServerRolesScalarRelationFilter = {
+    is?: ServerRolesWhereInput
+    isNot?: ServerRolesWhereInput
+  }
+
+  export type ServerRolePermissionRoleIdPermissionCompoundUniqueInput = {
+    roleId: string
+    permission: $Enums.Permission
+  }
+
+  export type ServerRolePermissionCountOrderByAggregateInput = {
+    id?: SortOrder
+    roleId?: SortOrder
+    permission?: SortOrder
+  }
+
+  export type ServerRolePermissionMaxOrderByAggregateInput = {
+    id?: SortOrder
+    roleId?: SortOrder
+    permission?: SortOrder
+  }
+
+  export type ServerRolePermissionMinOrderByAggregateInput = {
+    id?: SortOrder
+    roleId?: SortOrder
+    permission?: SortOrder
+  }
+
+  export type EnumPermissionWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.Permission | EnumPermissionFieldRefInput<$PrismaModel>
+    in?: $Enums.Permission[] | ListEnumPermissionFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Permission[] | ListEnumPermissionFieldRefInput<$PrismaModel>
+    not?: NestedEnumPermissionWithAggregatesFilter<$PrismaModel> | $Enums.Permission
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPermissionFilter<$PrismaModel>
+    _max?: NestedEnumPermissionFilter<$PrismaModel>
   }
 
   export type BoolFilter<$PrismaModel = never> = {
@@ -13580,17 +15113,6 @@ export namespace Prisma {
     userId?: SortOrder
   }
 
-  export type DateTimeNullableFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
-  }
-
   export type AccountCountOrderByAggregateInput = {
     id?: SortOrder
     accountId?: SortOrder
@@ -13639,20 +15161,6 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
-  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedDateTimeNullableFilter<$PrismaModel>
-    _max?: NestedDateTimeNullableFilter<$PrismaModel>
-  }
-
   export type VerificationCountOrderByAggregateInput = {
     id?: SortOrder
     identifier?: SortOrder
@@ -13694,11 +15202,11 @@ export namespace Prisma {
     connect?: ServerMemberWhereUniqueInput | ServerMemberWhereUniqueInput[]
   }
 
-  export type serverRolesCreateNestedManyWithoutServerInput = {
-    create?: XOR<serverRolesCreateWithoutServerInput, serverRolesUncheckedCreateWithoutServerInput> | serverRolesCreateWithoutServerInput[] | serverRolesUncheckedCreateWithoutServerInput[]
-    connectOrCreate?: serverRolesCreateOrConnectWithoutServerInput | serverRolesCreateOrConnectWithoutServerInput[]
-    createMany?: serverRolesCreateManyServerInputEnvelope
-    connect?: serverRolesWhereUniqueInput | serverRolesWhereUniqueInput[]
+  export type ServerRolesCreateNestedManyWithoutServerInput = {
+    create?: XOR<ServerRolesCreateWithoutServerInput, ServerRolesUncheckedCreateWithoutServerInput> | ServerRolesCreateWithoutServerInput[] | ServerRolesUncheckedCreateWithoutServerInput[]
+    connectOrCreate?: ServerRolesCreateOrConnectWithoutServerInput | ServerRolesCreateOrConnectWithoutServerInput[]
+    createMany?: ServerRolesCreateManyServerInputEnvelope
+    connect?: ServerRolesWhereUniqueInput | ServerRolesWhereUniqueInput[]
   }
 
   export type ChannelUncheckedCreateNestedManyWithoutServerInput = {
@@ -13715,11 +15223,11 @@ export namespace Prisma {
     connect?: ServerMemberWhereUniqueInput | ServerMemberWhereUniqueInput[]
   }
 
-  export type serverRolesUncheckedCreateNestedManyWithoutServerInput = {
-    create?: XOR<serverRolesCreateWithoutServerInput, serverRolesUncheckedCreateWithoutServerInput> | serverRolesCreateWithoutServerInput[] | serverRolesUncheckedCreateWithoutServerInput[]
-    connectOrCreate?: serverRolesCreateOrConnectWithoutServerInput | serverRolesCreateOrConnectWithoutServerInput[]
-    createMany?: serverRolesCreateManyServerInputEnvelope
-    connect?: serverRolesWhereUniqueInput | serverRolesWhereUniqueInput[]
+  export type ServerRolesUncheckedCreateNestedManyWithoutServerInput = {
+    create?: XOR<ServerRolesCreateWithoutServerInput, ServerRolesUncheckedCreateWithoutServerInput> | ServerRolesCreateWithoutServerInput[] | ServerRolesUncheckedCreateWithoutServerInput[]
+    connectOrCreate?: ServerRolesCreateOrConnectWithoutServerInput | ServerRolesCreateOrConnectWithoutServerInput[]
+    createMany?: ServerRolesCreateManyServerInputEnvelope
+    connect?: ServerRolesWhereUniqueInput | ServerRolesWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -13762,18 +15270,18 @@ export namespace Prisma {
     deleteMany?: ServerMemberScalarWhereInput | ServerMemberScalarWhereInput[]
   }
 
-  export type serverRolesUpdateManyWithoutServerNestedInput = {
-    create?: XOR<serverRolesCreateWithoutServerInput, serverRolesUncheckedCreateWithoutServerInput> | serverRolesCreateWithoutServerInput[] | serverRolesUncheckedCreateWithoutServerInput[]
-    connectOrCreate?: serverRolesCreateOrConnectWithoutServerInput | serverRolesCreateOrConnectWithoutServerInput[]
-    upsert?: serverRolesUpsertWithWhereUniqueWithoutServerInput | serverRolesUpsertWithWhereUniqueWithoutServerInput[]
-    createMany?: serverRolesCreateManyServerInputEnvelope
-    set?: serverRolesWhereUniqueInput | serverRolesWhereUniqueInput[]
-    disconnect?: serverRolesWhereUniqueInput | serverRolesWhereUniqueInput[]
-    delete?: serverRolesWhereUniqueInput | serverRolesWhereUniqueInput[]
-    connect?: serverRolesWhereUniqueInput | serverRolesWhereUniqueInput[]
-    update?: serverRolesUpdateWithWhereUniqueWithoutServerInput | serverRolesUpdateWithWhereUniqueWithoutServerInput[]
-    updateMany?: serverRolesUpdateManyWithWhereWithoutServerInput | serverRolesUpdateManyWithWhereWithoutServerInput[]
-    deleteMany?: serverRolesScalarWhereInput | serverRolesScalarWhereInput[]
+  export type ServerRolesUpdateManyWithoutServerNestedInput = {
+    create?: XOR<ServerRolesCreateWithoutServerInput, ServerRolesUncheckedCreateWithoutServerInput> | ServerRolesCreateWithoutServerInput[] | ServerRolesUncheckedCreateWithoutServerInput[]
+    connectOrCreate?: ServerRolesCreateOrConnectWithoutServerInput | ServerRolesCreateOrConnectWithoutServerInput[]
+    upsert?: ServerRolesUpsertWithWhereUniqueWithoutServerInput | ServerRolesUpsertWithWhereUniqueWithoutServerInput[]
+    createMany?: ServerRolesCreateManyServerInputEnvelope
+    set?: ServerRolesWhereUniqueInput | ServerRolesWhereUniqueInput[]
+    disconnect?: ServerRolesWhereUniqueInput | ServerRolesWhereUniqueInput[]
+    delete?: ServerRolesWhereUniqueInput | ServerRolesWhereUniqueInput[]
+    connect?: ServerRolesWhereUniqueInput | ServerRolesWhereUniqueInput[]
+    update?: ServerRolesUpdateWithWhereUniqueWithoutServerInput | ServerRolesUpdateWithWhereUniqueWithoutServerInput[]
+    updateMany?: ServerRolesUpdateManyWithWhereWithoutServerInput | ServerRolesUpdateManyWithWhereWithoutServerInput[]
+    deleteMany?: ServerRolesScalarWhereInput | ServerRolesScalarWhereInput[]
   }
 
   export type ChannelUncheckedUpdateManyWithoutServerNestedInput = {
@@ -13804,18 +15312,18 @@ export namespace Prisma {
     deleteMany?: ServerMemberScalarWhereInput | ServerMemberScalarWhereInput[]
   }
 
-  export type serverRolesUncheckedUpdateManyWithoutServerNestedInput = {
-    create?: XOR<serverRolesCreateWithoutServerInput, serverRolesUncheckedCreateWithoutServerInput> | serverRolesCreateWithoutServerInput[] | serverRolesUncheckedCreateWithoutServerInput[]
-    connectOrCreate?: serverRolesCreateOrConnectWithoutServerInput | serverRolesCreateOrConnectWithoutServerInput[]
-    upsert?: serverRolesUpsertWithWhereUniqueWithoutServerInput | serverRolesUpsertWithWhereUniqueWithoutServerInput[]
-    createMany?: serverRolesCreateManyServerInputEnvelope
-    set?: serverRolesWhereUniqueInput | serverRolesWhereUniqueInput[]
-    disconnect?: serverRolesWhereUniqueInput | serverRolesWhereUniqueInput[]
-    delete?: serverRolesWhereUniqueInput | serverRolesWhereUniqueInput[]
-    connect?: serverRolesWhereUniqueInput | serverRolesWhereUniqueInput[]
-    update?: serverRolesUpdateWithWhereUniqueWithoutServerInput | serverRolesUpdateWithWhereUniqueWithoutServerInput[]
-    updateMany?: serverRolesUpdateManyWithWhereWithoutServerInput | serverRolesUpdateManyWithWhereWithoutServerInput[]
-    deleteMany?: serverRolesScalarWhereInput | serverRolesScalarWhereInput[]
+  export type ServerRolesUncheckedUpdateManyWithoutServerNestedInput = {
+    create?: XOR<ServerRolesCreateWithoutServerInput, ServerRolesUncheckedCreateWithoutServerInput> | ServerRolesCreateWithoutServerInput[] | ServerRolesUncheckedCreateWithoutServerInput[]
+    connectOrCreate?: ServerRolesCreateOrConnectWithoutServerInput | ServerRolesCreateOrConnectWithoutServerInput[]
+    upsert?: ServerRolesUpsertWithWhereUniqueWithoutServerInput | ServerRolesUpsertWithWhereUniqueWithoutServerInput[]
+    createMany?: ServerRolesCreateManyServerInputEnvelope
+    set?: ServerRolesWhereUniqueInput | ServerRolesWhereUniqueInput[]
+    disconnect?: ServerRolesWhereUniqueInput | ServerRolesWhereUniqueInput[]
+    delete?: ServerRolesWhereUniqueInput | ServerRolesWhereUniqueInput[]
+    connect?: ServerRolesWhereUniqueInput | ServerRolesWhereUniqueInput[]
+    update?: ServerRolesUpdateWithWhereUniqueWithoutServerInput | ServerRolesUpdateWithWhereUniqueWithoutServerInput[]
+    updateMany?: ServerRolesUpdateManyWithWhereWithoutServerInput | ServerRolesUpdateManyWithWhereWithoutServerInput[]
+    deleteMany?: ServerRolesScalarWhereInput | ServerRolesScalarWhereInput[]
   }
 
   export type ServerCreateNestedOneWithoutChannelsInput = {
@@ -13928,16 +15436,20 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
-  export type serverRolesCreateNestedManyWithoutMembersInput = {
-    create?: XOR<serverRolesCreateWithoutMembersInput, serverRolesUncheckedCreateWithoutMembersInput> | serverRolesCreateWithoutMembersInput[] | serverRolesUncheckedCreateWithoutMembersInput[]
-    connectOrCreate?: serverRolesCreateOrConnectWithoutMembersInput | serverRolesCreateOrConnectWithoutMembersInput[]
-    connect?: serverRolesWhereUniqueInput | serverRolesWhereUniqueInput[]
+  export type ServerRolesCreateNestedManyWithoutMembersInput = {
+    create?: XOR<ServerRolesCreateWithoutMembersInput, ServerRolesUncheckedCreateWithoutMembersInput> | ServerRolesCreateWithoutMembersInput[] | ServerRolesUncheckedCreateWithoutMembersInput[]
+    connectOrCreate?: ServerRolesCreateOrConnectWithoutMembersInput | ServerRolesCreateOrConnectWithoutMembersInput[]
+    connect?: ServerRolesWhereUniqueInput | ServerRolesWhereUniqueInput[]
   }
 
-  export type serverRolesUncheckedCreateNestedManyWithoutMembersInput = {
-    create?: XOR<serverRolesCreateWithoutMembersInput, serverRolesUncheckedCreateWithoutMembersInput> | serverRolesCreateWithoutMembersInput[] | serverRolesUncheckedCreateWithoutMembersInput[]
-    connectOrCreate?: serverRolesCreateOrConnectWithoutMembersInput | serverRolesCreateOrConnectWithoutMembersInput[]
-    connect?: serverRolesWhereUniqueInput | serverRolesWhereUniqueInput[]
+  export type ServerRolesUncheckedCreateNestedManyWithoutMembersInput = {
+    create?: XOR<ServerRolesCreateWithoutMembersInput, ServerRolesUncheckedCreateWithoutMembersInput> | ServerRolesCreateWithoutMembersInput[] | ServerRolesUncheckedCreateWithoutMembersInput[]
+    connectOrCreate?: ServerRolesCreateOrConnectWithoutMembersInput | ServerRolesCreateOrConnectWithoutMembersInput[]
+    connect?: ServerRolesWhereUniqueInput | ServerRolesWhereUniqueInput[]
+  }
+
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
   }
 
   export type ServerUpdateOneRequiredWithoutMembersNestedInput = {
@@ -13956,30 +15468,30 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutMembershipsInput, UserUpdateWithoutMembershipsInput>, UserUncheckedUpdateWithoutMembershipsInput>
   }
 
-  export type serverRolesUpdateManyWithoutMembersNestedInput = {
-    create?: XOR<serverRolesCreateWithoutMembersInput, serverRolesUncheckedCreateWithoutMembersInput> | serverRolesCreateWithoutMembersInput[] | serverRolesUncheckedCreateWithoutMembersInput[]
-    connectOrCreate?: serverRolesCreateOrConnectWithoutMembersInput | serverRolesCreateOrConnectWithoutMembersInput[]
-    upsert?: serverRolesUpsertWithWhereUniqueWithoutMembersInput | serverRolesUpsertWithWhereUniqueWithoutMembersInput[]
-    set?: serverRolesWhereUniqueInput | serverRolesWhereUniqueInput[]
-    disconnect?: serverRolesWhereUniqueInput | serverRolesWhereUniqueInput[]
-    delete?: serverRolesWhereUniqueInput | serverRolesWhereUniqueInput[]
-    connect?: serverRolesWhereUniqueInput | serverRolesWhereUniqueInput[]
-    update?: serverRolesUpdateWithWhereUniqueWithoutMembersInput | serverRolesUpdateWithWhereUniqueWithoutMembersInput[]
-    updateMany?: serverRolesUpdateManyWithWhereWithoutMembersInput | serverRolesUpdateManyWithWhereWithoutMembersInput[]
-    deleteMany?: serverRolesScalarWhereInput | serverRolesScalarWhereInput[]
+  export type ServerRolesUpdateManyWithoutMembersNestedInput = {
+    create?: XOR<ServerRolesCreateWithoutMembersInput, ServerRolesUncheckedCreateWithoutMembersInput> | ServerRolesCreateWithoutMembersInput[] | ServerRolesUncheckedCreateWithoutMembersInput[]
+    connectOrCreate?: ServerRolesCreateOrConnectWithoutMembersInput | ServerRolesCreateOrConnectWithoutMembersInput[]
+    upsert?: ServerRolesUpsertWithWhereUniqueWithoutMembersInput | ServerRolesUpsertWithWhereUniqueWithoutMembersInput[]
+    set?: ServerRolesWhereUniqueInput | ServerRolesWhereUniqueInput[]
+    disconnect?: ServerRolesWhereUniqueInput | ServerRolesWhereUniqueInput[]
+    delete?: ServerRolesWhereUniqueInput | ServerRolesWhereUniqueInput[]
+    connect?: ServerRolesWhereUniqueInput | ServerRolesWhereUniqueInput[]
+    update?: ServerRolesUpdateWithWhereUniqueWithoutMembersInput | ServerRolesUpdateWithWhereUniqueWithoutMembersInput[]
+    updateMany?: ServerRolesUpdateManyWithWhereWithoutMembersInput | ServerRolesUpdateManyWithWhereWithoutMembersInput[]
+    deleteMany?: ServerRolesScalarWhereInput | ServerRolesScalarWhereInput[]
   }
 
-  export type serverRolesUncheckedUpdateManyWithoutMembersNestedInput = {
-    create?: XOR<serverRolesCreateWithoutMembersInput, serverRolesUncheckedCreateWithoutMembersInput> | serverRolesCreateWithoutMembersInput[] | serverRolesUncheckedCreateWithoutMembersInput[]
-    connectOrCreate?: serverRolesCreateOrConnectWithoutMembersInput | serverRolesCreateOrConnectWithoutMembersInput[]
-    upsert?: serverRolesUpsertWithWhereUniqueWithoutMembersInput | serverRolesUpsertWithWhereUniqueWithoutMembersInput[]
-    set?: serverRolesWhereUniqueInput | serverRolesWhereUniqueInput[]
-    disconnect?: serverRolesWhereUniqueInput | serverRolesWhereUniqueInput[]
-    delete?: serverRolesWhereUniqueInput | serverRolesWhereUniqueInput[]
-    connect?: serverRolesWhereUniqueInput | serverRolesWhereUniqueInput[]
-    update?: serverRolesUpdateWithWhereUniqueWithoutMembersInput | serverRolesUpdateWithWhereUniqueWithoutMembersInput[]
-    updateMany?: serverRolesUpdateManyWithWhereWithoutMembersInput | serverRolesUpdateManyWithWhereWithoutMembersInput[]
-    deleteMany?: serverRolesScalarWhereInput | serverRolesScalarWhereInput[]
+  export type ServerRolesUncheckedUpdateManyWithoutMembersNestedInput = {
+    create?: XOR<ServerRolesCreateWithoutMembersInput, ServerRolesUncheckedCreateWithoutMembersInput> | ServerRolesCreateWithoutMembersInput[] | ServerRolesUncheckedCreateWithoutMembersInput[]
+    connectOrCreate?: ServerRolesCreateOrConnectWithoutMembersInput | ServerRolesCreateOrConnectWithoutMembersInput[]
+    upsert?: ServerRolesUpsertWithWhereUniqueWithoutMembersInput | ServerRolesUpsertWithWhereUniqueWithoutMembersInput[]
+    set?: ServerRolesWhereUniqueInput | ServerRolesWhereUniqueInput[]
+    disconnect?: ServerRolesWhereUniqueInput | ServerRolesWhereUniqueInput[]
+    delete?: ServerRolesWhereUniqueInput | ServerRolesWhereUniqueInput[]
+    connect?: ServerRolesWhereUniqueInput | ServerRolesWhereUniqueInput[]
+    update?: ServerRolesUpdateWithWhereUniqueWithoutMembersInput | ServerRolesUpdateWithWhereUniqueWithoutMembersInput[]
+    updateMany?: ServerRolesUpdateManyWithWhereWithoutMembersInput | ServerRolesUpdateManyWithWhereWithoutMembersInput[]
+    deleteMany?: ServerRolesScalarWhereInput | ServerRolesScalarWhereInput[]
   }
 
   export type ServerCreateNestedOneWithoutRolesInput = {
@@ -13994,10 +15506,32 @@ export namespace Prisma {
     connect?: ServerMemberWhereUniqueInput | ServerMemberWhereUniqueInput[]
   }
 
+  export type ServerRolePermissionCreateNestedManyWithoutRoleInput = {
+    create?: XOR<ServerRolePermissionCreateWithoutRoleInput, ServerRolePermissionUncheckedCreateWithoutRoleInput> | ServerRolePermissionCreateWithoutRoleInput[] | ServerRolePermissionUncheckedCreateWithoutRoleInput[]
+    connectOrCreate?: ServerRolePermissionCreateOrConnectWithoutRoleInput | ServerRolePermissionCreateOrConnectWithoutRoleInput[]
+    createMany?: ServerRolePermissionCreateManyRoleInputEnvelope
+    connect?: ServerRolePermissionWhereUniqueInput | ServerRolePermissionWhereUniqueInput[]
+  }
+
   export type ServerMemberUncheckedCreateNestedManyWithoutServerRolesInput = {
     create?: XOR<ServerMemberCreateWithoutServerRolesInput, ServerMemberUncheckedCreateWithoutServerRolesInput> | ServerMemberCreateWithoutServerRolesInput[] | ServerMemberUncheckedCreateWithoutServerRolesInput[]
     connectOrCreate?: ServerMemberCreateOrConnectWithoutServerRolesInput | ServerMemberCreateOrConnectWithoutServerRolesInput[]
     connect?: ServerMemberWhereUniqueInput | ServerMemberWhereUniqueInput[]
+  }
+
+  export type ServerRolePermissionUncheckedCreateNestedManyWithoutRoleInput = {
+    create?: XOR<ServerRolePermissionCreateWithoutRoleInput, ServerRolePermissionUncheckedCreateWithoutRoleInput> | ServerRolePermissionCreateWithoutRoleInput[] | ServerRolePermissionUncheckedCreateWithoutRoleInput[]
+    connectOrCreate?: ServerRolePermissionCreateOrConnectWithoutRoleInput | ServerRolePermissionCreateOrConnectWithoutRoleInput[]
+    createMany?: ServerRolePermissionCreateManyRoleInputEnvelope
+    connect?: ServerRolePermissionWhereUniqueInput | ServerRolePermissionWhereUniqueInput[]
+  }
+
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
   }
 
   export type ServerUpdateOneRequiredWithoutRolesNestedInput = {
@@ -14021,6 +15555,20 @@ export namespace Prisma {
     deleteMany?: ServerMemberScalarWhereInput | ServerMemberScalarWhereInput[]
   }
 
+  export type ServerRolePermissionUpdateManyWithoutRoleNestedInput = {
+    create?: XOR<ServerRolePermissionCreateWithoutRoleInput, ServerRolePermissionUncheckedCreateWithoutRoleInput> | ServerRolePermissionCreateWithoutRoleInput[] | ServerRolePermissionUncheckedCreateWithoutRoleInput[]
+    connectOrCreate?: ServerRolePermissionCreateOrConnectWithoutRoleInput | ServerRolePermissionCreateOrConnectWithoutRoleInput[]
+    upsert?: ServerRolePermissionUpsertWithWhereUniqueWithoutRoleInput | ServerRolePermissionUpsertWithWhereUniqueWithoutRoleInput[]
+    createMany?: ServerRolePermissionCreateManyRoleInputEnvelope
+    set?: ServerRolePermissionWhereUniqueInput | ServerRolePermissionWhereUniqueInput[]
+    disconnect?: ServerRolePermissionWhereUniqueInput | ServerRolePermissionWhereUniqueInput[]
+    delete?: ServerRolePermissionWhereUniqueInput | ServerRolePermissionWhereUniqueInput[]
+    connect?: ServerRolePermissionWhereUniqueInput | ServerRolePermissionWhereUniqueInput[]
+    update?: ServerRolePermissionUpdateWithWhereUniqueWithoutRoleInput | ServerRolePermissionUpdateWithWhereUniqueWithoutRoleInput[]
+    updateMany?: ServerRolePermissionUpdateManyWithWhereWithoutRoleInput | ServerRolePermissionUpdateManyWithWhereWithoutRoleInput[]
+    deleteMany?: ServerRolePermissionScalarWhereInput | ServerRolePermissionScalarWhereInput[]
+  }
+
   export type ServerMemberUncheckedUpdateManyWithoutServerRolesNestedInput = {
     create?: XOR<ServerMemberCreateWithoutServerRolesInput, ServerMemberUncheckedCreateWithoutServerRolesInput> | ServerMemberCreateWithoutServerRolesInput[] | ServerMemberUncheckedCreateWithoutServerRolesInput[]
     connectOrCreate?: ServerMemberCreateOrConnectWithoutServerRolesInput | ServerMemberCreateOrConnectWithoutServerRolesInput[]
@@ -14032,6 +15580,38 @@ export namespace Prisma {
     update?: ServerMemberUpdateWithWhereUniqueWithoutServerRolesInput | ServerMemberUpdateWithWhereUniqueWithoutServerRolesInput[]
     updateMany?: ServerMemberUpdateManyWithWhereWithoutServerRolesInput | ServerMemberUpdateManyWithWhereWithoutServerRolesInput[]
     deleteMany?: ServerMemberScalarWhereInput | ServerMemberScalarWhereInput[]
+  }
+
+  export type ServerRolePermissionUncheckedUpdateManyWithoutRoleNestedInput = {
+    create?: XOR<ServerRolePermissionCreateWithoutRoleInput, ServerRolePermissionUncheckedCreateWithoutRoleInput> | ServerRolePermissionCreateWithoutRoleInput[] | ServerRolePermissionUncheckedCreateWithoutRoleInput[]
+    connectOrCreate?: ServerRolePermissionCreateOrConnectWithoutRoleInput | ServerRolePermissionCreateOrConnectWithoutRoleInput[]
+    upsert?: ServerRolePermissionUpsertWithWhereUniqueWithoutRoleInput | ServerRolePermissionUpsertWithWhereUniqueWithoutRoleInput[]
+    createMany?: ServerRolePermissionCreateManyRoleInputEnvelope
+    set?: ServerRolePermissionWhereUniqueInput | ServerRolePermissionWhereUniqueInput[]
+    disconnect?: ServerRolePermissionWhereUniqueInput | ServerRolePermissionWhereUniqueInput[]
+    delete?: ServerRolePermissionWhereUniqueInput | ServerRolePermissionWhereUniqueInput[]
+    connect?: ServerRolePermissionWhereUniqueInput | ServerRolePermissionWhereUniqueInput[]
+    update?: ServerRolePermissionUpdateWithWhereUniqueWithoutRoleInput | ServerRolePermissionUpdateWithWhereUniqueWithoutRoleInput[]
+    updateMany?: ServerRolePermissionUpdateManyWithWhereWithoutRoleInput | ServerRolePermissionUpdateManyWithWhereWithoutRoleInput[]
+    deleteMany?: ServerRolePermissionScalarWhereInput | ServerRolePermissionScalarWhereInput[]
+  }
+
+  export type ServerRolesCreateNestedOneWithoutPermissionsInput = {
+    create?: XOR<ServerRolesCreateWithoutPermissionsInput, ServerRolesUncheckedCreateWithoutPermissionsInput>
+    connectOrCreate?: ServerRolesCreateOrConnectWithoutPermissionsInput
+    connect?: ServerRolesWhereUniqueInput
+  }
+
+  export type EnumPermissionFieldUpdateOperationsInput = {
+    set?: $Enums.Permission
+  }
+
+  export type ServerRolesUpdateOneRequiredWithoutPermissionsNestedInput = {
+    create?: XOR<ServerRolesCreateWithoutPermissionsInput, ServerRolesUncheckedCreateWithoutPermissionsInput>
+    connectOrCreate?: ServerRolesCreateOrConnectWithoutPermissionsInput
+    upsert?: ServerRolesUpsertWithoutPermissionsInput
+    connect?: ServerRolesWhereUniqueInput
+    update?: XOR<XOR<ServerRolesUpdateToOneWithWhereWithoutPermissionsInput, ServerRolesUpdateWithoutPermissionsInput>, ServerRolesUncheckedUpdateWithoutPermissionsInput>
   }
 
   export type ChannelCreateNestedOneWithoutMessagesInput = {
@@ -14292,10 +15872,6 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
-  export type NullableDateTimeFieldUpdateOperationsInput = {
-    set?: Date | string | null
-  }
-
   export type UserUpdateOneRequiredWithoutAccountsNestedInput = {
     create?: XOR<UserCreateWithoutAccountsInput, UserUncheckedCreateWithoutAccountsInput>
     connectOrCreate?: UserCreateOrConnectWithoutAccountsInput
@@ -14430,19 +16006,6 @@ export namespace Prisma {
     _max?: NestedEnumChannelTypeFilter<$PrismaModel>
   }
 
-  export type NestedBoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
-  }
-
-  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
-  }
-
   export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
@@ -14466,6 +16029,63 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedDateTimeNullableFilter<$PrismaModel>
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type NestedFloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
+  export type NestedEnumPermissionFilter<$PrismaModel = never> = {
+    equals?: $Enums.Permission | EnumPermissionFieldRefInput<$PrismaModel>
+    in?: $Enums.Permission[] | ListEnumPermissionFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Permission[] | ListEnumPermissionFieldRefInput<$PrismaModel>
+    not?: NestedEnumPermissionFilter<$PrismaModel> | $Enums.Permission
+  }
+
+  export type NestedEnumPermissionWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.Permission | EnumPermissionFieldRefInput<$PrismaModel>
+    in?: $Enums.Permission[] | ListEnumPermissionFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Permission[] | ListEnumPermissionFieldRefInput<$PrismaModel>
+    not?: NestedEnumPermissionWithAggregatesFilter<$PrismaModel> | $Enums.Permission
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPermissionFilter<$PrismaModel>
+    _max?: NestedEnumPermissionFilter<$PrismaModel>
+  }
+
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type ChannelCreateWithoutServerInput = {
@@ -14498,14 +16118,16 @@ export namespace Prisma {
 
   export type ServerMemberCreateWithoutServerInput = {
     id?: string
+    timeoutUntil?: Date | string | null
     user: UserCreateNestedOneWithoutMembershipsInput
-    serverRoles?: serverRolesCreateNestedManyWithoutMembersInput
+    serverRoles?: ServerRolesCreateNestedManyWithoutMembersInput
   }
 
   export type ServerMemberUncheckedCreateWithoutServerInput = {
     id?: string
     userId: string
-    serverRoles?: serverRolesUncheckedCreateNestedManyWithoutMembersInput
+    timeoutUntil?: Date | string | null
+    serverRoles?: ServerRolesUncheckedCreateNestedManyWithoutMembersInput
   }
 
   export type ServerMemberCreateOrConnectWithoutServerInput = {
@@ -14518,25 +16140,29 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type serverRolesCreateWithoutServerInput = {
+  export type ServerRolesCreateWithoutServerInput = {
     id?: string
     name: string
+    position?: number
     members?: ServerMemberCreateNestedManyWithoutServerRolesInput
+    permissions?: ServerRolePermissionCreateNestedManyWithoutRoleInput
   }
 
-  export type serverRolesUncheckedCreateWithoutServerInput = {
+  export type ServerRolesUncheckedCreateWithoutServerInput = {
     id?: string
     name: string
+    position?: number
     members?: ServerMemberUncheckedCreateNestedManyWithoutServerRolesInput
+    permissions?: ServerRolePermissionUncheckedCreateNestedManyWithoutRoleInput
   }
 
-  export type serverRolesCreateOrConnectWithoutServerInput = {
-    where: serverRolesWhereUniqueInput
-    create: XOR<serverRolesCreateWithoutServerInput, serverRolesUncheckedCreateWithoutServerInput>
+  export type ServerRolesCreateOrConnectWithoutServerInput = {
+    where: ServerRolesWhereUniqueInput
+    create: XOR<ServerRolesCreateWithoutServerInput, ServerRolesUncheckedCreateWithoutServerInput>
   }
 
-  export type serverRolesCreateManyServerInputEnvelope = {
-    data: serverRolesCreateManyServerInput | serverRolesCreateManyServerInput[]
+  export type ServerRolesCreateManyServerInputEnvelope = {
+    data: ServerRolesCreateManyServerInput | ServerRolesCreateManyServerInput[]
     skipDuplicates?: boolean
   }
 
@@ -14590,31 +16216,33 @@ export namespace Prisma {
     id?: StringFilter<"ServerMember"> | string
     userId?: StringFilter<"ServerMember"> | string
     serverId?: StringFilter<"ServerMember"> | string
+    timeoutUntil?: DateTimeNullableFilter<"ServerMember"> | Date | string | null
   }
 
-  export type serverRolesUpsertWithWhereUniqueWithoutServerInput = {
-    where: serverRolesWhereUniqueInput
-    update: XOR<serverRolesUpdateWithoutServerInput, serverRolesUncheckedUpdateWithoutServerInput>
-    create: XOR<serverRolesCreateWithoutServerInput, serverRolesUncheckedCreateWithoutServerInput>
+  export type ServerRolesUpsertWithWhereUniqueWithoutServerInput = {
+    where: ServerRolesWhereUniqueInput
+    update: XOR<ServerRolesUpdateWithoutServerInput, ServerRolesUncheckedUpdateWithoutServerInput>
+    create: XOR<ServerRolesCreateWithoutServerInput, ServerRolesUncheckedCreateWithoutServerInput>
   }
 
-  export type serverRolesUpdateWithWhereUniqueWithoutServerInput = {
-    where: serverRolesWhereUniqueInput
-    data: XOR<serverRolesUpdateWithoutServerInput, serverRolesUncheckedUpdateWithoutServerInput>
+  export type ServerRolesUpdateWithWhereUniqueWithoutServerInput = {
+    where: ServerRolesWhereUniqueInput
+    data: XOR<ServerRolesUpdateWithoutServerInput, ServerRolesUncheckedUpdateWithoutServerInput>
   }
 
-  export type serverRolesUpdateManyWithWhereWithoutServerInput = {
-    where: serverRolesScalarWhereInput
-    data: XOR<serverRolesUpdateManyMutationInput, serverRolesUncheckedUpdateManyWithoutServerInput>
+  export type ServerRolesUpdateManyWithWhereWithoutServerInput = {
+    where: ServerRolesScalarWhereInput
+    data: XOR<ServerRolesUpdateManyMutationInput, ServerRolesUncheckedUpdateManyWithoutServerInput>
   }
 
-  export type serverRolesScalarWhereInput = {
-    AND?: serverRolesScalarWhereInput | serverRolesScalarWhereInput[]
-    OR?: serverRolesScalarWhereInput[]
-    NOT?: serverRolesScalarWhereInput | serverRolesScalarWhereInput[]
-    id?: StringFilter<"serverRoles"> | string
-    name?: StringFilter<"serverRoles"> | string
-    serverId?: StringFilter<"serverRoles"> | string
+  export type ServerRolesScalarWhereInput = {
+    AND?: ServerRolesScalarWhereInput | ServerRolesScalarWhereInput[]
+    OR?: ServerRolesScalarWhereInput[]
+    NOT?: ServerRolesScalarWhereInput | ServerRolesScalarWhereInput[]
+    id?: StringFilter<"ServerRoles"> | string
+    name?: StringFilter<"ServerRoles"> | string
+    position?: IntFilter<"ServerRoles"> | number
+    serverId?: StringFilter<"ServerRoles"> | string
   }
 
   export type ServerCreateWithoutChannelsInput = {
@@ -14623,7 +16251,7 @@ export namespace Prisma {
     picture?: string | null
     createdAt?: Date | string
     members?: ServerMemberCreateNestedManyWithoutServerInput
-    roles?: serverRolesCreateNestedManyWithoutServerInput
+    roles?: ServerRolesCreateNestedManyWithoutServerInput
   }
 
   export type ServerUncheckedCreateWithoutChannelsInput = {
@@ -14632,7 +16260,7 @@ export namespace Prisma {
     picture?: string | null
     createdAt?: Date | string
     members?: ServerMemberUncheckedCreateNestedManyWithoutServerInput
-    roles?: serverRolesUncheckedCreateNestedManyWithoutServerInput
+    roles?: ServerRolesUncheckedCreateNestedManyWithoutServerInput
   }
 
   export type ServerCreateOrConnectWithoutChannelsInput = {
@@ -14716,7 +16344,7 @@ export namespace Prisma {
     picture?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     members?: ServerMemberUpdateManyWithoutServerNestedInput
-    roles?: serverRolesUpdateManyWithoutServerNestedInput
+    roles?: ServerRolesUpdateManyWithoutServerNestedInput
   }
 
   export type ServerUncheckedUpdateWithoutChannelsInput = {
@@ -14725,7 +16353,7 @@ export namespace Prisma {
     picture?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     members?: ServerMemberUncheckedUpdateManyWithoutServerNestedInput
-    roles?: serverRolesUncheckedUpdateManyWithoutServerNestedInput
+    roles?: ServerRolesUncheckedUpdateManyWithoutServerNestedInput
   }
 
   export type MessagesUpsertWithWhereUniqueWithoutChannelInput = {
@@ -14791,7 +16419,7 @@ export namespace Prisma {
     picture?: string | null
     createdAt?: Date | string
     channels?: ChannelCreateNestedManyWithoutServerInput
-    roles?: serverRolesCreateNestedManyWithoutServerInput
+    roles?: ServerRolesCreateNestedManyWithoutServerInput
   }
 
   export type ServerUncheckedCreateWithoutMembersInput = {
@@ -14800,7 +16428,7 @@ export namespace Prisma {
     picture?: string | null
     createdAt?: Date | string
     channels?: ChannelUncheckedCreateNestedManyWithoutServerInput
-    roles?: serverRolesUncheckedCreateNestedManyWithoutServerInput
+    roles?: ServerRolesUncheckedCreateNestedManyWithoutServerInput
   }
 
   export type ServerCreateOrConnectWithoutMembersInput = {
@@ -14841,21 +16469,25 @@ export namespace Prisma {
     create: XOR<UserCreateWithoutMembershipsInput, UserUncheckedCreateWithoutMembershipsInput>
   }
 
-  export type serverRolesCreateWithoutMembersInput = {
+  export type ServerRolesCreateWithoutMembersInput = {
     id?: string
     name: string
+    position?: number
     server: ServerCreateNestedOneWithoutRolesInput
+    permissions?: ServerRolePermissionCreateNestedManyWithoutRoleInput
   }
 
-  export type serverRolesUncheckedCreateWithoutMembersInput = {
+  export type ServerRolesUncheckedCreateWithoutMembersInput = {
     id?: string
     name: string
+    position?: number
     serverId: string
+    permissions?: ServerRolePermissionUncheckedCreateNestedManyWithoutRoleInput
   }
 
-  export type serverRolesCreateOrConnectWithoutMembersInput = {
-    where: serverRolesWhereUniqueInput
-    create: XOR<serverRolesCreateWithoutMembersInput, serverRolesUncheckedCreateWithoutMembersInput>
+  export type ServerRolesCreateOrConnectWithoutMembersInput = {
+    where: ServerRolesWhereUniqueInput
+    create: XOR<ServerRolesCreateWithoutMembersInput, ServerRolesUncheckedCreateWithoutMembersInput>
   }
 
   export type ServerUpsertWithoutMembersInput = {
@@ -14875,7 +16507,7 @@ export namespace Prisma {
     picture?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     channels?: ChannelUpdateManyWithoutServerNestedInput
-    roles?: serverRolesUpdateManyWithoutServerNestedInput
+    roles?: ServerRolesUpdateManyWithoutServerNestedInput
   }
 
   export type ServerUncheckedUpdateWithoutMembersInput = {
@@ -14884,7 +16516,7 @@ export namespace Prisma {
     picture?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     channels?: ChannelUncheckedUpdateManyWithoutServerNestedInput
-    roles?: serverRolesUncheckedUpdateManyWithoutServerNestedInput
+    roles?: ServerRolesUncheckedUpdateManyWithoutServerNestedInput
   }
 
   export type UserUpsertWithoutMembershipsInput = {
@@ -14926,20 +16558,20 @@ export namespace Prisma {
     channels?: ChannelUncheckedUpdateManyWithoutUsersNestedInput
   }
 
-  export type serverRolesUpsertWithWhereUniqueWithoutMembersInput = {
-    where: serverRolesWhereUniqueInput
-    update: XOR<serverRolesUpdateWithoutMembersInput, serverRolesUncheckedUpdateWithoutMembersInput>
-    create: XOR<serverRolesCreateWithoutMembersInput, serverRolesUncheckedCreateWithoutMembersInput>
+  export type ServerRolesUpsertWithWhereUniqueWithoutMembersInput = {
+    where: ServerRolesWhereUniqueInput
+    update: XOR<ServerRolesUpdateWithoutMembersInput, ServerRolesUncheckedUpdateWithoutMembersInput>
+    create: XOR<ServerRolesCreateWithoutMembersInput, ServerRolesUncheckedCreateWithoutMembersInput>
   }
 
-  export type serverRolesUpdateWithWhereUniqueWithoutMembersInput = {
-    where: serverRolesWhereUniqueInput
-    data: XOR<serverRolesUpdateWithoutMembersInput, serverRolesUncheckedUpdateWithoutMembersInput>
+  export type ServerRolesUpdateWithWhereUniqueWithoutMembersInput = {
+    where: ServerRolesWhereUniqueInput
+    data: XOR<ServerRolesUpdateWithoutMembersInput, ServerRolesUncheckedUpdateWithoutMembersInput>
   }
 
-  export type serverRolesUpdateManyWithWhereWithoutMembersInput = {
-    where: serverRolesScalarWhereInput
-    data: XOR<serverRolesUpdateManyMutationInput, serverRolesUncheckedUpdateManyWithoutMembersInput>
+  export type ServerRolesUpdateManyWithWhereWithoutMembersInput = {
+    where: ServerRolesScalarWhereInput
+    data: XOR<ServerRolesUpdateManyMutationInput, ServerRolesUncheckedUpdateManyWithoutMembersInput>
   }
 
   export type ServerCreateWithoutRolesInput = {
@@ -14967,6 +16599,7 @@ export namespace Prisma {
 
   export type ServerMemberCreateWithoutServerRolesInput = {
     id?: string
+    timeoutUntil?: Date | string | null
     server: ServerCreateNestedOneWithoutMembersInput
     user: UserCreateNestedOneWithoutMembershipsInput
   }
@@ -14975,11 +16608,32 @@ export namespace Prisma {
     id?: string
     userId: string
     serverId: string
+    timeoutUntil?: Date | string | null
   }
 
   export type ServerMemberCreateOrConnectWithoutServerRolesInput = {
     where: ServerMemberWhereUniqueInput
     create: XOR<ServerMemberCreateWithoutServerRolesInput, ServerMemberUncheckedCreateWithoutServerRolesInput>
+  }
+
+  export type ServerRolePermissionCreateWithoutRoleInput = {
+    id?: string
+    permission: $Enums.Permission
+  }
+
+  export type ServerRolePermissionUncheckedCreateWithoutRoleInput = {
+    id?: string
+    permission: $Enums.Permission
+  }
+
+  export type ServerRolePermissionCreateOrConnectWithoutRoleInput = {
+    where: ServerRolePermissionWhereUniqueInput
+    create: XOR<ServerRolePermissionCreateWithoutRoleInput, ServerRolePermissionUncheckedCreateWithoutRoleInput>
+  }
+
+  export type ServerRolePermissionCreateManyRoleInputEnvelope = {
+    data: ServerRolePermissionCreateManyRoleInput | ServerRolePermissionCreateManyRoleInput[]
+    skipDuplicates?: boolean
   }
 
   export type ServerUpsertWithoutRolesInput = {
@@ -15025,6 +16679,79 @@ export namespace Prisma {
   export type ServerMemberUpdateManyWithWhereWithoutServerRolesInput = {
     where: ServerMemberScalarWhereInput
     data: XOR<ServerMemberUpdateManyMutationInput, ServerMemberUncheckedUpdateManyWithoutServerRolesInput>
+  }
+
+  export type ServerRolePermissionUpsertWithWhereUniqueWithoutRoleInput = {
+    where: ServerRolePermissionWhereUniqueInput
+    update: XOR<ServerRolePermissionUpdateWithoutRoleInput, ServerRolePermissionUncheckedUpdateWithoutRoleInput>
+    create: XOR<ServerRolePermissionCreateWithoutRoleInput, ServerRolePermissionUncheckedCreateWithoutRoleInput>
+  }
+
+  export type ServerRolePermissionUpdateWithWhereUniqueWithoutRoleInput = {
+    where: ServerRolePermissionWhereUniqueInput
+    data: XOR<ServerRolePermissionUpdateWithoutRoleInput, ServerRolePermissionUncheckedUpdateWithoutRoleInput>
+  }
+
+  export type ServerRolePermissionUpdateManyWithWhereWithoutRoleInput = {
+    where: ServerRolePermissionScalarWhereInput
+    data: XOR<ServerRolePermissionUpdateManyMutationInput, ServerRolePermissionUncheckedUpdateManyWithoutRoleInput>
+  }
+
+  export type ServerRolePermissionScalarWhereInput = {
+    AND?: ServerRolePermissionScalarWhereInput | ServerRolePermissionScalarWhereInput[]
+    OR?: ServerRolePermissionScalarWhereInput[]
+    NOT?: ServerRolePermissionScalarWhereInput | ServerRolePermissionScalarWhereInput[]
+    id?: StringFilter<"ServerRolePermission"> | string
+    roleId?: StringFilter<"ServerRolePermission"> | string
+    permission?: EnumPermissionFilter<"ServerRolePermission"> | $Enums.Permission
+  }
+
+  export type ServerRolesCreateWithoutPermissionsInput = {
+    id?: string
+    name: string
+    position?: number
+    server: ServerCreateNestedOneWithoutRolesInput
+    members?: ServerMemberCreateNestedManyWithoutServerRolesInput
+  }
+
+  export type ServerRolesUncheckedCreateWithoutPermissionsInput = {
+    id?: string
+    name: string
+    position?: number
+    serverId: string
+    members?: ServerMemberUncheckedCreateNestedManyWithoutServerRolesInput
+  }
+
+  export type ServerRolesCreateOrConnectWithoutPermissionsInput = {
+    where: ServerRolesWhereUniqueInput
+    create: XOR<ServerRolesCreateWithoutPermissionsInput, ServerRolesUncheckedCreateWithoutPermissionsInput>
+  }
+
+  export type ServerRolesUpsertWithoutPermissionsInput = {
+    update: XOR<ServerRolesUpdateWithoutPermissionsInput, ServerRolesUncheckedUpdateWithoutPermissionsInput>
+    create: XOR<ServerRolesCreateWithoutPermissionsInput, ServerRolesUncheckedCreateWithoutPermissionsInput>
+    where?: ServerRolesWhereInput
+  }
+
+  export type ServerRolesUpdateToOneWithWhereWithoutPermissionsInput = {
+    where?: ServerRolesWhereInput
+    data: XOR<ServerRolesUpdateWithoutPermissionsInput, ServerRolesUncheckedUpdateWithoutPermissionsInput>
+  }
+
+  export type ServerRolesUpdateWithoutPermissionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    position?: IntFieldUpdateOperationsInput | number
+    server?: ServerUpdateOneRequiredWithoutRolesNestedInput
+    members?: ServerMemberUpdateManyWithoutServerRolesNestedInput
+  }
+
+  export type ServerRolesUncheckedUpdateWithoutPermissionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    position?: IntFieldUpdateOperationsInput | number
+    serverId?: StringFieldUpdateOperationsInput | string
+    members?: ServerMemberUncheckedUpdateManyWithoutServerRolesNestedInput
   }
 
   export type ChannelCreateWithoutMessagesInput = {
@@ -15249,14 +16976,16 @@ export namespace Prisma {
 
   export type ServerMemberCreateWithoutUserInput = {
     id?: string
+    timeoutUntil?: Date | string | null
     server: ServerCreateNestedOneWithoutMembersInput
-    serverRoles?: serverRolesCreateNestedManyWithoutMembersInput
+    serverRoles?: ServerRolesCreateNestedManyWithoutMembersInput
   }
 
   export type ServerMemberUncheckedCreateWithoutUserInput = {
     id?: string
     serverId: string
-    serverRoles?: serverRolesUncheckedCreateNestedManyWithoutMembersInput
+    timeoutUntil?: Date | string | null
+    serverRoles?: ServerRolesUncheckedCreateNestedManyWithoutMembersInput
   }
 
   export type ServerMemberCreateOrConnectWithoutUserInput = {
@@ -15559,11 +17288,13 @@ export namespace Prisma {
   export type ServerMemberCreateManyServerInput = {
     id?: string
     userId: string
+    timeoutUntil?: Date | string | null
   }
 
-  export type serverRolesCreateManyServerInput = {
+  export type ServerRolesCreateManyServerInput = {
     id?: string
     name: string
+    position?: number
   }
 
   export type ChannelUpdateWithoutServerInput = {
@@ -15593,36 +17324,44 @@ export namespace Prisma {
 
   export type ServerMemberUpdateWithoutServerInput = {
     id?: StringFieldUpdateOperationsInput | string
+    timeoutUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     user?: UserUpdateOneRequiredWithoutMembershipsNestedInput
-    serverRoles?: serverRolesUpdateManyWithoutMembersNestedInput
+    serverRoles?: ServerRolesUpdateManyWithoutMembersNestedInput
   }
 
   export type ServerMemberUncheckedUpdateWithoutServerInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
-    serverRoles?: serverRolesUncheckedUpdateManyWithoutMembersNestedInput
+    timeoutUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    serverRoles?: ServerRolesUncheckedUpdateManyWithoutMembersNestedInput
   }
 
   export type ServerMemberUncheckedUpdateManyWithoutServerInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    timeoutUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
-  export type serverRolesUpdateWithoutServerInput = {
+  export type ServerRolesUpdateWithoutServerInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    position?: IntFieldUpdateOperationsInput | number
     members?: ServerMemberUpdateManyWithoutServerRolesNestedInput
+    permissions?: ServerRolePermissionUpdateManyWithoutRoleNestedInput
   }
 
-  export type serverRolesUncheckedUpdateWithoutServerInput = {
+  export type ServerRolesUncheckedUpdateWithoutServerInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    position?: IntFieldUpdateOperationsInput | number
     members?: ServerMemberUncheckedUpdateManyWithoutServerRolesNestedInput
+    permissions?: ServerRolePermissionUncheckedUpdateManyWithoutRoleNestedInput
   }
 
-  export type serverRolesUncheckedUpdateManyWithoutServerInput = {
+  export type ServerRolesUncheckedUpdateManyWithoutServerInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    position?: IntFieldUpdateOperationsInput | number
   }
 
   export type MessagesCreateManyChannelInput = {
@@ -15695,26 +17434,37 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type serverRolesUpdateWithoutMembersInput = {
+  export type ServerRolesUpdateWithoutMembersInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    position?: IntFieldUpdateOperationsInput | number
     server?: ServerUpdateOneRequiredWithoutRolesNestedInput
+    permissions?: ServerRolePermissionUpdateManyWithoutRoleNestedInput
   }
 
-  export type serverRolesUncheckedUpdateWithoutMembersInput = {
+  export type ServerRolesUncheckedUpdateWithoutMembersInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    position?: IntFieldUpdateOperationsInput | number
+    serverId?: StringFieldUpdateOperationsInput | string
+    permissions?: ServerRolePermissionUncheckedUpdateManyWithoutRoleNestedInput
+  }
+
+  export type ServerRolesUncheckedUpdateManyWithoutMembersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    position?: IntFieldUpdateOperationsInput | number
     serverId?: StringFieldUpdateOperationsInput | string
   }
 
-  export type serverRolesUncheckedUpdateManyWithoutMembersInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    serverId?: StringFieldUpdateOperationsInput | string
+  export type ServerRolePermissionCreateManyRoleInput = {
+    id?: string
+    permission: $Enums.Permission
   }
 
   export type ServerMemberUpdateWithoutServerRolesInput = {
     id?: StringFieldUpdateOperationsInput | string
+    timeoutUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     server?: ServerUpdateOneRequiredWithoutMembersNestedInput
     user?: UserUpdateOneRequiredWithoutMembershipsNestedInput
   }
@@ -15723,12 +17473,29 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     serverId?: StringFieldUpdateOperationsInput | string
+    timeoutUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type ServerMemberUncheckedUpdateManyWithoutServerRolesInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     serverId?: StringFieldUpdateOperationsInput | string
+    timeoutUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type ServerRolePermissionUpdateWithoutRoleInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    permission?: EnumPermissionFieldUpdateOperationsInput | $Enums.Permission
+  }
+
+  export type ServerRolePermissionUncheckedUpdateWithoutRoleInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    permission?: EnumPermissionFieldUpdateOperationsInput | $Enums.Permission
+  }
+
+  export type ServerRolePermissionUncheckedUpdateManyWithoutRoleInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    permission?: EnumPermissionFieldUpdateOperationsInput | $Enums.Permission
   }
 
   export type SessionCreateManyUserInput = {
@@ -15767,6 +17534,7 @@ export namespace Prisma {
   export type ServerMemberCreateManyUserInput = {
     id?: string
     serverId: string
+    timeoutUntil?: Date | string | null
   }
 
   export type SessionUpdateWithoutUserInput = {
@@ -15870,19 +17638,22 @@ export namespace Prisma {
 
   export type ServerMemberUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
+    timeoutUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     server?: ServerUpdateOneRequiredWithoutMembersNestedInput
-    serverRoles?: serverRolesUpdateManyWithoutMembersNestedInput
+    serverRoles?: ServerRolesUpdateManyWithoutMembersNestedInput
   }
 
   export type ServerMemberUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     serverId?: StringFieldUpdateOperationsInput | string
-    serverRoles?: serverRolesUncheckedUpdateManyWithoutMembersNestedInput
+    timeoutUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    serverRoles?: ServerRolesUncheckedUpdateManyWithoutMembersNestedInput
   }
 
   export type ServerMemberUncheckedUpdateManyWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     serverId?: StringFieldUpdateOperationsInput | string
+    timeoutUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type ChannelUpdateWithoutUsersInput = {

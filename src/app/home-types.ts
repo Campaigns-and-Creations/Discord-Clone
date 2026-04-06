@@ -34,6 +34,15 @@ export type HomeServer = {
   createdAt: string;
   membershipId: string | null;
   roleNames: string[];
+  permissions: string[];
+  capabilities: {
+    canCreateChannels: boolean;
+    canInviteMembers: boolean;
+    canManageMessages: boolean;
+    canPinMessages: boolean;
+    canModerateMembers: boolean;
+    canSendMessages: boolean;
+  };
   channels: HomeChannel[];
 };
 

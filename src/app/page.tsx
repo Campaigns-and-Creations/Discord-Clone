@@ -1,6 +1,7 @@
 import type { HomePageData } from "./home-types";
 import HomeClient from "./home-client";
 import { headers } from "next/headers";
+import { requireSession } from "@/utils/session";
 
 async function getInitialHomeData(): Promise<HomePageData> {
   const requestHeaders = await headers();
@@ -28,6 +29,7 @@ async function getInitialHomeData(): Promise<HomePageData> {
 }
 
 export default async function HomePage() {
+  await requireSession();
   const data = await getInitialHomeData();
 
   return <HomeClient initialData={data} />;

@@ -1,26 +1,37 @@
 "use client";
 
-import { createServer } from "@/app/actions";
+import {
+  createServer,
+  createChannel,
+  deleteMessage,
+  inviteMember,
+  sendMessage,
+  setMessagePinned,
+} from "@/app/actions";
 import type { HomePageData } from "@/app/home-types";
+import { signOut } from "@/utils/auth-client";
 import {
   ActionIcon,
   Avatar,
-  Badge,
   Box,
   Button,
   Divider,
   Group,
+  Menu,
   Modal,
   NavLink,
   Paper,
   ScrollArea,
   Stack,
+  Textarea,
   Text,
   TextInput,
   Title,
+  Tooltip,
+  UnstyledButton,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { Plus } from "@phosphor-icons/react";
+import { PlusIcon } from "@phosphor-icons/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 
@@ -47,6 +58,10 @@ function formatServerBadge(name: string): string {
 export default function HomeClient({ initialData }: HomeClientProps) {
   const queryClient = useQueryClient();
   const [createModalOpened, setCreateModalOpened] = useState(false);
+  const [createChannelModalOpened, setCreateChannelModalOpened] = useState(false);
+  const [inviteModalOpened, setInviteModalOpened] = useState(false);
+  const [isSigningOut, setIsSigningOut] = useState(false);
+  const [messageDraft, setMessageDraft] = useState("");
 
   const createServerForm = useForm({
     initialValues: {
@@ -64,6 +79,42 @@ export default function HomeClient({ initialData }: HomeClientProps) {
           return "Server name must be at most 60 characters";
         }
 
+        return null;
+      },
+    },
+  });
+
+  const createChannelForm = useForm({
+    initialValues: {
+      name: "",
+    },
+    validate: {
+      name: (value) => {
+        const trimmed = value.trim();
+        if (!trimmed) {
+          return "Channel name is required";
+        }
+        if (trimmed.length > 60) {
+          return "Channel name must be at most 60 characters";
+        }
+        return null;
+      },
+    },
+  });
+
+  const inviteForm = useForm({
+    initialValues: {
+      email: "",
+    },
+    validate: {
+      email: (value) => {
+        const normalized = value.trim();
+        if (!normalized) {
+          return "Email is required";
+        }
+        if (!/^\S+@\S+\.\S+$/.test(normalized)) {
+          return "Please enter a valid email";
+        }
         return null;
       },
     },
@@ -132,11 +183,86 @@ export default function HomeClient({ initialData }: HomeClientProps) {
     },
   });
 
+  const createChannelMutation = useMutation({
+    mutationFn: async (payload: { serverId: string; name: string }) =>
+      createChannel(payload.serverId, payload.name, "TEXT"),
+    onSuccess: async () => {
+      setCreateChannelModalOpened(false);
+      createChannelForm.reset();
+      await queryClient.invalidateQueries({ queryKey: ["discord", "home-data"] });
+    },
+  });
+
+  const inviteMemberMutation = useMutation({
+    mutationFn: async (payload: { serverId: string; email: string }) =>
+      inviteMember(payload.serverId, payload.email),
+    onSuccess: async () => {
+      setInviteModalOpened(false);
+      inviteForm.reset();
+      await queryClient.invalidateQueries({ queryKey: ["discord", "home-data"] });
+    },
+  });
+
+  const sendMessageMutation = useMutation({
+    mutationFn: async (payload: { serverId: string; channelId: string; content: string }) =>
+      sendMessage(payload.serverId, payload.channelId, payload.content),
+    onSuccess: async () => {
+      setMessageDraft("");
+      await queryClient.invalidateQueries({ queryKey: ["discord", "home-data"] });
+    },
+  });
+
+  const deleteMessageMutation = useMutation({
+    mutationFn: async (payload: { serverId: string; channelId: string; messageId: string }) =>
+      deleteMessage(payload.serverId, payload.channelId, payload.messageId),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["discord", "home-data"] });
+    },
+  });
+
+  const pinMessageMutation = useMutation({
+    mutationFn: async (payload: { serverId: string; channelId: string; messageId: string; pinned: boolean }) =>
+      setMessagePinned(payload.serverId, payload.channelId, payload.messageId, payload.pinned),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["discord", "home-data"] });
+    },
+  });
+
   const selectedChannelId = selectedServer
     ? (selectedChannelByServer[selectedServer.id] ?? selectedServer.channels[0]?.id ?? null)
     : null;
 
   const selectedChannel = selectedServer?.channels.find((channel) => channel.id === selectedChannelId) ?? null;
+
+  const selectedServerCapabilities = selectedServer?.capabilities;
+
+  const userDisplayName = useMemo(() => {
+    const name = homeData.currentUser.name.trim();
+    if (name.length > 0) {
+      return name;
+    }
+
+    const emailPrefix = homeData.currentUser.email?.split("@")[0]?.trim();
+    if (emailPrefix) {
+      return emailPrefix;
+    }
+
+    return "Unknown User";
+  }, [homeData.currentUser.email, homeData.currentUser.name]);
+
+  const handleSignOut = async () => {
+    if (isSigningOut) {
+      return;
+    }
+
+    setIsSigningOut(true);
+    try {
+      await signOut();
+    } finally {
+      setIsSigningOut(false);
+      window.location.replace("/auth/sign-in");
+    }
+  };
 
   return (
     <Box bg="#202225" mih="100svh" p={0}>
@@ -170,118 +296,257 @@ export default function HomeClient({ initialData }: HomeClientProps) {
         </form>
       </Modal>
 
-      <Group align="stretch" gap={0} wrap="nowrap" mih="100svh">
-        <Paper w={86} bg="#1b1d22" radius={0} withBorder style={{ borderColor: "#1a1b1e" }}>
-          <Stack justify="space-between" h="100%" p="sm">
-            <Stack align="center" gap="xs">
-              <Text size="10px" fw={700} c="gray.4" tt="uppercase" style={{ letterSpacing: "0.2em" }}>
-                Servers
-              </Text>
-              <ScrollArea type="never" h="calc(100svh - 160px)">
-                <Stack align="center" gap="xs">
-                  {homeData.servers.map((server) => {
-                    const isActive = server.id === selectedServerId;
-                    return (
-                      <ActionIcon
-                        key={server.id}
-                        size={48}
-                        radius={isActive ? "md" : "xl"}
-                        variant={isActive ? "filled" : "subtle"}
-                        color={isActive ? "indigo" : "gray"}
-                        onClick={() => setSelectedServerId(server.id)}
-                        title={server.name}
-                      >
-                        <Avatar
-                          radius={isActive ? "md" : "xl"}
-                          src={server.picture}
-                          name={server.name}
-                          color="indigo"
-                          size={40}
-                        >
-                          {formatServerBadge(server.name)}
-                        </Avatar>
-                      </ActionIcon>
-                    );
-                  })}
-                </Stack>
-              </ScrollArea>
-            </Stack>
+      <Modal
+        opened={createChannelModalOpened}
+        onClose={() => setCreateChannelModalOpened(false)}
+        title="Create Text Channel"
+        centered
+      >
+        <form
+          onSubmit={createChannelForm.onSubmit(async (values) => {
+            if (!selectedServer) {
+              return;
+            }
 
-            <Button
-              fullWidth
-              leftSection={<Plus size={14} />}
-              variant="light"
-              color="indigo"
-              onClick={() => setCreateModalOpened(true)}
-            >
-              New
-            </Button>
+            await createChannelMutation.mutateAsync({
+              serverId: selectedServer.id,
+              name: values.name.trim(),
+            });
+          })}
+        >
+          <Stack gap="sm">
+            <TextInput
+              label="Channel Name"
+              placeholder="for example: announcements"
+              withAsterisk
+              {...createChannelForm.getInputProps("name")}
+            />
+            <Group justify="flex-end" mt="sm">
+              <Button variant="default" onClick={() => setCreateChannelModalOpened(false)}>
+                Cancel
+              </Button>
+              <Button type="submit" loading={createChannelMutation.isPending}>
+                Create Channel
+              </Button>
+            </Group>
           </Stack>
-        </Paper>
+        </form>
+      </Modal>
 
-        <Paper w={280} bg="#2b2d31" radius={0} withBorder style={{ borderColor: "#1a1b1e" }}>
-          <Stack h="100%" p="md" gap="sm">
-            {selectedServer ? (
-              <>
-                <Box>
-                  <Title order={4} c="gray.0">
-                    {selectedServer.name}
-                  </Title>
-                  <Text size="xs" c="gray.4" mt={4}>
-                    Roles: {selectedServer.roleNames.length > 0 ? selectedServer.roleNames.join(", ") : "Member"}
+      <Modal
+        opened={inviteModalOpened}
+        onClose={() => setInviteModalOpened(false)}
+        title="Invite Member"
+        centered
+      >
+        <form
+          onSubmit={inviteForm.onSubmit(async (values) => {
+            if (!selectedServer) {
+              return;
+            }
+
+            await inviteMemberMutation.mutateAsync({
+              serverId: selectedServer.id,
+              email: values.email.trim().toLowerCase(),
+            });
+          })}
+        >
+          <Stack gap="sm">
+            <TextInput
+              label="User Email"
+              placeholder="name@example.com"
+              withAsterisk
+              {...inviteForm.getInputProps("email")}
+            />
+            <Group justify="flex-end" mt="sm">
+              <Button variant="default" onClick={() => setInviteModalOpened(false)}>
+                Cancel
+              </Button>
+              <Button type="submit" loading={inviteMemberMutation.isPending}>
+                Send Invite
+              </Button>
+            </Group>
+          </Stack>
+        </form>
+      </Modal>
+
+      <Group align="stretch" gap={0} wrap="nowrap" mih="100svh">
+        <Stack w={366} h="100svh" gap={0}>
+          <Group align="stretch" gap={0} wrap="nowrap" style={{ flex: 1, minHeight: 0 }}>
+            <Paper w={86} bg="#1b1d22" radius={0} withBorder style={{ borderColor: "#1a1b1e" }}>
+              <Stack h="100%" p="sm" gap="sm">
+                <Stack align="center" gap="xs" style={{ flex: 1, minHeight: 0 }}>
+                  <Text size="10px" fw={700} c="gray.4" tt="uppercase" style={{ letterSpacing: "0.2em" }}>
+                    Servers
                   </Text>
-                </Box>
+                  <ScrollArea type="never" style={{ flex: 1, minHeight: 0 }}>
+                    <Stack align="center" gap="xs">
+                      {homeData.servers.map((server) => {
+                        const isActive = server.id === selectedServerId;
+                        return (
+                          <ActionIcon
+                            key={server.id}
+                            size={48}
+                            radius={isActive ? "md" : "xl"}
+                            variant={isActive ? "filled" : "subtle"}
+                            color={isActive ? "indigo" : "gray"}
+                            onClick={() => setSelectedServerId(server.id)}
+                            title={server.name}
+                          >
+                            <Avatar
+                              radius={isActive ? "md" : "xl"}
+                              src={server.picture}
+                              name={server.name}
+                              color="indigo"
+                              size={40}
+                            >
+                              {formatServerBadge(server.name)}
+                            </Avatar>
+                          </ActionIcon>
+                        );
+                      })}
+                    </Stack>
+                  </ScrollArea>
+                </Stack>
 
-                <Divider color="dark.4" />
+                <Tooltip
+                  label="Create new server"
+                  position="right"
+                  withArrow
+                  transitionProps={{ duration: 0 }}
+                >
+                  <Button
+                    fullWidth
+                    variant="light"
+                    color="indigo"
+                    onClick={() => setCreateModalOpened(true)}
+                  >
+                    <PlusIcon size={16} />
+                  </Button>
+                </Tooltip>
+              </Stack>
+            </Paper>
 
-                <Text size="10px" fw={700} c="gray.4" tt="uppercase" style={{ letterSpacing: "0.15em" }}>
-                  Channels
-                </Text>
+            <Paper w={280} bg="#2b2d31" radius={0} withBorder style={{ borderColor: "#1a1b1e" }}>
+              <Stack h="100%" p="md" gap="sm">
+                {selectedServer ? (
+                  <>
+                    <Box>
+                      <Title order={4} c="gray.0">
+                        {selectedServer.name}
+                      </Title>
+                      <Text size="xs" c="gray.4" mt={4}>
+                        Roles: {selectedServer.roleNames.length > 0 ? selectedServer.roleNames.join(", ") : "Member"}
+                      </Text>
+                    </Box>
 
-                <ScrollArea type="hover" h="calc(100svh - 170px)">
-                  <Stack gap={4}>
-                    {selectedServer.channels.map((channel) => {
-                      const isSelected = channel.id === selectedChannelId;
+                    <Divider color="dark.4" />
 
-                      return (
-                        <NavLink
-                          key={channel.id}
-                          active={isSelected}
-                          label={`# ${channel.name}`}
-                          description={channel.type}
-                          onClick={() => {
-                            setSelectedChannelByServer((current) => ({
-                              ...current,
-                              [selectedServer.id]: channel.id,
-                            }));
-                          }}
+                    <Text size="10px" fw={700} c="gray.4" tt="uppercase" style={{ letterSpacing: "0.15em" }}>
+                      Channels
+                    </Text>
+
+                    <Group gap="xs">
+                      <Tooltip
+                        label={
+                          selectedServerCapabilities?.canCreateChannels
+                            ? "Create channel"
+                            : "You do not have permission to create channels"
+                        }
+                        position="bottom"
+                        withArrow
+                      >
+                        <Button
+                          size="xs"
                           variant="light"
                           color="indigo"
-                        />
-                      );
-                    })}
-                  </Stack>
-                </ScrollArea>
-              </>
-            ) : (
-              <Text size="sm" c="gray.4">
-                No servers available.
-              </Text>
-            )}
-          </Stack>
-        </Paper>
+                          disabled={!selectedServerCapabilities?.canCreateChannels}
+                          onClick={() => setCreateChannelModalOpened(true)}
+                        >
+                          New Channel
+                        </Button>
+                      </Tooltip>
+                      {selectedServerCapabilities?.canInviteMembers ? (
+                        <Button size="xs" variant="subtle" color="gray" onClick={() => setInviteModalOpened(true)}>
+                          Invite
+                        </Button>
+                      ) : null}
+                    </Group>
+
+                    <ScrollArea type="hover" style={{ flex: 1, minHeight: 0 }}>
+                      <Stack gap={4}>
+                        {selectedServer.channels.map((channel) => {
+                          const isSelected = channel.id === selectedChannelId;
+
+                          return (
+                            <NavLink
+                              key={channel.id}
+                              active={isSelected}
+                              label={`# ${channel.name}`}
+                              description={channel.type}
+                              onClick={() => {
+                                setSelectedChannelByServer((current) => ({
+                                  ...current,
+                                  [selectedServer.id]: channel.id,
+                                }));
+                              }}
+                              variant="light"
+                              color="indigo"
+                            />
+                          );
+                        })}
+                      </Stack>
+                    </ScrollArea>
+                  </>
+                ) : (
+                  <Text size="sm" c="gray.4">
+                    No servers available.
+                  </Text>
+                )}
+              </Stack>
+            </Paper>
+          </Group>
+
+          <Paper
+            h={56}
+            bg="#232428"
+            radius={0}
+            withBorder
+            style={{ borderColor: "#1a1b1e", borderTopColor: "#1f2024" }}
+          >
+            <Group h="100%" px="sm" justify="space-between" wrap="nowrap">
+              <Menu shadow="md" width={200} position="top-start" withinPortal={false}>
+                <Menu.Target>
+                  <UnstyledButton
+                    style={{
+                      width: "100%",
+                      minWidth: 0,
+                      borderRadius: 6,
+                      padding: "6px 8px",
+                    }}
+                  >
+                    <Text fw={600} c="gray.0" size="sm" truncate="end">
+                      {userDisplayName}
+                    </Text>
+                  </UnstyledButton>
+                </Menu.Target>
+
+                <Menu.Dropdown>
+                  <Menu.Item c="red.4" disabled={isSigningOut} onClick={() => void handleSignOut()}>
+                    {isSigningOut ? "Logging out..." : "Log out"}
+                  </Menu.Item>
+                </Menu.Dropdown>
+              </Menu>
+            </Group>
+          </Paper>
+        </Stack>
 
         <Paper flex={1} bg="#313338" radius={0} p={0}>
           <Stack h="100%" gap={0}>
             <Box p="md" style={{ borderBottom: "1px solid #232428" }}>
-              <Group justify="space-between" align="center">
-                <Text size="sm" fw={700} c="gray.0">
-                  {selectedChannel ? `# ${selectedChannel.name}` : "Select a channel"}
-                </Text>
-                <Badge variant="light" color="gray">
-                  {homeData.currentUser.name}
-                </Badge>
-              </Group>
+              <Text size="sm" fw={700} c="gray.0">
+                {selectedChannel ? `# ${selectedChannel.name}` : "Select a channel"}
+              </Text>
             </Box>
 
             <ScrollArea flex={1} p="md" type="hover">
@@ -295,7 +560,7 @@ export default function HomeClient({ initialData }: HomeClientProps) {
                 {selectedChannel?.messages.length ? (
                   selectedChannel.messages.map((message) => (
                     <Paper key={message.id} p="sm" bg="#2b2d31" radius="md" withBorder style={{ borderColor: "#3a3d45" }}>
-                      <Group align="flex-start" gap="sm" wrap="nowrap">
+                      <Group align="flex-start" gap="sm" wrap="nowrap" justify="space-between">
                         <Avatar
                           src={message.author.image}
                           name={message.author.name}
@@ -303,7 +568,7 @@ export default function HomeClient({ initialData }: HomeClientProps) {
                           radius="xl"
                           size="sm"
                         />
-                        <Stack gap={2}>
+                        <Stack gap={2} style={{ flex: 1, minWidth: 0 }}>
                           <Group gap="xs">
                             <Text size="sm" fw={700} c="gray.0">
                               {message.author.name}
@@ -311,11 +576,58 @@ export default function HomeClient({ initialData }: HomeClientProps) {
                             <Text size="xs" c="gray.5">
                               {formatMessageTime(message.createdAt)}
                             </Text>
+                            {message.pinned ? (
+                              <Text size="xs" c="yellow.4" fw={700}>
+                                PINNED
+                              </Text>
+                            ) : null}
                           </Group>
                           <Text size="sm" c="gray.1">
                             {message.content}
                           </Text>
                         </Stack>
+
+                        {selectedServer ? (
+                          <Menu position="left-start" width={180} withinPortal={false}>
+                            <Menu.Target>
+                              <ActionIcon variant="subtle" color="gray" size="sm">
+                                ...
+                              </ActionIcon>
+                            </Menu.Target>
+                            <Menu.Dropdown>
+                              {(selectedServer.capabilities.canPinMessages ||
+                                selectedServer.capabilities.canManageMessages) && (
+                                <Menu.Item
+                                  onClick={() => {
+                                    void pinMessageMutation.mutateAsync({
+                                      serverId: selectedServer.id,
+                                      channelId: message.channelId,
+                                      messageId: message.id,
+                                      pinned: !message.pinned,
+                                    });
+                                  }}
+                                >
+                                  {message.pinned ? "Unpin message" : "Pin message"}
+                                </Menu.Item>
+                              )}
+                              {(message.author.id === homeData.currentUser.id ||
+                                selectedServer.capabilities.canManageMessages) && (
+                                <Menu.Item
+                                  c="red.4"
+                                  onClick={() => {
+                                    void deleteMessageMutation.mutateAsync({
+                                      serverId: selectedServer.id,
+                                      channelId: message.channelId,
+                                      messageId: message.id,
+                                    });
+                                  }}
+                                >
+                                  Delete message
+                                </Menu.Item>
+                              )}
+                            </Menu.Dropdown>
+                          </Menu>
+                        ) : null}
                       </Group>
                     </Paper>
                   ))
@@ -331,6 +643,50 @@ export default function HomeClient({ initialData }: HomeClientProps) {
                     </Stack>
                   </Paper>
                 )}
+
+                {selectedServer && selectedChannel ? (
+                  <Paper p="sm" bg="#2b2d31" radius="md" withBorder style={{ borderColor: "#3a3d45" }}>
+                    <form
+                      onSubmit={(event) => {
+                        event.preventDefault();
+                        const normalized = messageDraft.trim();
+                        if (!normalized) {
+                          return;
+                        }
+
+                        void sendMessageMutation.mutateAsync({
+                          serverId: selectedServer.id,
+                          channelId: selectedChannel.id,
+                          content: normalized,
+                        });
+                      }}
+                    >
+                      <Stack gap="xs">
+                        <Textarea
+                          placeholder={
+                            selectedServer.capabilities.canSendMessages
+                              ? `Message #${selectedChannel.name}`
+                              : "You do not have permission to send messages"
+                          }
+                          minRows={2}
+                          value={messageDraft}
+                          onChange={(event) => setMessageDraft(event.currentTarget.value)}
+                          disabled={!selectedServer.capabilities.canSendMessages || sendMessageMutation.isPending}
+                        />
+                        <Group justify="flex-end">
+                          <Button
+                            type="submit"
+                            size="xs"
+                            loading={sendMessageMutation.isPending}
+                            disabled={!selectedServer.capabilities.canSendMessages || messageDraft.trim().length === 0}
+                          >
+                            Send
+                          </Button>
+                        </Group>
+                      </Stack>
+                    </form>
+                  </Paper>
+                ) : null}
               </Stack>
             </ScrollArea>
           </Stack>

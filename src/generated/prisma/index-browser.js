@@ -138,13 +138,21 @@ exports.Prisma.ChannelScalarFieldEnum = {
 exports.Prisma.ServerMemberScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
-  serverId: 'serverId'
+  serverId: 'serverId',
+  timeoutUntil: 'timeoutUntil'
 };
 
 exports.Prisma.ServerRolesScalarFieldEnum = {
   id: 'id',
   name: 'name',
+  position: 'position',
   serverId: 'serverId'
+};
+
+exports.Prisma.ServerRolePermissionScalarFieldEnum = {
+  id: 'id',
+  roleId: 'roleId',
+  permission: 'permission'
 };
 
 exports.Prisma.MessagesScalarFieldEnum = {
@@ -221,11 +229,27 @@ exports.ChannelType = exports.$Enums.ChannelType = {
   VOICE: 'VOICE'
 };
 
+exports.Permission = exports.$Enums.Permission = {
+  ADMINISTRATOR: 'ADMINISTRATOR',
+  MANAGE_SERVER: 'MANAGE_SERVER',
+  MANAGE_CHANNELS: 'MANAGE_CHANNELS',
+  CREATE_INVITE: 'CREATE_INVITE',
+  MANAGE_MESSAGES: 'MANAGE_MESSAGES',
+  PIN_MESSAGES: 'PIN_MESSAGES',
+  MODERATE_MEMBERS: 'MODERATE_MEMBERS',
+  KICK_MEMBERS: 'KICK_MEMBERS',
+  BAN_MEMBERS: 'BAN_MEMBERS',
+  VIEW_CHANNEL: 'VIEW_CHANNEL',
+  SEND_MESSAGES: 'SEND_MESSAGES',
+  READ_MESSAGE_HISTORY: 'READ_MESSAGE_HISTORY'
+};
+
 exports.Prisma.ModelName = {
   Server: 'Server',
   Channel: 'Channel',
   ServerMember: 'ServerMember',
-  serverRoles: 'serverRoles',
+  ServerRoles: 'ServerRoles',
+  ServerRolePermission: 'ServerRolePermission',
   Messages: 'Messages',
   User: 'User',
   Session: 'Session',

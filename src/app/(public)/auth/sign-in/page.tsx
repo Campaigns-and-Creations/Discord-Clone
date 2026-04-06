@@ -17,7 +17,7 @@ export default function SignInPage() {
 
 	useEffect(() => {
 		if (session?.user) {
-			router.replace("/welcome");
+			router.replace("/");
 		}
 	}, [router, session]);
 
@@ -28,7 +28,7 @@ export default function SignInPage() {
 
 		try {
 			const result = await signIn.email({
-				callbackURL: "/welcome",
+				callbackURL: "/",
 				email,
 				password,
 				rememberMe: true,
@@ -39,7 +39,7 @@ export default function SignInPage() {
 				return;
 			}
 
-			router.push("/welcome");
+			router.push("/");
 		} catch (submitError) {
 			setError(submitError instanceof Error ? submitError.message : "Sign in failed.");
 		} finally {

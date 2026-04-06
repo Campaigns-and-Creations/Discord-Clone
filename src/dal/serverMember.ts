@@ -11,6 +11,7 @@ export class ServerMemberDal {
         id: true,
         userId: true,
         serverId: true,
+        timeoutUntil: true,
       },
     });
   }
@@ -34,5 +35,16 @@ export class ServerMemberDal {
     });
 
     return Boolean(membership);
+  }
+
+  static async setTimeoutUntil(memberId: string, timeoutUntil: Date | null) {
+    return prisma.serverMember.update({
+      where: { id: memberId },
+      data: { timeoutUntil },
+      select: {
+        id: true,
+        timeoutUntil: true,
+      },
+    });
   }
 }

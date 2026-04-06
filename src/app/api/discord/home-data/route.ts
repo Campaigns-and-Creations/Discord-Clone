@@ -2,8 +2,9 @@ import type { HomePageData } from "@/app/home-types";
 import { ChannelDal } from "@/dal/channel";
 import { MessagesDal } from "@/dal/messages";
 import { ServerDal } from "@/dal/server";
-import { ServerRolesDal } from "@/dal/serverRoles";
+import { Permission } from "@/generated/prisma";
 import { UserDal } from "@/dal/user";
+import { getMembershipPermissions } from "@/utils/permissions";
 import { getServerUser } from "@/utils/session";
 import { NextResponse } from "next/server";
 
@@ -50,9 +51,14 @@ export async function GET() {
         }),
       );
 
+      const membershipPermissions = await getMembershipPermissions(sessionUser.id, server.id);
       const roleNames = server.membershipId
-        ? (await ServerRolesDal.listForMember(server.membershipId)).map((role) => role.name)
+        ? membershipPermissions?.roleNames ?? []
         : server.roleNames;
+      const permissions = membershipPermissions?.permissions ?? [];
+
+      const hasPermission = (...required: Permission[]) =>
+        required.some((permission) => permissions.includes(permission));
 
       return {
         id: server.id,
@@ -61,6 +67,19 @@ export async function GET() {
         createdAt: toIsoString(server.createdAt),
         membershipId: server.membershipId,
         roleNames,
+        permissions,
+        capabilities: {
+          canCreateChannels: hasPermission(Permission.ADMINISTRATOR, Permission.MANAGE_CHANNELS),
+          canInviteMembers: hasPermission(Permission.ADMINISTRATOR, Permission.CREATE_INVITE),
+          canManageMessages: hasPermission(Permission.ADMINISTRATOR, Permission.MANAGE_MESSAGES),
+          canPinMessages: hasPermission(
+            Permission.ADMINISTRATOR,
+            Permission.PIN_MESSAGES,
+            Permission.MANAGE_MESSAGES,
+          ),
+          canModerateMembers: hasPermission(Permission.ADMINISTRATOR, Permission.MODERATE_MEMBERS),
+          canSendMessages: hasPermission(Permission.ADMINISTRATOR, Permission.SEND_MESSAGES),
+        },
         channels: channelsWithMessages,
       };
     }),

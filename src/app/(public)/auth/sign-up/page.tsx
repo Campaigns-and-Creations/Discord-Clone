@@ -18,7 +18,7 @@ export default function SignUpPage() {
 
     useEffect(() => {
         if (session?.user) {
-            router.replace("/welcome");
+            router.replace("/");
         }
     }, [router, session]);
 

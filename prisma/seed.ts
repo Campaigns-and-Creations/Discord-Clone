@@ -2,6 +2,7 @@ import 'dotenv/config';
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "@/generated/prisma";
 import { hashPassword } from "better-auth/crypto";
+import { DEFAULT_SERVER_ROLES } from "@/utils/default-role-permissions";
 
 const adapter = new PrismaPg(
     { connectionString: process.env.DATABASE_URL }
@@ -169,12 +170,26 @@ async function main() {
             },
         });
 
-        const adminRole = await prisma.serverRoles.create({
-            data: {
-                name: "Admin",
-                serverId: server.id,
-            },
-        });
+        const createdRoles = await Promise.all(
+            DEFAULT_SERVER_ROLES.map((roleSeed) =>
+                prisma.serverRoles.create({
+                    data: {
+                        name: roleSeed.name,
+                        position: roleSeed.position,
+                        serverId: server.id,
+                        permissions: {
+                            create: roleSeed.permissions.map((permission) => ({ permission })),
+                        },
+                    },
+                }),
+            ),
+        );
+
+        const adminRole = createdRoles.find((role) => role.name === "Admin");
+
+        if (!adminRole) {
+            throw new Error("Failed to seed Admin role");
+        }
 
         await prisma.serverMember.update({
             where: {

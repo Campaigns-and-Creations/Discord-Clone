@@ -19,7 +19,7 @@ model Server {
   createdAt DateTime       @default(now())
   channels  Channel[]
   members   ServerMember[]
-  roles     serverRoles[]
+  roles     ServerRoles[]
 }
 
 model Channel {
@@ -34,20 +34,34 @@ model Channel {
 }
 
 model ServerMember {
-  id          String        @id @default(uuid())
-  userId      String
-  serverId    String
-  server      Server        @relation(fields: [serverId], references: [id])
-  user        User          @relation(fields: [userId], references: [id])
-  serverRoles serverRoles[] @relation("ServerMemberRoles")
+  id           String        @id @default(uuid())
+  userId       String
+  serverId     String
+  server       Server        @relation(fields: [serverId], references: [id])
+  user         User          @relation(fields: [userId], references: [id])
+  timeoutUntil DateTime?
+  serverRoles  ServerRoles[] @relation("ServerMemberRoles")
 }
 
-model serverRoles {
-  id       String         @id @default(uuid())
-  name     String
-  serverId String
-  server   Server         @relation(fields: [serverId], references: [id])
-  members  ServerMember[] @relation("ServerMemberRoles")
+model ServerRoles {
+  id          String                 @id @default(uuid())
+  name        String
+  position    Int                    @default(0)
+  serverId    String
+  server      Server                 @relation(fields: [serverId], references: [id])
+  members     ServerMember[]         @relation("ServerMemberRoles")
+  permissions ServerRolePermission[]
+
+  @@unique([serverId, name])
+}
+
+model ServerRolePermission {
+  id         String      @id @default(uuid())
+  roleId     String
+  role       ServerRoles @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission Permission
+
+  @@unique([roleId, permission])
 }
 
 model Messages {
@@ -64,6 +78,21 @@ model Messages {
 enum ChannelType {
   TEXT
   VOICE
+}
+
+enum Permission {
+  ADMINISTRATOR
+  MANAGE_SERVER
+  MANAGE_CHANNELS
+  CREATE_INVITE
+  MANAGE_MESSAGES
+  PIN_MESSAGES
+  MODERATE_MEMBERS
+  KICK_MEMBERS
+  BAN_MEMBERS
+  VIEW_CHANNEL
+  SEND_MESSAGES
+  READ_MESSAGE_HISTORY
 }
 
 model User {
