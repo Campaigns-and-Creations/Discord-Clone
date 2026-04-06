@@ -16,7 +16,7 @@ import {
   Tooltip,
   UnstyledButton,
 } from "@mantine/core";
-import { PlusIcon } from "@phosphor-icons/react";
+import { PlusIcon, SpeakerHighIcon } from "@phosphor-icons/react";
 
 type HomeSidebarProps = {
   homeData: HomePageData;
@@ -150,20 +150,24 @@ export function HomeSidebar({
                   <Stack gap={4}>
                     {selectedServer.channels.map((channel) => {
                       const isSelected = channel.id === selectedChannelId;
-                      const channelPrefix = channel.type === "VOICE" ? "VC" : "#";
-                      const channelDescription = channel.isPublic
-                        ? channel.type === "VOICE"
-                          ? "VOICE - Auto join"
-                          : channel.type
-                        : `${channel.type} - Restricted`;
+                      const channelLabel =
+                        channel.type === "VOICE" ? (
+                          <Group gap={6} wrap="nowrap" align="center">
+                            <SpeakerHighIcon size={14} />
+                            <Text span size="sm" c="inherit" truncate="end">
+                              {channel.name}
+                            </Text>
+                          </Group>
+                        ) : (
+                          `# ${channel.name}`
+                        );
 
                       return (
                         <Group key={channel.id} gap={4} wrap="nowrap" align="center">
                           <Box style={{ flex: 1, minWidth: 0 }}>
                             <NavLink
                               active={isSelected}
-                              label={`${channelPrefix} ${channel.name}`}
-                              description={channelDescription}
+                              label={channelLabel}
                               onClick={() => onSelectChannel(channel.id)}
                               variant="light"
                               color="indigo"
