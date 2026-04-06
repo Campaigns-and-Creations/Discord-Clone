@@ -1,6 +1,11 @@
 import { logger } from "./utils/logger";
 
-const REQUIRED_ENV_VARIABLES = ["BETTER_AUTH_SECRET", "BETTER_AUTH_URL"];
+const REQUIRED_ENV_VARIABLES = [
+    "BETTER_AUTH_SECRET",
+    "BETTER_AUTH_URL",
+    "STREAM_API_KEY",
+    "STREAM_SECRET",
+];
 
 export async function register() {
     if (process.env.NEXT_RUNTIME !== "nodejs") {

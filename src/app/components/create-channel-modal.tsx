@@ -1,4 +1,4 @@
-import { Button, Group, Modal, MultiSelect, Stack, Switch, TextInput } from "@mantine/core";
+import { Button, Group, Modal, MultiSelect, SegmentedControl, Stack, Switch, TextInput } from "@mantine/core";
 import type { UseFormReturnType } from "@mantine/form";
 
 type RoleOption = {
@@ -8,6 +8,7 @@ type RoleOption = {
 
 type CreateChannelFormValues = {
   name: string;
+  type: "TEXT" | "VOICE";
   isPublic: boolean;
   allowedRoleIds: string[];
 };
@@ -30,12 +31,19 @@ export function CreateChannelModal({
   isPending,
 }: CreateChannelModalProps) {
   return (
-    <Modal opened={opened} onClose={onClose} title="Create Text Channel" centered>
+    <Modal opened={opened} onClose={onClose} title="Create Channel" centered>
       <form onSubmit={form.onSubmit(onSubmit)}>
         <Stack gap="sm">
+          <SegmentedControl
+            data={[
+              { label: "Text", value: "TEXT" },
+              { label: "Voice", value: "VOICE" },
+            ]}
+            {...form.getInputProps("type")}
+          />
           <TextInput
             label="Channel Name"
-            placeholder="for example: announcements"
+            placeholder={form.values.type === "VOICE" ? "for example: standup-room" : "for example: announcements"}
             withAsterisk
             {...form.getInputProps("name")}
           />

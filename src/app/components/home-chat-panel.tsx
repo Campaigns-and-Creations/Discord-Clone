@@ -1,4 +1,6 @@
 import type { HomeChannel, HomeServer } from "@/app/home-types";
+import { StreamVideoProvider } from "@/app/components/stream-video-provider";
+import { VoiceCallPanel } from "@/app/components/voice-call-panel";
 import {
   ActionIcon,
   Avatar,
@@ -18,6 +20,11 @@ type HomeChatPanelProps = {
   selectedChannel: HomeChannel | null;
   selectedServer: HomeServer | null;
   currentUserId: string;
+  currentUser: {
+    id: string;
+    name: string;
+    image: string | null;
+  };
   isFetching: boolean;
   onTogglePin: (message: HomeChannel["messages"][number]) => void;
   onDeleteMessage: (message: HomeChannel["messages"][number]) => void;
@@ -38,6 +45,7 @@ export function HomeChatPanel({
   selectedChannel,
   selectedServer,
   currentUserId,
+  currentUser,
   isFetching,
   onTogglePin,
   onDeleteMessage,
@@ -62,111 +70,123 @@ export function HomeChatPanel({
           </Group>
         </Box>
 
-        <ScrollArea flex={1} p="md" type="hover">
-          <Stack gap="sm">
-            {isFetching ? (
-              <Text size="sm" c="gray.4">
-                Refreshing...
-              </Text>
-            ) : null}
+        {selectedChannel?.type === "VOICE" && selectedServer ? (
+          <Box flex={1} p="md">
+            <StreamVideoProvider user={currentUser}>
+              <VoiceCallPanel
+                serverId={selectedServer.id}
+                channelId={selectedChannel.id}
+                channelName={selectedChannel.name}
+              />
+            </StreamVideoProvider>
+          </Box>
+        ) : (
+          <ScrollArea flex={1} p="md" type="hover">
+            <Stack gap="sm">
+              {isFetching ? (
+                <Text size="sm" c="gray.4">
+                  Refreshing...
+                </Text>
+              ) : null}
 
-            {selectedChannel?.messages.length ? (
-              selectedChannel.messages.map((message) => (
-                <Paper key={message.id} p="sm" bg="#2b2d31" radius="md" withBorder style={{ borderColor: "#3a3d45" }}>
-                  <Group align="flex-start" gap="sm" wrap="nowrap" justify="space-between">
-                    <Avatar src={message.author.image} name={message.author.name} color="indigo" radius="xl" size="sm" />
-                    <Stack gap={2} style={{ flex: 1, minWidth: 0 }}>
-                      <Group gap="xs">
-                        <Text size="sm" fw={700} c="gray.0">
-                          {message.author.name}
-                        </Text>
-                        <Text size="xs" c="gray.5">
-                          {formatMessageTime(message.createdAt)}
-                        </Text>
-                        {message.pinned ? (
-                          <Text size="xs" c="yellow.4" fw={700}>
-                            PINNED
+              {selectedChannel?.messages.length ? (
+                selectedChannel.messages.map((message) => (
+                  <Paper key={message.id} p="sm" bg="#2b2d31" radius="md" withBorder style={{ borderColor: "#3a3d45" }}>
+                    <Group align="flex-start" gap="sm" wrap="nowrap" justify="space-between">
+                      <Avatar src={message.author.image} name={message.author.name} color="indigo" radius="xl" size="sm" />
+                      <Stack gap={2} style={{ flex: 1, minWidth: 0 }}>
+                        <Group gap="xs">
+                          <Text size="sm" fw={700} c="gray.0">
+                            {message.author.name}
                           </Text>
-                        ) : null}
-                      </Group>
-                      <Text size="sm" c="gray.1">
-                        {message.content}
-                      </Text>
-                    </Stack>
+                          <Text size="xs" c="gray.5">
+                            {formatMessageTime(message.createdAt)}
+                          </Text>
+                          {message.pinned ? (
+                            <Text size="xs" c="yellow.4" fw={700}>
+                              PINNED
+                            </Text>
+                          ) : null}
+                        </Group>
+                        <Text size="sm" c="gray.1">
+                          {message.content}
+                        </Text>
+                      </Stack>
 
-                    {selectedServer ? (
-                      <Menu position="left-start" width={180} withinPortal={false}>
-                        <Menu.Target>
-                          <ActionIcon variant="subtle" color="gray" size="sm">
-                            ...
-                          </ActionIcon>
-                        </Menu.Target>
-                        <Menu.Dropdown>
-                          {(selectedServer.capabilities.canPinMessages || selectedServer.capabilities.canManageMessages) && (
-                            <Menu.Item onClick={() => onTogglePin(message)}>
-                              {message.pinned ? "Unpin message" : "Pin message"}
-                            </Menu.Item>
-                          )}
-                          {(message.author.id === currentUserId || selectedServer.capabilities.canManageMessages) && (
-                            <Menu.Item c="red.4" onClick={() => onDeleteMessage(message)}>
-                              Delete message
-                            </Menu.Item>
-                          )}
-                        </Menu.Dropdown>
-                      </Menu>
-                    ) : null}
-                  </Group>
-                </Paper>
-              ))
-            ) : (
-              <Paper p="xl" bg="#2b2d31" radius="md" withBorder style={{ borderColor: "#4a4e57", borderStyle: "dashed" }}>
-                <Stack align="center" gap={4}>
-                  <Text fw={600} c="gray.0">
-                    No messages yet
-                  </Text>
-                  <Text size="sm" c="gray.4">
-                    This channel is ready for its first message.
-                  </Text>
-                </Stack>
-              </Paper>
-            )}
-
-            {selectedServer && selectedChannel ? (
-              <Paper p="sm" bg="#2b2d31" radius="md" withBorder style={{ borderColor: "#3a3d45" }}>
-                <form
-                  onSubmit={(event) => {
-                    event.preventDefault();
-                    onSendMessage();
-                  }}
-                >
-                  <Stack gap="xs">
-                    <Textarea
-                      placeholder={
-                        selectedServer.capabilities.canSendMessages
-                          ? `Message #${selectedChannel.name}`
-                          : "You do not have permission to send messages"
-                      }
-                      minRows={2}
-                      value={messageDraft}
-                      onChange={(event) => onChangeMessageDraft(event.currentTarget.value)}
-                      disabled={!selectedServer.capabilities.canSendMessages || isSendingMessage}
-                    />
-                    <Group justify="flex-end">
-                      <Button
-                        type="submit"
-                        size="xs"
-                        loading={isSendingMessage}
-                        disabled={!selectedServer.capabilities.canSendMessages || messageDraft.trim().length === 0}
-                      >
-                        Send
-                      </Button>
+                      {selectedServer ? (
+                        <Menu position="left-start" width={180} withinPortal={false}>
+                          <Menu.Target>
+                            <ActionIcon variant="subtle" color="gray" size="sm">
+                              ...
+                            </ActionIcon>
+                          </Menu.Target>
+                          <Menu.Dropdown>
+                            {(selectedServer.capabilities.canPinMessages || selectedServer.capabilities.canManageMessages) && (
+                              <Menu.Item onClick={() => onTogglePin(message)}>
+                                {message.pinned ? "Unpin message" : "Pin message"}
+                              </Menu.Item>
+                            )}
+                            {(message.author.id === currentUserId || selectedServer.capabilities.canManageMessages) && (
+                              <Menu.Item c="red.4" onClick={() => onDeleteMessage(message)}>
+                                Delete message
+                              </Menu.Item>
+                            )}
+                          </Menu.Dropdown>
+                        </Menu>
+                      ) : null}
                     </Group>
+                  </Paper>
+                ))
+              ) : (
+                <Paper p="xl" bg="#2b2d31" radius="md" withBorder style={{ borderColor: "#4a4e57", borderStyle: "dashed" }}>
+                  <Stack align="center" gap={4}>
+                    <Text fw={600} c="gray.0">
+                      No messages yet
+                    </Text>
+                    <Text size="sm" c="gray.4">
+                      This channel is ready for its first message.
+                    </Text>
                   </Stack>
-                </form>
-              </Paper>
-            ) : null}
-          </Stack>
-        </ScrollArea>
+                </Paper>
+              )}
+
+              {selectedServer && selectedChannel ? (
+                <Paper p="sm" bg="#2b2d31" radius="md" withBorder style={{ borderColor: "#3a3d45" }}>
+                  <form
+                    onSubmit={(event) => {
+                      event.preventDefault();
+                      onSendMessage();
+                    }}
+                  >
+                    <Stack gap="xs">
+                      <Textarea
+                        placeholder={
+                          selectedServer.capabilities.canSendMessages
+                            ? `Message #${selectedChannel.name}`
+                            : "You do not have permission to send messages"
+                        }
+                        minRows={2}
+                        value={messageDraft}
+                        onChange={(event) => onChangeMessageDraft(event.currentTarget.value)}
+                        disabled={!selectedServer.capabilities.canSendMessages || isSendingMessage}
+                      />
+                      <Group justify="flex-end">
+                        <Button
+                          type="submit"
+                          size="xs"
+                          loading={isSendingMessage}
+                          disabled={!selectedServer.capabilities.canSendMessages || messageDraft.trim().length === 0}
+                        >
+                          Send
+                        </Button>
+                      </Group>
+                    </Stack>
+                  </form>
+                </Paper>
+              ) : null}
+            </Stack>
+          </ScrollArea>
+        )}
       </Stack>
     </Paper>
   );

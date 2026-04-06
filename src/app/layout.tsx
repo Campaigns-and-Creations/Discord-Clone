@@ -7,6 +7,7 @@ import { Providers } from "./providers";
 
 import "./globals.css";
 import "@mantine/core/styles.css";
+import "@stream-io/video-react-sdk/dist/css/styles.css";
 
 const inter = Inter({ subsets: ["latin"] });
 

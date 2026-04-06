@@ -85,6 +85,7 @@ export default function HomeClient({ initialData }: HomeClientProps) {
   const createChannelForm = useForm({
     initialValues: {
       name: "",
+      type: "TEXT" as "TEXT" | "VOICE",
       isPublic: true,
       allowedRoleIds: [] as string[],
     },
@@ -254,10 +255,11 @@ export default function HomeClient({ initialData }: HomeClientProps) {
     mutationFn: async (payload: {
       serverId: string;
       name: string;
+      type: "TEXT" | "VOICE";
       isPublic: boolean;
       allowedRoleIds: string[];
     }) =>
-      createChannel(payload.serverId, payload.name, "TEXT", {
+      createChannel(payload.serverId, payload.name, payload.type, {
         isPublic: payload.isPublic,
         allowedRoleIds: payload.allowedRoleIds,
       }),
@@ -502,6 +504,7 @@ export default function HomeClient({ initialData }: HomeClientProps) {
           await createChannelMutation.mutateAsync({
             serverId: selectedServer.id,
             name: values.name.trim(),
+            type: values.type,
             isPublic: values.isPublic,
             allowedRoleIds: values.isPublic ? [] : values.allowedRoleIds,
           });
@@ -680,6 +683,11 @@ export default function HomeClient({ initialData }: HomeClientProps) {
           selectedChannel={selectedChannel}
           selectedServer={selectedServer}
           currentUserId={homeData.currentUser.id}
+          currentUser={{
+            id: homeData.currentUser.id,
+            name: homeData.currentUser.name,
+            image: homeData.currentUser.image,
+          }}
           isFetching={homeDataQuery.isFetching}
           onTogglePin={(message) => {
             if (!selectedServer) {

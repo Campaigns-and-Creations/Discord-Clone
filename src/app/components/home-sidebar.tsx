@@ -150,14 +150,20 @@ export function HomeSidebar({
                   <Stack gap={4}>
                     {selectedServer.channels.map((channel) => {
                       const isSelected = channel.id === selectedChannelId;
+                      const channelPrefix = channel.type === "VOICE" ? "VC" : "#";
+                      const channelDescription = channel.isPublic
+                        ? channel.type === "VOICE"
+                          ? "VOICE - Auto join"
+                          : channel.type
+                        : `${channel.type} - Restricted`;
 
                       return (
                         <Group key={channel.id} gap={4} wrap="nowrap" align="center">
                           <Box style={{ flex: 1, minWidth: 0 }}>
                             <NavLink
                               active={isSelected}
-                              label={`# ${channel.name}`}
-                              description={channel.isPublic ? channel.type : `${channel.type} - Restricted`}
+                              label={`${channelPrefix} ${channel.name}`}
+                              description={channelDescription}
                               onClick={() => onSelectChannel(channel.id)}
                               variant="light"
                               color="indigo"
