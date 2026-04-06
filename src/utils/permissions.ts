@@ -1,4 +1,5 @@
 import { Permission } from "@/generated/prisma";
+import { ChannelDal } from "@/dal/channel";
 import { ServerRolesDal } from "@/dal/serverRoles";
 
 type MembershipPermissions = {
@@ -60,6 +61,47 @@ export async function hasServerPermission(
     membership.permissions.includes(Permission.ADMINISTRATOR) ||
     membership.permissions.includes(permission)
   );
+}
+
+export async function canAccessChannel(
+  userId: string,
+  serverId: string,
+  channelId: string,
+): Promise<boolean> {
+  const [membership, channel] = await Promise.all([
+    ServerRolesDal.listForUserInServer(userId, serverId),
+    ChannelDal.findById(channelId),
+  ]);
+
+  if (!membership || !channel || channel.serverId !== serverId) {
+    return false;
+  }
+
+  if (membership.serverRoles.some((role) => role.name === "Owner")) {
+    return true;
+  }
+
+  const memberPermissions = new Set<Permission>();
+  for (const role of membership.serverRoles) {
+    for (const item of role.permissions) {
+      memberPermissions.add(item.permission);
+    }
+  }
+
+  if (memberPermissions.has(Permission.ADMINISTRATOR)) {
+    return true;
+  }
+
+  if (channel.isPublic) {
+    return true;
+  }
+
+  if (memberPermissions.has(Permission.VIEW_CHANNEL)) {
+    const roleIds = new Set(membership.serverRoles.map((role) => role.id));
+    return channel.allowedRoles.some((access) => roleIds.has(access.roleId));
+  }
+
+  return false;
 }
 
 export async function canModerateTarget(

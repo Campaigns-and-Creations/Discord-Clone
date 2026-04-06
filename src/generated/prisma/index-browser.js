@@ -132,7 +132,9 @@ exports.Prisma.ChannelScalarFieldEnum = {
   name: 'name',
   serverId: 'serverId',
   createdAt: 'createdAt',
-  type: 'type'
+  updatedAt: 'updatedAt',
+  type: 'type',
+  isPublic: 'isPublic'
 };
 
 exports.Prisma.ServerMemberScalarFieldEnum = {
@@ -147,6 +149,12 @@ exports.Prisma.ServerRolesScalarFieldEnum = {
   name: 'name',
   position: 'position',
   serverId: 'serverId'
+};
+
+exports.Prisma.ChannelRoleAccessScalarFieldEnum = {
+  id: 'id',
+  channelId: 'channelId',
+  roleId: 'roleId'
 };
 
 exports.Prisma.ServerRolePermissionScalarFieldEnum = {
@@ -261,6 +269,7 @@ exports.Prisma.ModelName = {
   Channel: 'Channel',
   ServerMember: 'ServerMember',
   ServerRoles: 'ServerRoles',
+  ChannelRoleAccess: 'ChannelRoleAccess',
   ServerRolePermission: 'ServerRolePermission',
   Messages: 'Messages',
   ServerInvite: 'ServerInvite',

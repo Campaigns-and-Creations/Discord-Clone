@@ -28,7 +28,21 @@ export async function GET() {
 
   const serversWithChannels = await Promise.all(
     servers.map(async (server) => {
-      const channels = await ChannelDal.listByServerId(server.id);
+      const [membershipPermissions, membership] = await Promise.all([
+        getMembershipPermissions(sessionUser.id, server.id),
+        ServerRolesDal.listForUserInServer(sessionUser.id, server.id),
+      ]);
+
+      const memberRoleIds = membership?.serverRoles.map((role) => role.id) ?? [];
+      const includeRestrictedBypass =
+        membershipPermissions?.isOwner === true ||
+        (membershipPermissions?.permissions ?? []).includes(Permission.ADMINISTRATOR);
+
+      const channels = await ChannelDal.listAccessibleByServerId(
+        server.id,
+        memberRoleIds,
+        includeRestrictedBypass,
+      );
 
       const channelsWithMessages = await Promise.all(
         channels.map(async (channel) => {
@@ -37,6 +51,7 @@ export async function GET() {
           return {
             ...channel,
             createdAt: toIsoString(channel.createdAt),
+            allowedRoleIds: channel.allowedRoles.map((item) => item.roleId),
             messages: messages.map((message) => ({
               id: message.id,
               content: message.content,
@@ -52,8 +67,6 @@ export async function GET() {
           };
         }),
       );
-
-      const membershipPermissions = await getMembershipPermissions(sessionUser.id, server.id);
 
       const [roles, members] = await Promise.all([
         ServerRolesDal.listByServerId(server.id),

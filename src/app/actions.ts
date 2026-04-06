@@ -9,6 +9,7 @@ import { ServerDal } from "@/dal/server";
 import { UserDal } from "@/dal/user";
 import { Permission } from "@/generated/prisma";
 import {
+  canAccessChannel,
   canModerateTarget,
   getMembershipPermissions,
   hasServerPermission,
@@ -110,15 +111,27 @@ export async function createServer(serverName: string): Promise<HomeServer> {
         type: result.generalChannel.type,
         createdAt: toIsoString(result.generalChannel.createdAt),
         serverId: result.generalChannel.serverId,
+        isPublic: true,
+        allowedRoleIds: [],
         messages: [],
       },
     ],
   };
 }
 
-export async function createChannel(serverId: string, channelName: string, type: "TEXT" | "VOICE" = "TEXT") {
+export async function createChannel(
+  serverId: string,
+  channelName: string,
+  type: "TEXT" | "VOICE" = "TEXT",
+  access?: {
+    isPublic?: boolean;
+    allowedRoleIds?: string[];
+  },
+) {
   const sessionUser = await requireUser();
   const normalizedName = channelName.trim();
+  const isPublic = access?.isPublic ?? true;
+  const normalizedRoleIds = Array.from(new Set(access?.allowedRoleIds ?? []));
 
   if (!normalizedName) {
     throw new Error("Channel name is required.");
@@ -143,11 +156,78 @@ export async function createChannel(serverId: string, channelName: string, type:
     throw new Error("Forbidden");
   }
 
-  const channel = await ChannelDal.createInServer(serverId, normalizedName, type);
+  if (!isPublic) {
+    if (normalizedRoleIds.length === 0) {
+      throw new Error("Restricted channels must include at least one allowed role.");
+    }
+
+    const roles = await ServerRolesDal.listByIds(serverId, normalizedRoleIds);
+    if (roles.length !== normalizedRoleIds.length) {
+      throw new Error("Some selected roles are invalid.");
+    }
+  }
+
+  const channel = await ChannelDal.createInServer(serverId, normalizedName, type, {
+    isPublic,
+    allowedRoleIds: normalizedRoleIds,
+  });
 
   return {
-    ...channel,
+    id: channel.id,
+    name: channel.name,
+    type: channel.type,
+    serverId: channel.serverId,
+    isPublic: channel.isPublic,
+    allowedRoleIds: channel.allowedRoles.map((item) => item.roleId),
     createdAt: toIsoString(channel.createdAt),
+  };
+}
+
+export async function updateChannelAccess(
+  serverId: string,
+  channelId: string,
+  access: {
+    isPublic: boolean;
+    allowedRoleIds: string[];
+  },
+) {
+  const sessionUser = await requireUser();
+
+  const [isMember, canManageChannels, channel] = await Promise.all([
+    ServerMemberDal.isUserMemberOfServer(sessionUser.id, serverId),
+    hasServerPermission(sessionUser.id, serverId, Permission.MANAGE_CHANNELS),
+    ChannelDal.findById(channelId),
+  ]);
+
+  if (!isMember || !canManageChannels || !channel || channel.serverId !== serverId) {
+    throw new Error("Forbidden");
+  }
+
+  const normalizedRoleIds = Array.from(new Set(access.allowedRoleIds));
+  if (!access.isPublic) {
+    if (normalizedRoleIds.length === 0) {
+      throw new Error("Restricted channels must include at least one allowed role.");
+    }
+
+    const roles = await ServerRolesDal.listByIds(serverId, normalizedRoleIds);
+    if (roles.length !== normalizedRoleIds.length) {
+      throw new Error("Some selected roles are invalid.");
+    }
+  }
+
+  const updatedChannel = await ChannelDal.updateAccess(channelId, {
+    isPublic: access.isPublic,
+    allowedRoleIds: normalizedRoleIds,
+  });
+
+  return {
+    id: updatedChannel.id,
+    name: updatedChannel.name,
+    type: updatedChannel.type,
+    serverId: updatedChannel.serverId,
+    isPublic: updatedChannel.isPublic,
+    allowedRoleIds: updatedChannel.allowedRoles.map((item) => item.roleId),
+    createdAt: toIsoString(updatedChannel.createdAt),
   };
 }
 
@@ -330,13 +410,14 @@ export async function sendMessage(serverId: string, channelId: string, content: 
     throw new Error("Message must be at most 4000 characters.");
   }
 
-  const [isMember, channel, membership] = await Promise.all([
+  const [isMember, channel, membership, hasChannelAccess] = await Promise.all([
     ServerMemberDal.isUserMemberOfChannel(sessionUser.id, channelId),
     ChannelDal.findById(channelId),
     ServerMemberDal.findByUserAndServer(sessionUser.id, serverId),
+    canAccessChannel(sessionUser.id, serverId, channelId),
   ]);
 
-  if (!isMember || !channel || channel.serverId !== serverId || !membership) {
+  if (!isMember || !channel || channel.serverId !== serverId || !membership || !hasChannelAccess) {
     throw new Error("Forbidden");
   }
 
@@ -373,13 +454,14 @@ export async function sendMessage(serverId: string, channelId: string, content: 
 export async function deleteMessage(serverId: string, channelId: string, messageId: string) {
   const sessionUser = await requireUser();
 
-  const [isMember, channel, message] = await Promise.all([
+  const [isMember, channel, message, hasChannelAccess] = await Promise.all([
     ServerMemberDal.isUserMemberOfChannel(sessionUser.id, channelId),
     ChannelDal.findById(channelId),
     MessagesDal.findById(messageId),
+    canAccessChannel(sessionUser.id, serverId, channelId),
   ]);
 
-  if (!isMember || !channel || channel.serverId !== serverId || !message || message.channelId !== channelId) {
+  if (!isMember || !channel || channel.serverId !== serverId || !message || message.channelId !== channelId || !hasChannelAccess) {
     throw new Error("Forbidden");
   }
 
@@ -400,13 +482,14 @@ export async function deleteMessage(serverId: string, channelId: string, message
 export async function setMessagePinned(serverId: string, channelId: string, messageId: string, pinned: boolean) {
   const sessionUser = await requireUser();
 
-  const [isMember, channel, message] = await Promise.all([
+  const [isMember, channel, message, hasChannelAccess] = await Promise.all([
     ServerMemberDal.isUserMemberOfChannel(sessionUser.id, channelId),
     ChannelDal.findById(channelId),
     MessagesDal.findById(messageId),
+    canAccessChannel(sessionUser.id, serverId, channelId),
   ]);
 
-  if (!isMember || !channel || channel.serverId !== serverId || !message || message.channelId !== channelId) {
+  if (!isMember || !channel || channel.serverId !== serverId || !message || message.channelId !== channelId || !hasChannelAccess) {
     throw new Error("Forbidden");
   }
 
@@ -497,12 +580,13 @@ export async function createServerRole(serverId: string, roleName: string, permi
     throw new Error("Only owner can create roles with administrator permission.");
   }
 
-  const role = await ServerRolesDal.createRole(serverId, normalizedName, normalizedPermissions);
-
-  if (!actorMembership.isOwner && role.position >= actorMembership.highestRolePosition) {
-    await ServerRolesDal.deleteRole(role.id, serverId);
-    throw new Error("Cannot create a role at or above your highest role level.");
+  if (!actorMembership.isOwner && actorMembership.highestRolePosition <= 0) {
+    throw new Error("Cannot create a role below your highest role level.");
   }
+
+  const role = await ServerRolesDal.createRole(serverId, normalizedName, normalizedPermissions, {
+    maxPositionExclusive: actorMembership.isOwner ? undefined : actorMembership.highestRolePosition,
+  });
 
   return {
     id: role.id,

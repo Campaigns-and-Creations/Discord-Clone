@@ -118,14 +118,29 @@ export class ServerRolesDal {
     });
   }
 
-  static async createRole(serverId: string, name: string, permissions: Permission[]) {
+  static async createRole(
+    serverId: string,
+    name: string,
+    permissions: Permission[],
+    options?: { maxPositionExclusive?: number },
+  ) {
+    const maxPositionExclusive = options?.maxPositionExclusive;
+
     const topRole = await prisma.serverRoles.findFirst({
-      where: { serverId },
+      where: {
+        serverId,
+        ...(typeof maxPositionExclusive === "number"
+          ? { position: { lt: maxPositionExclusive } }
+          : {}),
+      },
       orderBy: { position: "desc" },
       select: { position: true },
     });
 
-    const newPosition = Math.max((topRole?.position ?? 0) + 1, 1);
+    const newPosition =
+      typeof maxPositionExclusive === "number"
+        ? Math.min((topRole?.position ?? 0) + 1, maxPositionExclusive - 1)
+        : Math.max((topRole?.position ?? 0) + 1, 1);
 
     return prisma.serverRoles.create({
       data: {

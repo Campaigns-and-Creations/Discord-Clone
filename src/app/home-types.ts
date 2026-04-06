@@ -24,6 +24,8 @@ export type HomeChannel = {
   type: "TEXT" | "VOICE";
   createdAt: string;
   serverId: string;
+  isPublic: boolean;
+  allowedRoleIds: string[];
   messages: HomeMessage[];
 };
 

@@ -15,9 +15,12 @@ model Channel {
     serverId    String
     server      Server   @relation(fields: [serverId], references: [id])
     createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
     type        ChannelType
+    isPublic    Boolean  @default(true)
     messages    Messages[]
     users       User[]   @relation("ChannelUsers")
+    allowedRoles ChannelRoleAccess[]
 }
 
 model ServerMember {
@@ -38,8 +41,20 @@ model ServerRoles {
     server      Server   @relation(fields: [serverId], references: [id])
     members     ServerMember[] @relation("ServerMemberRoles")
     permissions ServerRolePermission[]
+    channelAccess ChannelRoleAccess[]
 
     @@unique([serverId, name])
+}
+
+model ChannelRoleAccess {
+    id         String      @id @default(uuid())
+    channelId  String
+    channel    Channel     @relation(fields: [channelId], references: [id], onDelete: Cascade)
+    roleId     String
+    role       ServerRoles @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+    @@unique([channelId, roleId])
+    @@index([roleId])
 }
 
 model ServerRolePermission {

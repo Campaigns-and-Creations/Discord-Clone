@@ -34,6 +34,11 @@ export type ServerMember = $Result.DefaultSelection<Prisma.$ServerMemberPayload>
  */
 export type ServerRoles = $Result.DefaultSelection<Prisma.$ServerRolesPayload>
 /**
+ * Model ChannelRoleAccess
+ * 
+ */
+export type ChannelRoleAccess = $Result.DefaultSelection<Prisma.$ChannelRoleAccessPayload>
+/**
  * Model ServerRolePermission
  * 
  */
@@ -268,6 +273,16 @@ export class PrismaClient<
     * ```
     */
   get serverRoles(): Prisma.ServerRolesDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.channelRoleAccess`: Exposes CRUD operations for the **ChannelRoleAccess** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ChannelRoleAccesses
+    * const channelRoleAccesses = await prisma.channelRoleAccess.findMany()
+    * ```
+    */
+  get channelRoleAccess(): Prisma.ChannelRoleAccessDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.serverRolePermission`: Exposes CRUD operations for the **ServerRolePermission** model.
@@ -776,6 +791,7 @@ export namespace Prisma {
     Channel: 'Channel',
     ServerMember: 'ServerMember',
     ServerRoles: 'ServerRoles',
+    ChannelRoleAccess: 'ChannelRoleAccess',
     ServerRolePermission: 'ServerRolePermission',
     Messages: 'Messages',
     ServerInvite: 'ServerInvite',
@@ -798,7 +814,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "server" | "channel" | "serverMember" | "serverRoles" | "serverRolePermission" | "messages" | "serverInvite" | "user" | "session" | "account" | "verification"
+      modelProps: "server" | "channel" | "serverMember" | "serverRoles" | "channelRoleAccess" | "serverRolePermission" | "messages" | "serverInvite" | "user" | "session" | "account" | "verification"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1095,6 +1111,80 @@ export namespace Prisma {
           count: {
             args: Prisma.ServerRolesCountArgs<ExtArgs>
             result: $Utils.Optional<ServerRolesCountAggregateOutputType> | number
+          }
+        }
+      }
+      ChannelRoleAccess: {
+        payload: Prisma.$ChannelRoleAccessPayload<ExtArgs>
+        fields: Prisma.ChannelRoleAccessFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ChannelRoleAccessFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelRoleAccessPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ChannelRoleAccessFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelRoleAccessPayload>
+          }
+          findFirst: {
+            args: Prisma.ChannelRoleAccessFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelRoleAccessPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ChannelRoleAccessFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelRoleAccessPayload>
+          }
+          findMany: {
+            args: Prisma.ChannelRoleAccessFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelRoleAccessPayload>[]
+          }
+          create: {
+            args: Prisma.ChannelRoleAccessCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelRoleAccessPayload>
+          }
+          createMany: {
+            args: Prisma.ChannelRoleAccessCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ChannelRoleAccessCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelRoleAccessPayload>[]
+          }
+          delete: {
+            args: Prisma.ChannelRoleAccessDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelRoleAccessPayload>
+          }
+          update: {
+            args: Prisma.ChannelRoleAccessUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelRoleAccessPayload>
+          }
+          deleteMany: {
+            args: Prisma.ChannelRoleAccessDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ChannelRoleAccessUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ChannelRoleAccessUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelRoleAccessPayload>[]
+          }
+          upsert: {
+            args: Prisma.ChannelRoleAccessUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelRoleAccessPayload>
+          }
+          aggregate: {
+            args: Prisma.ChannelRoleAccessAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateChannelRoleAccess>
+          }
+          groupBy: {
+            args: Prisma.ChannelRoleAccessGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ChannelRoleAccessGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ChannelRoleAccessCountArgs<ExtArgs>
+            result: $Utils.Optional<ChannelRoleAccessCountAggregateOutputType> | number
           }
         }
       }
@@ -1728,6 +1818,7 @@ export namespace Prisma {
     channel?: ChannelOmit
     serverMember?: ServerMemberOmit
     serverRoles?: ServerRolesOmit
+    channelRoleAccess?: ChannelRoleAccessOmit
     serverRolePermission?: ServerRolePermissionOmit
     messages?: MessagesOmit
     serverInvite?: ServerInviteOmit
@@ -1875,11 +1966,13 @@ export namespace Prisma {
   export type ChannelCountOutputType = {
     messages: number
     users: number
+    allowedRoles: number
   }
 
   export type ChannelCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     messages?: boolean | ChannelCountOutputTypeCountMessagesArgs
     users?: boolean | ChannelCountOutputTypeCountUsersArgs
+    allowedRoles?: boolean | ChannelCountOutputTypeCountAllowedRolesArgs
   }
 
   // Custom InputTypes
@@ -1905,6 +1998,13 @@ export namespace Prisma {
    */
   export type ChannelCountOutputTypeCountUsersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: UserWhereInput
+  }
+
+  /**
+   * ChannelCountOutputType without action
+   */
+  export type ChannelCountOutputTypeCountAllowedRolesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ChannelRoleAccessWhereInput
   }
 
 
@@ -1946,11 +2046,13 @@ export namespace Prisma {
   export type ServerRolesCountOutputType = {
     members: number
     permissions: number
+    channelAccess: number
   }
 
   export type ServerRolesCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     members?: boolean | ServerRolesCountOutputTypeCountMembersArgs
     permissions?: boolean | ServerRolesCountOutputTypeCountPermissionsArgs
+    channelAccess?: boolean | ServerRolesCountOutputTypeCountChannelAccessArgs
   }
 
   // Custom InputTypes
@@ -1976,6 +2078,13 @@ export namespace Prisma {
    */
   export type ServerRolesCountOutputTypeCountPermissionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ServerRolePermissionWhereInput
+  }
+
+  /**
+   * ServerRolesCountOutputType without action
+   */
+  export type ServerRolesCountOutputTypeCountChannelAccessArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ChannelRoleAccessWhereInput
   }
 
 
@@ -3220,7 +3329,9 @@ export namespace Prisma {
     name: string | null
     serverId: string | null
     createdAt: Date | null
+    updatedAt: Date | null
     type: $Enums.ChannelType | null
+    isPublic: boolean | null
   }
 
   export type ChannelMaxAggregateOutputType = {
@@ -3228,7 +3339,9 @@ export namespace Prisma {
     name: string | null
     serverId: string | null
     createdAt: Date | null
+    updatedAt: Date | null
     type: $Enums.ChannelType | null
+    isPublic: boolean | null
   }
 
   export type ChannelCountAggregateOutputType = {
@@ -3236,7 +3349,9 @@ export namespace Prisma {
     name: number
     serverId: number
     createdAt: number
+    updatedAt: number
     type: number
+    isPublic: number
     _all: number
   }
 
@@ -3246,7 +3361,9 @@ export namespace Prisma {
     name?: true
     serverId?: true
     createdAt?: true
+    updatedAt?: true
     type?: true
+    isPublic?: true
   }
 
   export type ChannelMaxAggregateInputType = {
@@ -3254,7 +3371,9 @@ export namespace Prisma {
     name?: true
     serverId?: true
     createdAt?: true
+    updatedAt?: true
     type?: true
+    isPublic?: true
   }
 
   export type ChannelCountAggregateInputType = {
@@ -3262,7 +3381,9 @@ export namespace Prisma {
     name?: true
     serverId?: true
     createdAt?: true
+    updatedAt?: true
     type?: true
+    isPublic?: true
     _all?: true
   }
 
@@ -3343,7 +3464,9 @@ export namespace Prisma {
     name: string
     serverId: string
     createdAt: Date
+    updatedAt: Date
     type: $Enums.ChannelType
+    isPublic: boolean
     _count: ChannelCountAggregateOutputType | null
     _min: ChannelMinAggregateOutputType | null
     _max: ChannelMaxAggregateOutputType | null
@@ -3368,10 +3491,13 @@ export namespace Prisma {
     name?: boolean
     serverId?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
     type?: boolean
+    isPublic?: boolean
     server?: boolean | ServerDefaultArgs<ExtArgs>
     messages?: boolean | Channel$messagesArgs<ExtArgs>
     users?: boolean | Channel$usersArgs<ExtArgs>
+    allowedRoles?: boolean | Channel$allowedRolesArgs<ExtArgs>
     _count?: boolean | ChannelCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["channel"]>
 
@@ -3380,7 +3506,9 @@ export namespace Prisma {
     name?: boolean
     serverId?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
     type?: boolean
+    isPublic?: boolean
     server?: boolean | ServerDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["channel"]>
 
@@ -3389,7 +3517,9 @@ export namespace Prisma {
     name?: boolean
     serverId?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
     type?: boolean
+    isPublic?: boolean
     server?: boolean | ServerDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["channel"]>
 
@@ -3398,14 +3528,17 @@ export namespace Prisma {
     name?: boolean
     serverId?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
     type?: boolean
+    isPublic?: boolean
   }
 
-  export type ChannelOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "serverId" | "createdAt" | "type", ExtArgs["result"]["channel"]>
+  export type ChannelOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "serverId" | "createdAt" | "updatedAt" | "type" | "isPublic", ExtArgs["result"]["channel"]>
   export type ChannelInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     server?: boolean | ServerDefaultArgs<ExtArgs>
     messages?: boolean | Channel$messagesArgs<ExtArgs>
     users?: boolean | Channel$usersArgs<ExtArgs>
+    allowedRoles?: boolean | Channel$allowedRolesArgs<ExtArgs>
     _count?: boolean | ChannelCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ChannelIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3421,13 +3554,16 @@ export namespace Prisma {
       server: Prisma.$ServerPayload<ExtArgs>
       messages: Prisma.$MessagesPayload<ExtArgs>[]
       users: Prisma.$UserPayload<ExtArgs>[]
+      allowedRoles: Prisma.$ChannelRoleAccessPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       name: string
       serverId: string
       createdAt: Date
+      updatedAt: Date
       type: $Enums.ChannelType
+      isPublic: boolean
     }, ExtArgs["result"]["channel"]>
     composites: {}
   }
@@ -3825,6 +3961,7 @@ export namespace Prisma {
     server<T extends ServerDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ServerDefaultArgs<ExtArgs>>): Prisma__ServerClient<$Result.GetResult<Prisma.$ServerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     messages<T extends Channel$messagesArgs<ExtArgs> = {}>(args?: Subset<T, Channel$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessagesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     users<T extends Channel$usersArgs<ExtArgs> = {}>(args?: Subset<T, Channel$usersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    allowedRoles<T extends Channel$allowedRolesArgs<ExtArgs> = {}>(args?: Subset<T, Channel$allowedRolesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChannelRoleAccessPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3858,7 +3995,9 @@ export namespace Prisma {
     readonly name: FieldRef<"Channel", 'String'>
     readonly serverId: FieldRef<"Channel", 'String'>
     readonly createdAt: FieldRef<"Channel", 'DateTime'>
+    readonly updatedAt: FieldRef<"Channel", 'DateTime'>
     readonly type: FieldRef<"Channel", 'ChannelType'>
+    readonly isPublic: FieldRef<"Channel", 'Boolean'>
   }
     
 
@@ -4305,6 +4444,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
+  }
+
+  /**
+   * Channel.allowedRoles
+   */
+  export type Channel$allowedRolesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelRoleAccess
+     */
+    select?: ChannelRoleAccessSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelRoleAccess
+     */
+    omit?: ChannelRoleAccessOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelRoleAccessInclude<ExtArgs> | null
+    where?: ChannelRoleAccessWhereInput
+    orderBy?: ChannelRoleAccessOrderByWithRelationInput | ChannelRoleAccessOrderByWithRelationInput[]
+    cursor?: ChannelRoleAccessWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ChannelRoleAccessScalarFieldEnum | ChannelRoleAccessScalarFieldEnum[]
   }
 
   /**
@@ -5607,6 +5770,7 @@ export namespace Prisma {
     server?: boolean | ServerDefaultArgs<ExtArgs>
     members?: boolean | ServerRoles$membersArgs<ExtArgs>
     permissions?: boolean | ServerRoles$permissionsArgs<ExtArgs>
+    channelAccess?: boolean | ServerRoles$channelAccessArgs<ExtArgs>
     _count?: boolean | ServerRolesCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["serverRoles"]>
 
@@ -5638,6 +5802,7 @@ export namespace Prisma {
     server?: boolean | ServerDefaultArgs<ExtArgs>
     members?: boolean | ServerRoles$membersArgs<ExtArgs>
     permissions?: boolean | ServerRoles$permissionsArgs<ExtArgs>
+    channelAccess?: boolean | ServerRoles$channelAccessArgs<ExtArgs>
     _count?: boolean | ServerRolesCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ServerRolesIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5653,6 +5818,7 @@ export namespace Prisma {
       server: Prisma.$ServerPayload<ExtArgs>
       members: Prisma.$ServerMemberPayload<ExtArgs>[]
       permissions: Prisma.$ServerRolePermissionPayload<ExtArgs>[]
+      channelAccess: Prisma.$ChannelRoleAccessPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -6056,6 +6222,7 @@ export namespace Prisma {
     server<T extends ServerDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ServerDefaultArgs<ExtArgs>>): Prisma__ServerClient<$Result.GetResult<Prisma.$ServerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     members<T extends ServerRoles$membersArgs<ExtArgs> = {}>(args?: Subset<T, ServerRoles$membersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ServerMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     permissions<T extends ServerRoles$permissionsArgs<ExtArgs> = {}>(args?: Subset<T, ServerRoles$permissionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ServerRolePermissionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    channelAccess<T extends ServerRoles$channelAccessArgs<ExtArgs> = {}>(args?: Subset<T, ServerRoles$channelAccessArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChannelRoleAccessPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6538,6 +6705,30 @@ export namespace Prisma {
   }
 
   /**
+   * ServerRoles.channelAccess
+   */
+  export type ServerRoles$channelAccessArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelRoleAccess
+     */
+    select?: ChannelRoleAccessSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelRoleAccess
+     */
+    omit?: ChannelRoleAccessOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelRoleAccessInclude<ExtArgs> | null
+    where?: ChannelRoleAccessWhereInput
+    orderBy?: ChannelRoleAccessOrderByWithRelationInput | ChannelRoleAccessOrderByWithRelationInput[]
+    cursor?: ChannelRoleAccessWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ChannelRoleAccessScalarFieldEnum | ChannelRoleAccessScalarFieldEnum[]
+  }
+
+  /**
    * ServerRoles without action
    */
   export type ServerRolesDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6553,6 +6744,1051 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: ServerRolesInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ChannelRoleAccess
+   */
+
+  export type AggregateChannelRoleAccess = {
+    _count: ChannelRoleAccessCountAggregateOutputType | null
+    _min: ChannelRoleAccessMinAggregateOutputType | null
+    _max: ChannelRoleAccessMaxAggregateOutputType | null
+  }
+
+  export type ChannelRoleAccessMinAggregateOutputType = {
+    id: string | null
+    channelId: string | null
+    roleId: string | null
+  }
+
+  export type ChannelRoleAccessMaxAggregateOutputType = {
+    id: string | null
+    channelId: string | null
+    roleId: string | null
+  }
+
+  export type ChannelRoleAccessCountAggregateOutputType = {
+    id: number
+    channelId: number
+    roleId: number
+    _all: number
+  }
+
+
+  export type ChannelRoleAccessMinAggregateInputType = {
+    id?: true
+    channelId?: true
+    roleId?: true
+  }
+
+  export type ChannelRoleAccessMaxAggregateInputType = {
+    id?: true
+    channelId?: true
+    roleId?: true
+  }
+
+  export type ChannelRoleAccessCountAggregateInputType = {
+    id?: true
+    channelId?: true
+    roleId?: true
+    _all?: true
+  }
+
+  export type ChannelRoleAccessAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ChannelRoleAccess to aggregate.
+     */
+    where?: ChannelRoleAccessWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ChannelRoleAccesses to fetch.
+     */
+    orderBy?: ChannelRoleAccessOrderByWithRelationInput | ChannelRoleAccessOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ChannelRoleAccessWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ChannelRoleAccesses from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ChannelRoleAccesses.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ChannelRoleAccesses
+    **/
+    _count?: true | ChannelRoleAccessCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ChannelRoleAccessMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ChannelRoleAccessMaxAggregateInputType
+  }
+
+  export type GetChannelRoleAccessAggregateType<T extends ChannelRoleAccessAggregateArgs> = {
+        [P in keyof T & keyof AggregateChannelRoleAccess]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateChannelRoleAccess[P]>
+      : GetScalarType<T[P], AggregateChannelRoleAccess[P]>
+  }
+
+
+
+
+  export type ChannelRoleAccessGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ChannelRoleAccessWhereInput
+    orderBy?: ChannelRoleAccessOrderByWithAggregationInput | ChannelRoleAccessOrderByWithAggregationInput[]
+    by: ChannelRoleAccessScalarFieldEnum[] | ChannelRoleAccessScalarFieldEnum
+    having?: ChannelRoleAccessScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ChannelRoleAccessCountAggregateInputType | true
+    _min?: ChannelRoleAccessMinAggregateInputType
+    _max?: ChannelRoleAccessMaxAggregateInputType
+  }
+
+  export type ChannelRoleAccessGroupByOutputType = {
+    id: string
+    channelId: string
+    roleId: string
+    _count: ChannelRoleAccessCountAggregateOutputType | null
+    _min: ChannelRoleAccessMinAggregateOutputType | null
+    _max: ChannelRoleAccessMaxAggregateOutputType | null
+  }
+
+  type GetChannelRoleAccessGroupByPayload<T extends ChannelRoleAccessGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ChannelRoleAccessGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ChannelRoleAccessGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ChannelRoleAccessGroupByOutputType[P]>
+            : GetScalarType<T[P], ChannelRoleAccessGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ChannelRoleAccessSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    channelId?: boolean
+    roleId?: boolean
+    channel?: boolean | ChannelDefaultArgs<ExtArgs>
+    role?: boolean | ServerRolesDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["channelRoleAccess"]>
+
+  export type ChannelRoleAccessSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    channelId?: boolean
+    roleId?: boolean
+    channel?: boolean | ChannelDefaultArgs<ExtArgs>
+    role?: boolean | ServerRolesDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["channelRoleAccess"]>
+
+  export type ChannelRoleAccessSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    channelId?: boolean
+    roleId?: boolean
+    channel?: boolean | ChannelDefaultArgs<ExtArgs>
+    role?: boolean | ServerRolesDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["channelRoleAccess"]>
+
+  export type ChannelRoleAccessSelectScalar = {
+    id?: boolean
+    channelId?: boolean
+    roleId?: boolean
+  }
+
+  export type ChannelRoleAccessOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "channelId" | "roleId", ExtArgs["result"]["channelRoleAccess"]>
+  export type ChannelRoleAccessInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    channel?: boolean | ChannelDefaultArgs<ExtArgs>
+    role?: boolean | ServerRolesDefaultArgs<ExtArgs>
+  }
+  export type ChannelRoleAccessIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    channel?: boolean | ChannelDefaultArgs<ExtArgs>
+    role?: boolean | ServerRolesDefaultArgs<ExtArgs>
+  }
+  export type ChannelRoleAccessIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    channel?: boolean | ChannelDefaultArgs<ExtArgs>
+    role?: boolean | ServerRolesDefaultArgs<ExtArgs>
+  }
+
+  export type $ChannelRoleAccessPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ChannelRoleAccess"
+    objects: {
+      channel: Prisma.$ChannelPayload<ExtArgs>
+      role: Prisma.$ServerRolesPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      channelId: string
+      roleId: string
+    }, ExtArgs["result"]["channelRoleAccess"]>
+    composites: {}
+  }
+
+  type ChannelRoleAccessGetPayload<S extends boolean | null | undefined | ChannelRoleAccessDefaultArgs> = $Result.GetResult<Prisma.$ChannelRoleAccessPayload, S>
+
+  type ChannelRoleAccessCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ChannelRoleAccessFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ChannelRoleAccessCountAggregateInputType | true
+    }
+
+  export interface ChannelRoleAccessDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ChannelRoleAccess'], meta: { name: 'ChannelRoleAccess' } }
+    /**
+     * Find zero or one ChannelRoleAccess that matches the filter.
+     * @param {ChannelRoleAccessFindUniqueArgs} args - Arguments to find a ChannelRoleAccess
+     * @example
+     * // Get one ChannelRoleAccess
+     * const channelRoleAccess = await prisma.channelRoleAccess.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ChannelRoleAccessFindUniqueArgs>(args: SelectSubset<T, ChannelRoleAccessFindUniqueArgs<ExtArgs>>): Prisma__ChannelRoleAccessClient<$Result.GetResult<Prisma.$ChannelRoleAccessPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ChannelRoleAccess that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ChannelRoleAccessFindUniqueOrThrowArgs} args - Arguments to find a ChannelRoleAccess
+     * @example
+     * // Get one ChannelRoleAccess
+     * const channelRoleAccess = await prisma.channelRoleAccess.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ChannelRoleAccessFindUniqueOrThrowArgs>(args: SelectSubset<T, ChannelRoleAccessFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ChannelRoleAccessClient<$Result.GetResult<Prisma.$ChannelRoleAccessPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ChannelRoleAccess that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChannelRoleAccessFindFirstArgs} args - Arguments to find a ChannelRoleAccess
+     * @example
+     * // Get one ChannelRoleAccess
+     * const channelRoleAccess = await prisma.channelRoleAccess.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ChannelRoleAccessFindFirstArgs>(args?: SelectSubset<T, ChannelRoleAccessFindFirstArgs<ExtArgs>>): Prisma__ChannelRoleAccessClient<$Result.GetResult<Prisma.$ChannelRoleAccessPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ChannelRoleAccess that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChannelRoleAccessFindFirstOrThrowArgs} args - Arguments to find a ChannelRoleAccess
+     * @example
+     * // Get one ChannelRoleAccess
+     * const channelRoleAccess = await prisma.channelRoleAccess.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ChannelRoleAccessFindFirstOrThrowArgs>(args?: SelectSubset<T, ChannelRoleAccessFindFirstOrThrowArgs<ExtArgs>>): Prisma__ChannelRoleAccessClient<$Result.GetResult<Prisma.$ChannelRoleAccessPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ChannelRoleAccesses that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChannelRoleAccessFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ChannelRoleAccesses
+     * const channelRoleAccesses = await prisma.channelRoleAccess.findMany()
+     * 
+     * // Get first 10 ChannelRoleAccesses
+     * const channelRoleAccesses = await prisma.channelRoleAccess.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const channelRoleAccessWithIdOnly = await prisma.channelRoleAccess.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ChannelRoleAccessFindManyArgs>(args?: SelectSubset<T, ChannelRoleAccessFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChannelRoleAccessPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ChannelRoleAccess.
+     * @param {ChannelRoleAccessCreateArgs} args - Arguments to create a ChannelRoleAccess.
+     * @example
+     * // Create one ChannelRoleAccess
+     * const ChannelRoleAccess = await prisma.channelRoleAccess.create({
+     *   data: {
+     *     // ... data to create a ChannelRoleAccess
+     *   }
+     * })
+     * 
+     */
+    create<T extends ChannelRoleAccessCreateArgs>(args: SelectSubset<T, ChannelRoleAccessCreateArgs<ExtArgs>>): Prisma__ChannelRoleAccessClient<$Result.GetResult<Prisma.$ChannelRoleAccessPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ChannelRoleAccesses.
+     * @param {ChannelRoleAccessCreateManyArgs} args - Arguments to create many ChannelRoleAccesses.
+     * @example
+     * // Create many ChannelRoleAccesses
+     * const channelRoleAccess = await prisma.channelRoleAccess.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ChannelRoleAccessCreateManyArgs>(args?: SelectSubset<T, ChannelRoleAccessCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ChannelRoleAccesses and returns the data saved in the database.
+     * @param {ChannelRoleAccessCreateManyAndReturnArgs} args - Arguments to create many ChannelRoleAccesses.
+     * @example
+     * // Create many ChannelRoleAccesses
+     * const channelRoleAccess = await prisma.channelRoleAccess.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ChannelRoleAccesses and only return the `id`
+     * const channelRoleAccessWithIdOnly = await prisma.channelRoleAccess.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ChannelRoleAccessCreateManyAndReturnArgs>(args?: SelectSubset<T, ChannelRoleAccessCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChannelRoleAccessPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ChannelRoleAccess.
+     * @param {ChannelRoleAccessDeleteArgs} args - Arguments to delete one ChannelRoleAccess.
+     * @example
+     * // Delete one ChannelRoleAccess
+     * const ChannelRoleAccess = await prisma.channelRoleAccess.delete({
+     *   where: {
+     *     // ... filter to delete one ChannelRoleAccess
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ChannelRoleAccessDeleteArgs>(args: SelectSubset<T, ChannelRoleAccessDeleteArgs<ExtArgs>>): Prisma__ChannelRoleAccessClient<$Result.GetResult<Prisma.$ChannelRoleAccessPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ChannelRoleAccess.
+     * @param {ChannelRoleAccessUpdateArgs} args - Arguments to update one ChannelRoleAccess.
+     * @example
+     * // Update one ChannelRoleAccess
+     * const channelRoleAccess = await prisma.channelRoleAccess.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ChannelRoleAccessUpdateArgs>(args: SelectSubset<T, ChannelRoleAccessUpdateArgs<ExtArgs>>): Prisma__ChannelRoleAccessClient<$Result.GetResult<Prisma.$ChannelRoleAccessPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ChannelRoleAccesses.
+     * @param {ChannelRoleAccessDeleteManyArgs} args - Arguments to filter ChannelRoleAccesses to delete.
+     * @example
+     * // Delete a few ChannelRoleAccesses
+     * const { count } = await prisma.channelRoleAccess.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ChannelRoleAccessDeleteManyArgs>(args?: SelectSubset<T, ChannelRoleAccessDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ChannelRoleAccesses.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChannelRoleAccessUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ChannelRoleAccesses
+     * const channelRoleAccess = await prisma.channelRoleAccess.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ChannelRoleAccessUpdateManyArgs>(args: SelectSubset<T, ChannelRoleAccessUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ChannelRoleAccesses and returns the data updated in the database.
+     * @param {ChannelRoleAccessUpdateManyAndReturnArgs} args - Arguments to update many ChannelRoleAccesses.
+     * @example
+     * // Update many ChannelRoleAccesses
+     * const channelRoleAccess = await prisma.channelRoleAccess.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ChannelRoleAccesses and only return the `id`
+     * const channelRoleAccessWithIdOnly = await prisma.channelRoleAccess.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ChannelRoleAccessUpdateManyAndReturnArgs>(args: SelectSubset<T, ChannelRoleAccessUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChannelRoleAccessPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ChannelRoleAccess.
+     * @param {ChannelRoleAccessUpsertArgs} args - Arguments to update or create a ChannelRoleAccess.
+     * @example
+     * // Update or create a ChannelRoleAccess
+     * const channelRoleAccess = await prisma.channelRoleAccess.upsert({
+     *   create: {
+     *     // ... data to create a ChannelRoleAccess
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ChannelRoleAccess we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ChannelRoleAccessUpsertArgs>(args: SelectSubset<T, ChannelRoleAccessUpsertArgs<ExtArgs>>): Prisma__ChannelRoleAccessClient<$Result.GetResult<Prisma.$ChannelRoleAccessPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ChannelRoleAccesses.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChannelRoleAccessCountArgs} args - Arguments to filter ChannelRoleAccesses to count.
+     * @example
+     * // Count the number of ChannelRoleAccesses
+     * const count = await prisma.channelRoleAccess.count({
+     *   where: {
+     *     // ... the filter for the ChannelRoleAccesses we want to count
+     *   }
+     * })
+    **/
+    count<T extends ChannelRoleAccessCountArgs>(
+      args?: Subset<T, ChannelRoleAccessCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ChannelRoleAccessCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ChannelRoleAccess.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChannelRoleAccessAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ChannelRoleAccessAggregateArgs>(args: Subset<T, ChannelRoleAccessAggregateArgs>): Prisma.PrismaPromise<GetChannelRoleAccessAggregateType<T>>
+
+    /**
+     * Group by ChannelRoleAccess.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChannelRoleAccessGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ChannelRoleAccessGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ChannelRoleAccessGroupByArgs['orderBy'] }
+        : { orderBy?: ChannelRoleAccessGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ChannelRoleAccessGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetChannelRoleAccessGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ChannelRoleAccess model
+   */
+  readonly fields: ChannelRoleAccessFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ChannelRoleAccess.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ChannelRoleAccessClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    channel<T extends ChannelDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ChannelDefaultArgs<ExtArgs>>): Prisma__ChannelClient<$Result.GetResult<Prisma.$ChannelPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    role<T extends ServerRolesDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ServerRolesDefaultArgs<ExtArgs>>): Prisma__ServerRolesClient<$Result.GetResult<Prisma.$ServerRolesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ChannelRoleAccess model
+   */
+  interface ChannelRoleAccessFieldRefs {
+    readonly id: FieldRef<"ChannelRoleAccess", 'String'>
+    readonly channelId: FieldRef<"ChannelRoleAccess", 'String'>
+    readonly roleId: FieldRef<"ChannelRoleAccess", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ChannelRoleAccess findUnique
+   */
+  export type ChannelRoleAccessFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelRoleAccess
+     */
+    select?: ChannelRoleAccessSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelRoleAccess
+     */
+    omit?: ChannelRoleAccessOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelRoleAccessInclude<ExtArgs> | null
+    /**
+     * Filter, which ChannelRoleAccess to fetch.
+     */
+    where: ChannelRoleAccessWhereUniqueInput
+  }
+
+  /**
+   * ChannelRoleAccess findUniqueOrThrow
+   */
+  export type ChannelRoleAccessFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelRoleAccess
+     */
+    select?: ChannelRoleAccessSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelRoleAccess
+     */
+    omit?: ChannelRoleAccessOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelRoleAccessInclude<ExtArgs> | null
+    /**
+     * Filter, which ChannelRoleAccess to fetch.
+     */
+    where: ChannelRoleAccessWhereUniqueInput
+  }
+
+  /**
+   * ChannelRoleAccess findFirst
+   */
+  export type ChannelRoleAccessFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelRoleAccess
+     */
+    select?: ChannelRoleAccessSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelRoleAccess
+     */
+    omit?: ChannelRoleAccessOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelRoleAccessInclude<ExtArgs> | null
+    /**
+     * Filter, which ChannelRoleAccess to fetch.
+     */
+    where?: ChannelRoleAccessWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ChannelRoleAccesses to fetch.
+     */
+    orderBy?: ChannelRoleAccessOrderByWithRelationInput | ChannelRoleAccessOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ChannelRoleAccesses.
+     */
+    cursor?: ChannelRoleAccessWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ChannelRoleAccesses from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ChannelRoleAccesses.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ChannelRoleAccesses.
+     */
+    distinct?: ChannelRoleAccessScalarFieldEnum | ChannelRoleAccessScalarFieldEnum[]
+  }
+
+  /**
+   * ChannelRoleAccess findFirstOrThrow
+   */
+  export type ChannelRoleAccessFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelRoleAccess
+     */
+    select?: ChannelRoleAccessSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelRoleAccess
+     */
+    omit?: ChannelRoleAccessOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelRoleAccessInclude<ExtArgs> | null
+    /**
+     * Filter, which ChannelRoleAccess to fetch.
+     */
+    where?: ChannelRoleAccessWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ChannelRoleAccesses to fetch.
+     */
+    orderBy?: ChannelRoleAccessOrderByWithRelationInput | ChannelRoleAccessOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ChannelRoleAccesses.
+     */
+    cursor?: ChannelRoleAccessWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ChannelRoleAccesses from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ChannelRoleAccesses.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ChannelRoleAccesses.
+     */
+    distinct?: ChannelRoleAccessScalarFieldEnum | ChannelRoleAccessScalarFieldEnum[]
+  }
+
+  /**
+   * ChannelRoleAccess findMany
+   */
+  export type ChannelRoleAccessFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelRoleAccess
+     */
+    select?: ChannelRoleAccessSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelRoleAccess
+     */
+    omit?: ChannelRoleAccessOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelRoleAccessInclude<ExtArgs> | null
+    /**
+     * Filter, which ChannelRoleAccesses to fetch.
+     */
+    where?: ChannelRoleAccessWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ChannelRoleAccesses to fetch.
+     */
+    orderBy?: ChannelRoleAccessOrderByWithRelationInput | ChannelRoleAccessOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ChannelRoleAccesses.
+     */
+    cursor?: ChannelRoleAccessWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ChannelRoleAccesses from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ChannelRoleAccesses.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ChannelRoleAccesses.
+     */
+    distinct?: ChannelRoleAccessScalarFieldEnum | ChannelRoleAccessScalarFieldEnum[]
+  }
+
+  /**
+   * ChannelRoleAccess create
+   */
+  export type ChannelRoleAccessCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelRoleAccess
+     */
+    select?: ChannelRoleAccessSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelRoleAccess
+     */
+    omit?: ChannelRoleAccessOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelRoleAccessInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ChannelRoleAccess.
+     */
+    data: XOR<ChannelRoleAccessCreateInput, ChannelRoleAccessUncheckedCreateInput>
+  }
+
+  /**
+   * ChannelRoleAccess createMany
+   */
+  export type ChannelRoleAccessCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ChannelRoleAccesses.
+     */
+    data: ChannelRoleAccessCreateManyInput | ChannelRoleAccessCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ChannelRoleAccess createManyAndReturn
+   */
+  export type ChannelRoleAccessCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelRoleAccess
+     */
+    select?: ChannelRoleAccessSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelRoleAccess
+     */
+    omit?: ChannelRoleAccessOmit<ExtArgs> | null
+    /**
+     * The data used to create many ChannelRoleAccesses.
+     */
+    data: ChannelRoleAccessCreateManyInput | ChannelRoleAccessCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelRoleAccessIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ChannelRoleAccess update
+   */
+  export type ChannelRoleAccessUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelRoleAccess
+     */
+    select?: ChannelRoleAccessSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelRoleAccess
+     */
+    omit?: ChannelRoleAccessOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelRoleAccessInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ChannelRoleAccess.
+     */
+    data: XOR<ChannelRoleAccessUpdateInput, ChannelRoleAccessUncheckedUpdateInput>
+    /**
+     * Choose, which ChannelRoleAccess to update.
+     */
+    where: ChannelRoleAccessWhereUniqueInput
+  }
+
+  /**
+   * ChannelRoleAccess updateMany
+   */
+  export type ChannelRoleAccessUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ChannelRoleAccesses.
+     */
+    data: XOR<ChannelRoleAccessUpdateManyMutationInput, ChannelRoleAccessUncheckedUpdateManyInput>
+    /**
+     * Filter which ChannelRoleAccesses to update
+     */
+    where?: ChannelRoleAccessWhereInput
+    /**
+     * Limit how many ChannelRoleAccesses to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ChannelRoleAccess updateManyAndReturn
+   */
+  export type ChannelRoleAccessUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelRoleAccess
+     */
+    select?: ChannelRoleAccessSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelRoleAccess
+     */
+    omit?: ChannelRoleAccessOmit<ExtArgs> | null
+    /**
+     * The data used to update ChannelRoleAccesses.
+     */
+    data: XOR<ChannelRoleAccessUpdateManyMutationInput, ChannelRoleAccessUncheckedUpdateManyInput>
+    /**
+     * Filter which ChannelRoleAccesses to update
+     */
+    where?: ChannelRoleAccessWhereInput
+    /**
+     * Limit how many ChannelRoleAccesses to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelRoleAccessIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ChannelRoleAccess upsert
+   */
+  export type ChannelRoleAccessUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelRoleAccess
+     */
+    select?: ChannelRoleAccessSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelRoleAccess
+     */
+    omit?: ChannelRoleAccessOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelRoleAccessInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ChannelRoleAccess to update in case it exists.
+     */
+    where: ChannelRoleAccessWhereUniqueInput
+    /**
+     * In case the ChannelRoleAccess found by the `where` argument doesn't exist, create a new ChannelRoleAccess with this data.
+     */
+    create: XOR<ChannelRoleAccessCreateInput, ChannelRoleAccessUncheckedCreateInput>
+    /**
+     * In case the ChannelRoleAccess was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ChannelRoleAccessUpdateInput, ChannelRoleAccessUncheckedUpdateInput>
+  }
+
+  /**
+   * ChannelRoleAccess delete
+   */
+  export type ChannelRoleAccessDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelRoleAccess
+     */
+    select?: ChannelRoleAccessSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelRoleAccess
+     */
+    omit?: ChannelRoleAccessOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelRoleAccessInclude<ExtArgs> | null
+    /**
+     * Filter which ChannelRoleAccess to delete.
+     */
+    where: ChannelRoleAccessWhereUniqueInput
+  }
+
+  /**
+   * ChannelRoleAccess deleteMany
+   */
+  export type ChannelRoleAccessDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ChannelRoleAccesses to delete
+     */
+    where?: ChannelRoleAccessWhereInput
+    /**
+     * Limit how many ChannelRoleAccesses to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ChannelRoleAccess without action
+   */
+  export type ChannelRoleAccessDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelRoleAccess
+     */
+    select?: ChannelRoleAccessSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelRoleAccess
+     */
+    omit?: ChannelRoleAccessOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelRoleAccessInclude<ExtArgs> | null
   }
 
 
@@ -14409,7 +15645,9 @@ export namespace Prisma {
     name: 'name',
     serverId: 'serverId',
     createdAt: 'createdAt',
-    type: 'type'
+    updatedAt: 'updatedAt',
+    type: 'type',
+    isPublic: 'isPublic'
   };
 
   export type ChannelScalarFieldEnum = (typeof ChannelScalarFieldEnum)[keyof typeof ChannelScalarFieldEnum]
@@ -14433,6 +15671,15 @@ export namespace Prisma {
   };
 
   export type ServerRolesScalarFieldEnum = (typeof ServerRolesScalarFieldEnum)[keyof typeof ServerRolesScalarFieldEnum]
+
+
+  export const ChannelRoleAccessScalarFieldEnum: {
+    id: 'id',
+    channelId: 'channelId',
+    roleId: 'roleId'
+  };
+
+  export type ChannelRoleAccessScalarFieldEnum = (typeof ChannelRoleAccessScalarFieldEnum)[keyof typeof ChannelRoleAccessScalarFieldEnum]
 
 
   export const ServerRolePermissionScalarFieldEnum: {
@@ -14601,6 +15848,13 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'Boolean'
+   */
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+  /**
    * Reference to a field of type 'Int'
    */
   export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
@@ -14625,13 +15879,6 @@ export namespace Prisma {
    * Reference to a field of type 'Permission[]'
    */
   export type ListEnumPermissionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Permission[]'>
-    
-
-
-  /**
-   * Reference to a field of type 'Boolean'
-   */
-  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 
@@ -14719,10 +15966,13 @@ export namespace Prisma {
     name?: StringFilter<"Channel"> | string
     serverId?: StringFilter<"Channel"> | string
     createdAt?: DateTimeFilter<"Channel"> | Date | string
+    updatedAt?: DateTimeFilter<"Channel"> | Date | string
     type?: EnumChannelTypeFilter<"Channel"> | $Enums.ChannelType
+    isPublic?: BoolFilter<"Channel"> | boolean
     server?: XOR<ServerScalarRelationFilter, ServerWhereInput>
     messages?: MessagesListRelationFilter
     users?: UserListRelationFilter
+    allowedRoles?: ChannelRoleAccessListRelationFilter
   }
 
   export type ChannelOrderByWithRelationInput = {
@@ -14730,10 +15980,13 @@ export namespace Prisma {
     name?: SortOrder
     serverId?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
     type?: SortOrder
+    isPublic?: SortOrder
     server?: ServerOrderByWithRelationInput
     messages?: MessagesOrderByRelationAggregateInput
     users?: UserOrderByRelationAggregateInput
+    allowedRoles?: ChannelRoleAccessOrderByRelationAggregateInput
   }
 
   export type ChannelWhereUniqueInput = Prisma.AtLeast<{
@@ -14744,10 +15997,13 @@ export namespace Prisma {
     name?: StringFilter<"Channel"> | string
     serverId?: StringFilter<"Channel"> | string
     createdAt?: DateTimeFilter<"Channel"> | Date | string
+    updatedAt?: DateTimeFilter<"Channel"> | Date | string
     type?: EnumChannelTypeFilter<"Channel"> | $Enums.ChannelType
+    isPublic?: BoolFilter<"Channel"> | boolean
     server?: XOR<ServerScalarRelationFilter, ServerWhereInput>
     messages?: MessagesListRelationFilter
     users?: UserListRelationFilter
+    allowedRoles?: ChannelRoleAccessListRelationFilter
   }, "id">
 
   export type ChannelOrderByWithAggregationInput = {
@@ -14755,7 +16011,9 @@ export namespace Prisma {
     name?: SortOrder
     serverId?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
     type?: SortOrder
+    isPublic?: SortOrder
     _count?: ChannelCountOrderByAggregateInput
     _max?: ChannelMaxOrderByAggregateInput
     _min?: ChannelMinOrderByAggregateInput
@@ -14769,7 +16027,9 @@ export namespace Prisma {
     name?: StringWithAggregatesFilter<"Channel"> | string
     serverId?: StringWithAggregatesFilter<"Channel"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Channel"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Channel"> | Date | string
     type?: EnumChannelTypeWithAggregatesFilter<"Channel"> | $Enums.ChannelType
+    isPublic?: BoolWithAggregatesFilter<"Channel"> | boolean
   }
 
   export type ServerMemberWhereInput = {
@@ -14839,6 +16099,7 @@ export namespace Prisma {
     server?: XOR<ServerScalarRelationFilter, ServerWhereInput>
     members?: ServerMemberListRelationFilter
     permissions?: ServerRolePermissionListRelationFilter
+    channelAccess?: ChannelRoleAccessListRelationFilter
   }
 
   export type ServerRolesOrderByWithRelationInput = {
@@ -14849,6 +16110,7 @@ export namespace Prisma {
     server?: ServerOrderByWithRelationInput
     members?: ServerMemberOrderByRelationAggregateInput
     permissions?: ServerRolePermissionOrderByRelationAggregateInput
+    channelAccess?: ChannelRoleAccessOrderByRelationAggregateInput
   }
 
   export type ServerRolesWhereUniqueInput = Prisma.AtLeast<{
@@ -14863,6 +16125,7 @@ export namespace Prisma {
     server?: XOR<ServerScalarRelationFilter, ServerWhereInput>
     members?: ServerMemberListRelationFilter
     permissions?: ServerRolePermissionListRelationFilter
+    channelAccess?: ChannelRoleAccessListRelationFilter
   }, "id" | "serverId_name">
 
   export type ServerRolesOrderByWithAggregationInput = {
@@ -14885,6 +16148,55 @@ export namespace Prisma {
     name?: StringWithAggregatesFilter<"ServerRoles"> | string
     position?: IntWithAggregatesFilter<"ServerRoles"> | number
     serverId?: StringWithAggregatesFilter<"ServerRoles"> | string
+  }
+
+  export type ChannelRoleAccessWhereInput = {
+    AND?: ChannelRoleAccessWhereInput | ChannelRoleAccessWhereInput[]
+    OR?: ChannelRoleAccessWhereInput[]
+    NOT?: ChannelRoleAccessWhereInput | ChannelRoleAccessWhereInput[]
+    id?: StringFilter<"ChannelRoleAccess"> | string
+    channelId?: StringFilter<"ChannelRoleAccess"> | string
+    roleId?: StringFilter<"ChannelRoleAccess"> | string
+    channel?: XOR<ChannelScalarRelationFilter, ChannelWhereInput>
+    role?: XOR<ServerRolesScalarRelationFilter, ServerRolesWhereInput>
+  }
+
+  export type ChannelRoleAccessOrderByWithRelationInput = {
+    id?: SortOrder
+    channelId?: SortOrder
+    roleId?: SortOrder
+    channel?: ChannelOrderByWithRelationInput
+    role?: ServerRolesOrderByWithRelationInput
+  }
+
+  export type ChannelRoleAccessWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    channelId_roleId?: ChannelRoleAccessChannelIdRoleIdCompoundUniqueInput
+    AND?: ChannelRoleAccessWhereInput | ChannelRoleAccessWhereInput[]
+    OR?: ChannelRoleAccessWhereInput[]
+    NOT?: ChannelRoleAccessWhereInput | ChannelRoleAccessWhereInput[]
+    channelId?: StringFilter<"ChannelRoleAccess"> | string
+    roleId?: StringFilter<"ChannelRoleAccess"> | string
+    channel?: XOR<ChannelScalarRelationFilter, ChannelWhereInput>
+    role?: XOR<ServerRolesScalarRelationFilter, ServerRolesWhereInput>
+  }, "id" | "channelId_roleId">
+
+  export type ChannelRoleAccessOrderByWithAggregationInput = {
+    id?: SortOrder
+    channelId?: SortOrder
+    roleId?: SortOrder
+    _count?: ChannelRoleAccessCountOrderByAggregateInput
+    _max?: ChannelRoleAccessMaxOrderByAggregateInput
+    _min?: ChannelRoleAccessMinOrderByAggregateInput
+  }
+
+  export type ChannelRoleAccessScalarWhereWithAggregatesInput = {
+    AND?: ChannelRoleAccessScalarWhereWithAggregatesInput | ChannelRoleAccessScalarWhereWithAggregatesInput[]
+    OR?: ChannelRoleAccessScalarWhereWithAggregatesInput[]
+    NOT?: ChannelRoleAccessScalarWhereWithAggregatesInput | ChannelRoleAccessScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ChannelRoleAccess"> | string
+    channelId?: StringWithAggregatesFilter<"ChannelRoleAccess"> | string
+    roleId?: StringWithAggregatesFilter<"ChannelRoleAccess"> | string
   }
 
   export type ServerRolePermissionWhereInput = {
@@ -15447,10 +16759,13 @@ export namespace Prisma {
     id?: string
     name: string
     createdAt?: Date | string
+    updatedAt?: Date | string
     type: $Enums.ChannelType
+    isPublic?: boolean
     server: ServerCreateNestedOneWithoutChannelsInput
     messages?: MessagesCreateNestedManyWithoutChannelInput
     users?: UserCreateNestedManyWithoutChannelsInput
+    allowedRoles?: ChannelRoleAccessCreateNestedManyWithoutChannelInput
   }
 
   export type ChannelUncheckedCreateInput = {
@@ -15458,19 +16773,25 @@ export namespace Prisma {
     name: string
     serverId: string
     createdAt?: Date | string
+    updatedAt?: Date | string
     type: $Enums.ChannelType
+    isPublic?: boolean
     messages?: MessagesUncheckedCreateNestedManyWithoutChannelInput
     users?: UserUncheckedCreateNestedManyWithoutChannelsInput
+    allowedRoles?: ChannelRoleAccessUncheckedCreateNestedManyWithoutChannelInput
   }
 
   export type ChannelUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     type?: EnumChannelTypeFieldUpdateOperationsInput | $Enums.ChannelType
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
     server?: ServerUpdateOneRequiredWithoutChannelsNestedInput
     messages?: MessagesUpdateManyWithoutChannelNestedInput
     users?: UserUpdateManyWithoutChannelsNestedInput
+    allowedRoles?: ChannelRoleAccessUpdateManyWithoutChannelNestedInput
   }
 
   export type ChannelUncheckedUpdateInput = {
@@ -15478,9 +16799,12 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     serverId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     type?: EnumChannelTypeFieldUpdateOperationsInput | $Enums.ChannelType
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
     messages?: MessagesUncheckedUpdateManyWithoutChannelNestedInput
     users?: UserUncheckedUpdateManyWithoutChannelsNestedInput
+    allowedRoles?: ChannelRoleAccessUncheckedUpdateManyWithoutChannelNestedInput
   }
 
   export type ChannelCreateManyInput = {
@@ -15488,14 +16812,18 @@ export namespace Prisma {
     name: string
     serverId: string
     createdAt?: Date | string
+    updatedAt?: Date | string
     type: $Enums.ChannelType
+    isPublic?: boolean
   }
 
   export type ChannelUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     type?: EnumChannelTypeFieldUpdateOperationsInput | $Enums.ChannelType
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type ChannelUncheckedUpdateManyInput = {
@@ -15503,7 +16831,9 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     serverId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     type?: EnumChannelTypeFieldUpdateOperationsInput | $Enums.ChannelType
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type ServerMemberCreateInput = {
@@ -15564,6 +16894,7 @@ export namespace Prisma {
     server: ServerCreateNestedOneWithoutRolesInput
     members?: ServerMemberCreateNestedManyWithoutServerRolesInput
     permissions?: ServerRolePermissionCreateNestedManyWithoutRoleInput
+    channelAccess?: ChannelRoleAccessCreateNestedManyWithoutRoleInput
   }
 
   export type ServerRolesUncheckedCreateInput = {
@@ -15573,6 +16904,7 @@ export namespace Prisma {
     serverId: string
     members?: ServerMemberUncheckedCreateNestedManyWithoutServerRolesInput
     permissions?: ServerRolePermissionUncheckedCreateNestedManyWithoutRoleInput
+    channelAccess?: ChannelRoleAccessUncheckedCreateNestedManyWithoutRoleInput
   }
 
   export type ServerRolesUpdateInput = {
@@ -15582,6 +16914,7 @@ export namespace Prisma {
     server?: ServerUpdateOneRequiredWithoutRolesNestedInput
     members?: ServerMemberUpdateManyWithoutServerRolesNestedInput
     permissions?: ServerRolePermissionUpdateManyWithoutRoleNestedInput
+    channelAccess?: ChannelRoleAccessUpdateManyWithoutRoleNestedInput
   }
 
   export type ServerRolesUncheckedUpdateInput = {
@@ -15591,6 +16924,7 @@ export namespace Prisma {
     serverId?: StringFieldUpdateOperationsInput | string
     members?: ServerMemberUncheckedUpdateManyWithoutServerRolesNestedInput
     permissions?: ServerRolePermissionUncheckedUpdateManyWithoutRoleNestedInput
+    channelAccess?: ChannelRoleAccessUncheckedUpdateManyWithoutRoleNestedInput
   }
 
   export type ServerRolesCreateManyInput = {
@@ -15611,6 +16945,46 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     position?: IntFieldUpdateOperationsInput | number
     serverId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type ChannelRoleAccessCreateInput = {
+    id?: string
+    channel: ChannelCreateNestedOneWithoutAllowedRolesInput
+    role: ServerRolesCreateNestedOneWithoutChannelAccessInput
+  }
+
+  export type ChannelRoleAccessUncheckedCreateInput = {
+    id?: string
+    channelId: string
+    roleId: string
+  }
+
+  export type ChannelRoleAccessUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    channel?: ChannelUpdateOneRequiredWithoutAllowedRolesNestedInput
+    role?: ServerRolesUpdateOneRequiredWithoutChannelAccessNestedInput
+  }
+
+  export type ChannelRoleAccessUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    channelId?: StringFieldUpdateOperationsInput | string
+    roleId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type ChannelRoleAccessCreateManyInput = {
+    id?: string
+    channelId: string
+    roleId: string
+  }
+
+  export type ChannelRoleAccessUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type ChannelRoleAccessUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    channelId?: StringFieldUpdateOperationsInput | string
+    roleId?: StringFieldUpdateOperationsInput | string
   }
 
   export type ServerRolePermissionCreateInput = {
@@ -16305,6 +17679,11 @@ export namespace Prisma {
     not?: NestedEnumChannelTypeFilter<$PrismaModel> | $Enums.ChannelType
   }
 
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
   export type ServerScalarRelationFilter = {
     is?: ServerWhereInput
     isNot?: ServerWhereInput
@@ -16322,6 +17701,12 @@ export namespace Prisma {
     none?: UserWhereInput
   }
 
+  export type ChannelRoleAccessListRelationFilter = {
+    every?: ChannelRoleAccessWhereInput
+    some?: ChannelRoleAccessWhereInput
+    none?: ChannelRoleAccessWhereInput
+  }
+
   export type MessagesOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -16330,12 +17715,18 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
+  export type ChannelRoleAccessOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type ChannelCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
     serverId?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
     type?: SortOrder
+    isPublic?: SortOrder
   }
 
   export type ChannelMaxOrderByAggregateInput = {
@@ -16343,7 +17734,9 @@ export namespace Prisma {
     name?: SortOrder
     serverId?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
     type?: SortOrder
+    isPublic?: SortOrder
   }
 
   export type ChannelMinOrderByAggregateInput = {
@@ -16351,7 +17744,9 @@ export namespace Prisma {
     name?: SortOrder
     serverId?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
     type?: SortOrder
+    isPublic?: SortOrder
   }
 
   export type EnumChannelTypeWithAggregatesFilter<$PrismaModel = never> = {
@@ -16362,6 +17757,14 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumChannelTypeFilter<$PrismaModel>
     _max?: NestedEnumChannelTypeFilter<$PrismaModel>
+  }
+
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type DateTimeNullableFilter<$PrismaModel = never> = {
@@ -16486,16 +17889,44 @@ export namespace Prisma {
     _max?: NestedIntFilter<$PrismaModel>
   }
 
-  export type EnumPermissionFilter<$PrismaModel = never> = {
-    equals?: $Enums.Permission | EnumPermissionFieldRefInput<$PrismaModel>
-    in?: $Enums.Permission[] | ListEnumPermissionFieldRefInput<$PrismaModel>
-    notIn?: $Enums.Permission[] | ListEnumPermissionFieldRefInput<$PrismaModel>
-    not?: NestedEnumPermissionFilter<$PrismaModel> | $Enums.Permission
+  export type ChannelScalarRelationFilter = {
+    is?: ChannelWhereInput
+    isNot?: ChannelWhereInput
   }
 
   export type ServerRolesScalarRelationFilter = {
     is?: ServerRolesWhereInput
     isNot?: ServerRolesWhereInput
+  }
+
+  export type ChannelRoleAccessChannelIdRoleIdCompoundUniqueInput = {
+    channelId: string
+    roleId: string
+  }
+
+  export type ChannelRoleAccessCountOrderByAggregateInput = {
+    id?: SortOrder
+    channelId?: SortOrder
+    roleId?: SortOrder
+  }
+
+  export type ChannelRoleAccessMaxOrderByAggregateInput = {
+    id?: SortOrder
+    channelId?: SortOrder
+    roleId?: SortOrder
+  }
+
+  export type ChannelRoleAccessMinOrderByAggregateInput = {
+    id?: SortOrder
+    channelId?: SortOrder
+    roleId?: SortOrder
+  }
+
+  export type EnumPermissionFilter<$PrismaModel = never> = {
+    equals?: $Enums.Permission | EnumPermissionFieldRefInput<$PrismaModel>
+    in?: $Enums.Permission[] | ListEnumPermissionFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Permission[] | ListEnumPermissionFieldRefInput<$PrismaModel>
+    not?: NestedEnumPermissionFilter<$PrismaModel> | $Enums.Permission
   }
 
   export type ServerRolePermissionRoleIdPermissionCompoundUniqueInput = {
@@ -16531,16 +17962,6 @@ export namespace Prisma {
     _max?: NestedEnumPermissionFilter<$PrismaModel>
   }
 
-  export type BoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
-  }
-
-  export type ChannelScalarRelationFilter = {
-    is?: ChannelWhereInput
-    isNot?: ChannelWhereInput
-  }
-
   export type MessagesCountOrderByAggregateInput = {
     id?: SortOrder
     content?: SortOrder
@@ -16566,14 +17987,6 @@ export namespace Prisma {
     authorId?: SortOrder
     createdAt?: SortOrder
     pinned?: SortOrder
-  }
-
-  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type IntNullableFilter<$PrismaModel = never> = {
@@ -17011,6 +18424,13 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
   }
 
+  export type ChannelRoleAccessCreateNestedManyWithoutChannelInput = {
+    create?: XOR<ChannelRoleAccessCreateWithoutChannelInput, ChannelRoleAccessUncheckedCreateWithoutChannelInput> | ChannelRoleAccessCreateWithoutChannelInput[] | ChannelRoleAccessUncheckedCreateWithoutChannelInput[]
+    connectOrCreate?: ChannelRoleAccessCreateOrConnectWithoutChannelInput | ChannelRoleAccessCreateOrConnectWithoutChannelInput[]
+    createMany?: ChannelRoleAccessCreateManyChannelInputEnvelope
+    connect?: ChannelRoleAccessWhereUniqueInput | ChannelRoleAccessWhereUniqueInput[]
+  }
+
   export type MessagesUncheckedCreateNestedManyWithoutChannelInput = {
     create?: XOR<MessagesCreateWithoutChannelInput, MessagesUncheckedCreateWithoutChannelInput> | MessagesCreateWithoutChannelInput[] | MessagesUncheckedCreateWithoutChannelInput[]
     connectOrCreate?: MessagesCreateOrConnectWithoutChannelInput | MessagesCreateOrConnectWithoutChannelInput[]
@@ -17024,8 +18444,19 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
   }
 
+  export type ChannelRoleAccessUncheckedCreateNestedManyWithoutChannelInput = {
+    create?: XOR<ChannelRoleAccessCreateWithoutChannelInput, ChannelRoleAccessUncheckedCreateWithoutChannelInput> | ChannelRoleAccessCreateWithoutChannelInput[] | ChannelRoleAccessUncheckedCreateWithoutChannelInput[]
+    connectOrCreate?: ChannelRoleAccessCreateOrConnectWithoutChannelInput | ChannelRoleAccessCreateOrConnectWithoutChannelInput[]
+    createMany?: ChannelRoleAccessCreateManyChannelInputEnvelope
+    connect?: ChannelRoleAccessWhereUniqueInput | ChannelRoleAccessWhereUniqueInput[]
+  }
+
   export type EnumChannelTypeFieldUpdateOperationsInput = {
     set?: $Enums.ChannelType
+  }
+
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
   }
 
   export type ServerUpdateOneRequiredWithoutChannelsNestedInput = {
@@ -17063,6 +18494,20 @@ export namespace Prisma {
     deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
   }
 
+  export type ChannelRoleAccessUpdateManyWithoutChannelNestedInput = {
+    create?: XOR<ChannelRoleAccessCreateWithoutChannelInput, ChannelRoleAccessUncheckedCreateWithoutChannelInput> | ChannelRoleAccessCreateWithoutChannelInput[] | ChannelRoleAccessUncheckedCreateWithoutChannelInput[]
+    connectOrCreate?: ChannelRoleAccessCreateOrConnectWithoutChannelInput | ChannelRoleAccessCreateOrConnectWithoutChannelInput[]
+    upsert?: ChannelRoleAccessUpsertWithWhereUniqueWithoutChannelInput | ChannelRoleAccessUpsertWithWhereUniqueWithoutChannelInput[]
+    createMany?: ChannelRoleAccessCreateManyChannelInputEnvelope
+    set?: ChannelRoleAccessWhereUniqueInput | ChannelRoleAccessWhereUniqueInput[]
+    disconnect?: ChannelRoleAccessWhereUniqueInput | ChannelRoleAccessWhereUniqueInput[]
+    delete?: ChannelRoleAccessWhereUniqueInput | ChannelRoleAccessWhereUniqueInput[]
+    connect?: ChannelRoleAccessWhereUniqueInput | ChannelRoleAccessWhereUniqueInput[]
+    update?: ChannelRoleAccessUpdateWithWhereUniqueWithoutChannelInput | ChannelRoleAccessUpdateWithWhereUniqueWithoutChannelInput[]
+    updateMany?: ChannelRoleAccessUpdateManyWithWhereWithoutChannelInput | ChannelRoleAccessUpdateManyWithWhereWithoutChannelInput[]
+    deleteMany?: ChannelRoleAccessScalarWhereInput | ChannelRoleAccessScalarWhereInput[]
+  }
+
   export type MessagesUncheckedUpdateManyWithoutChannelNestedInput = {
     create?: XOR<MessagesCreateWithoutChannelInput, MessagesUncheckedCreateWithoutChannelInput> | MessagesCreateWithoutChannelInput[] | MessagesUncheckedCreateWithoutChannelInput[]
     connectOrCreate?: MessagesCreateOrConnectWithoutChannelInput | MessagesCreateOrConnectWithoutChannelInput[]
@@ -17088,6 +18533,20 @@ export namespace Prisma {
     update?: UserUpdateWithWhereUniqueWithoutChannelsInput | UserUpdateWithWhereUniqueWithoutChannelsInput[]
     updateMany?: UserUpdateManyWithWhereWithoutChannelsInput | UserUpdateManyWithWhereWithoutChannelsInput[]
     deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
+  }
+
+  export type ChannelRoleAccessUncheckedUpdateManyWithoutChannelNestedInput = {
+    create?: XOR<ChannelRoleAccessCreateWithoutChannelInput, ChannelRoleAccessUncheckedCreateWithoutChannelInput> | ChannelRoleAccessCreateWithoutChannelInput[] | ChannelRoleAccessUncheckedCreateWithoutChannelInput[]
+    connectOrCreate?: ChannelRoleAccessCreateOrConnectWithoutChannelInput | ChannelRoleAccessCreateOrConnectWithoutChannelInput[]
+    upsert?: ChannelRoleAccessUpsertWithWhereUniqueWithoutChannelInput | ChannelRoleAccessUpsertWithWhereUniqueWithoutChannelInput[]
+    createMany?: ChannelRoleAccessCreateManyChannelInputEnvelope
+    set?: ChannelRoleAccessWhereUniqueInput | ChannelRoleAccessWhereUniqueInput[]
+    disconnect?: ChannelRoleAccessWhereUniqueInput | ChannelRoleAccessWhereUniqueInput[]
+    delete?: ChannelRoleAccessWhereUniqueInput | ChannelRoleAccessWhereUniqueInput[]
+    connect?: ChannelRoleAccessWhereUniqueInput | ChannelRoleAccessWhereUniqueInput[]
+    update?: ChannelRoleAccessUpdateWithWhereUniqueWithoutChannelInput | ChannelRoleAccessUpdateWithWhereUniqueWithoutChannelInput[]
+    updateMany?: ChannelRoleAccessUpdateManyWithWhereWithoutChannelInput | ChannelRoleAccessUpdateManyWithWhereWithoutChannelInput[]
+    deleteMany?: ChannelRoleAccessScalarWhereInput | ChannelRoleAccessScalarWhereInput[]
   }
 
   export type ServerCreateNestedOneWithoutMembersInput = {
@@ -17179,6 +18638,13 @@ export namespace Prisma {
     connect?: ServerRolePermissionWhereUniqueInput | ServerRolePermissionWhereUniqueInput[]
   }
 
+  export type ChannelRoleAccessCreateNestedManyWithoutRoleInput = {
+    create?: XOR<ChannelRoleAccessCreateWithoutRoleInput, ChannelRoleAccessUncheckedCreateWithoutRoleInput> | ChannelRoleAccessCreateWithoutRoleInput[] | ChannelRoleAccessUncheckedCreateWithoutRoleInput[]
+    connectOrCreate?: ChannelRoleAccessCreateOrConnectWithoutRoleInput | ChannelRoleAccessCreateOrConnectWithoutRoleInput[]
+    createMany?: ChannelRoleAccessCreateManyRoleInputEnvelope
+    connect?: ChannelRoleAccessWhereUniqueInput | ChannelRoleAccessWhereUniqueInput[]
+  }
+
   export type ServerMemberUncheckedCreateNestedManyWithoutServerRolesInput = {
     create?: XOR<ServerMemberCreateWithoutServerRolesInput, ServerMemberUncheckedCreateWithoutServerRolesInput> | ServerMemberCreateWithoutServerRolesInput[] | ServerMemberUncheckedCreateWithoutServerRolesInput[]
     connectOrCreate?: ServerMemberCreateOrConnectWithoutServerRolesInput | ServerMemberCreateOrConnectWithoutServerRolesInput[]
@@ -17190,6 +18656,13 @@ export namespace Prisma {
     connectOrCreate?: ServerRolePermissionCreateOrConnectWithoutRoleInput | ServerRolePermissionCreateOrConnectWithoutRoleInput[]
     createMany?: ServerRolePermissionCreateManyRoleInputEnvelope
     connect?: ServerRolePermissionWhereUniqueInput | ServerRolePermissionWhereUniqueInput[]
+  }
+
+  export type ChannelRoleAccessUncheckedCreateNestedManyWithoutRoleInput = {
+    create?: XOR<ChannelRoleAccessCreateWithoutRoleInput, ChannelRoleAccessUncheckedCreateWithoutRoleInput> | ChannelRoleAccessCreateWithoutRoleInput[] | ChannelRoleAccessUncheckedCreateWithoutRoleInput[]
+    connectOrCreate?: ChannelRoleAccessCreateOrConnectWithoutRoleInput | ChannelRoleAccessCreateOrConnectWithoutRoleInput[]
+    createMany?: ChannelRoleAccessCreateManyRoleInputEnvelope
+    connect?: ChannelRoleAccessWhereUniqueInput | ChannelRoleAccessWhereUniqueInput[]
   }
 
   export type IntFieldUpdateOperationsInput = {
@@ -17235,6 +18708,20 @@ export namespace Prisma {
     deleteMany?: ServerRolePermissionScalarWhereInput | ServerRolePermissionScalarWhereInput[]
   }
 
+  export type ChannelRoleAccessUpdateManyWithoutRoleNestedInput = {
+    create?: XOR<ChannelRoleAccessCreateWithoutRoleInput, ChannelRoleAccessUncheckedCreateWithoutRoleInput> | ChannelRoleAccessCreateWithoutRoleInput[] | ChannelRoleAccessUncheckedCreateWithoutRoleInput[]
+    connectOrCreate?: ChannelRoleAccessCreateOrConnectWithoutRoleInput | ChannelRoleAccessCreateOrConnectWithoutRoleInput[]
+    upsert?: ChannelRoleAccessUpsertWithWhereUniqueWithoutRoleInput | ChannelRoleAccessUpsertWithWhereUniqueWithoutRoleInput[]
+    createMany?: ChannelRoleAccessCreateManyRoleInputEnvelope
+    set?: ChannelRoleAccessWhereUniqueInput | ChannelRoleAccessWhereUniqueInput[]
+    disconnect?: ChannelRoleAccessWhereUniqueInput | ChannelRoleAccessWhereUniqueInput[]
+    delete?: ChannelRoleAccessWhereUniqueInput | ChannelRoleAccessWhereUniqueInput[]
+    connect?: ChannelRoleAccessWhereUniqueInput | ChannelRoleAccessWhereUniqueInput[]
+    update?: ChannelRoleAccessUpdateWithWhereUniqueWithoutRoleInput | ChannelRoleAccessUpdateWithWhereUniqueWithoutRoleInput[]
+    updateMany?: ChannelRoleAccessUpdateManyWithWhereWithoutRoleInput | ChannelRoleAccessUpdateManyWithWhereWithoutRoleInput[]
+    deleteMany?: ChannelRoleAccessScalarWhereInput | ChannelRoleAccessScalarWhereInput[]
+  }
+
   export type ServerMemberUncheckedUpdateManyWithoutServerRolesNestedInput = {
     create?: XOR<ServerMemberCreateWithoutServerRolesInput, ServerMemberUncheckedCreateWithoutServerRolesInput> | ServerMemberCreateWithoutServerRolesInput[] | ServerMemberUncheckedCreateWithoutServerRolesInput[]
     connectOrCreate?: ServerMemberCreateOrConnectWithoutServerRolesInput | ServerMemberCreateOrConnectWithoutServerRolesInput[]
@@ -17260,6 +18747,48 @@ export namespace Prisma {
     update?: ServerRolePermissionUpdateWithWhereUniqueWithoutRoleInput | ServerRolePermissionUpdateWithWhereUniqueWithoutRoleInput[]
     updateMany?: ServerRolePermissionUpdateManyWithWhereWithoutRoleInput | ServerRolePermissionUpdateManyWithWhereWithoutRoleInput[]
     deleteMany?: ServerRolePermissionScalarWhereInput | ServerRolePermissionScalarWhereInput[]
+  }
+
+  export type ChannelRoleAccessUncheckedUpdateManyWithoutRoleNestedInput = {
+    create?: XOR<ChannelRoleAccessCreateWithoutRoleInput, ChannelRoleAccessUncheckedCreateWithoutRoleInput> | ChannelRoleAccessCreateWithoutRoleInput[] | ChannelRoleAccessUncheckedCreateWithoutRoleInput[]
+    connectOrCreate?: ChannelRoleAccessCreateOrConnectWithoutRoleInput | ChannelRoleAccessCreateOrConnectWithoutRoleInput[]
+    upsert?: ChannelRoleAccessUpsertWithWhereUniqueWithoutRoleInput | ChannelRoleAccessUpsertWithWhereUniqueWithoutRoleInput[]
+    createMany?: ChannelRoleAccessCreateManyRoleInputEnvelope
+    set?: ChannelRoleAccessWhereUniqueInput | ChannelRoleAccessWhereUniqueInput[]
+    disconnect?: ChannelRoleAccessWhereUniqueInput | ChannelRoleAccessWhereUniqueInput[]
+    delete?: ChannelRoleAccessWhereUniqueInput | ChannelRoleAccessWhereUniqueInput[]
+    connect?: ChannelRoleAccessWhereUniqueInput | ChannelRoleAccessWhereUniqueInput[]
+    update?: ChannelRoleAccessUpdateWithWhereUniqueWithoutRoleInput | ChannelRoleAccessUpdateWithWhereUniqueWithoutRoleInput[]
+    updateMany?: ChannelRoleAccessUpdateManyWithWhereWithoutRoleInput | ChannelRoleAccessUpdateManyWithWhereWithoutRoleInput[]
+    deleteMany?: ChannelRoleAccessScalarWhereInput | ChannelRoleAccessScalarWhereInput[]
+  }
+
+  export type ChannelCreateNestedOneWithoutAllowedRolesInput = {
+    create?: XOR<ChannelCreateWithoutAllowedRolesInput, ChannelUncheckedCreateWithoutAllowedRolesInput>
+    connectOrCreate?: ChannelCreateOrConnectWithoutAllowedRolesInput
+    connect?: ChannelWhereUniqueInput
+  }
+
+  export type ServerRolesCreateNestedOneWithoutChannelAccessInput = {
+    create?: XOR<ServerRolesCreateWithoutChannelAccessInput, ServerRolesUncheckedCreateWithoutChannelAccessInput>
+    connectOrCreate?: ServerRolesCreateOrConnectWithoutChannelAccessInput
+    connect?: ServerRolesWhereUniqueInput
+  }
+
+  export type ChannelUpdateOneRequiredWithoutAllowedRolesNestedInput = {
+    create?: XOR<ChannelCreateWithoutAllowedRolesInput, ChannelUncheckedCreateWithoutAllowedRolesInput>
+    connectOrCreate?: ChannelCreateOrConnectWithoutAllowedRolesInput
+    upsert?: ChannelUpsertWithoutAllowedRolesInput
+    connect?: ChannelWhereUniqueInput
+    update?: XOR<XOR<ChannelUpdateToOneWithWhereWithoutAllowedRolesInput, ChannelUpdateWithoutAllowedRolesInput>, ChannelUncheckedUpdateWithoutAllowedRolesInput>
+  }
+
+  export type ServerRolesUpdateOneRequiredWithoutChannelAccessNestedInput = {
+    create?: XOR<ServerRolesCreateWithoutChannelAccessInput, ServerRolesUncheckedCreateWithoutChannelAccessInput>
+    connectOrCreate?: ServerRolesCreateOrConnectWithoutChannelAccessInput
+    upsert?: ServerRolesUpsertWithoutChannelAccessInput
+    connect?: ServerRolesWhereUniqueInput
+    update?: XOR<XOR<ServerRolesUpdateToOneWithWhereWithoutChannelAccessInput, ServerRolesUpdateWithoutChannelAccessInput>, ServerRolesUncheckedUpdateWithoutChannelAccessInput>
   }
 
   export type ServerRolesCreateNestedOneWithoutPermissionsInput = {
@@ -17290,10 +18819,6 @@ export namespace Prisma {
     create?: XOR<UserCreateWithoutMessagesInput, UserUncheckedCreateWithoutMessagesInput>
     connectOrCreate?: UserCreateOrConnectWithoutMessagesInput
     connect?: UserWhereUniqueInput
-  }
-
-  export type BoolFieldUpdateOperationsInput = {
-    set?: boolean
   }
 
   export type ChannelUpdateOneRequiredWithoutMessagesNestedInput = {
@@ -17742,6 +19267,11 @@ export namespace Prisma {
     not?: NestedEnumChannelTypeFilter<$PrismaModel> | $Enums.ChannelType
   }
 
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
   export type NestedEnumChannelTypeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.ChannelType | EnumChannelTypeFieldRefInput<$PrismaModel>
     in?: $Enums.ChannelType[] | ListEnumChannelTypeFieldRefInput<$PrismaModel>
@@ -17750,6 +19280,14 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumChannelTypeFilter<$PrismaModel>
     _max?: NestedEnumChannelTypeFilter<$PrismaModel>
+  }
+
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
@@ -17821,19 +19359,6 @@ export namespace Prisma {
     _max?: NestedEnumPermissionFilter<$PrismaModel>
   }
 
-  export type NestedBoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
-  }
-
-  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
-  }
-
   export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel> | null
     in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
@@ -17865,18 +19390,24 @@ export namespace Prisma {
     id?: string
     name: string
     createdAt?: Date | string
+    updatedAt?: Date | string
     type: $Enums.ChannelType
+    isPublic?: boolean
     messages?: MessagesCreateNestedManyWithoutChannelInput
     users?: UserCreateNestedManyWithoutChannelsInput
+    allowedRoles?: ChannelRoleAccessCreateNestedManyWithoutChannelInput
   }
 
   export type ChannelUncheckedCreateWithoutServerInput = {
     id?: string
     name: string
     createdAt?: Date | string
+    updatedAt?: Date | string
     type: $Enums.ChannelType
+    isPublic?: boolean
     messages?: MessagesUncheckedCreateNestedManyWithoutChannelInput
     users?: UserUncheckedCreateNestedManyWithoutChannelsInput
+    allowedRoles?: ChannelRoleAccessUncheckedCreateNestedManyWithoutChannelInput
   }
 
   export type ChannelCreateOrConnectWithoutServerInput = {
@@ -17919,6 +19450,7 @@ export namespace Prisma {
     position?: number
     members?: ServerMemberCreateNestedManyWithoutServerRolesInput
     permissions?: ServerRolePermissionCreateNestedManyWithoutRoleInput
+    channelAccess?: ChannelRoleAccessCreateNestedManyWithoutRoleInput
   }
 
   export type ServerRolesUncheckedCreateWithoutServerInput = {
@@ -17927,6 +19459,7 @@ export namespace Prisma {
     position?: number
     members?: ServerMemberUncheckedCreateNestedManyWithoutServerRolesInput
     permissions?: ServerRolePermissionUncheckedCreateNestedManyWithoutRoleInput
+    channelAccess?: ChannelRoleAccessUncheckedCreateNestedManyWithoutRoleInput
   }
 
   export type ServerRolesCreateOrConnectWithoutServerInput = {
@@ -17995,7 +19528,9 @@ export namespace Prisma {
     name?: StringFilter<"Channel"> | string
     serverId?: StringFilter<"Channel"> | string
     createdAt?: DateTimeFilter<"Channel"> | Date | string
+    updatedAt?: DateTimeFilter<"Channel"> | Date | string
     type?: EnumChannelTypeFilter<"Channel"> | $Enums.ChannelType
+    isPublic?: BoolFilter<"Channel"> | boolean
   }
 
   export type ServerMemberUpsertWithWhereUniqueWithoutServerInput = {
@@ -18167,6 +19702,26 @@ export namespace Prisma {
     create: XOR<UserCreateWithoutChannelsInput, UserUncheckedCreateWithoutChannelsInput>
   }
 
+  export type ChannelRoleAccessCreateWithoutChannelInput = {
+    id?: string
+    role: ServerRolesCreateNestedOneWithoutChannelAccessInput
+  }
+
+  export type ChannelRoleAccessUncheckedCreateWithoutChannelInput = {
+    id?: string
+    roleId: string
+  }
+
+  export type ChannelRoleAccessCreateOrConnectWithoutChannelInput = {
+    where: ChannelRoleAccessWhereUniqueInput
+    create: XOR<ChannelRoleAccessCreateWithoutChannelInput, ChannelRoleAccessUncheckedCreateWithoutChannelInput>
+  }
+
+  export type ChannelRoleAccessCreateManyChannelInputEnvelope = {
+    data: ChannelRoleAccessCreateManyChannelInput | ChannelRoleAccessCreateManyChannelInput[]
+    skipDuplicates?: boolean
+  }
+
   export type ServerUpsertWithoutChannelsInput = {
     update: XOR<ServerUpdateWithoutChannelsInput, ServerUncheckedUpdateWithoutChannelsInput>
     create: XOR<ServerCreateWithoutChannelsInput, ServerUncheckedCreateWithoutChannelsInput>
@@ -18255,6 +19810,31 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"User"> | Date | string
   }
 
+  export type ChannelRoleAccessUpsertWithWhereUniqueWithoutChannelInput = {
+    where: ChannelRoleAccessWhereUniqueInput
+    update: XOR<ChannelRoleAccessUpdateWithoutChannelInput, ChannelRoleAccessUncheckedUpdateWithoutChannelInput>
+    create: XOR<ChannelRoleAccessCreateWithoutChannelInput, ChannelRoleAccessUncheckedCreateWithoutChannelInput>
+  }
+
+  export type ChannelRoleAccessUpdateWithWhereUniqueWithoutChannelInput = {
+    where: ChannelRoleAccessWhereUniqueInput
+    data: XOR<ChannelRoleAccessUpdateWithoutChannelInput, ChannelRoleAccessUncheckedUpdateWithoutChannelInput>
+  }
+
+  export type ChannelRoleAccessUpdateManyWithWhereWithoutChannelInput = {
+    where: ChannelRoleAccessScalarWhereInput
+    data: XOR<ChannelRoleAccessUpdateManyMutationInput, ChannelRoleAccessUncheckedUpdateManyWithoutChannelInput>
+  }
+
+  export type ChannelRoleAccessScalarWhereInput = {
+    AND?: ChannelRoleAccessScalarWhereInput | ChannelRoleAccessScalarWhereInput[]
+    OR?: ChannelRoleAccessScalarWhereInput[]
+    NOT?: ChannelRoleAccessScalarWhereInput | ChannelRoleAccessScalarWhereInput[]
+    id?: StringFilter<"ChannelRoleAccess"> | string
+    channelId?: StringFilter<"ChannelRoleAccess"> | string
+    roleId?: StringFilter<"ChannelRoleAccess"> | string
+  }
+
   export type ServerCreateWithoutMembersInput = {
     id?: string
     name: string
@@ -18321,6 +19901,7 @@ export namespace Prisma {
     position?: number
     server: ServerCreateNestedOneWithoutRolesInput
     permissions?: ServerRolePermissionCreateNestedManyWithoutRoleInput
+    channelAccess?: ChannelRoleAccessCreateNestedManyWithoutRoleInput
   }
 
   export type ServerRolesUncheckedCreateWithoutMembersInput = {
@@ -18329,6 +19910,7 @@ export namespace Prisma {
     position?: number
     serverId: string
     permissions?: ServerRolePermissionUncheckedCreateNestedManyWithoutRoleInput
+    channelAccess?: ChannelRoleAccessUncheckedCreateNestedManyWithoutRoleInput
   }
 
   export type ServerRolesCreateOrConnectWithoutMembersInput = {
@@ -18488,6 +20070,26 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type ChannelRoleAccessCreateWithoutRoleInput = {
+    id?: string
+    channel: ChannelCreateNestedOneWithoutAllowedRolesInput
+  }
+
+  export type ChannelRoleAccessUncheckedCreateWithoutRoleInput = {
+    id?: string
+    channelId: string
+  }
+
+  export type ChannelRoleAccessCreateOrConnectWithoutRoleInput = {
+    where: ChannelRoleAccessWhereUniqueInput
+    create: XOR<ChannelRoleAccessCreateWithoutRoleInput, ChannelRoleAccessUncheckedCreateWithoutRoleInput>
+  }
+
+  export type ChannelRoleAccessCreateManyRoleInputEnvelope = {
+    data: ChannelRoleAccessCreateManyRoleInput | ChannelRoleAccessCreateManyRoleInput[]
+    skipDuplicates?: boolean
+  }
+
   export type ServerUpsertWithoutRolesInput = {
     update: XOR<ServerUpdateWithoutRolesInput, ServerUncheckedUpdateWithoutRolesInput>
     create: XOR<ServerCreateWithoutRolesInput, ServerUncheckedCreateWithoutRolesInput>
@@ -18560,12 +20162,145 @@ export namespace Prisma {
     permission?: EnumPermissionFilter<"ServerRolePermission"> | $Enums.Permission
   }
 
+  export type ChannelRoleAccessUpsertWithWhereUniqueWithoutRoleInput = {
+    where: ChannelRoleAccessWhereUniqueInput
+    update: XOR<ChannelRoleAccessUpdateWithoutRoleInput, ChannelRoleAccessUncheckedUpdateWithoutRoleInput>
+    create: XOR<ChannelRoleAccessCreateWithoutRoleInput, ChannelRoleAccessUncheckedCreateWithoutRoleInput>
+  }
+
+  export type ChannelRoleAccessUpdateWithWhereUniqueWithoutRoleInput = {
+    where: ChannelRoleAccessWhereUniqueInput
+    data: XOR<ChannelRoleAccessUpdateWithoutRoleInput, ChannelRoleAccessUncheckedUpdateWithoutRoleInput>
+  }
+
+  export type ChannelRoleAccessUpdateManyWithWhereWithoutRoleInput = {
+    where: ChannelRoleAccessScalarWhereInput
+    data: XOR<ChannelRoleAccessUpdateManyMutationInput, ChannelRoleAccessUncheckedUpdateManyWithoutRoleInput>
+  }
+
+  export type ChannelCreateWithoutAllowedRolesInput = {
+    id?: string
+    name: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    type: $Enums.ChannelType
+    isPublic?: boolean
+    server: ServerCreateNestedOneWithoutChannelsInput
+    messages?: MessagesCreateNestedManyWithoutChannelInput
+    users?: UserCreateNestedManyWithoutChannelsInput
+  }
+
+  export type ChannelUncheckedCreateWithoutAllowedRolesInput = {
+    id?: string
+    name: string
+    serverId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    type: $Enums.ChannelType
+    isPublic?: boolean
+    messages?: MessagesUncheckedCreateNestedManyWithoutChannelInput
+    users?: UserUncheckedCreateNestedManyWithoutChannelsInput
+  }
+
+  export type ChannelCreateOrConnectWithoutAllowedRolesInput = {
+    where: ChannelWhereUniqueInput
+    create: XOR<ChannelCreateWithoutAllowedRolesInput, ChannelUncheckedCreateWithoutAllowedRolesInput>
+  }
+
+  export type ServerRolesCreateWithoutChannelAccessInput = {
+    id?: string
+    name: string
+    position?: number
+    server: ServerCreateNestedOneWithoutRolesInput
+    members?: ServerMemberCreateNestedManyWithoutServerRolesInput
+    permissions?: ServerRolePermissionCreateNestedManyWithoutRoleInput
+  }
+
+  export type ServerRolesUncheckedCreateWithoutChannelAccessInput = {
+    id?: string
+    name: string
+    position?: number
+    serverId: string
+    members?: ServerMemberUncheckedCreateNestedManyWithoutServerRolesInput
+    permissions?: ServerRolePermissionUncheckedCreateNestedManyWithoutRoleInput
+  }
+
+  export type ServerRolesCreateOrConnectWithoutChannelAccessInput = {
+    where: ServerRolesWhereUniqueInput
+    create: XOR<ServerRolesCreateWithoutChannelAccessInput, ServerRolesUncheckedCreateWithoutChannelAccessInput>
+  }
+
+  export type ChannelUpsertWithoutAllowedRolesInput = {
+    update: XOR<ChannelUpdateWithoutAllowedRolesInput, ChannelUncheckedUpdateWithoutAllowedRolesInput>
+    create: XOR<ChannelCreateWithoutAllowedRolesInput, ChannelUncheckedCreateWithoutAllowedRolesInput>
+    where?: ChannelWhereInput
+  }
+
+  export type ChannelUpdateToOneWithWhereWithoutAllowedRolesInput = {
+    where?: ChannelWhereInput
+    data: XOR<ChannelUpdateWithoutAllowedRolesInput, ChannelUncheckedUpdateWithoutAllowedRolesInput>
+  }
+
+  export type ChannelUpdateWithoutAllowedRolesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    type?: EnumChannelTypeFieldUpdateOperationsInput | $Enums.ChannelType
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
+    server?: ServerUpdateOneRequiredWithoutChannelsNestedInput
+    messages?: MessagesUpdateManyWithoutChannelNestedInput
+    users?: UserUpdateManyWithoutChannelsNestedInput
+  }
+
+  export type ChannelUncheckedUpdateWithoutAllowedRolesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    serverId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    type?: EnumChannelTypeFieldUpdateOperationsInput | $Enums.ChannelType
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
+    messages?: MessagesUncheckedUpdateManyWithoutChannelNestedInput
+    users?: UserUncheckedUpdateManyWithoutChannelsNestedInput
+  }
+
+  export type ServerRolesUpsertWithoutChannelAccessInput = {
+    update: XOR<ServerRolesUpdateWithoutChannelAccessInput, ServerRolesUncheckedUpdateWithoutChannelAccessInput>
+    create: XOR<ServerRolesCreateWithoutChannelAccessInput, ServerRolesUncheckedCreateWithoutChannelAccessInput>
+    where?: ServerRolesWhereInput
+  }
+
+  export type ServerRolesUpdateToOneWithWhereWithoutChannelAccessInput = {
+    where?: ServerRolesWhereInput
+    data: XOR<ServerRolesUpdateWithoutChannelAccessInput, ServerRolesUncheckedUpdateWithoutChannelAccessInput>
+  }
+
+  export type ServerRolesUpdateWithoutChannelAccessInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    position?: IntFieldUpdateOperationsInput | number
+    server?: ServerUpdateOneRequiredWithoutRolesNestedInput
+    members?: ServerMemberUpdateManyWithoutServerRolesNestedInput
+    permissions?: ServerRolePermissionUpdateManyWithoutRoleNestedInput
+  }
+
+  export type ServerRolesUncheckedUpdateWithoutChannelAccessInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    position?: IntFieldUpdateOperationsInput | number
+    serverId?: StringFieldUpdateOperationsInput | string
+    members?: ServerMemberUncheckedUpdateManyWithoutServerRolesNestedInput
+    permissions?: ServerRolePermissionUncheckedUpdateManyWithoutRoleNestedInput
+  }
+
   export type ServerRolesCreateWithoutPermissionsInput = {
     id?: string
     name: string
     position?: number
     server: ServerCreateNestedOneWithoutRolesInput
     members?: ServerMemberCreateNestedManyWithoutServerRolesInput
+    channelAccess?: ChannelRoleAccessCreateNestedManyWithoutRoleInput
   }
 
   export type ServerRolesUncheckedCreateWithoutPermissionsInput = {
@@ -18574,6 +20309,7 @@ export namespace Prisma {
     position?: number
     serverId: string
     members?: ServerMemberUncheckedCreateNestedManyWithoutServerRolesInput
+    channelAccess?: ChannelRoleAccessUncheckedCreateNestedManyWithoutRoleInput
   }
 
   export type ServerRolesCreateOrConnectWithoutPermissionsInput = {
@@ -18598,6 +20334,7 @@ export namespace Prisma {
     position?: IntFieldUpdateOperationsInput | number
     server?: ServerUpdateOneRequiredWithoutRolesNestedInput
     members?: ServerMemberUpdateManyWithoutServerRolesNestedInput
+    channelAccess?: ChannelRoleAccessUpdateManyWithoutRoleNestedInput
   }
 
   export type ServerRolesUncheckedUpdateWithoutPermissionsInput = {
@@ -18606,15 +20343,19 @@ export namespace Prisma {
     position?: IntFieldUpdateOperationsInput | number
     serverId?: StringFieldUpdateOperationsInput | string
     members?: ServerMemberUncheckedUpdateManyWithoutServerRolesNestedInput
+    channelAccess?: ChannelRoleAccessUncheckedUpdateManyWithoutRoleNestedInput
   }
 
   export type ChannelCreateWithoutMessagesInput = {
     id?: string
     name: string
     createdAt?: Date | string
+    updatedAt?: Date | string
     type: $Enums.ChannelType
+    isPublic?: boolean
     server: ServerCreateNestedOneWithoutChannelsInput
     users?: UserCreateNestedManyWithoutChannelsInput
+    allowedRoles?: ChannelRoleAccessCreateNestedManyWithoutChannelInput
   }
 
   export type ChannelUncheckedCreateWithoutMessagesInput = {
@@ -18622,8 +20363,11 @@ export namespace Prisma {
     name: string
     serverId: string
     createdAt?: Date | string
+    updatedAt?: Date | string
     type: $Enums.ChannelType
+    isPublic?: boolean
     users?: UserUncheckedCreateNestedManyWithoutChannelsInput
+    allowedRoles?: ChannelRoleAccessUncheckedCreateNestedManyWithoutChannelInput
   }
 
   export type ChannelCreateOrConnectWithoutMessagesInput = {
@@ -18681,9 +20425,12 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     type?: EnumChannelTypeFieldUpdateOperationsInput | $Enums.ChannelType
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
     server?: ServerUpdateOneRequiredWithoutChannelsNestedInput
     users?: UserUpdateManyWithoutChannelsNestedInput
+    allowedRoles?: ChannelRoleAccessUpdateManyWithoutChannelNestedInput
   }
 
   export type ChannelUncheckedUpdateWithoutMessagesInput = {
@@ -18691,8 +20438,11 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     serverId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     type?: EnumChannelTypeFieldUpdateOperationsInput | $Enums.ChannelType
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
     users?: UserUncheckedUpdateManyWithoutChannelsNestedInput
+    allowedRoles?: ChannelRoleAccessUncheckedUpdateManyWithoutChannelNestedInput
   }
 
   export type UserUpsertWithoutMessagesInput = {
@@ -18992,9 +20742,12 @@ export namespace Prisma {
     id?: string
     name: string
     createdAt?: Date | string
+    updatedAt?: Date | string
     type: $Enums.ChannelType
+    isPublic?: boolean
     server: ServerCreateNestedOneWithoutChannelsInput
     messages?: MessagesCreateNestedManyWithoutChannelInput
+    allowedRoles?: ChannelRoleAccessCreateNestedManyWithoutChannelInput
   }
 
   export type ChannelUncheckedCreateWithoutUsersInput = {
@@ -19002,8 +20755,11 @@ export namespace Prisma {
     name: string
     serverId: string
     createdAt?: Date | string
+    updatedAt?: Date | string
     type: $Enums.ChannelType
+    isPublic?: boolean
     messages?: MessagesUncheckedCreateNestedManyWithoutChannelInput
+    allowedRoles?: ChannelRoleAccessUncheckedCreateNestedManyWithoutChannelInput
   }
 
   export type ChannelCreateOrConnectWithoutUsersInput = {
@@ -19328,7 +21084,9 @@ export namespace Prisma {
     id?: string
     name: string
     createdAt?: Date | string
+    updatedAt?: Date | string
     type: $Enums.ChannelType
+    isPublic?: boolean
   }
 
   export type ServerMemberCreateManyServerInput = {
@@ -19358,25 +21116,33 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     type?: EnumChannelTypeFieldUpdateOperationsInput | $Enums.ChannelType
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
     messages?: MessagesUpdateManyWithoutChannelNestedInput
     users?: UserUpdateManyWithoutChannelsNestedInput
+    allowedRoles?: ChannelRoleAccessUpdateManyWithoutChannelNestedInput
   }
 
   export type ChannelUncheckedUpdateWithoutServerInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     type?: EnumChannelTypeFieldUpdateOperationsInput | $Enums.ChannelType
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
     messages?: MessagesUncheckedUpdateManyWithoutChannelNestedInput
     users?: UserUncheckedUpdateManyWithoutChannelsNestedInput
+    allowedRoles?: ChannelRoleAccessUncheckedUpdateManyWithoutChannelNestedInput
   }
 
   export type ChannelUncheckedUpdateManyWithoutServerInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     type?: EnumChannelTypeFieldUpdateOperationsInput | $Enums.ChannelType
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type ServerMemberUpdateWithoutServerInput = {
@@ -19405,6 +21171,7 @@ export namespace Prisma {
     position?: IntFieldUpdateOperationsInput | number
     members?: ServerMemberUpdateManyWithoutServerRolesNestedInput
     permissions?: ServerRolePermissionUpdateManyWithoutRoleNestedInput
+    channelAccess?: ChannelRoleAccessUpdateManyWithoutRoleNestedInput
   }
 
   export type ServerRolesUncheckedUpdateWithoutServerInput = {
@@ -19413,6 +21180,7 @@ export namespace Prisma {
     position?: IntFieldUpdateOperationsInput | number
     members?: ServerMemberUncheckedUpdateManyWithoutServerRolesNestedInput
     permissions?: ServerRolePermissionUncheckedUpdateManyWithoutRoleNestedInput
+    channelAccess?: ChannelRoleAccessUncheckedUpdateManyWithoutRoleNestedInput
   }
 
   export type ServerRolesUncheckedUpdateManyWithoutServerInput = {
@@ -19460,6 +21228,11 @@ export namespace Prisma {
     authorId: string
     createdAt?: Date | string
     pinned?: boolean
+  }
+
+  export type ChannelRoleAccessCreateManyChannelInput = {
+    id?: string
+    roleId: string
   }
 
   export type MessagesUpdateWithoutChannelInput = {
@@ -19526,12 +21299,28 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type ChannelRoleAccessUpdateWithoutChannelInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    role?: ServerRolesUpdateOneRequiredWithoutChannelAccessNestedInput
+  }
+
+  export type ChannelRoleAccessUncheckedUpdateWithoutChannelInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    roleId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type ChannelRoleAccessUncheckedUpdateManyWithoutChannelInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    roleId?: StringFieldUpdateOperationsInput | string
+  }
+
   export type ServerRolesUpdateWithoutMembersInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     position?: IntFieldUpdateOperationsInput | number
     server?: ServerUpdateOneRequiredWithoutRolesNestedInput
     permissions?: ServerRolePermissionUpdateManyWithoutRoleNestedInput
+    channelAccess?: ChannelRoleAccessUpdateManyWithoutRoleNestedInput
   }
 
   export type ServerRolesUncheckedUpdateWithoutMembersInput = {
@@ -19540,6 +21329,7 @@ export namespace Prisma {
     position?: IntFieldUpdateOperationsInput | number
     serverId?: StringFieldUpdateOperationsInput | string
     permissions?: ServerRolePermissionUncheckedUpdateManyWithoutRoleNestedInput
+    channelAccess?: ChannelRoleAccessUncheckedUpdateManyWithoutRoleNestedInput
   }
 
   export type ServerRolesUncheckedUpdateManyWithoutMembersInput = {
@@ -19552,6 +21342,11 @@ export namespace Prisma {
   export type ServerRolePermissionCreateManyRoleInput = {
     id?: string
     permission: $Enums.Permission
+  }
+
+  export type ChannelRoleAccessCreateManyRoleInput = {
+    id?: string
+    channelId: string
   }
 
   export type ServerMemberUpdateWithoutServerRolesInput = {
@@ -19588,6 +21383,21 @@ export namespace Prisma {
   export type ServerRolePermissionUncheckedUpdateManyWithoutRoleInput = {
     id?: StringFieldUpdateOperationsInput | string
     permission?: EnumPermissionFieldUpdateOperationsInput | $Enums.Permission
+  }
+
+  export type ChannelRoleAccessUpdateWithoutRoleInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    channel?: ChannelUpdateOneRequiredWithoutAllowedRolesNestedInput
+  }
+
+  export type ChannelRoleAccessUncheckedUpdateWithoutRoleInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    channelId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type ChannelRoleAccessUncheckedUpdateManyWithoutRoleInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    channelId?: StringFieldUpdateOperationsInput | string
   }
 
   export type SessionCreateManyUserInput = {
@@ -19763,9 +21573,12 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     type?: EnumChannelTypeFieldUpdateOperationsInput | $Enums.ChannelType
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
     server?: ServerUpdateOneRequiredWithoutChannelsNestedInput
     messages?: MessagesUpdateManyWithoutChannelNestedInput
+    allowedRoles?: ChannelRoleAccessUpdateManyWithoutChannelNestedInput
   }
 
   export type ChannelUncheckedUpdateWithoutUsersInput = {
@@ -19773,8 +21586,11 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     serverId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     type?: EnumChannelTypeFieldUpdateOperationsInput | $Enums.ChannelType
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
     messages?: MessagesUncheckedUpdateManyWithoutChannelNestedInput
+    allowedRoles?: ChannelRoleAccessUncheckedUpdateManyWithoutChannelNestedInput
   }
 
   export type ChannelUncheckedUpdateManyWithoutUsersInput = {
@@ -19782,7 +21598,9 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     serverId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     type?: EnumChannelTypeFieldUpdateOperationsInput | $Enums.ChannelType
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type ServerInviteUpdateWithoutCreatorInput = {

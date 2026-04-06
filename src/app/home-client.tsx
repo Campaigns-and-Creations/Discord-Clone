@@ -10,6 +10,7 @@ import {
   sendMessage,
   setServerMemberRoles,
   setMessagePinned,
+  updateChannelAccess,
   updateServerRole,
 } from "@/app/actions";
 import type { HomePageData } from "@/app/home-types";
@@ -30,6 +31,7 @@ import {
   Paper,
   ScrollArea,
   Stack,
+  Switch,
   Textarea,
   Text,
   TextInput,
@@ -76,11 +78,13 @@ export default function HomeClient({ initialData }: HomeClientProps) {
   const [createChannelModalOpened, setCreateChannelModalOpened] = useState(false);
   const [inviteModalOpened, setInviteModalOpened] = useState(false);
   const [manageRolesModalOpened, setManageRolesModalOpened] = useState(false);
+  const [channelAccessModalOpened, setChannelAccessModalOpened] = useState(false);
   const [latestInviteLink, setLatestInviteLink] = useState<string | null>(null);
   const [linkCopied, setLinkCopied] = useState(false);
   const [isSigningOut, setIsSigningOut] = useState(false);
   const [messageDraft, setMessageDraft] = useState("");
   const [editingRoleId, setEditingRoleId] = useState<string | null>(null);
+  const [editingChannelId, setEditingChannelId] = useState<string | null>(null);
   const [memberRoleDrafts, setMemberRoleDrafts] = useState<Record<string, string[]>>({});
 
   const createServerForm = useForm({
@@ -107,6 +111,8 @@ export default function HomeClient({ initialData }: HomeClientProps) {
   const createChannelForm = useForm({
     initialValues: {
       name: "",
+      isPublic: true,
+      allowedRoleIds: [] as string[],
     },
     validate: {
       name: (value) => {
@@ -117,6 +123,29 @@ export default function HomeClient({ initialData }: HomeClientProps) {
         if (trimmed.length > 60) {
           return "Channel name must be at most 60 characters";
         }
+        return null;
+      },
+      allowedRoleIds: (value, values) => {
+        if (!values.isPublic && value.length === 0) {
+          return "Select at least one role for restricted channels";
+        }
+
+        return null;
+      },
+    },
+  });
+
+  const editChannelAccessForm = useForm({
+    initialValues: {
+      isPublic: true,
+      allowedRoleIds: [] as string[],
+    },
+    validate: {
+      allowedRoleIds: (value, values) => {
+        if (!values.isPublic && value.length === 0) {
+          return "Select at least one role for restricted channels";
+        }
+
         return null;
       },
     },
@@ -250,11 +279,38 @@ export default function HomeClient({ initialData }: HomeClientProps) {
   });
 
   const createChannelMutation = useMutation({
-    mutationFn: async (payload: { serverId: string; name: string }) =>
-      createChannel(payload.serverId, payload.name, "TEXT"),
+    mutationFn: async (payload: {
+      serverId: string;
+      name: string;
+      isPublic: boolean;
+      allowedRoleIds: string[];
+    }) =>
+      createChannel(payload.serverId, payload.name, "TEXT", {
+        isPublic: payload.isPublic,
+        allowedRoleIds: payload.allowedRoleIds,
+      }),
     onSuccess: async () => {
       setCreateChannelModalOpened(false);
       createChannelForm.reset();
+      await queryClient.invalidateQueries({ queryKey: ["discord", "home-data"] });
+    },
+  });
+
+  const updateChannelAccessMutation = useMutation({
+    mutationFn: async (payload: {
+      serverId: string;
+      channelId: string;
+      isPublic: boolean;
+      allowedRoleIds: string[];
+    }) =>
+      updateChannelAccess(payload.serverId, payload.channelId, {
+        isPublic: payload.isPublic,
+        allowedRoleIds: payload.allowedRoleIds,
+      }),
+    onSuccess: async () => {
+      setChannelAccessModalOpened(false);
+      setEditingChannelId(null);
+      editChannelAccessForm.reset();
       await queryClient.invalidateQueries({ queryKey: ["discord", "home-data"] });
     },
   });
@@ -346,6 +402,10 @@ export default function HomeClient({ initialData }: HomeClientProps) {
   const selectedServerCapabilities = selectedServer?.capabilities;
 
   const editableRoles = selectedServer?.roles ?? [];
+  const channelRoleOptions = editableRoles.map((role) => ({
+    value: role.id,
+    label: role.name,
+  }));
 
   useEffect(() => {
     if (!selectedServer || !manageRolesModalOpened) {
@@ -359,6 +419,45 @@ export default function HomeClient({ initialData }: HomeClientProps) {
       }, {});
     });
   }, [manageRolesModalOpened, selectedServer]);
+
+  useEffect(() => {
+    if (!selectedServer) {
+      return;
+    }
+
+    const selectedId = selectedChannelByServer[selectedServer.id];
+    if (!selectedId) {
+      return;
+    }
+
+    const channelStillVisible = selectedServer.channels.some((channel) => channel.id === selectedId);
+    if (channelStillVisible) {
+      return;
+    }
+
+    setSelectedChannelByServer((current) => ({
+      ...current,
+      [selectedServer.id]: selectedServer.channels[0]?.id ?? "",
+    }));
+  }, [selectedChannelByServer, selectedServer]);
+
+  const beginEditChannelAccess = (channelId: string) => {
+    if (!selectedServer) {
+      return;
+    }
+
+    const channel = selectedServer.channels.find((item) => item.id === channelId);
+    if (!channel) {
+      return;
+    }
+
+    setEditingChannelId(channel.id);
+    editChannelAccessForm.setValues({
+      isPublic: channel.isPublic,
+      allowedRoleIds: channel.allowedRoleIds,
+    });
+    setChannelAccessModalOpened(true);
+  };
 
   const beginEditRole = (roleId: string) => {
     if (!selectedServer) {
@@ -439,7 +538,10 @@ export default function HomeClient({ initialData }: HomeClientProps) {
 
       <Modal
         opened={createChannelModalOpened}
-        onClose={() => setCreateChannelModalOpened(false)}
+        onClose={() => {
+          setCreateChannelModalOpened(false);
+          createChannelForm.reset();
+        }}
         title="Create Text Channel"
         centered
       >
@@ -452,6 +554,8 @@ export default function HomeClient({ initialData }: HomeClientProps) {
             await createChannelMutation.mutateAsync({
               serverId: selectedServer.id,
               name: values.name.trim(),
+              isPublic: values.isPublic,
+              allowedRoleIds: values.isPublic ? [] : values.allowedRoleIds,
             });
           })}
         >
@@ -462,12 +566,96 @@ export default function HomeClient({ initialData }: HomeClientProps) {
               withAsterisk
               {...createChannelForm.getInputProps("name")}
             />
+            <Switch
+              label="Public channel"
+              description="If off, only selected roles can access this channel."
+              checked={createChannelForm.values.isPublic}
+              onChange={(event) => {
+                const checked = event.currentTarget.checked;
+                createChannelForm.setFieldValue("isPublic", checked);
+                if (checked) {
+                  createChannelForm.setFieldValue("allowedRoleIds", []);
+                }
+              }}
+            />
+            <MultiSelect
+              label="Allowed Roles"
+              placeholder="Select roles that can access this channel"
+              data={channelRoleOptions}
+              searchable
+              disabled={createChannelForm.values.isPublic}
+              {...createChannelForm.getInputProps("allowedRoleIds")}
+            />
             <Group justify="flex-end" mt="sm">
               <Button variant="default" onClick={() => setCreateChannelModalOpened(false)}>
                 Cancel
               </Button>
               <Button type="submit" loading={createChannelMutation.isPending}>
                 Create Channel
+              </Button>
+            </Group>
+          </Stack>
+        </form>
+      </Modal>
+
+      <Modal
+        opened={channelAccessModalOpened}
+        onClose={() => {
+          setChannelAccessModalOpened(false);
+          setEditingChannelId(null);
+          editChannelAccessForm.reset();
+        }}
+        title="Channel Access"
+        centered
+      >
+        <form
+          onSubmit={editChannelAccessForm.onSubmit(async (values) => {
+            if (!selectedServer || !editingChannelId) {
+              return;
+            }
+
+            await updateChannelAccessMutation.mutateAsync({
+              serverId: selectedServer.id,
+              channelId: editingChannelId,
+              isPublic: values.isPublic,
+              allowedRoleIds: values.isPublic ? [] : values.allowedRoleIds,
+            });
+          })}
+        >
+          <Stack gap="sm">
+            <Switch
+              label="Public channel"
+              description="If off, only selected roles can access this channel."
+              checked={editChannelAccessForm.values.isPublic}
+              onChange={(event) => {
+                const checked = event.currentTarget.checked;
+                editChannelAccessForm.setFieldValue("isPublic", checked);
+                if (checked) {
+                  editChannelAccessForm.setFieldValue("allowedRoleIds", []);
+                }
+              }}
+            />
+            <MultiSelect
+              label="Allowed Roles"
+              placeholder="Select roles that can access this channel"
+              data={channelRoleOptions}
+              searchable
+              disabled={editChannelAccessForm.values.isPublic}
+              {...editChannelAccessForm.getInputProps("allowedRoleIds")}
+            />
+            <Group justify="flex-end" mt="sm">
+              <Button
+                variant="default"
+                onClick={() => {
+                  setChannelAccessModalOpened(false);
+                  setEditingChannelId(null);
+                  editChannelAccessForm.reset();
+                }}
+              >
+                Cancel
+              </Button>
+              <Button type="submit" loading={updateChannelAccessMutation.isPending}>
+                Save Access
               </Button>
             </Group>
           </Stack>
@@ -904,20 +1092,33 @@ export default function HomeClient({ initialData }: HomeClientProps) {
                           const isSelected = channel.id === selectedChannelId;
 
                           return (
-                            <NavLink
-                              key={channel.id}
-                              active={isSelected}
-                              label={`# ${channel.name}`}
-                              description={channel.type}
-                              onClick={() => {
-                                setSelectedChannelByServer((current) => ({
-                                  ...current,
-                                  [selectedServer.id]: channel.id,
-                                }));
-                              }}
-                              variant="light"
-                              color="indigo"
-                            />
+                            <Group key={channel.id} gap={4} wrap="nowrap" align="center">
+                              <Box style={{ flex: 1, minWidth: 0 }}>
+                                <NavLink
+                                  active={isSelected}
+                                  label={`# ${channel.name}`}
+                                  description={channel.isPublic ? channel.type : `${channel.type} - Restricted`}
+                                  onClick={() => {
+                                    setSelectedChannelByServer((current) => ({
+                                      ...current,
+                                      [selectedServer.id]: channel.id,
+                                    }));
+                                  }}
+                                  variant="light"
+                                  color="indigo"
+                                />
+                              </Box>
+                              <ActionIcon
+                                variant="subtle"
+                                color="gray"
+                                size="sm"
+                                disabled={!selectedServerCapabilities?.canCreateChannels}
+                                onClick={() => beginEditChannelAccess(channel.id)}
+                                title="Edit channel access"
+                              >
+                                ...
+                              </ActionIcon>
+                            </Group>
                           );
                         })}
                       </Stack>
@@ -969,9 +1170,16 @@ export default function HomeClient({ initialData }: HomeClientProps) {
         <Paper flex={1} bg="#313338" radius={0} p={0}>
           <Stack h="100%" gap={0}>
             <Box p="md" style={{ borderBottom: "1px solid #232428" }}>
-              <Text size="sm" fw={700} c="gray.0">
-                {selectedChannel ? `# ${selectedChannel.name}` : "Select a channel"}
-              </Text>
+              <Group gap="xs" wrap="wrap">
+                <Text size="sm" fw={700} c="gray.0">
+                  {selectedChannel ? `# ${selectedChannel.name}` : "Select a channel"}
+                </Text>
+                {selectedChannel && !selectedChannel.isPublic ? (
+                  <Badge size="xs" color="grape" variant="light">
+                    Restricted
+                  </Badge>
+                ) : null}
+              </Group>
             </Box>
 
             <ScrollArea flex={1} p="md" type="hover">
