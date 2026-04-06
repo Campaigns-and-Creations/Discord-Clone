@@ -3,6 +3,7 @@
 import * as React from "react";
 
 import { MantineProvider } from "@mantine/core";
+import { ModalsProvider } from "@mantine/modals";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const queryClient = new QueryClient();
@@ -18,19 +19,19 @@ export const Providers = ({ children }: ProvidersProps) => {
   if (isProduction) {
     return (
       <MantineProvider defaultColorScheme="dark">
-        <QueryClientProvider client={queryClient}>
-            {children}
-        </QueryClientProvider>
+        <ModalsProvider>
+          <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+        </ModalsProvider>
       </MantineProvider>
     );
   }
 
   // In development, include ClerkProvider
   return (
-      <MantineProvider defaultColorScheme="dark">
-        <QueryClientProvider client={queryClient}>
-            {children}
-        </QueryClientProvider>
-      </MantineProvider>
+    <MantineProvider defaultColorScheme="dark">
+      <ModalsProvider>
+        <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+      </ModalsProvider>
+    </MantineProvider>
   );
 };

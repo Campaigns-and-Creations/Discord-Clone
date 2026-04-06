@@ -17,7 +17,7 @@ import {
   Tooltip,
   UnstyledButton,
 } from "@mantine/core";
-import { PlusIcon, SpeakerHighIcon } from "@phosphor-icons/react";
+import { DotsThreeIcon, PlusIcon, SpeakerHighIcon } from "@phosphor-icons/react";
 
 type HomeSidebarProps = {
   homeData: HomePageData;
@@ -31,6 +31,8 @@ type HomeSidebarProps = {
   onOpenInvite: () => void;
   onOpenManageRoles: () => void;
   onEditChannelAccess: (channelId: string) => void;
+  onDeleteChannel: (channelId: string, channelName: string) => void;
+  onDeleteServer: (serverId: string, serverName: string) => void;
   userDisplayName: string;
   isSigningOut: boolean;
   onSignOut: () => void;
@@ -49,12 +51,16 @@ export function HomeSidebar({
   onOpenInvite,
   onOpenManageRoles,
   onEditChannelAccess,
+  onDeleteChannel,
+  onDeleteServer,
   userDisplayName,
   isSigningOut,
   onSignOut,
   formatServerBadge,
 }: HomeSidebarProps) {
   const selectedServerCapabilities = selectedServer?.capabilities;
+  const canDeleteSelectedServer =
+    Boolean(selectedServer?.membershipId) && (selectedServer?.members.length ?? 0) === 1;
 
   return (
     <Stack w={366} h="100svh" gap={0}>
@@ -138,6 +144,14 @@ export function HomeSidebar({
                     <Menu.Item disabled={!selectedServerCapabilities?.canManageServer} onClick={onOpenManageRoles}>
                       Manage Roles
                     </Menu.Item>
+                    <Menu.Divider />
+                    <Menu.Item
+                      c="red.4"
+                      disabled={!canDeleteSelectedServer}
+                      onClick={() => onDeleteServer(selectedServer.id, selectedServer.name)}
+                    >
+                      Delete Server
+                    </Menu.Item>
                   </Menu.Dropdown>
                 </Menu>
 
@@ -174,16 +188,28 @@ export function HomeSidebar({
                               color="indigo"
                             />
                           </Box>
-                          <ActionIcon
-                            variant="subtle"
-                            color="gray"
-                            size="sm"
-                            disabled={!selectedServerCapabilities?.canCreateChannels}
-                            onClick={() => onEditChannelAccess(channel.id)}
-                            title="Edit channel access"
-                          >
-                            ...
-                          </ActionIcon>
+                          <Menu position="bottom-end" width={200} withinPortal={false}>
+                            <Menu.Target>
+                              <ActionIcon
+                                variant="subtle"
+                                color="gray"
+                                size="sm"
+                                disabled={!selectedServerCapabilities?.canCreateChannels}
+                                title="Channel options"
+                              >
+                                <DotsThreeIcon size={14} weight="bold" />
+                              </ActionIcon>
+                            </Menu.Target>
+
+                            <Menu.Dropdown>
+                              <Menu.Item onClick={() => onEditChannelAccess(channel.id)}>
+                                Edit Access
+                              </Menu.Item>
+                              <Menu.Item c="red.4" onClick={() => onDeleteChannel(channel.id, channel.name)}>
+                                Delete Channel
+                              </Menu.Item>
+                            </Menu.Dropdown>
+                          </Menu>
                         </Group>
                       );
                     })}

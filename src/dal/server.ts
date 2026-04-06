@@ -114,4 +114,58 @@ export class ServerDal {
       };
     });
   }
+
+  static async deleteIfOnlyMember(serverId: string, userId: string) {
+    return prisma.$transaction(async (tx) => {
+      const actorMembership = await tx.serverMember.findFirst({
+        where: {
+          serverId,
+          userId,
+        },
+        select: { id: true },
+      });
+
+      if (!actorMembership) {
+        return { deleted: false, reason: "NOT_MEMBER" as const };
+      }
+
+      const memberCount = await tx.serverMember.count({
+        where: { serverId },
+      });
+
+      if (memberCount !== 1) {
+        return { deleted: false, reason: "NOT_LAST_MEMBER" as const };
+      }
+
+      await tx.messages.deleteMany({
+        where: {
+          channel: {
+            serverId,
+          },
+        },
+      });
+
+      await tx.channel.deleteMany({
+        where: { serverId },
+      });
+
+      await tx.serverInvite.deleteMany({
+        where: { serverId },
+      });
+
+      await tx.serverMember.deleteMany({
+        where: { serverId },
+      });
+
+      await tx.serverRoles.deleteMany({
+        where: { serverId },
+      });
+
+      await tx.server.delete({
+        where: { id: serverId },
+      });
+
+      return { deleted: true as const };
+    });
+  }
 }

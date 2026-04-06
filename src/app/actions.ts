@@ -231,6 +231,40 @@ export async function updateChannelAccess(
   };
 }
 
+export async function deleteChannel(serverId: string, channelId: string) {
+  const sessionUser = await requireUser();
+
+  const [isMember, canManageChannels, channel] = await Promise.all([
+    ServerMemberDal.isUserMemberOfServer(sessionUser.id, serverId),
+    hasServerPermission(sessionUser.id, serverId, Permission.MANAGE_CHANNELS),
+    ChannelDal.findById(channelId),
+  ]);
+
+  if (!isMember || !canManageChannels || !channel || channel.serverId !== serverId) {
+    throw new Error("Forbidden");
+  }
+
+  await ChannelDal.deleteById(channelId);
+
+  return { success: true };
+}
+
+export async function deleteServer(serverId: string) {
+  const sessionUser = await requireUser();
+
+  const result = await ServerDal.deleteIfOnlyMember(serverId, sessionUser.id);
+
+  if (!result.deleted) {
+    if (result.reason === "NOT_MEMBER") {
+      throw new Error("Forbidden");
+    }
+
+    throw new Error("You can only delete a server when you are its last member.");
+  }
+
+  return { success: true };
+}
+
 export async function inviteMember(serverId: string, email: string) {
   const sessionUser = await requireUser();
   const normalizedEmail = email.trim().toLowerCase();

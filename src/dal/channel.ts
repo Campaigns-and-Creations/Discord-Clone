@@ -154,4 +154,17 @@ export class ChannelDal {
       },
     });
   }
+
+  static async deleteById(channelId: string) {
+    return prisma.$transaction(async (tx) => {
+      await tx.messages.deleteMany({
+        where: { channelId },
+      });
+
+      return tx.channel.delete({
+        where: { id: channelId },
+        select: { id: true },
+      });
+    });
+  }
 }

@@ -5,7 +5,9 @@ import {
   createInviteLink,
   createServer,
   createServerRole,
+  deleteChannel,
   deleteMessage,
+  deleteServer,
   deleteServerRole,
   sendMessage,
   setMessagePinned,
@@ -25,6 +27,7 @@ import { ChannelType, Permission } from "@/generated/prisma/client";
 import { signOut } from "@/utils/auth-client";
 import { Box, Group } from "@mantine/core";
 import { useForm } from "@mantine/form";
+import { modals } from "@mantine/modals";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 
@@ -316,6 +319,47 @@ export default function HomeClient({ initialData }: HomeClientProps) {
     mutationFn: async (payload: { serverId: string; channelId: string; messageId: string }) =>
       deleteMessage(payload.serverId, payload.channelId, payload.messageId),
     onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["discord", "home-data"] });
+    },
+  });
+
+  const deleteChannelMutation = useMutation({
+    mutationFn: async (payload: { serverId: string; channelId: string }) =>
+      deleteChannel(payload.serverId, payload.channelId),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["discord", "home-data"] });
+    },
+  });
+
+  const deleteServerMutation = useMutation({
+    mutationFn: async (serverId: string) => deleteServer(serverId),
+    onSuccess: async (_, deletedServerId) => {
+      queryClient.setQueryData<HomePageData>(["discord", "home-data"], (oldData) => {
+        if (!oldData) {
+          return oldData;
+        }
+
+        const remainingServers = oldData.servers.filter((server) => server.id !== deletedServerId);
+        setSelectedServerId((current) => {
+          if (current !== deletedServerId) {
+            return current;
+          }
+
+          return remainingServers[0]?.id ?? null;
+        });
+
+        setSelectedChannelByServer((current) => {
+          const nextState = { ...current };
+          delete nextState[deletedServerId];
+          return nextState;
+        });
+
+        return {
+          ...oldData,
+          servers: remainingServers,
+        };
+      });
+
       await queryClient.invalidateQueries({ queryKey: ["discord", "home-data"] });
     },
   });
@@ -627,13 +671,17 @@ export default function HomeClient({ initialData }: HomeClientProps) {
             return;
           }
 
-          if (!window.confirm(`Delete role "${roleName}"?`)) {
-            return;
-          }
-
-          void deleteRoleMutation.mutateAsync({
-            serverId: selectedServer.id,
-            roleId,
+          modals.openConfirmModal({
+            title: "Delete role",
+            children: `Delete role \"${roleName}\"?`,
+            labels: { cancel: "Cancel", confirm: "Delete" },
+            confirmProps: { color: "red" },
+            onConfirm: () => {
+              void deleteRoleMutation.mutateAsync({
+                serverId: selectedServer.id,
+                roleId,
+              });
+            },
           });
         }}
         onSaveMemberRoles={(memberId, roleIds) => {
@@ -671,6 +719,35 @@ export default function HomeClient({ initialData }: HomeClientProps) {
           onOpenInvite={() => setInviteModalOpened(true)}
           onOpenManageRoles={() => setManageRolesModalOpened(true)}
           onEditChannelAccess={beginEditChannelAccess}
+          onDeleteChannel={(channelId, channelName) => {
+            if (!selectedServer) {
+              return;
+            }
+
+            modals.openConfirmModal({
+              title: "Delete channel",
+              children: `Delete channel \"${channelName}\"?`,
+              labels: { cancel: "Cancel", confirm: "Delete" },
+              confirmProps: { color: "red" },
+              onConfirm: () => {
+                void deleteChannelMutation.mutateAsync({
+                  serverId: selectedServer.id,
+                  channelId,
+                });
+              },
+            });
+          }}
+          onDeleteServer={(serverId, serverName) => {
+            modals.openConfirmModal({
+              title: "Delete server",
+              children: `Delete server \"${serverName}\"? This action cannot be undone.`,
+              labels: { cancel: "Cancel", confirm: "Delete" },
+              confirmProps: { color: "red" },
+              onConfirm: () => {
+                void deleteServerMutation.mutateAsync(serverId);
+              },
+            });
+          }}
           userDisplayName={userDisplayName}
           isSigningOut={isSigningOut}
           onSignOut={() => {
