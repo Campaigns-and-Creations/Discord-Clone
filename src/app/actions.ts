@@ -686,7 +686,7 @@ export async function setServerMemberRoles(serverId: string, memberId: string, r
       0,
     );
 
-    if (targetHighestRole >= actorMembership.highestRolePosition) {
+    if (targetHighestRole > actorMembership.highestRolePosition) {
       throw new Error("Cannot edit this member due to role hierarchy.");
     }
   }
@@ -704,11 +704,11 @@ export async function setServerMemberRoles(serverId: string, memberId: string, r
 
   if (!actorMembership.isOwner) {
     const hasUnmanageableRole = roles.some(
-      (role) => role.position >= actorMembership.highestRolePosition,
+      (role) => role.position > actorMembership.highestRolePosition,
     );
 
     if (hasUnmanageableRole) {
-      throw new Error("Cannot assign roles at or above your highest role level.");
+      throw new Error("Cannot assign roles above your highest role level.");
     }
 
     if (
