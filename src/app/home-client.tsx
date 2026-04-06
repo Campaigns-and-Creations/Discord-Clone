@@ -1,60 +1,36 @@
 "use client";
 
 import {
-  createServer,
   createChannel,
   createInviteLink,
+  createServer,
   createServerRole,
-  deleteServerRole,
   deleteMessage,
+  deleteServerRole,
   sendMessage,
-  setServerMemberRoles,
   setMessagePinned,
+  setServerMemberRoles,
   updateChannelAccess,
   updateServerRole,
 } from "@/app/actions";
+import { ChannelAccessModal } from "@/app/components/channel-access-modal";
+import { CreateChannelModal } from "@/app/components/create-channel-modal";
+import { CreateServerModal } from "@/app/components/create-server-modal";
+import { HomeChatPanel } from "@/app/components/home-chat-panel";
+import { HomeSidebar } from "@/app/components/home-sidebar";
+import { InviteModal } from "@/app/components/invite-modal";
+import { ManageRolesModal } from "@/app/components/manage-roles-modal";
 import type { HomePageData } from "@/app/home-types";
 import { Permission } from "@/generated/prisma";
 import { signOut } from "@/utils/auth-client";
-import {
-  ActionIcon,
-  Avatar,
-  Badge,
-  Box,
-  Button,
-  Divider,
-  Group,
-  Menu,
-  Modal,
-  MultiSelect,
-  NavLink,
-  Paper,
-  ScrollArea,
-  Stack,
-  Switch,
-  Textarea,
-  Text,
-  TextInput,
-  Select,
-  Title,
-  Tooltip,
-  UnstyledButton,
-} from "@mantine/core";
+import { Box, Group } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { PlusIcon } from "@phosphor-icons/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 
 type HomeClientProps = {
   initialData: HomePageData;
 };
-
-function formatMessageTime(createdAt: string): string {
-  return new Date(createdAt).toLocaleTimeString([], {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-}
 
 function formatServerBadge(name: string): string {
   return name
@@ -64,8 +40,6 @@ function formatServerBadge(name: string): string {
     .slice(0, 2)
     .toUpperCase();
 }
-
-const OWNER_ROLE_NAME = "Owner";
 
 const PERMISSION_OPTIONS = Object.values(Permission).map((permission) => ({
   value: permission,
@@ -177,7 +151,7 @@ export default function HomeClient({ initialData }: HomeClientProps) {
     },
   });
 
-  const createRoleForm = useForm({
+  const createRoleForm = useForm<{ name: string; permissions: string[] }>({
     initialValues: {
       name: "",
       permissions: [Permission.VIEW_CHANNEL, Permission.SEND_MESSAGES, Permission.READ_MESSAGE_HISTORY],
@@ -240,16 +214,14 @@ export default function HomeClient({ initialData }: HomeClientProps) {
     [homeData.servers, selectedServerId],
   );
 
-  const [selectedChannelByServer, setSelectedChannelByServer] = useState<Record<string, string>>(
-    () => {
-      return initialData.servers.reduce<Record<string, string>>((acc, server) => {
-        if (server.channels[0]) {
-          acc[server.id] = server.channels[0].id;
-        }
-        return acc;
-      }, {});
-    },
-  );
+  const [selectedChannelByServer, setSelectedChannelByServer] = useState<Record<string, string>>(() => {
+    return initialData.servers.reduce<Record<string, string>>((acc, server) => {
+      if (server.channels[0]) {
+        acc[server.id] = server.channels[0].id;
+      }
+      return acc;
+    }, {});
+  });
 
   const createServerMutation = useMutation({
     mutationFn: async (name: string) => createServer(name),
@@ -399,8 +371,6 @@ export default function HomeClient({ initialData }: HomeClientProps) {
 
   const selectedChannel = selectedServer?.channels.find((channel) => channel.id === selectedChannelId) ?? null;
 
-  const selectedServerCapabilities = selectedServer?.capabilities;
-
   const editableRoles = selectedServer?.roles ?? [];
   const channelRoleOptions = editableRoles.map((role) => ({
     value: role.id,
@@ -506,824 +476,254 @@ export default function HomeClient({ initialData }: HomeClientProps) {
 
   return (
     <Box bg="#202225" mih="100svh" p={0}>
-      <Modal
+      <CreateServerModal
         opened={createModalOpened}
         onClose={() => setCreateModalOpened(false)}
-        title="Create A New Server"
-        centered
-      >
-        <form
-          onSubmit={createServerForm.onSubmit(async (values) => {
-            await createServerMutation.mutateAsync(values.name.trim());
-          })}
-        >
-          <Stack gap="sm">
-            <TextInput
-              label="Server Name"
-              placeholder="for example: Design Crew"
-              withAsterisk
-              {...createServerForm.getInputProps("name")}
-            />
-            <Group justify="flex-end" mt="sm">
-              <Button variant="default" onClick={() => setCreateModalOpened(false)}>
-                Cancel
-              </Button>
-              <Button type="submit" loading={createServerMutation.isPending}>
-                Create Server
-              </Button>
-            </Group>
-          </Stack>
-        </form>
-      </Modal>
+        form={createServerForm}
+        onSubmit={async (values) => {
+          await createServerMutation.mutateAsync(values.name.trim());
+        }}
+        isPending={createServerMutation.isPending}
+      />
 
-      <Modal
+      <CreateChannelModal
         opened={createChannelModalOpened}
         onClose={() => {
           setCreateChannelModalOpened(false);
           createChannelForm.reset();
         }}
-        title="Create Text Channel"
-        centered
-      >
-        <form
-          onSubmit={createChannelForm.onSubmit(async (values) => {
-            if (!selectedServer) {
-              return;
-            }
+        form={createChannelForm}
+        channelRoleOptions={channelRoleOptions}
+        onSubmit={async (values) => {
+          if (!selectedServer) {
+            return;
+          }
 
-            await createChannelMutation.mutateAsync({
-              serverId: selectedServer.id,
-              name: values.name.trim(),
-              isPublic: values.isPublic,
-              allowedRoleIds: values.isPublic ? [] : values.allowedRoleIds,
-            });
-          })}
-        >
-          <Stack gap="sm">
-            <TextInput
-              label="Channel Name"
-              placeholder="for example: announcements"
-              withAsterisk
-              {...createChannelForm.getInputProps("name")}
-            />
-            <Switch
-              label="Public channel"
-              description="If off, only selected roles can access this channel."
-              checked={createChannelForm.values.isPublic}
-              onChange={(event) => {
-                const checked = event.currentTarget.checked;
-                createChannelForm.setFieldValue("isPublic", checked);
-                if (checked) {
-                  createChannelForm.setFieldValue("allowedRoleIds", []);
-                }
-              }}
-            />
-            <MultiSelect
-              label="Allowed Roles"
-              placeholder="Select roles that can access this channel"
-              data={channelRoleOptions}
-              searchable
-              disabled={createChannelForm.values.isPublic}
-              {...createChannelForm.getInputProps("allowedRoleIds")}
-            />
-            <Group justify="flex-end" mt="sm">
-              <Button variant="default" onClick={() => setCreateChannelModalOpened(false)}>
-                Cancel
-              </Button>
-              <Button type="submit" loading={createChannelMutation.isPending}>
-                Create Channel
-              </Button>
-            </Group>
-          </Stack>
-        </form>
-      </Modal>
+          await createChannelMutation.mutateAsync({
+            serverId: selectedServer.id,
+            name: values.name.trim(),
+            isPublic: values.isPublic,
+            allowedRoleIds: values.isPublic ? [] : values.allowedRoleIds,
+          });
+        }}
+        isPending={createChannelMutation.isPending}
+      />
 
-      <Modal
+      <ChannelAccessModal
         opened={channelAccessModalOpened}
         onClose={() => {
           setChannelAccessModalOpened(false);
           setEditingChannelId(null);
           editChannelAccessForm.reset();
         }}
-        title="Channel Access"
-        centered
-      >
-        <form
-          onSubmit={editChannelAccessForm.onSubmit(async (values) => {
-            if (!selectedServer || !editingChannelId) {
-              return;
-            }
+        form={editChannelAccessForm}
+        channelRoleOptions={channelRoleOptions}
+        onSubmit={async (values) => {
+          if (!selectedServer || !editingChannelId) {
+            return;
+          }
 
-            await updateChannelAccessMutation.mutateAsync({
-              serverId: selectedServer.id,
-              channelId: editingChannelId,
-              isPublic: values.isPublic,
-              allowedRoleIds: values.isPublic ? [] : values.allowedRoleIds,
-            });
-          })}
-        >
-          <Stack gap="sm">
-            <Switch
-              label="Public channel"
-              description="If off, only selected roles can access this channel."
-              checked={editChannelAccessForm.values.isPublic}
-              onChange={(event) => {
-                const checked = event.currentTarget.checked;
-                editChannelAccessForm.setFieldValue("isPublic", checked);
-                if (checked) {
-                  editChannelAccessForm.setFieldValue("allowedRoleIds", []);
-                }
-              }}
-            />
-            <MultiSelect
-              label="Allowed Roles"
-              placeholder="Select roles that can access this channel"
-              data={channelRoleOptions}
-              searchable
-              disabled={editChannelAccessForm.values.isPublic}
-              {...editChannelAccessForm.getInputProps("allowedRoleIds")}
-            />
-            <Group justify="flex-end" mt="sm">
-              <Button
-                variant="default"
-                onClick={() => {
-                  setChannelAccessModalOpened(false);
-                  setEditingChannelId(null);
-                  editChannelAccessForm.reset();
-                }}
-              >
-                Cancel
-              </Button>
-              <Button type="submit" loading={updateChannelAccessMutation.isPending}>
-                Save Access
-              </Button>
-            </Group>
-          </Stack>
-        </form>
-      </Modal>
+          await updateChannelAccessMutation.mutateAsync({
+            serverId: selectedServer.id,
+            channelId: editingChannelId,
+            isPublic: values.isPublic,
+            allowedRoleIds: values.isPublic ? [] : values.allowedRoleIds,
+          });
+        }}
+        isPending={updateChannelAccessMutation.isPending}
+      />
 
-      <Modal
+      <InviteModal
         opened={inviteModalOpened}
         onClose={() => {
           setInviteModalOpened(false);
           setLatestInviteLink(null);
           setLinkCopied(false);
         }}
-        title="Create Invite Link"
-        centered
-      >
-        <form
-          onSubmit={inviteForm.onSubmit(async (values) => {
-            if (!selectedServer) {
-              return;
-            }
+        form={inviteForm}
+        onSubmit={async (values) => {
+          if (!selectedServer) {
+            return;
+          }
 
-            const expiresInHours =
-              values.expirationPreset === "24h"
-                ? 24
-                : values.expirationPreset === "7d"
-                  ? 24 * 7
-                  : values.expirationPreset === "30d"
-                    ? 24 * 30
-                    : null;
+          const expiresInHours =
+            values.expirationPreset === "24h"
+              ? 24
+              : values.expirationPreset === "7d"
+                ? 24 * 7
+                : values.expirationPreset === "30d"
+                  ? 24 * 30
+                  : null;
 
-            const normalizedMaxUses = values.maxUses.trim();
-            const maxUses = normalizedMaxUses ? Number(normalizedMaxUses) : null;
+          const normalizedMaxUses = values.maxUses.trim();
+          const maxUses = normalizedMaxUses ? Number(normalizedMaxUses) : null;
 
-            await createInviteLinkMutation.mutateAsync({
-              serverId: selectedServer.id,
-              expiresInHours,
-              maxUses,
-            });
-          })}
-        >
-          <Stack gap="sm">
-            <Select
-              label="Expiration"
-              withAsterisk
-              data={[
-                { value: "never", label: "Never" },
-                { value: "24h", label: "24 hours" },
-                { value: "7d", label: "7 days" },
-                { value: "30d", label: "30 days" },
-              ]}
-              {...inviteForm.getInputProps("expirationPreset")}
-            />
-            <TextInput
-              label="Max Uses"
-              description="Leave empty for unlimited uses"
-              placeholder="Unlimited"
-              {...inviteForm.getInputProps("maxUses")}
-            />
+          await createInviteLinkMutation.mutateAsync({
+            serverId: selectedServer.id,
+            expiresInHours,
+            maxUses,
+          });
+        }}
+        isPending={createInviteLinkMutation.isPending}
+        latestInviteLink={latestInviteLink}
+        linkCopied={linkCopied}
+        onCopyLink={async () => {
+          if (!latestInviteLink) {
+            return;
+          }
+          await navigator.clipboard.writeText(latestInviteLink);
+          setLinkCopied(true);
+        }}
+      />
 
-            {latestInviteLink ? (
-              <Stack gap={6}>
-                <Text size="xs" c="gray.4">
-                  Share this link to let people join the server.
-                </Text>
-                <TextInput value={latestInviteLink} readOnly />
-                <Group justify="flex-end">
-                  <Button
-                    size="xs"
-                    variant="light"
-                    onClick={async () => {
-                      await navigator.clipboard.writeText(latestInviteLink);
-                      setLinkCopied(true);
-                    }}
-                  >
-                    {linkCopied ? "Copied" : "Copy Link"}
-                  </Button>
-                </Group>
-              </Stack>
-            ) : null}
-
-            <Group justify="flex-end" mt="sm">
-              <Button
-                variant="default"
-                onClick={() => {
-                  setInviteModalOpened(false);
-                  setLatestInviteLink(null);
-                  setLinkCopied(false);
-                }}
-              >
-                Cancel
-              </Button>
-              <Button type="submit" loading={createInviteLinkMutation.isPending}>
-                Create Link
-              </Button>
-            </Group>
-          </Stack>
-        </form>
-      </Modal>
-
-      <Modal
+      <ManageRolesModal
         opened={manageRolesModalOpened}
         onClose={() => {
           setManageRolesModalOpened(false);
           setEditingRoleId(null);
         }}
-        title={selectedServer ? `Manage Roles - ${selectedServer.name}` : "Manage Roles"}
-        centered
-        size="xl"
-      >
-        {selectedServer ? (
-          <Stack gap="md">
-            <Paper p="sm" withBorder style={{ borderColor: "#3a3d45", background: "#232428" }}>
-              <Text fw={700} c="gray.0" mb={8}>
-                Create Role
-              </Text>
-              <form
-                onSubmit={createRoleForm.onSubmit(async (values) => {
-                  await createRoleMutation.mutateAsync({
-                    serverId: selectedServer.id,
-                    name: values.name.trim(),
-                    permissions: values.permissions,
-                  });
-                })}
-              >
-                <Stack gap="xs">
-                  <TextInput
-                    label="Role Name"
-                    placeholder="for example: Event Host"
-                    withAsterisk
-                    {...createRoleForm.getInputProps("name")}
-                  />
-                  <MultiSelect
-                    label="Permissions"
-                    placeholder="Select permissions"
-                    data={PERMISSION_OPTIONS}
-                    searchable
-                    {...createRoleForm.getInputProps("permissions")}
-                  />
-                  <Group justify="flex-end">
-                    <Button size="xs" type="submit" loading={createRoleMutation.isPending}>
-                      Create Role
-                    </Button>
-                  </Group>
-                </Stack>
-              </form>
-            </Paper>
+        selectedServer={selectedServer}
+        editableRoles={editableRoles}
+        editingRoleId={editingRoleId}
+        setEditingRoleId={setEditingRoleId}
+        memberRoleDrafts={memberRoleDrafts}
+        setMemberRoleDrafts={setMemberRoleDrafts}
+        permissionOptions={PERMISSION_OPTIONS}
+        createRoleForm={createRoleForm}
+        editRoleForm={editRoleForm}
+        createRolePending={createRoleMutation.isPending}
+        updateRolePending={updateRoleMutation.isPending}
+        deleteRolePending={deleteRoleMutation.isPending}
+        setMemberRolesPending={setMemberRolesMutation.isPending}
+        onBeginEditRole={beginEditRole}
+        onCreateRole={async (values) => {
+          if (!selectedServer) {
+            return;
+          }
 
-            <Paper p="sm" withBorder style={{ borderColor: "#3a3d45", background: "#232428" }}>
-              <Text fw={700} c="gray.0" mb={8}>
-                Server Roles
-              </Text>
-              <Stack gap="xs">
-                {editableRoles.map((role) => {
-                  const isOwnerRole = role.name === OWNER_ROLE_NAME;
-                  const isEditing = editingRoleId === role.id;
+          await createRoleMutation.mutateAsync({
+            serverId: selectedServer.id,
+            name: values.name.trim(),
+            permissions: values.permissions,
+          });
+        }}
+        onUpdateRole={async (roleId, values) => {
+          if (!selectedServer) {
+            return;
+          }
 
-                  return (
-                    <Paper key={role.id} p="sm" bg="#2b2d31" withBorder style={{ borderColor: "#3a3d45" }}>
-                      <Group justify="space-between" align="flex-start">
-                        <Stack gap={4} style={{ flex: 1, minWidth: 0 }}>
-                          <Group gap="xs" wrap="wrap">
-                            <Text fw={600} c="gray.0">
-                              {role.name}
-                            </Text>
-                            <Badge variant="light" color="gray">
-                              Position {role.position}
-                            </Badge>
-                            {isOwnerRole ? (
-                              <Badge variant="filled" color="indigo">
-                                Immutable
-                              </Badge>
-                            ) : null}
-                          </Group>
-                          <Text size="xs" c="gray.4">
-                            {role.permissions.length > 0
-                              ? role.permissions.join(", ")
-                              : "No explicit permissions"}
-                          </Text>
-                        </Stack>
+          await updateRoleMutation.mutateAsync({
+            serverId: selectedServer.id,
+            roleId,
+            name: values.name.trim(),
+            permissions: values.permissions,
+          });
+        }}
+        onDeleteRole={(roleId, roleName) => {
+          if (!selectedServer) {
+            return;
+          }
 
-                        <Group gap="xs">
-                          <Button
-                            size="xs"
-                            variant="light"
-                            disabled={isOwnerRole}
-                            onClick={() => beginEditRole(role.id)}
-                          >
-                            Edit
-                          </Button>
-                          <Button
-                            size="xs"
-                            color="red"
-                            variant="light"
-                            disabled={isOwnerRole || deleteRoleMutation.isPending}
-                            onClick={() => {
-                              if (!window.confirm(`Delete role \"${role.name}\"?`)) {
-                                return;
-                              }
+          if (!window.confirm(`Delete role "${roleName}"?`)) {
+            return;
+          }
 
-                              void deleteRoleMutation.mutateAsync({
-                                serverId: selectedServer.id,
-                                roleId: role.id,
-                              });
-                            }}
-                          >
-                            Delete
-                          </Button>
-                        </Group>
-                      </Group>
+          void deleteRoleMutation.mutateAsync({
+            serverId: selectedServer.id,
+            roleId,
+          });
+        }}
+        onSaveMemberRoles={(memberId, roleIds) => {
+          if (!selectedServer) {
+            return;
+          }
 
-                      {isEditing ? (
-                        <form
-                          onSubmit={editRoleForm.onSubmit(async (values) => {
-                            await updateRoleMutation.mutateAsync({
-                              serverId: selectedServer.id,
-                              roleId: role.id,
-                              name: values.name.trim(),
-                              permissions: values.permissions,
-                            });
-                          })}
-                        >
-                          <Stack gap="xs" mt="sm">
-                            <TextInput
-                              label="Role Name"
-                              withAsterisk
-                              {...editRoleForm.getInputProps("name")}
-                            />
-                            <MultiSelect
-                              label="Permissions"
-                              placeholder="Select permissions"
-                              data={PERMISSION_OPTIONS}
-                              searchable
-                              {...editRoleForm.getInputProps("permissions")}
-                            />
-                            <Group justify="flex-end">
-                              <Button size="xs" variant="default" onClick={() => setEditingRoleId(null)}>
-                                Cancel
-                              </Button>
-                              <Button size="xs" type="submit" loading={updateRoleMutation.isPending}>
-                                Save
-                              </Button>
-                            </Group>
-                          </Stack>
-                        </form>
-                      ) : null}
-                    </Paper>
-                  );
-                })}
-              </Stack>
-            </Paper>
-
-            <Paper p="sm" withBorder style={{ borderColor: "#3a3d45", background: "#232428" }}>
-              <Text fw={700} c="gray.0" mb={8}>
-                Assign Roles To Members
-              </Text>
-              <Stack gap="xs">
-                {selectedServer.members.map((member) => {
-                  const memberIsOwner = member.roleNames.includes(OWNER_ROLE_NAME);
-
-                  return (
-                    <Paper key={member.memberId} p="sm" bg="#2b2d31" withBorder style={{ borderColor: "#3a3d45" }}>
-                      <Stack gap="xs">
-                        <Group justify="space-between" align="center">
-                          <Group gap="xs">
-                            <Avatar src={member.image} name={member.name} size="sm" radius="xl" />
-                            <Text fw={600} c="gray.0">
-                              {member.name}
-                            </Text>
-                            {memberIsOwner ? (
-                              <Badge color="indigo" variant="filled">
-                                Owner
-                              </Badge>
-                            ) : null}
-                          </Group>
-                          <Text size="xs" c="gray.4">
-                            {member.roleNames.length > 0 ? member.roleNames.join(", ") : "No roles"}
-                          </Text>
-                        </Group>
-
-                        <Group align="flex-end" wrap="nowrap">
-                          <MultiSelect
-                            style={{ flex: 1 }}
-                            data={editableRoles
-                              .filter((role) => role.name !== OWNER_ROLE_NAME)
-                              .map((role) => ({ value: role.id, label: role.name }))}
-                            value={memberRoleDrafts[member.memberId] ?? member.roleIds}
-                            onChange={(value) => {
-                              setMemberRoleDrafts((current) => ({
-                                ...current,
-                                [member.memberId]: value,
-                              }));
-                            }}
-                            disabled={memberIsOwner}
-                            placeholder={memberIsOwner ? "Owner cannot be edited" : "Select roles"}
-                            searchable
-                          />
-                          <Button
-                            size="xs"
-                            disabled={memberIsOwner}
-                            loading={setMemberRolesMutation.isPending}
-                            onClick={() => {
-                              const roleIds = memberRoleDrafts[member.memberId] ?? member.roleIds;
-                              void setMemberRolesMutation.mutateAsync({
-                                serverId: selectedServer.id,
-                                memberId: member.memberId,
-                                roleIds,
-                              });
-                            }}
-                          >
-                            Save
-                          </Button>
-                        </Group>
-                      </Stack>
-                    </Paper>
-                  );
-                })}
-              </Stack>
-            </Paper>
-          </Stack>
-        ) : null}
-      </Modal>
+          void setMemberRolesMutation.mutateAsync({
+            serverId: selectedServer.id,
+            memberId,
+            roleIds,
+          });
+        }}
+      />
 
       <Group align="stretch" gap={0} wrap="nowrap" mih="100svh">
-        <Stack w={366} h="100svh" gap={0}>
-          <Group align="stretch" gap={0} wrap="nowrap" style={{ flex: 1, minHeight: 0 }}>
-            <Paper w={86} bg="#1b1d22" radius={0} withBorder style={{ borderColor: "#1a1b1e" }}>
-              <Stack h="100%" p="sm" gap="sm">
-                <Stack align="center" gap="xs" style={{ flex: 1, minHeight: 0 }}>
-                  <Text size="10px" fw={700} c="gray.4" tt="uppercase" style={{ letterSpacing: "0.2em" }}>
-                    Servers
-                  </Text>
-                  <ScrollArea type="never" style={{ flex: 1, minHeight: 0 }}>
-                    <Stack align="center" gap="xs">
-                      {homeData.servers.map((server) => {
-                        const isActive = server.id === selectedServerId;
-                        return (
-                          <ActionIcon
-                            key={server.id}
-                            size={48}
-                            radius={isActive ? "md" : "xl"}
-                            variant={isActive ? "filled" : "subtle"}
-                            color={isActive ? "indigo" : "gray"}
-                            onClick={() => setSelectedServerId(server.id)}
-                            title={server.name}
-                          >
-                            <Avatar
-                              radius={isActive ? "md" : "xl"}
-                              src={server.picture}
-                              name={server.name}
-                              color="indigo"
-                              size={40}
-                            >
-                              {formatServerBadge(server.name)}
-                            </Avatar>
-                          </ActionIcon>
-                        );
-                      })}
-                    </Stack>
-                  </ScrollArea>
-                </Stack>
+        <HomeSidebar
+          homeData={homeData}
+          selectedServerId={selectedServerId}
+          onSelectServer={setSelectedServerId}
+          onOpenCreateServer={() => setCreateModalOpened(true)}
+          selectedServer={selectedServer}
+          selectedChannelId={selectedChannelId}
+          onSelectChannel={(channelId) => {
+            if (!selectedServer) {
+              return;
+            }
 
-                <Tooltip
-                  label="Create new server"
-                  position="right"
-                  withArrow
-                  transitionProps={{ duration: 0 }}
-                >
-                  <Button
-                    fullWidth
-                    variant="light"
-                    color="indigo"
-                    onClick={() => setCreateModalOpened(true)}
-                  >
-                    <PlusIcon size={16} />
-                  </Button>
-                </Tooltip>
-              </Stack>
-            </Paper>
+            setSelectedChannelByServer((current) => ({
+              ...current,
+              [selectedServer.id]: channelId,
+            }));
+          }}
+          onOpenCreateChannel={() => setCreateChannelModalOpened(true)}
+          onOpenInvite={() => setInviteModalOpened(true)}
+          onOpenManageRoles={() => setManageRolesModalOpened(true)}
+          onEditChannelAccess={beginEditChannelAccess}
+          userDisplayName={userDisplayName}
+          isSigningOut={isSigningOut}
+          onSignOut={() => {
+            void handleSignOut();
+          }}
+          formatServerBadge={formatServerBadge}
+        />
 
-            <Paper w={280} bg="#2b2d31" radius={0} withBorder style={{ borderColor: "#1a1b1e" }}>
-              <Stack h="100%" p="md" gap="sm">
-                {selectedServer ? (
-                  <>
-                    <Menu position="bottom-start" width={240} withinPortal={false}>
-                      <Menu.Target>
-                        <UnstyledButton
-                          style={{
-                            width: "100%",
-                            borderRadius: 6,
-                            padding: "6px 8px",
-                          }}
-                        >
-                          <Title order={4} c="gray.0">
-                            {selectedServer.name}
-                          </Title>
-                          <Text size="xs" c="gray.4" mt={4}>
-                            Roles: {selectedServer.roleNames.length > 0 ? selectedServer.roleNames.join(", ") : "Member"}
-                          </Text>
-                        </UnstyledButton>
-                      </Menu.Target>
+        <HomeChatPanel
+          selectedChannel={selectedChannel}
+          selectedServer={selectedServer}
+          currentUserId={homeData.currentUser.id}
+          isFetching={homeDataQuery.isFetching}
+          onTogglePin={(message) => {
+            if (!selectedServer) {
+              return;
+            }
 
-                      <Menu.Dropdown>
-                        <Menu.Item
-                          disabled={!selectedServerCapabilities?.canCreateChannels}
-                          onClick={() => setCreateChannelModalOpened(true)}
-                        >
-                          Create Channel
-                        </Menu.Item>
-                        <Menu.Item
-                          disabled={!selectedServerCapabilities?.canInviteMembers}
-                          onClick={() => setInviteModalOpened(true)}
-                        >
-                          Invite People
-                        </Menu.Item>
-                        <Menu.Item
-                          disabled={!selectedServerCapabilities?.canManageServer}
-                          onClick={() => setManageRolesModalOpened(true)}
-                        >
-                          Manage Roles
-                        </Menu.Item>
-                      </Menu.Dropdown>
-                    </Menu>
+            void pinMessageMutation.mutateAsync({
+              serverId: selectedServer.id,
+              channelId: message.channelId,
+              messageId: message.id,
+              pinned: !message.pinned,
+            });
+          }}
+          onDeleteMessage={(message) => {
+            if (!selectedServer) {
+              return;
+            }
 
-                    <Divider color="dark.4" />
+            void deleteMessageMutation.mutateAsync({
+              serverId: selectedServer.id,
+              channelId: message.channelId,
+              messageId: message.id,
+            });
+          }}
+          messageDraft={messageDraft}
+          onChangeMessageDraft={setMessageDraft}
+          onSendMessage={() => {
+            if (!selectedServer || !selectedChannel) {
+              return;
+            }
 
-                    <Text size="10px" fw={700} c="gray.4" tt="uppercase" style={{ letterSpacing: "0.15em" }}>
-                      Channels
-                    </Text>
+            const normalized = messageDraft.trim();
+            if (!normalized) {
+              return;
+            }
 
-                    <ScrollArea type="hover" style={{ flex: 1, minHeight: 0 }}>
-                      <Stack gap={4}>
-                        {selectedServer.channels.map((channel) => {
-                          const isSelected = channel.id === selectedChannelId;
-
-                          return (
-                            <Group key={channel.id} gap={4} wrap="nowrap" align="center">
-                              <Box style={{ flex: 1, minWidth: 0 }}>
-                                <NavLink
-                                  active={isSelected}
-                                  label={`# ${channel.name}`}
-                                  description={channel.isPublic ? channel.type : `${channel.type} - Restricted`}
-                                  onClick={() => {
-                                    setSelectedChannelByServer((current) => ({
-                                      ...current,
-                                      [selectedServer.id]: channel.id,
-                                    }));
-                                  }}
-                                  variant="light"
-                                  color="indigo"
-                                />
-                              </Box>
-                              <ActionIcon
-                                variant="subtle"
-                                color="gray"
-                                size="sm"
-                                disabled={!selectedServerCapabilities?.canCreateChannels}
-                                onClick={() => beginEditChannelAccess(channel.id)}
-                                title="Edit channel access"
-                              >
-                                ...
-                              </ActionIcon>
-                            </Group>
-                          );
-                        })}
-                      </Stack>
-                    </ScrollArea>
-                  </>
-                ) : (
-                  <Text size="sm" c="gray.4">
-                    No servers available.
-                  </Text>
-                )}
-              </Stack>
-            </Paper>
-          </Group>
-
-          <Paper
-            h={56}
-            bg="#232428"
-            radius={0}
-            withBorder
-            style={{ borderColor: "#1a1b1e", borderTopColor: "#1f2024" }}
-          >
-            <Group h="100%" px="sm" justify="space-between" wrap="nowrap">
-              <Menu shadow="md" width={200} position="top-start" withinPortal={false}>
-                <Menu.Target>
-                  <UnstyledButton
-                    style={{
-                      width: "100%",
-                      minWidth: 0,
-                      borderRadius: 6,
-                      padding: "6px 8px",
-                    }}
-                  >
-                    <Text fw={600} c="gray.0" size="sm" truncate="end">
-                      {userDisplayName}
-                    </Text>
-                  </UnstyledButton>
-                </Menu.Target>
-
-                <Menu.Dropdown>
-                  <Menu.Item c="red.4" disabled={isSigningOut} onClick={() => void handleSignOut()}>
-                    {isSigningOut ? "Logging out..." : "Log out"}
-                  </Menu.Item>
-                </Menu.Dropdown>
-              </Menu>
-            </Group>
-          </Paper>
-        </Stack>
-
-        <Paper flex={1} bg="#313338" radius={0} p={0}>
-          <Stack h="100%" gap={0}>
-            <Box p="md" style={{ borderBottom: "1px solid #232428" }}>
-              <Group gap="xs" wrap="wrap">
-                <Text size="sm" fw={700} c="gray.0">
-                  {selectedChannel ? `# ${selectedChannel.name}` : "Select a channel"}
-                </Text>
-                {selectedChannel && !selectedChannel.isPublic ? (
-                  <Badge size="xs" color="grape" variant="light">
-                    Restricted
-                  </Badge>
-                ) : null}
-              </Group>
-            </Box>
-
-            <ScrollArea flex={1} p="md" type="hover">
-              <Stack gap="sm">
-                {homeDataQuery.isFetching ? (
-                  <Text size="sm" c="gray.4">
-                    Refreshing...
-                  </Text>
-                ) : null}
-
-                {selectedChannel?.messages.length ? (
-                  selectedChannel.messages.map((message) => (
-                    <Paper key={message.id} p="sm" bg="#2b2d31" radius="md" withBorder style={{ borderColor: "#3a3d45" }}>
-                      <Group align="flex-start" gap="sm" wrap="nowrap" justify="space-between">
-                        <Avatar
-                          src={message.author.image}
-                          name={message.author.name}
-                          color="indigo"
-                          radius="xl"
-                          size="sm"
-                        />
-                        <Stack gap={2} style={{ flex: 1, minWidth: 0 }}>
-                          <Group gap="xs">
-                            <Text size="sm" fw={700} c="gray.0">
-                              {message.author.name}
-                            </Text>
-                            <Text size="xs" c="gray.5">
-                              {formatMessageTime(message.createdAt)}
-                            </Text>
-                            {message.pinned ? (
-                              <Text size="xs" c="yellow.4" fw={700}>
-                                PINNED
-                              </Text>
-                            ) : null}
-                          </Group>
-                          <Text size="sm" c="gray.1">
-                            {message.content}
-                          </Text>
-                        </Stack>
-
-                        {selectedServer ? (
-                          <Menu position="left-start" width={180} withinPortal={false}>
-                            <Menu.Target>
-                              <ActionIcon variant="subtle" color="gray" size="sm">
-                                ...
-                              </ActionIcon>
-                            </Menu.Target>
-                            <Menu.Dropdown>
-                              {(selectedServer.capabilities.canPinMessages ||
-                                selectedServer.capabilities.canManageMessages) && (
-                                <Menu.Item
-                                  onClick={() => {
-                                    void pinMessageMutation.mutateAsync({
-                                      serverId: selectedServer.id,
-                                      channelId: message.channelId,
-                                      messageId: message.id,
-                                      pinned: !message.pinned,
-                                    });
-                                  }}
-                                >
-                                  {message.pinned ? "Unpin message" : "Pin message"}
-                                </Menu.Item>
-                              )}
-                              {(message.author.id === homeData.currentUser.id ||
-                                selectedServer.capabilities.canManageMessages) && (
-                                <Menu.Item
-                                  c="red.4"
-                                  onClick={() => {
-                                    void deleteMessageMutation.mutateAsync({
-                                      serverId: selectedServer.id,
-                                      channelId: message.channelId,
-                                      messageId: message.id,
-                                    });
-                                  }}
-                                >
-                                  Delete message
-                                </Menu.Item>
-                              )}
-                            </Menu.Dropdown>
-                          </Menu>
-                        ) : null}
-                      </Group>
-                    </Paper>
-                  ))
-                ) : (
-                  <Paper p="xl" bg="#2b2d31" radius="md" withBorder style={{ borderColor: "#4a4e57", borderStyle: "dashed" }}>
-                    <Stack align="center" gap={4}>
-                      <Text fw={600} c="gray.0">
-                        No messages yet
-                      </Text>
-                      <Text size="sm" c="gray.4">
-                        This channel is ready for its first message.
-                      </Text>
-                    </Stack>
-                  </Paper>
-                )}
-
-                {selectedServer && selectedChannel ? (
-                  <Paper p="sm" bg="#2b2d31" radius="md" withBorder style={{ borderColor: "#3a3d45" }}>
-                    <form
-                      onSubmit={(event) => {
-                        event.preventDefault();
-                        const normalized = messageDraft.trim();
-                        if (!normalized) {
-                          return;
-                        }
-
-                        void sendMessageMutation.mutateAsync({
-                          serverId: selectedServer.id,
-                          channelId: selectedChannel.id,
-                          content: normalized,
-                        });
-                      }}
-                    >
-                      <Stack gap="xs">
-                        <Textarea
-                          placeholder={
-                            selectedServer.capabilities.canSendMessages
-                              ? `Message #${selectedChannel.name}`
-                              : "You do not have permission to send messages"
-                          }
-                          minRows={2}
-                          value={messageDraft}
-                          onChange={(event) => setMessageDraft(event.currentTarget.value)}
-                          disabled={!selectedServer.capabilities.canSendMessages || sendMessageMutation.isPending}
-                        />
-                        <Group justify="flex-end">
-                          <Button
-                            type="submit"
-                            size="xs"
-                            loading={sendMessageMutation.isPending}
-                            disabled={!selectedServer.capabilities.canSendMessages || messageDraft.trim().length === 0}
-                          >
-                            Send
-                          </Button>
-                        </Group>
-                      </Stack>
-                    </form>
-                  </Paper>
-                ) : null}
-              </Stack>
-            </ScrollArea>
-          </Stack>
-        </Paper>
+            void sendMessageMutation.mutateAsync({
+              serverId: selectedServer.id,
+              channelId: selectedChannel.id,
+              content: normalized,
+            });
+          }}
+          isSendingMessage={sendMessageMutation.isPending}
+        />
       </Group>
     </Box>
   );
