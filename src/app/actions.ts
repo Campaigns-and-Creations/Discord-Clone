@@ -4,11 +4,15 @@ import { ChannelDal } from "@/dal/channel";
 import { InviteDal } from "@/dal/invite";
 import { MessagesDal } from "@/dal/messages";
 import { ServerMemberDal } from "@/dal/serverMember";
+import { ServerRolesDal } from "@/dal/serverRoles";
 import { ServerDal } from "@/dal/server";
 import { UserDal } from "@/dal/user";
 import { Permission } from "@/generated/prisma";
-import { canModerateTarget, hasServerPermission } from "@/utils/permissions";
-import { prisma } from "@/utils/prisma";
+import {
+  canModerateTarget,
+  getMembershipPermissions,
+  hasServerPermission,
+} from "@/utils/permissions";
 import { requireUser } from "@/utils/session";
 import type { HomeServer } from "@/app/home-types";
 
@@ -17,6 +21,38 @@ function toIsoString(value: Date): string {
 }
 
 const MAX_TIMEOUT_MINUTES = 60 * 24 * 28;
+const OWNER_ROLE_NAME = "Owner";
+
+function normalizeRoleName(roleName: string) {
+  return roleName.trim();
+}
+
+function normalizePermissions(permissions: Permission[]) {
+  const validPermissions = new Set<Permission>(Object.values(Permission));
+  const normalized = new Set<Permission>();
+
+  for (const permission of permissions) {
+    if (validPermissions.has(permission)) {
+      normalized.add(permission);
+    }
+  }
+
+  return Array.from(normalized);
+}
+
+async function requireCanManageServer(userId: string, serverId: string) {
+  const [isMember, canManageServer, membership] = await Promise.all([
+    ServerMemberDal.isUserMemberOfServer(userId, serverId),
+    hasServerPermission(userId, serverId, Permission.MANAGE_SERVER),
+    getMembershipPermissions(userId, serverId),
+  ]);
+
+  if (!isMember || !canManageServer || !membership) {
+    throw new Error("Forbidden");
+  }
+
+  return membership;
+}
 
 export async function createServer(serverName: string): Promise<HomeServer> {
   const sessionUser = await requireUser();
@@ -41,6 +77,7 @@ export async function createServer(serverName: string): Promise<HomeServer> {
     roleNames: [result.ownerRole.name],
     permissions: ["ADMINISTRATOR"],
     capabilities: {
+      canManageServer: true,
       canCreateChannels: true,
       canInviteMembers: true,
       canManageMessages: true,
@@ -48,6 +85,24 @@ export async function createServer(serverName: string): Promise<HomeServer> {
       canModerateMembers: true,
       canSendMessages: true,
     },
+    roles: [
+      {
+        id: result.ownerRole.id,
+        name: result.ownerRole.name,
+        position: result.ownerRole.position,
+        permissions: ["ADMINISTRATOR"],
+      },
+    ],
+    members: [
+      {
+        memberId: result.membershipId,
+        userId: sessionUser.id,
+        name: sessionUser.name,
+        image: sessionUser.image ?? null,
+        roleIds: [result.ownerRole.id],
+        roleNames: [result.ownerRole.name],
+      },
+    ],
     channels: [
       {
         id: result.generalChannel.id,
@@ -124,38 +179,9 @@ export async function inviteMember(serverId: string, email: string) {
     throw new Error("User is already a server member.");
   }
 
-  const memberRole = await prisma.serverRoles.findFirst({
-    where: {
-      serverId,
-      name: "Member",
-    },
-    select: { id: true },
-  });
+  const memberRole = await ServerRolesDal.findByName(serverId, "Member");
 
-  return prisma.serverMember.create({
-    data: {
-      serverId,
-      userId: userToInvite.id,
-      serverRoles: memberRole
-        ? {
-            connect: {
-              id: memberRole.id,
-            },
-          }
-        : undefined,
-    },
-    select: {
-      id: true,
-      user: {
-        select: {
-          id: true,
-          name: true,
-          image: true,
-          email: true,
-        },
-      },
-    },
-  });
+  return ServerMemberDal.createInServer(serverId, userToInvite.id, memberRole?.id);
 }
 
 export async function createInviteLink(
@@ -451,4 +477,164 @@ export async function clearMemberTimeout(serverId: string, targetUserId: string)
   }
 
   return ServerMemberDal.setTimeoutUntil(targetMember.id, null);
+}
+
+export async function createServerRole(serverId: string, roleName: string, permissions: Permission[]) {
+  const sessionUser = await requireUser();
+  const actorMembership = await requireCanManageServer(sessionUser.id, serverId);
+  const normalizedName = normalizeRoleName(roleName);
+
+  if (!normalizedName) {
+    throw new Error("Role name is required.");
+  }
+
+  if (normalizedName.length > 60) {
+    throw new Error("Role name must be at most 60 characters.");
+  }
+
+  const normalizedPermissions = normalizePermissions(permissions);
+  if (!actorMembership.isOwner && normalizedPermissions.includes(Permission.ADMINISTRATOR)) {
+    throw new Error("Only owner can create roles with administrator permission.");
+  }
+
+  const role = await ServerRolesDal.createRole(serverId, normalizedName, normalizedPermissions);
+
+  if (!actorMembership.isOwner && role.position >= actorMembership.highestRolePosition) {
+    await ServerRolesDal.deleteRole(role.id, serverId);
+    throw new Error("Cannot create a role at or above your highest role level.");
+  }
+
+  return {
+    id: role.id,
+    name: role.name,
+    position: role.position,
+    permissions: role.permissions.map((item) => item.permission),
+  };
+}
+
+export async function updateServerRole(
+  serverId: string,
+  roleId: string,
+  payload: { name: string; permissions: Permission[] },
+) {
+  const sessionUser = await requireUser();
+  const actorMembership = await requireCanManageServer(sessionUser.id, serverId);
+  const role = await ServerRolesDal.findById(roleId, serverId);
+
+  if (!role) {
+    throw new Error("Role not found.");
+  }
+
+  if (role.name === OWNER_ROLE_NAME) {
+    throw new Error("Owner role cannot be edited.");
+  }
+
+  if (!actorMembership.isOwner && role.position >= actorMembership.highestRolePosition) {
+    throw new Error("Cannot edit a role at or above your highest role level.");
+  }
+
+  const normalizedName = normalizeRoleName(payload.name);
+  if (!normalizedName) {
+    throw new Error("Role name is required.");
+  }
+
+  if (normalizedName.length > 60) {
+    throw new Error("Role name must be at most 60 characters.");
+  }
+
+  const normalizedPermissions = normalizePermissions(payload.permissions);
+  if (!actorMembership.isOwner && normalizedPermissions.includes(Permission.ADMINISTRATOR)) {
+    throw new Error("Only owner can grant administrator permission.");
+  }
+
+  const updated = await ServerRolesDal.updateRole(role.id, serverId, normalizedName, normalizedPermissions);
+
+  return {
+    id: updated.id,
+    name: updated.name,
+    position: updated.position,
+    permissions: updated.permissions.map((item) => item.permission),
+  };
+}
+
+export async function deleteServerRole(serverId: string, roleId: string) {
+  const sessionUser = await requireUser();
+  const actorMembership = await requireCanManageServer(sessionUser.id, serverId);
+  const role = await ServerRolesDal.findById(roleId, serverId);
+
+  if (!role) {
+    throw new Error("Role not found.");
+  }
+
+  if (role.name === OWNER_ROLE_NAME) {
+    throw new Error("Owner role cannot be deleted.");
+  }
+
+  if (!actorMembership.isOwner && role.position >= actorMembership.highestRolePosition) {
+    throw new Error("Cannot delete a role at or above your highest role level.");
+  }
+
+  const deleted = await ServerRolesDal.deleteRole(role.id, serverId);
+  if (deleted.count !== 1) {
+    throw new Error("Role not found.");
+  }
+
+  return { success: true };
+}
+
+export async function setServerMemberRoles(serverId: string, memberId: string, roleIds: string[]) {
+  const sessionUser = await requireUser();
+  const actorMembership = await requireCanManageServer(sessionUser.id, serverId);
+
+  const targetMember = await ServerMemberDal.findByIdInServer(memberId, serverId);
+
+  if (!targetMember) {
+    throw new Error("Member not found.");
+  }
+
+  if (targetMember.serverRoles.some((role) => role.name === OWNER_ROLE_NAME)) {
+    throw new Error("Owner member cannot be edited.");
+  }
+
+  if (!actorMembership.isOwner) {
+    const targetHighestRole = targetMember.serverRoles.reduce(
+      (highest, role) => Math.max(highest, role.position),
+      0,
+    );
+
+    if (targetHighestRole >= actorMembership.highestRolePosition) {
+      throw new Error("Cannot edit this member due to role hierarchy.");
+    }
+  }
+
+  const normalizedRoleIds = Array.from(new Set(roleIds));
+  const roles = await ServerRolesDal.listByIds(serverId, normalizedRoleIds);
+
+  if (roles.length !== normalizedRoleIds.length) {
+    throw new Error("Some selected roles are invalid.");
+  }
+
+  if (roles.some((role) => role.name === OWNER_ROLE_NAME)) {
+    throw new Error("Owner role cannot be assigned through role management.");
+  }
+
+  if (!actorMembership.isOwner) {
+    const hasUnmanageableRole = roles.some(
+      (role) => role.position >= actorMembership.highestRolePosition,
+    );
+
+    if (hasUnmanageableRole) {
+      throw new Error("Cannot assign roles at or above your highest role level.");
+    }
+
+    if (
+      roles.some((role) => role.permissions.some((permission) => permission.permission === Permission.ADMINISTRATOR))
+    ) {
+      throw new Error("Only owner can assign administrator roles.");
+    }
+  }
+
+  await ServerRolesDal.replaceMemberRoles(targetMember.id, normalizedRoleIds);
+
+  return { success: true };
 }

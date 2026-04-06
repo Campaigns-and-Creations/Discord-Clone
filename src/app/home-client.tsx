@@ -4,21 +4,28 @@ import {
   createServer,
   createChannel,
   createInviteLink,
+  createServerRole,
+  deleteServerRole,
   deleteMessage,
   sendMessage,
+  setServerMemberRoles,
   setMessagePinned,
+  updateServerRole,
 } from "@/app/actions";
 import type { HomePageData } from "@/app/home-types";
+import { Permission } from "@/generated/prisma";
 import { signOut } from "@/utils/auth-client";
 import {
   ActionIcon,
   Avatar,
+  Badge,
   Box,
   Button,
   Divider,
   Group,
   Menu,
   Modal,
+  MultiSelect,
   NavLink,
   Paper,
   ScrollArea,
@@ -34,7 +41,7 @@ import {
 import { useForm } from "@mantine/form";
 import { PlusIcon } from "@phosphor-icons/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 type HomeClientProps = {
   initialData: HomePageData;
@@ -56,15 +63,25 @@ function formatServerBadge(name: string): string {
     .toUpperCase();
 }
 
+const OWNER_ROLE_NAME = "Owner";
+
+const PERMISSION_OPTIONS = Object.values(Permission).map((permission) => ({
+  value: permission,
+  label: permission,
+}));
+
 export default function HomeClient({ initialData }: HomeClientProps) {
   const queryClient = useQueryClient();
   const [createModalOpened, setCreateModalOpened] = useState(false);
   const [createChannelModalOpened, setCreateChannelModalOpened] = useState(false);
   const [inviteModalOpened, setInviteModalOpened] = useState(false);
+  const [manageRolesModalOpened, setManageRolesModalOpened] = useState(false);
   const [latestInviteLink, setLatestInviteLink] = useState<string | null>(null);
   const [linkCopied, setLinkCopied] = useState(false);
   const [isSigningOut, setIsSigningOut] = useState(false);
   const [messageDraft, setMessageDraft] = useState("");
+  const [editingRoleId, setEditingRoleId] = useState<string | null>(null);
+  const [memberRoleDrafts, setMemberRoleDrafts] = useState<Record<string, string[]>>({});
 
   const createServerForm = useForm({
     initialValues: {
@@ -126,6 +143,44 @@ export default function HomeClient({ initialData }: HomeClientProps) {
           return "Max uses must be a whole number between 1 and 100000.";
         }
 
+        return null;
+      },
+    },
+  });
+
+  const createRoleForm = useForm({
+    initialValues: {
+      name: "",
+      permissions: [Permission.VIEW_CHANNEL, Permission.SEND_MESSAGES, Permission.READ_MESSAGE_HISTORY],
+    },
+    validate: {
+      name: (value) => {
+        const trimmed = value.trim();
+        if (!trimmed) {
+          return "Role name is required";
+        }
+        if (trimmed.length > 60) {
+          return "Role name must be at most 60 characters";
+        }
+        return null;
+      },
+    },
+  });
+
+  const editRoleForm = useForm({
+    initialValues: {
+      name: "",
+      permissions: [] as string[],
+    },
+    validate: {
+      name: (value) => {
+        const trimmed = value.trim();
+        if (!trimmed) {
+          return "Role name is required";
+        }
+        if (trimmed.length > 60) {
+          return "Role name must be at most 60 characters";
+        }
         return null;
       },
     },
@@ -243,6 +298,45 @@ export default function HomeClient({ initialData }: HomeClientProps) {
     },
   });
 
+  const createRoleMutation = useMutation({
+    mutationFn: async (payload: { serverId: string; name: string; permissions: string[] }) =>
+      createServerRole(payload.serverId, payload.name, payload.permissions as Permission[]),
+    onSuccess: async () => {
+      createRoleForm.reset();
+      await queryClient.invalidateQueries({ queryKey: ["discord", "home-data"] });
+    },
+  });
+
+  const updateRoleMutation = useMutation({
+    mutationFn: async (payload: { serverId: string; roleId: string; name: string; permissions: string[] }) =>
+      updateServerRole(payload.serverId, payload.roleId, {
+        name: payload.name,
+        permissions: payload.permissions as Permission[],
+      }),
+    onSuccess: async () => {
+      setEditingRoleId(null);
+      editRoleForm.reset();
+      await queryClient.invalidateQueries({ queryKey: ["discord", "home-data"] });
+    },
+  });
+
+  const deleteRoleMutation = useMutation({
+    mutationFn: async (payload: { serverId: string; roleId: string }) =>
+      deleteServerRole(payload.serverId, payload.roleId),
+    onSuccess: async () => {
+      setEditingRoleId(null);
+      await queryClient.invalidateQueries({ queryKey: ["discord", "home-data"] });
+    },
+  });
+
+  const setMemberRolesMutation = useMutation({
+    mutationFn: async (payload: { serverId: string; memberId: string; roleIds: string[] }) =>
+      setServerMemberRoles(payload.serverId, payload.memberId, payload.roleIds),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["discord", "home-data"] });
+    },
+  });
+
   const selectedChannelId = selectedServer
     ? (selectedChannelByServer[selectedServer.id] ?? selectedServer.channels[0]?.id ?? null)
     : null;
@@ -250,6 +344,38 @@ export default function HomeClient({ initialData }: HomeClientProps) {
   const selectedChannel = selectedServer?.channels.find((channel) => channel.id === selectedChannelId) ?? null;
 
   const selectedServerCapabilities = selectedServer?.capabilities;
+
+  const editableRoles = selectedServer?.roles ?? [];
+
+  useEffect(() => {
+    if (!selectedServer || !manageRolesModalOpened) {
+      return;
+    }
+
+    setMemberRoleDrafts(() => {
+      return selectedServer.members.reduce<Record<string, string[]>>((acc, member) => {
+        acc[member.memberId] = member.roleIds;
+        return acc;
+      }, {});
+    });
+  }, [manageRolesModalOpened, selectedServer]);
+
+  const beginEditRole = (roleId: string) => {
+    if (!selectedServer) {
+      return;
+    }
+
+    const role = selectedServer.roles.find((item) => item.id === roleId);
+    if (!role) {
+      return;
+    }
+
+    setEditingRoleId(role.id);
+    editRoleForm.setValues({
+      name: role.name,
+      permissions: role.permissions,
+    });
+  };
 
   const userDisplayName = useMemo(() => {
     const name = homeData.currentUser.name.trim();
@@ -442,6 +568,229 @@ export default function HomeClient({ initialData }: HomeClientProps) {
         </form>
       </Modal>
 
+      <Modal
+        opened={manageRolesModalOpened}
+        onClose={() => {
+          setManageRolesModalOpened(false);
+          setEditingRoleId(null);
+        }}
+        title={selectedServer ? `Manage Roles - ${selectedServer.name}` : "Manage Roles"}
+        centered
+        size="xl"
+      >
+        {selectedServer ? (
+          <Stack gap="md">
+            <Paper p="sm" withBorder style={{ borderColor: "#3a3d45", background: "#232428" }}>
+              <Text fw={700} c="gray.0" mb={8}>
+                Create Role
+              </Text>
+              <form
+                onSubmit={createRoleForm.onSubmit(async (values) => {
+                  await createRoleMutation.mutateAsync({
+                    serverId: selectedServer.id,
+                    name: values.name.trim(),
+                    permissions: values.permissions,
+                  });
+                })}
+              >
+                <Stack gap="xs">
+                  <TextInput
+                    label="Role Name"
+                    placeholder="for example: Event Host"
+                    withAsterisk
+                    {...createRoleForm.getInputProps("name")}
+                  />
+                  <MultiSelect
+                    label="Permissions"
+                    placeholder="Select permissions"
+                    data={PERMISSION_OPTIONS}
+                    searchable
+                    {...createRoleForm.getInputProps("permissions")}
+                  />
+                  <Group justify="flex-end">
+                    <Button size="xs" type="submit" loading={createRoleMutation.isPending}>
+                      Create Role
+                    </Button>
+                  </Group>
+                </Stack>
+              </form>
+            </Paper>
+
+            <Paper p="sm" withBorder style={{ borderColor: "#3a3d45", background: "#232428" }}>
+              <Text fw={700} c="gray.0" mb={8}>
+                Server Roles
+              </Text>
+              <Stack gap="xs">
+                {editableRoles.map((role) => {
+                  const isOwnerRole = role.name === OWNER_ROLE_NAME;
+                  const isEditing = editingRoleId === role.id;
+
+                  return (
+                    <Paper key={role.id} p="sm" bg="#2b2d31" withBorder style={{ borderColor: "#3a3d45" }}>
+                      <Group justify="space-between" align="flex-start">
+                        <Stack gap={4} style={{ flex: 1, minWidth: 0 }}>
+                          <Group gap="xs" wrap="wrap">
+                            <Text fw={600} c="gray.0">
+                              {role.name}
+                            </Text>
+                            <Badge variant="light" color="gray">
+                              Position {role.position}
+                            </Badge>
+                            {isOwnerRole ? (
+                              <Badge variant="filled" color="indigo">
+                                Immutable
+                              </Badge>
+                            ) : null}
+                          </Group>
+                          <Text size="xs" c="gray.4">
+                            {role.permissions.length > 0
+                              ? role.permissions.join(", ")
+                              : "No explicit permissions"}
+                          </Text>
+                        </Stack>
+
+                        <Group gap="xs">
+                          <Button
+                            size="xs"
+                            variant="light"
+                            disabled={isOwnerRole}
+                            onClick={() => beginEditRole(role.id)}
+                          >
+                            Edit
+                          </Button>
+                          <Button
+                            size="xs"
+                            color="red"
+                            variant="light"
+                            disabled={isOwnerRole || deleteRoleMutation.isPending}
+                            onClick={() => {
+                              if (!window.confirm(`Delete role \"${role.name}\"?`)) {
+                                return;
+                              }
+
+                              void deleteRoleMutation.mutateAsync({
+                                serverId: selectedServer.id,
+                                roleId: role.id,
+                              });
+                            }}
+                          >
+                            Delete
+                          </Button>
+                        </Group>
+                      </Group>
+
+                      {isEditing ? (
+                        <form
+                          onSubmit={editRoleForm.onSubmit(async (values) => {
+                            await updateRoleMutation.mutateAsync({
+                              serverId: selectedServer.id,
+                              roleId: role.id,
+                              name: values.name.trim(),
+                              permissions: values.permissions,
+                            });
+                          })}
+                        >
+                          <Stack gap="xs" mt="sm">
+                            <TextInput
+                              label="Role Name"
+                              withAsterisk
+                              {...editRoleForm.getInputProps("name")}
+                            />
+                            <MultiSelect
+                              label="Permissions"
+                              placeholder="Select permissions"
+                              data={PERMISSION_OPTIONS}
+                              searchable
+                              {...editRoleForm.getInputProps("permissions")}
+                            />
+                            <Group justify="flex-end">
+                              <Button size="xs" variant="default" onClick={() => setEditingRoleId(null)}>
+                                Cancel
+                              </Button>
+                              <Button size="xs" type="submit" loading={updateRoleMutation.isPending}>
+                                Save
+                              </Button>
+                            </Group>
+                          </Stack>
+                        </form>
+                      ) : null}
+                    </Paper>
+                  );
+                })}
+              </Stack>
+            </Paper>
+
+            <Paper p="sm" withBorder style={{ borderColor: "#3a3d45", background: "#232428" }}>
+              <Text fw={700} c="gray.0" mb={8}>
+                Assign Roles To Members
+              </Text>
+              <Stack gap="xs">
+                {selectedServer.members.map((member) => {
+                  const memberIsOwner = member.roleNames.includes(OWNER_ROLE_NAME);
+
+                  return (
+                    <Paper key={member.memberId} p="sm" bg="#2b2d31" withBorder style={{ borderColor: "#3a3d45" }}>
+                      <Stack gap="xs">
+                        <Group justify="space-between" align="center">
+                          <Group gap="xs">
+                            <Avatar src={member.image} name={member.name} size="sm" radius="xl" />
+                            <Text fw={600} c="gray.0">
+                              {member.name}
+                            </Text>
+                            {memberIsOwner ? (
+                              <Badge color="indigo" variant="filled">
+                                Owner
+                              </Badge>
+                            ) : null}
+                          </Group>
+                          <Text size="xs" c="gray.4">
+                            {member.roleNames.length > 0 ? member.roleNames.join(", ") : "No roles"}
+                          </Text>
+                        </Group>
+
+                        <Group align="flex-end" wrap="nowrap">
+                          <MultiSelect
+                            style={{ flex: 1 }}
+                            data={editableRoles
+                              .filter((role) => role.name !== OWNER_ROLE_NAME)
+                              .map((role) => ({ value: role.id, label: role.name }))}
+                            value={memberRoleDrafts[member.memberId] ?? member.roleIds}
+                            onChange={(value) => {
+                              setMemberRoleDrafts((current) => ({
+                                ...current,
+                                [member.memberId]: value,
+                              }));
+                            }}
+                            disabled={memberIsOwner}
+                            placeholder={memberIsOwner ? "Owner cannot be edited" : "Select roles"}
+                            searchable
+                          />
+                          <Button
+                            size="xs"
+                            disabled={memberIsOwner}
+                            loading={setMemberRolesMutation.isPending}
+                            onClick={() => {
+                              const roleIds = memberRoleDrafts[member.memberId] ?? member.roleIds;
+                              void setMemberRolesMutation.mutateAsync({
+                                serverId: selectedServer.id,
+                                memberId: member.memberId,
+                                roleIds,
+                              });
+                            }}
+                          >
+                            Save
+                          </Button>
+                        </Group>
+                      </Stack>
+                    </Paper>
+                  );
+                })}
+              </Stack>
+            </Paper>
+          </Stack>
+        ) : null}
+      </Modal>
+
       <Group align="stretch" gap={0} wrap="nowrap" mih="100svh">
         <Stack w={366} h="100svh" gap={0}>
           <Group align="stretch" gap={0} wrap="nowrap" style={{ flex: 1, minHeight: 0 }}>
@@ -503,47 +852,51 @@ export default function HomeClient({ initialData }: HomeClientProps) {
               <Stack h="100%" p="md" gap="sm">
                 {selectedServer ? (
                   <>
-                    <Box>
-                      <Title order={4} c="gray.0">
-                        {selectedServer.name}
-                      </Title>
-                      <Text size="xs" c="gray.4" mt={4}>
-                        Roles: {selectedServer.roleNames.length > 0 ? selectedServer.roleNames.join(", ") : "Member"}
-                      </Text>
-                    </Box>
+                    <Menu position="bottom-start" width={240} withinPortal={false}>
+                      <Menu.Target>
+                        <UnstyledButton
+                          style={{
+                            width: "100%",
+                            borderRadius: 6,
+                            padding: "6px 8px",
+                          }}
+                        >
+                          <Title order={4} c="gray.0">
+                            {selectedServer.name}
+                          </Title>
+                          <Text size="xs" c="gray.4" mt={4}>
+                            Roles: {selectedServer.roleNames.length > 0 ? selectedServer.roleNames.join(", ") : "Member"}
+                          </Text>
+                        </UnstyledButton>
+                      </Menu.Target>
+
+                      <Menu.Dropdown>
+                        <Menu.Item
+                          disabled={!selectedServerCapabilities?.canCreateChannels}
+                          onClick={() => setCreateChannelModalOpened(true)}
+                        >
+                          Create Channel
+                        </Menu.Item>
+                        <Menu.Item
+                          disabled={!selectedServerCapabilities?.canInviteMembers}
+                          onClick={() => setInviteModalOpened(true)}
+                        >
+                          Invite People
+                        </Menu.Item>
+                        <Menu.Item
+                          disabled={!selectedServerCapabilities?.canManageServer}
+                          onClick={() => setManageRolesModalOpened(true)}
+                        >
+                          Manage Roles
+                        </Menu.Item>
+                      </Menu.Dropdown>
+                    </Menu>
 
                     <Divider color="dark.4" />
 
                     <Text size="10px" fw={700} c="gray.4" tt="uppercase" style={{ letterSpacing: "0.15em" }}>
                       Channels
                     </Text>
-
-                    <Group gap="xs">
-                      <Tooltip
-                        label={
-                          selectedServerCapabilities?.canCreateChannels
-                            ? "Create channel"
-                            : "You do not have permission to create channels"
-                        }
-                        position="bottom"
-                        withArrow
-                      >
-                        <Button
-                          size="xs"
-                          variant="light"
-                          color="indigo"
-                          disabled={!selectedServerCapabilities?.canCreateChannels}
-                          onClick={() => setCreateChannelModalOpened(true)}
-                        >
-                          New Channel
-                        </Button>
-                      </Tooltip>
-                      {selectedServerCapabilities?.canInviteMembers ? (
-                        <Button size="xs" variant="subtle" color="gray" onClick={() => setInviteModalOpened(true)}>
-                          Invite
-                        </Button>
-                      ) : null}
-                    </Group>
 
                     <ScrollArea type="hover" style={{ flex: 1, minHeight: 0 }}>
                       <Stack gap={4}>

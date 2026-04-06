@@ -27,6 +27,22 @@ export type HomeChannel = {
   messages: HomeMessage[];
 };
 
+export type HomeRole = {
+  id: string;
+  name: string;
+  position: number;
+  permissions: string[];
+};
+
+export type HomeServerMember = {
+  memberId: string;
+  userId: string;
+  name: string;
+  image: string | null;
+  roleIds: string[];
+  roleNames: string[];
+};
+
 export type HomeServer = {
   id: string;
   name: string;
@@ -36,6 +52,7 @@ export type HomeServer = {
   roleNames: string[];
   permissions: string[];
   capabilities: {
+    canManageServer: boolean;
     canCreateChannels: boolean;
     canInviteMembers: boolean;
     canManageMessages: boolean;
@@ -43,6 +60,8 @@ export type HomeServer = {
     canModerateMembers: boolean;
     canSendMessages: boolean;
   };
+  roles: HomeRole[];
+  members: HomeServerMember[];
   channels: HomeChannel[];
 };
 

@@ -1,5 +1,5 @@
 import { Permission } from "@/generated/prisma";
-import { prisma } from "@/utils/prisma";
+import { ServerRolesDal } from "@/dal/serverRoles";
 
 type MembershipPermissions = {
   memberId: string;
@@ -13,24 +13,7 @@ export async function getMembershipPermissions(
   userId: string,
   serverId: string,
 ): Promise<MembershipPermissions | null> {
-  const membership = await prisma.serverMember.findFirst({
-    where: { userId, serverId },
-    select: {
-      id: true,
-      serverRoles: {
-        orderBy: { position: "desc" },
-        select: {
-          name: true,
-          position: true,
-          permissions: {
-            select: {
-              permission: true,
-            },
-          },
-        },
-      },
-    },
-  });
+  const membership = await ServerRolesDal.listForUserInServer(userId, serverId);
 
   if (!membership) {
     return null;

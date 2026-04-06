@@ -47,4 +47,80 @@ export class ServerMemberDal {
       },
     });
   }
+
+  static async createInServer(serverId: string, userId: string, roleId?: string) {
+    return prisma.serverMember.create({
+      data: {
+        serverId,
+        userId,
+        serverRoles: roleId
+          ? {
+              connect: {
+                id: roleId,
+              },
+            }
+          : undefined,
+      },
+      select: {
+        id: true,
+        user: {
+          select: {
+            id: true,
+            name: true,
+            image: true,
+            email: true,
+          },
+        },
+      },
+    });
+  }
+
+  static async findByIdInServer(memberId: string, serverId: string) {
+    return prisma.serverMember.findFirst({
+      where: {
+        id: memberId,
+        serverId,
+      },
+      select: {
+        id: true,
+        userId: true,
+        serverRoles: {
+          select: {
+            id: true,
+            name: true,
+            position: true,
+          },
+        },
+      },
+    });
+  }
+
+  static async listByServerId(serverId: string) {
+    return prisma.serverMember.findMany({
+      where: { serverId },
+      select: {
+        id: true,
+        userId: true,
+        user: {
+          select: {
+            name: true,
+            image: true,
+          },
+        },
+        serverRoles: {
+          select: {
+            id: true,
+            name: true,
+            position: true,
+          },
+          orderBy: { position: "desc" },
+        },
+      },
+      orderBy: {
+        user: {
+          name: "asc",
+        },
+      },
+    });
+  }
 }

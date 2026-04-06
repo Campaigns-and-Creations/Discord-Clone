@@ -2,6 +2,8 @@ import type { HomePageData } from "@/app/home-types";
 import { ChannelDal } from "@/dal/channel";
 import { MessagesDal } from "@/dal/messages";
 import { ServerDal } from "@/dal/server";
+import { ServerMemberDal } from "@/dal/serverMember";
+import { ServerRolesDal } from "@/dal/serverRoles";
 import { Permission } from "@/generated/prisma";
 import { UserDal } from "@/dal/user";
 import { getMembershipPermissions } from "@/utils/permissions";
@@ -52,6 +54,12 @@ export async function GET() {
       );
 
       const membershipPermissions = await getMembershipPermissions(sessionUser.id, server.id);
+
+      const [roles, members] = await Promise.all([
+        ServerRolesDal.listByServerId(server.id),
+        ServerMemberDal.listByServerId(server.id),
+      ]);
+
       const roleNames = server.membershipId
         ? membershipPermissions?.roleNames ?? []
         : server.roleNames;
@@ -69,6 +77,7 @@ export async function GET() {
         roleNames,
         permissions,
         capabilities: {
+          canManageServer: hasPermission(Permission.ADMINISTRATOR, Permission.MANAGE_SERVER),
           canCreateChannels: hasPermission(Permission.ADMINISTRATOR, Permission.MANAGE_CHANNELS),
           canInviteMembers: hasPermission(Permission.ADMINISTRATOR, Permission.CREATE_INVITE),
           canManageMessages: hasPermission(Permission.ADMINISTRATOR, Permission.MANAGE_MESSAGES),
@@ -80,6 +89,20 @@ export async function GET() {
           canModerateMembers: hasPermission(Permission.ADMINISTRATOR, Permission.MODERATE_MEMBERS),
           canSendMessages: hasPermission(Permission.ADMINISTRATOR, Permission.SEND_MESSAGES),
         },
+        roles: roles.map((role) => ({
+          id: role.id,
+          name: role.name,
+          position: role.position,
+          permissions: role.permissions.map((item) => item.permission),
+        })),
+        members: members.map((member) => ({
+          memberId: member.id,
+          userId: member.userId,
+          name: member.user.name,
+          image: member.user.image,
+          roleIds: member.serverRoles.map((role) => role.id),
+          roleNames: member.serverRoles.map((role) => role.name),
+        })),
         channels: channelsWithMessages,
       };
     }),
