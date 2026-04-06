@@ -12,6 +12,7 @@ This project is a custom Discord clone built with Next.js, Prisma, and Postgres.
 3. Run:
 
 ```bash
+npm i
 npm run db:reset
 ```
 
