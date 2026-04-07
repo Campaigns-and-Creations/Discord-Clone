@@ -18,6 +18,9 @@ const SERVERS_TO_SEED = [
                 hasMessages: true,
                 messages: [
                     "Welcome to Pixel Guild. This is where we share design snapshots.",
+                    "**Markdown test**: share updates with `inline code`, lists, and links like [Next.js](https://nextjs.org).",
+                    "```ts\nconst status = 'ready';\nconsole.log(status);\n```",
+                    "HTML test: <strong>bold via HTML</strong> and <em>emphasis via HTML</em>.",
                     "Daily check-in: what are you building today?",
                     "Remember to post your progress screenshots in the thread.",
                 ],

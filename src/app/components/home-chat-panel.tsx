@@ -1,4 +1,5 @@
 import type { HomeChannel, HomeServer } from "@/app/home-types";
+import { MessageMarkdown } from "@/app/components/message-markdown";
 import { StreamVideoProvider } from "@/app/components/stream-video-provider";
 import { VoiceCallPanel } from "@/app/components/voice-call-panel";
 import { ChannelType, Permission } from "@/generated/prisma/client";
@@ -81,8 +82,8 @@ export function HomeChatPanel({
 }: HomeChatPanelProps) {
   const [membersPanelExpanded, setMembersPanelExpanded] = useState(true);
   const messageViewportRef = useRef<HTMLDivElement | null>(null);
-  const previousChannelIdRef = useRef<string | null>(selectedChannel?.id ?? null);
-  const previousMessageCountRef = useRef<number>(messages.length);
+  const previousChannelIdRef = useRef<string | null>(null);
+  const previousMessageCountRef = useRef<number>(0);
   const loadingOlderRef = useRef(false);
 
   const visibleMembers = useMemo(() => {
@@ -183,7 +184,14 @@ export function HomeChatPanel({
     const addedNewMessage = currentMessageCount > previousMessageCount;
 
     if (switchedChannel || (addedNewMessage && nearBottom)) {
-      viewport.scrollTop = viewport.scrollHeight;
+      requestAnimationFrame(() => {
+        const nextViewport = messageViewportRef.current;
+        if (!nextViewport) {
+          return;
+        }
+
+        nextViewport.scrollTop = nextViewport.scrollHeight;
+      });
     }
 
     previousChannelIdRef.current = currentChannelId;
@@ -191,7 +199,7 @@ export function HomeChatPanel({
   }, [messages.length, selectedChannel?.id]);
 
   return (
-    <Paper flex={1} bg="#313338" radius={0} p={0}>
+    <Paper flex={1} bg="#313338" radius={0} p={0} style={{ minHeight: 0, overflow: "hidden" }}>
       <Stack h="100%" gap={0}>
         <Box p="md" style={{ borderBottom: "1px solid #232428" }}>
           <Group justify="space-between" wrap="nowrap" gap="sm">
@@ -310,9 +318,7 @@ export function HomeChatPanel({
                                   </Text>
                                 ) : null}
                               </Group>
-                              <Text size="sm" c="gray.1">
-                                {message.content}
-                              </Text>
+                              <MessageMarkdown content={message.content} />
                             </Stack>
 
                             {selectedServer ? (

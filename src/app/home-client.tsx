@@ -692,7 +692,7 @@ export default function HomeClient({ initialData }: HomeClientProps) {
   };
 
   return (
-    <Box bg="#202225" mih="100svh" p={0}>
+    <Box bg="#202225" h="100svh" p={0} style={{ overflow: "hidden" }}>
       <CreateServerModal
         opened={createModalOpened}
         onClose={() => setCreateModalOpened(false)}
@@ -868,7 +868,7 @@ export default function HomeClient({ initialData }: HomeClientProps) {
         }}
       />
 
-      <Group align="stretch" gap={0} wrap="nowrap" mih="100svh">
+      <Group align="stretch" gap={0} wrap="nowrap" h="100%" style={{ overflow: "hidden" }}>
         <HomeSidebar
           homeData={homeData}
           selectedServerId={selectedServerId}
