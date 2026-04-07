@@ -1,4 +1,5 @@
 import type { HomeChannel, HomeServer } from "@/app/home-types";
+import { MarkdownDraftInput } from "@/app/components/markdown-draft-input";
 import { MessageMarkdown } from "@/app/components/message-markdown";
 import { StreamVideoProvider } from "@/app/components/stream-video-provider";
 import { VoiceCallPanel } from "@/app/components/voice-call-panel";
@@ -15,7 +16,6 @@ import {
   ScrollArea,
   Stack,
   Text,
-  Textarea,
 } from "@mantine/core";
 import { UsersThreeIcon } from "@phosphor-icons/react";
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
@@ -365,18 +365,17 @@ export function HomeChatPanel({
                     }}
                   >
                     <Stack gap="xs">
-                      <Textarea
+                      <MarkdownDraftInput
                         placeholder={
                           selectedServer.capabilities.canSendMessages
                             ? `Message #${selectedChannel.name}`
                             : "You do not have permission to send messages"
                         }
+                        value={messageDraft}
+                        onChange={onChangeMessageDraft}
+                        disabled={!selectedServer.capabilities.canSendMessages || isSendingMessage}
                         minRows={2}
                         maxRows={8}
-                        autosize
-                        value={messageDraft}
-                        onChange={(event) => onChangeMessageDraft(event.currentTarget.value)}
-                        disabled={!selectedServer.capabilities.canSendMessages || isSendingMessage}
                       />
                       <Group justify="flex-end">
                         <Button
