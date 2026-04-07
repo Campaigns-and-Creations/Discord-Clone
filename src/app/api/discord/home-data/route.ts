@@ -10,6 +10,8 @@ import { getMembershipPermissions } from "@/utils/permissions";
 import { getServerUser } from "@/utils/session";
 import { NextResponse } from "next/server";
 
+const INITIAL_CHANNEL_MESSAGES_LIMIT = 50;
+
 function toIsoString(value: Date): string {
   return value.toISOString();
 }
@@ -46,13 +48,16 @@ export async function GET() {
 
       const channelsWithMessages = await Promise.all(
         channels.map(async (channel) => {
-          const messages = await MessagesDal.listByChannelId(channel.id);
+          const channelMessages = await MessagesDal.listLatestByChannelId(
+            channel.id,
+            INITIAL_CHANNEL_MESSAGES_LIMIT,
+          );
 
           return {
             ...channel,
             createdAt: toIsoString(channel.createdAt),
             allowedRoleIds: channel.allowedRoles.map((item) => item.roleId),
-            messages: messages.map((message) => ({
+            messages: channelMessages.messages.map((message) => ({
               id: message.id,
               content: message.content,
               createdAt: toIsoString(message.createdAt),
@@ -64,6 +69,7 @@ export async function GET() {
                 image: message.author.image,
               },
             })),
+            hasOlderMessages: channelMessages.hasOlderMessages,
           };
         }),
       );

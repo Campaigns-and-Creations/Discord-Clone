@@ -22,7 +22,7 @@ import { HomeChatPanel } from "@/app/components/home-chat-panel";
 import { HomeSidebar } from "@/app/components/home-sidebar";
 import { InviteModal } from "@/app/components/invite-modal";
 import { ManageRolesModal } from "@/app/components/manage-roles-modal";
-import type { HomePageData } from "@/app/home-types";
+import type { HomeMessage, HomePageData } from "@/app/home-types";
 import { ChannelType, Permission } from "@/generated/prisma/client";
 import { signOut } from "@/utils/auth-client";
 import { Box, Group } from "@mantine/core";
@@ -48,6 +48,53 @@ const PERMISSION_OPTIONS = (Object.values(Permission) as Permission[]).map((perm
   value: permission,
   label: permission,
 }));
+
+const MESSAGE_PAGE_SIZE = 50;
+
+type ChannelMessageState = {
+  messages: HomeMessage[];
+  hasOlderMessages: boolean;
+  isLoadingOlder: boolean;
+};
+
+function compareMessages(a: HomeMessage, b: HomeMessage): number {
+  const createdAtDelta = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+  if (createdAtDelta !== 0) {
+    return createdAtDelta;
+  }
+
+  return a.id.localeCompare(b.id);
+}
+
+function mergeMessages(existing: HomeMessage[], incoming: HomeMessage[]): HomeMessage[] {
+  const byId = new Map<string, HomeMessage>();
+
+  for (const message of existing) {
+    byId.set(message.id, message);
+  }
+
+  for (const message of incoming) {
+    byId.set(message.id, message);
+  }
+
+  return Array.from(byId.values()).sort(compareMessages);
+}
+
+function buildInitialChannelMessageState(data: HomePageData): Record<string, ChannelMessageState> {
+  const state: Record<string, ChannelMessageState> = {};
+
+  for (const server of data.servers) {
+    for (const channel of server.channels) {
+      state[channel.id] = {
+        messages: channel.messages,
+        hasOlderMessages: channel.hasOlderMessages,
+        isLoadingOlder: false,
+      };
+    }
+  }
+
+  return state;
+}
 
 export default function HomeClient({ initialData }: HomeClientProps) {
   const queryClient = useQueryClient();
@@ -226,6 +273,10 @@ export default function HomeClient({ initialData }: HomeClientProps) {
       return acc;
     }, {});
   });
+
+  const [channelMessagesById, setChannelMessagesById] = useState<Record<string, ChannelMessageState>>(
+    () => buildInitialChannelMessageState(initialData),
+  );
 
   const createServerMutation = useMutation({
     mutationFn: async (name: string) => createServer(name),
@@ -417,6 +468,18 @@ export default function HomeClient({ initialData }: HomeClientProps) {
 
   const selectedChannel = selectedServer?.channels.find((channel) => channel.id === selectedChannelId) ?? null;
 
+  const selectedChannelMessageState = selectedChannel
+    ? (channelMessagesById[selectedChannel.id] ?? {
+        messages: selectedChannel.messages,
+        hasOlderMessages: selectedChannel.hasOlderMessages,
+        isLoadingOlder: false,
+      })
+    : null;
+
+  const selectedChannelMessages = selectedChannelMessageState?.messages ?? [];
+  const selectedChannelHasOlderMessages = selectedChannelMessageState?.hasOlderMessages ?? false;
+  const selectedChannelIsLoadingOlderMessages = selectedChannelMessageState?.isLoadingOlder ?? false;
+
   const editableRoles = selectedServer?.roles ?? [];
   const channelRoleOptions = editableRoles.map((role) => ({
     value: role.id,
@@ -456,6 +519,35 @@ export default function HomeClient({ initialData }: HomeClientProps) {
       [selectedServer.id]: selectedServer.channels[0]?.id ?? "",
     }));
   }, [selectedChannelByServer, selectedServer]);
+
+  useEffect(() => {
+    setChannelMessagesById((current) => {
+      const next: Record<string, ChannelMessageState> = {};
+
+      for (const server of homeData.servers) {
+        for (const channel of server.channels) {
+          const existing = current[channel.id];
+
+          if (existing) {
+            next[channel.id] = {
+              messages: mergeMessages(existing.messages, channel.messages),
+              hasOlderMessages: existing.hasOlderMessages && channel.hasOlderMessages,
+              isLoadingOlder: existing.isLoadingOlder,
+            };
+            continue;
+          }
+
+          next[channel.id] = {
+            messages: channel.messages,
+            hasOlderMessages: channel.hasOlderMessages,
+            isLoadingOlder: false,
+          };
+        }
+      }
+
+      return next;
+    });
+  }, [homeData.servers]);
 
   const beginEditChannelAccess = (channelId: string) => {
     if (!selectedServer) {
@@ -517,6 +609,85 @@ export default function HomeClient({ initialData }: HomeClientProps) {
     } finally {
       setIsSigningOut(false);
       window.location.replace("/auth/sign-in");
+    }
+  };
+
+  const handleLoadOlderMessages = async () => {
+    if (!selectedChannel) {
+      return;
+    }
+
+    const channelId = selectedChannel.id;
+    const currentState = channelMessagesById[channelId];
+    if (!currentState || currentState.isLoadingOlder || !currentState.hasOlderMessages) {
+      return;
+    }
+
+    const oldestMessage = currentState.messages[0];
+    if (!oldestMessage) {
+      return;
+    }
+
+    setChannelMessagesById((current) => {
+      const existing = current[channelId];
+      if (!existing || existing.isLoadingOlder) {
+        return current;
+      }
+
+      return {
+        ...current,
+        [channelId]: {
+          ...existing,
+          isLoadingOlder: true,
+        },
+      };
+    });
+
+    try {
+      const response = await fetch(
+        `/api/discord/channel-messages?channelId=${encodeURIComponent(channelId)}&beforeMessageId=${encodeURIComponent(oldestMessage.id)}&limit=${MESSAGE_PAGE_SIZE}`,
+        { cache: "no-store" },
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to load older messages.");
+      }
+
+      const payload = (await response.json()) as {
+        hasOlderMessages: boolean;
+        messages: HomeMessage[];
+      };
+
+      setChannelMessagesById((current) => {
+        const existing = current[channelId];
+        if (!existing) {
+          return current;
+        }
+
+        return {
+          ...current,
+          [channelId]: {
+            messages: mergeMessages(payload.messages, existing.messages),
+            hasOlderMessages: payload.hasOlderMessages,
+            isLoadingOlder: false,
+          },
+        };
+      });
+    } catch {
+      setChannelMessagesById((current) => {
+        const existing = current[channelId];
+        if (!existing) {
+          return current;
+        }
+
+        return {
+          ...current,
+          [channelId]: {
+            ...existing,
+            isLoadingOlder: false,
+          },
+        };
+      });
     }
   };
 
@@ -759,6 +930,9 @@ export default function HomeClient({ initialData }: HomeClientProps) {
         <HomeChatPanel
           selectedChannel={selectedChannel}
           selectedServer={selectedServer}
+          messages={selectedChannelMessages}
+          hasOlderMessages={selectedChannelHasOlderMessages}
+          isLoadingOlderMessages={selectedChannelIsLoadingOlderMessages}
           currentUserId={homeData.currentUser.id}
           currentUser={{
             id: homeData.currentUser.id,
@@ -807,6 +981,7 @@ export default function HomeClient({ initialData }: HomeClientProps) {
               content: normalized,
             });
           }}
+          onLoadOlderMessages={handleLoadOlderMessages}
           isSendingMessage={sendMessageMutation.isPending}
         />
       </Group>

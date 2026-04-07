@@ -29,6 +29,7 @@ export type HomeChannel = {
   isPublic: boolean;
   allowedRoleIds: string[];
   messages: HomeMessage[];
+  hasOlderMessages: boolean;
 };
 
 export type HomeRole = {

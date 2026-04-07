@@ -22,6 +22,97 @@ export class MessagesDal {
     });
   }
 
+  static async listLatestByChannelId(channelId: string, limit: number) {
+    const rows = await prisma.messages.findMany({
+      where: { channelId },
+      orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+      take: limit + 1,
+      select: {
+        id: true,
+        content: true,
+        createdAt: true,
+        pinned: true,
+        channelId: true,
+        author: {
+          select: {
+            id: true,
+            name: true,
+            image: true,
+          },
+        },
+      },
+    });
+
+    const hasOlderMessages = rows.length > limit;
+    const messages = (hasOlderMessages ? rows.slice(0, limit) : rows).reverse();
+
+    return {
+      messages,
+      hasOlderMessages,
+    };
+  }
+
+  static async listOlderByChannelId(channelId: string, beforeMessageId: string, limit: number) {
+    const cursor = await prisma.messages.findUnique({
+      where: { id: beforeMessageId },
+      select: {
+        id: true,
+        channelId: true,
+        createdAt: true,
+      },
+    });
+
+    if (!cursor || cursor.channelId !== channelId) {
+      return {
+        messages: [],
+        hasOlderMessages: false,
+      };
+    }
+
+    const rows = await prisma.messages.findMany({
+      where: {
+        channelId,
+        OR: [
+          {
+            createdAt: {
+              lt: cursor.createdAt,
+            },
+          },
+          {
+            createdAt: cursor.createdAt,
+            id: {
+              lt: cursor.id,
+            },
+          },
+        ],
+      },
+      orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+      take: limit + 1,
+      select: {
+        id: true,
+        content: true,
+        createdAt: true,
+        pinned: true,
+        channelId: true,
+        author: {
+          select: {
+            id: true,
+            name: true,
+            image: true,
+          },
+        },
+      },
+    });
+
+    const hasOlderMessages = rows.length > limit;
+    const messages = (hasOlderMessages ? rows.slice(0, limit) : rows).reverse();
+
+    return {
+      messages,
+      hasOlderMessages,
+    };
+  }
+
   static async createInChannel(channelId: string, authorId: string, content: string) {
     return prisma.messages.create({
       data: {

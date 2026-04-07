@@ -114,6 +114,7 @@ export async function createServer(serverName: string): Promise<HomeServer> {
         isPublic: true,
         allowedRoleIds: [],
         messages: [],
+        hasOlderMessages: false,
       },
     ],
   };

@@ -17,11 +17,14 @@ import {
   Textarea,
 } from "@mantine/core";
 import { UsersThreeIcon } from "@phosphor-icons/react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 type HomeChatPanelProps = {
   selectedChannel: HomeChannel | null;
   selectedServer: HomeServer | null;
+  messages: HomeChannel["messages"];
+  hasOlderMessages: boolean;
+  isLoadingOlderMessages: boolean;
   currentUserId: string;
   currentUser: {
     id: string;
@@ -34,6 +37,7 @@ type HomeChatPanelProps = {
   messageDraft: string;
   onChangeMessageDraft: (value: string) => void;
   onSendMessage: () => void;
+  onLoadOlderMessages: () => Promise<void>;
   isSendingMessage: boolean;
 };
 
@@ -47,6 +51,9 @@ function formatMessageTime(createdAt: string): string {
 export function HomeChatPanel({
   selectedChannel,
   selectedServer,
+  messages,
+  hasOlderMessages,
+  isLoadingOlderMessages,
   currentUserId,
   currentUser,
   isFetching,
@@ -55,9 +62,14 @@ export function HomeChatPanel({
   messageDraft,
   onChangeMessageDraft,
   onSendMessage,
+  onLoadOlderMessages,
   isSendingMessage,
 }: HomeChatPanelProps) {
   const [membersPanelExpanded, setMembersPanelExpanded] = useState(true);
+  const messageViewportRef = useRef<HTMLDivElement | null>(null);
+  const previousChannelIdRef = useRef<string | null>(selectedChannel?.id ?? null);
+  const previousMessageCountRef = useRef<number>(messages.length);
+  const loadingOlderRef = useRef(false);
 
   const visibleMembers = useMemo(() => {
     if (!selectedServer || !selectedChannel) {
@@ -103,6 +115,67 @@ export function HomeChatPanel({
 
   const showMembersPanel = membersPanelExpanded && selectedServer && selectedChannel;
 
+  useEffect(() => {
+    loadingOlderRef.current = isLoadingOlderMessages;
+  }, [isLoadingOlderMessages]);
+
+  const handleScrollPositionChange = ({ y }: { x: number; y: number }) => {
+    if (y > 72 || !selectedChannel || !hasOlderMessages || loadingOlderRef.current || messages.length === 0) {
+      return;
+    }
+
+    const viewport = messageViewportRef.current;
+    if (!viewport) {
+      return;
+    }
+
+    const previousScrollHeight = viewport.scrollHeight;
+    loadingOlderRef.current = true;
+
+    void onLoadOlderMessages().finally(() => {
+      requestAnimationFrame(() => {
+        const nextViewport = messageViewportRef.current;
+        if (!nextViewport) {
+          loadingOlderRef.current = false;
+          return;
+        }
+
+        const scrollHeightDelta = nextViewport.scrollHeight - previousScrollHeight;
+        if (scrollHeightDelta > 0) {
+          nextViewport.scrollTop += scrollHeightDelta;
+        }
+
+        loadingOlderRef.current = false;
+      });
+    });
+  };
+
+  useEffect(() => {
+    const viewport = messageViewportRef.current;
+    const currentChannelId = selectedChannel?.id ?? null;
+
+    if (!viewport || !currentChannelId) {
+      previousChannelIdRef.current = currentChannelId;
+      previousMessageCountRef.current = messages.length;
+      return;
+    }
+
+    const previousChannelId = previousChannelIdRef.current;
+    const previousMessageCount = previousMessageCountRef.current;
+    const currentMessageCount = messages.length;
+
+    const switchedChannel = previousChannelId !== currentChannelId;
+    const nearBottom = viewport.scrollHeight - viewport.scrollTop - viewport.clientHeight < 120;
+    const addedNewMessage = currentMessageCount > previousMessageCount;
+
+    if (switchedChannel || (addedNewMessage && nearBottom)) {
+      viewport.scrollTop = viewport.scrollHeight;
+    }
+
+    previousChannelIdRef.current = currentChannelId;
+    previousMessageCountRef.current = currentMessageCount;
+  }, [messages.length, selectedChannel?.id]);
+
   return (
     <Paper flex={1} bg="#313338" radius={0} p={0}>
       <Stack h="100%" gap={0}>
@@ -143,16 +216,52 @@ export function HomeChatPanel({
               </StreamVideoProvider>
             </Box>
           ) : (
-            <ScrollArea flex={1} p="md" type="hover">
-              <Stack gap="sm">
-                {isFetching ? (
-                  <Text size="sm" c="gray.4">
-                    Refreshing...
-                  </Text>
-                ) : null}
+            <Stack gap={0} style={{ flex: 1, minHeight: 0 }}>
+              <ScrollArea
+                viewportRef={messageViewportRef}
+                p="md"
+                type="hover"
+                style={{ flex: 1, minHeight: 0 }}
+                onScrollPositionChange={handleScrollPositionChange}
+              >
+                <Stack gap="sm" pb="sm">
+                  {isFetching ? (
+                    <Text size="sm" c="gray.4">
+                      Refreshing...
+                    </Text>
+                  ) : null}
 
-                {selectedChannel?.messages.length ? (
-                  selectedChannel.messages.map((message) => (
+                  {isLoadingOlderMessages ? (
+                    <Text size="xs" c="gray.5" ta="center">
+                      Loading older messages...
+                    </Text>
+                  ) : null}
+
+                  {selectedChannel ? (
+                    <Paper p="xl" bg="#2b2d31" radius="md" withBorder style={{ borderColor: "#4a4e57", borderStyle: "dashed" }}>
+                      <Stack align="center" gap={4}>
+                        <Text fw={700} c="gray.0">
+                          Welcome to #{selectedChannel.name}
+                        </Text>
+                        <Text size="sm" c="gray.4">
+                          This is the start of #{selectedChannel.name}.
+                        </Text>
+                      </Stack>
+                    </Paper>
+                  ) : (
+                    <Paper p="xl" bg="#2b2d31" radius="md" withBorder style={{ borderColor: "#4a4e57", borderStyle: "dashed" }}>
+                      <Stack align="center" gap={4}>
+                        <Text fw={600} c="gray.0">
+                          Select a channel
+                        </Text>
+                        <Text size="sm" c="gray.4">
+                          Choose a channel from the sidebar to start chatting.
+                        </Text>
+                      </Stack>
+                    </Paper>
+                  )}
+
+                  {messages.map((message) => (
                     <Paper key={message.id} p="sm" bg="#2b2d31" radius="md" withBorder style={{ borderColor: "#3a3d45" }}>
                       <Group align="flex-start" gap="sm" wrap="nowrap" justify="space-between">
                         <Avatar src={message.author.image} name={message.author.name} color="indigo" radius="xl" size="sm" />
@@ -198,56 +307,53 @@ export function HomeChatPanel({
                         ) : null}
                       </Group>
                     </Paper>
-                  ))
-                ) : (
-                  <Paper p="xl" bg="#2b2d31" radius="md" withBorder style={{ borderColor: "#4a4e57", borderStyle: "dashed" }}>
-                    <Stack align="center" gap={4}>
-                      <Text fw={600} c="gray.0">
-                        No messages yet
-                      </Text>
-                      <Text size="sm" c="gray.4">
-                        This channel is ready for its first message.
-                      </Text>
-                    </Stack>
-                  </Paper>
-                )}
+                  ))}
+                </Stack>
+              </ScrollArea>
 
-                {selectedServer && selectedChannel ? (
-                  <Paper p="sm" bg="#2b2d31" radius="md" withBorder style={{ borderColor: "#3a3d45" }}>
-                    <form
-                      onSubmit={(event) => {
-                        event.preventDefault();
-                        onSendMessage();
-                      }}
-                    >
-                      <Stack gap="xs">
-                        <Textarea
-                          placeholder={
-                            selectedServer.capabilities.canSendMessages
-                              ? `Message #${selectedChannel.name}`
-                              : "You do not have permission to send messages"
-                          }
-                          minRows={2}
-                          value={messageDraft}
-                          onChange={(event) => onChangeMessageDraft(event.currentTarget.value)}
-                          disabled={!selectedServer.capabilities.canSendMessages || isSendingMessage}
-                        />
-                        <Group justify="flex-end">
-                          <Button
-                            type="submit"
-                            size="xs"
-                            loading={isSendingMessage}
-                            disabled={!selectedServer.capabilities.canSendMessages || messageDraft.trim().length === 0}
-                          >
-                            Send
-                          </Button>
-                        </Group>
-                      </Stack>
-                    </form>
-                  </Paper>
-                ) : null}
-              </Stack>
-            </ScrollArea>
+              {selectedServer && selectedChannel ? (
+                <Paper
+                  p="sm"
+                  bg="#313338"
+                  radius={0}
+                  withBorder
+                  style={{ borderColor: "#232428", borderTopWidth: 1, borderLeftWidth: 0, borderRightWidth: 0, borderBottomWidth: 0 }}
+                >
+                  <form
+                    onSubmit={(event) => {
+                      event.preventDefault();
+                      onSendMessage();
+                    }}
+                  >
+                    <Stack gap="xs">
+                      <Textarea
+                        placeholder={
+                          selectedServer.capabilities.canSendMessages
+                            ? `Message #${selectedChannel.name}`
+                            : "You do not have permission to send messages"
+                        }
+                        minRows={2}
+                        maxRows={8}
+                        autosize
+                        value={messageDraft}
+                        onChange={(event) => onChangeMessageDraft(event.currentTarget.value)}
+                        disabled={!selectedServer.capabilities.canSendMessages || isSendingMessage}
+                      />
+                      <Group justify="flex-end">
+                        <Button
+                          type="submit"
+                          size="xs"
+                          loading={isSendingMessage}
+                          disabled={!selectedServer.capabilities.canSendMessages || messageDraft.trim().length === 0}
+                        >
+                          Send
+                        </Button>
+                      </Group>
+                    </Stack>
+                  </form>
+                </Paper>
+              ) : null}
+            </Stack>
           )}
 
           {showMembersPanel ? (
