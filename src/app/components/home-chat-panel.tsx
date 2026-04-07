@@ -9,7 +9,6 @@ import {
   Avatar,
   Badge,
   Box,
-  Button,
   Group,
   Menu,
   Paper,
@@ -373,20 +372,11 @@ export function HomeChatPanel({
                         }
                         value={messageDraft}
                         onChange={onChangeMessageDraft}
+                        onSubmit={onSendMessage}
                         disabled={!selectedServer.capabilities.canSendMessages || isSendingMessage}
                         minRows={2}
                         maxRows={8}
                       />
-                      <Group justify="flex-end">
-                        <Button
-                          type="submit"
-                          size="xs"
-                          loading={isSendingMessage}
-                          disabled={!selectedServer.capabilities.canSendMessages || messageDraft.trim().length === 0}
-                        >
-                          Send
-                        </Button>
-                      </Group>
                     </Stack>
                   </form>
                 </Paper>

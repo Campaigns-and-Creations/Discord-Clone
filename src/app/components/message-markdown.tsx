@@ -23,7 +23,7 @@ export function MessageMarkdown({ content }: MessageMarkdownProps) {
         rehypePlugins={[rehypeRaw, [rehypeSanitize, defaultSchema]]}
         components={{
           p: ({ children }) => (
-            <Text size="sm" c="gray.1" component="p" m={0} lh={1.35}>
+            <Text size="sm" c="gray.1" component="p" m={0} lh={1.35} style={{ whiteSpace: "pre-wrap" }}>
               {children}
             </Text>
           ),

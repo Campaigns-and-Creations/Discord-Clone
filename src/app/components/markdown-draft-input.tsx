@@ -4,6 +4,7 @@ import { Fragment, useLayoutEffect, useMemo, useRef } from "react";
 type MarkdownDraftInputProps = {
   value: string;
   onChange: (value: string) => void;
+  onSubmit?: () => void;
   placeholder: string;
   disabled?: boolean;
   minRows?: number;
@@ -75,6 +76,7 @@ function tokenizeInlineMarkdown(line: string): InlineToken[] {
 export function MarkdownDraftInput({
   value,
   onChange,
+  onSubmit,
   placeholder,
   disabled = false,
   minRows = 2,
@@ -261,6 +263,14 @@ export function MarkdownDraftInput({
         value={value}
         disabled={disabled}
         onChange={(event) => onChange(event.currentTarget.value)}
+        onKeyDown={(event) => {
+          if (event.key !== "Enter" || event.shiftKey || event.nativeEvent.isComposing) {
+            return;
+          }
+
+          event.preventDefault();
+          onSubmit?.();
+        }}
         onScroll={(event) => {
           const preview = previewRef.current;
           if (!preview) {
