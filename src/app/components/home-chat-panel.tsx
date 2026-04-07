@@ -17,7 +17,7 @@ import {
   Textarea,
 } from "@mantine/core";
 import { UsersThreeIcon } from "@phosphor-icons/react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 
 type HomeChatPanelProps = {
   selectedChannel: HomeChannel | null;
@@ -45,6 +45,20 @@ function formatMessageTime(createdAt: string): string {
   return new Date(createdAt).toLocaleTimeString([], {
     hour: "2-digit",
     minute: "2-digit",
+  });
+}
+
+function getMessageDateKey(createdAt: string): string {
+  const date = new Date(createdAt);
+  return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+}
+
+function formatDateDivider(createdAt: string): string {
+  return new Date(createdAt).toLocaleDateString([], {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
   });
 }
 
@@ -261,53 +275,72 @@ export function HomeChatPanel({
                     </Paper>
                   )}
 
-                  {messages.map((message) => (
-                    <Paper key={message.id} p="sm" bg="#2b2d31" radius="md" withBorder style={{ borderColor: "#3a3d45" }}>
-                      <Group align="flex-start" gap="sm" wrap="nowrap" justify="space-between">
-                        <Avatar src={message.author.image} name={message.author.name} color="indigo" radius="xl" size="sm" />
-                        <Stack gap={2} style={{ flex: 1, minWidth: 0 }}>
-                          <Group gap="xs">
-                            <Text size="sm" fw={700} c="gray.0">
-                              {message.author.name}
+                  {messages.map((message, index) => {
+                    const previousMessage = index > 0 ? messages[index - 1] : null;
+                    const currentDateKey = getMessageDateKey(message.createdAt);
+                    const previousDateKey = previousMessage ? getMessageDateKey(previousMessage.createdAt) : null;
+                    const showDateDivider = previousDateKey !== currentDateKey;
+
+                    return (
+                      <Fragment key={message.id}>
+                        {showDateDivider ? (
+                          <Group gap="xs" wrap="nowrap" align="center" mt="xs" mb={2}>
+                            <Box style={{ flex: 1, borderTop: "1px solid #3a3d45" }} />
+                            <Text size="xs" fw={700} c="gray.5" tt="uppercase" style={{ letterSpacing: "0.06em" }}>
+                              {formatDateDivider(message.createdAt)}
                             </Text>
-                            <Text size="xs" c="gray.5">
-                              {formatMessageTime(message.createdAt)}
-                            </Text>
-                            {message.pinned ? (
-                              <Text size="xs" c="yellow.4" fw={700}>
-                                PINNED
+                            <Box style={{ flex: 1, borderTop: "1px solid #3a3d45" }} />
+                          </Group>
+                        ) : null}
+
+                        <Paper p="sm" bg="#2b2d31" radius="md" withBorder style={{ borderColor: "#3a3d45" }}>
+                          <Group align="flex-start" gap="sm" wrap="nowrap" justify="space-between">
+                            <Avatar src={message.author.image} name={message.author.name} color="indigo" radius="xl" size="sm" />
+                            <Stack gap={2} style={{ flex: 1, minWidth: 0 }}>
+                              <Group gap="xs">
+                                <Text size="sm" fw={700} c="gray.0">
+                                  {message.author.name}
+                                </Text>
+                                <Text size="xs" c="gray.5">
+                                  {formatMessageTime(message.createdAt)}
+                                </Text>
+                                {message.pinned ? (
+                                  <Text size="xs" c="yellow.4" fw={700}>
+                                    PINNED
+                                  </Text>
+                                ) : null}
+                              </Group>
+                              <Text size="sm" c="gray.1">
+                                {message.content}
                               </Text>
+                            </Stack>
+
+                            {selectedServer ? (
+                              <Menu position="left-start" width={180} withinPortal={false}>
+                                <Menu.Target>
+                                  <ActionIcon variant="subtle" color="gray" size="sm">
+                                    ...
+                                  </ActionIcon>
+                                </Menu.Target>
+                                <Menu.Dropdown>
+                                  {(selectedServer.capabilities.canPinMessages || selectedServer.capabilities.canManageMessages) && (
+                                    <Menu.Item onClick={() => onTogglePin(message)}>
+                                      {message.pinned ? "Unpin message" : "Pin message"}
+                                    </Menu.Item>
+                                  )}
+                                  {(message.author.id === currentUserId || selectedServer.capabilities.canManageMessages) && (
+                                    <Menu.Item c="red.4" onClick={() => onDeleteMessage(message)}>
+                                      Delete message
+                                    </Menu.Item>
+                                  )}
+                                </Menu.Dropdown>
+                              </Menu>
                             ) : null}
                           </Group>
-                          <Text size="sm" c="gray.1">
-                            {message.content}
-                          </Text>
-                        </Stack>
-
-                        {selectedServer ? (
-                          <Menu position="left-start" width={180} withinPortal={false}>
-                            <Menu.Target>
-                              <ActionIcon variant="subtle" color="gray" size="sm">
-                                ...
-                              </ActionIcon>
-                            </Menu.Target>
-                            <Menu.Dropdown>
-                              {(selectedServer.capabilities.canPinMessages || selectedServer.capabilities.canManageMessages) && (
-                                <Menu.Item onClick={() => onTogglePin(message)}>
-                                  {message.pinned ? "Unpin message" : "Pin message"}
-                                </Menu.Item>
-                              )}
-                              {(message.author.id === currentUserId || selectedServer.capabilities.canManageMessages) && (
-                                <Menu.Item c="red.4" onClick={() => onDeleteMessage(message)}>
-                                  Delete message
-                                </Menu.Item>
-                              )}
-                            </Menu.Dropdown>
-                          </Menu>
-                        ) : null}
-                      </Group>
-                    </Paper>
-                  ))}
+                        </Paper>
+                      </Fragment>
+                    );
+                  })}
                 </Stack>
               </ScrollArea>
 
