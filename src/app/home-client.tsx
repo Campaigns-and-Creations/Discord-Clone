@@ -463,18 +463,16 @@ export default function HomeClient({ initialData }: HomeClientProps) {
   });
 
   const selectedChannelId = selectedServer
-    ? (selectedChannelByServer[selectedServer.id] ?? selectedServer.channels[0]?.id ?? null)
-    : null;
+    && (selectedChannelByServer[selectedServer.id] ?? selectedServer.channels[0]?.id ?? null);
 
   const selectedChannel = selectedServer?.channels.find((channel) => channel.id === selectedChannelId) ?? null;
 
   const selectedChannelMessageState = selectedChannel
-    ? (channelMessagesById[selectedChannel.id] ?? {
+    && (channelMessagesById[selectedChannel.id] ?? {
         messages: selectedChannel.messages,
         hasOlderMessages: selectedChannel.hasOlderMessages,
         isLoadingOlder: false,
-      })
-    : null;
+      });
 
   const selectedChannelMessages = selectedChannelMessageState?.messages ?? [];
   const selectedChannelHasOlderMessages = selectedChannelMessageState?.hasOlderMessages ?? false;

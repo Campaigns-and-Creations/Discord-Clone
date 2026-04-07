@@ -84,7 +84,7 @@ export function ManageRolesModal({
       centered
       size="xl"
     >
-      {selectedServer ? (
+      {selectedServer && (
         <Stack gap="md">
           <Paper p="sm" withBorder style={{ borderColor: "#3a3d45", background: "#232428" }}>
             <Text fw={700} c="gray.0" mb={8}>
@@ -134,11 +134,11 @@ export function ManageRolesModal({
                           <Badge variant="light" color="gray">
                             Position {role.position}
                           </Badge>
-                          {isOwnerRole ? (
+                          {isOwnerRole && (
                             <Badge variant="filled" color="indigo">
                               Immutable
                             </Badge>
-                          ) : null}
+                          )}
                         </Group>
                         <Text size="xs" c="gray.4">
                           {role.permissions.length > 0 ? role.permissions.join(", ") : "No explicit permissions"}
@@ -161,7 +161,7 @@ export function ManageRolesModal({
                       </Group>
                     </Group>
 
-                    {isEditing ? (
+                    {isEditing && (
                       <form
                         onSubmit={editRoleForm.onSubmit(async (values) => {
                           await onUpdateRole(role.id, values);
@@ -186,7 +186,7 @@ export function ManageRolesModal({
                           </Group>
                         </Stack>
                       </form>
-                    ) : null}
+                    )}
                   </Paper>
                 );
               })}
@@ -210,11 +210,11 @@ export function ManageRolesModal({
                           <Text fw={600} c="gray.0">
                             {member.name}
                           </Text>
-                          {memberIsOwner ? (
+                          {memberIsOwner && (
                             <Badge color="indigo" variant="filled">
                               Owner
                             </Badge>
-                          ) : null}
+                          )}
                         </Group>
                         <Text size="xs" c="gray.4">
                           {member.roleNames.length > 0 ? member.roleNames.join(", ") : "No roles"}
@@ -257,7 +257,7 @@ export function ManageRolesModal({
             </Stack>
           </Paper>
         </Stack>
-      ) : null}
+      )}
     </Modal>
   );
 }

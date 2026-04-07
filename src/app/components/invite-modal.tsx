@@ -49,7 +49,7 @@ export function InviteModal({
             {...form.getInputProps("maxUses")}
           />
 
-          {latestInviteLink ? (
+          {latestInviteLink && (
             <Stack gap={6}>
               <Text size="xs" c="gray.4">
                 Share this link to let people join the server.
@@ -61,7 +61,7 @@ export function InviteModal({
                 </Button>
               </Group>
             </Stack>
-          ) : null}
+          )}
 
           <Group justify="flex-end" mt="sm">
             <Button variant="default" onClick={onClose}>

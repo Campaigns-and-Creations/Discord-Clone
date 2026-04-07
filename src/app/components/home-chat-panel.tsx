@@ -207,11 +207,11 @@ export function HomeChatPanel({
               <Text size="sm" fw={700} c="gray.0" truncate="end">
                 {selectedChannel ? `# ${selectedChannel.name}` : "Select a channel"}
               </Text>
-              {selectedChannel && !selectedChannel.isPublic ? (
+              {selectedChannel && !selectedChannel.isPublic && (
                 <Badge size="xs" color="grape" variant="light">
                   Restricted
                 </Badge>
-              ) : null}
+              )}
             </Group>
             <ActionIcon
               variant="subtle"
@@ -247,17 +247,17 @@ export function HomeChatPanel({
                 onScrollPositionChange={handleScrollPositionChange}
               >
                 <Stack gap="sm" pb="sm">
-                  {isFetching ? (
+                  {isFetching && (
                     <Text size="sm" c="gray.4">
                       Refreshing...
                     </Text>
-                  ) : null}
+                  )}
 
-                  {isLoadingOlderMessages ? (
+                  {isLoadingOlderMessages && (
                     <Text size="xs" c="gray.5" ta="center">
                       Loading older messages...
                     </Text>
-                  ) : null}
+                  )}
 
                   {selectedChannel ? (
                     <Paper p="xl" bg="#2b2d31" radius="md" withBorder style={{ borderColor: "#4a4e57", borderStyle: "dashed" }}>
@@ -284,14 +284,14 @@ export function HomeChatPanel({
                   )}
 
                   {messages.map((message, index) => {
-                    const previousMessage = index > 0 ? messages[index - 1] : null;
+                    const previousMessage = index > 0 && messages[index - 1];
                     const currentDateKey = getMessageDateKey(message.createdAt);
-                    const previousDateKey = previousMessage ? getMessageDateKey(previousMessage.createdAt) : null;
+                    const previousDateKey = previousMessage && getMessageDateKey(previousMessage.createdAt);
                     const showDateDivider = previousDateKey !== currentDateKey;
 
                     return (
                       <Fragment key={message.id}>
-                        {showDateDivider ? (
+                        {showDateDivider && (
                           <Group gap="xs" wrap="nowrap" align="center" mt="xs" mb={2}>
                             <Box style={{ flex: 1, borderTop: "1px solid #3a3d45" }} />
                             <Text size="xs" fw={700} c="gray.5" tt="uppercase" style={{ letterSpacing: "0.06em" }}>
@@ -299,7 +299,7 @@ export function HomeChatPanel({
                             </Text>
                             <Box style={{ flex: 1, borderTop: "1px solid #3a3d45" }} />
                           </Group>
-                        ) : null}
+                        )}
 
                         <Paper p="sm" bg="#2b2d31" radius="md" withBorder style={{ borderColor: "#3a3d45" }}>
                           <Group align="flex-start" gap="sm" wrap="nowrap" justify="space-between">
@@ -312,16 +312,16 @@ export function HomeChatPanel({
                                 <Text size="xs" c="gray.5">
                                   {formatMessageTime(message.createdAt)}
                                 </Text>
-                                {message.pinned ? (
+                                {message.pinned && (
                                   <Text size="xs" c="yellow.4" fw={700}>
                                     PINNED
                                   </Text>
-                                ) : null}
+                                )}
                               </Group>
                               <MessageMarkdown content={message.content} />
                             </Stack>
 
-                            {selectedServer ? (
+                            {selectedServer && (
                               <Menu position="left-start" width={180} withinPortal={false}>
                                 <Menu.Target>
                                   <ActionIcon variant="subtle" color="gray" size="sm">
@@ -341,7 +341,7 @@ export function HomeChatPanel({
                                   )}
                                 </Menu.Dropdown>
                               </Menu>
-                            ) : null}
+                            )}
                           </Group>
                         </Paper>
                       </Fragment>
@@ -350,7 +350,7 @@ export function HomeChatPanel({
                 </Stack>
               </ScrollArea>
 
-              {selectedServer && selectedChannel ? (
+              {selectedServer && selectedChannel && (
                 <Paper
                   p="sm"
                   bg="#313338"
@@ -390,11 +390,11 @@ export function HomeChatPanel({
                     </Stack>
                   </form>
                 </Paper>
-              ) : null}
+              )}
             </Stack>
           )}
 
-          {showMembersPanel ? (
+          {showMembersPanel && (
             <Paper w={240} bg="#2b2d31" radius={0} withBorder style={{ borderColor: "#232428", borderLeftWidth: 1 }}>
               <Stack h="100%" gap={0}>
                 <Box px="sm" py="xs" style={{ borderBottom: "1px solid #232428" }}>
@@ -419,11 +419,11 @@ export function HomeChatPanel({
                             <Text size="sm" c="gray.0" truncate="end">
                               {member.name}
                             </Text>
-                            {member.roleNames[0] ? (
+                            {member.roleNames[0] && (
                               <Text size="xs" c="gray.5" truncate="end">
                                 {member.roleNames[0]}
                               </Text>
-                            ) : null}
+                            )}
                           </Stack>
                         </Group>
                       ))
@@ -436,7 +436,7 @@ export function HomeChatPanel({
                 </ScrollArea>
               </Stack>
             </Paper>
-          ) : null}
+          )}
         </Group>
       </Stack>
     </Paper>

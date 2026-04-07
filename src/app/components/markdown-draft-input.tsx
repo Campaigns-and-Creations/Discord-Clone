@@ -167,7 +167,7 @@ export function MarkdownDraftInput({
         ) : (
           previewLines.map((line, index) => (
             <Fragment key={line.key}>
-              {index > 0 ? <br /> : null}
+              {index > 0 && <br /> }
               {line.mode === "fence" ? (
                 <span style={{ color: "var(--mantine-color-gray-5)" }}>{line.value || " "}</span>
               ) : line.mode === "code" ? (
