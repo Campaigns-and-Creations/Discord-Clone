@@ -233,6 +233,7 @@ export function HomeChatPanel({
                   serverId={selectedServer.id}
                   channelId={selectedChannel.id}
                   channelName={selectedChannel.name}
+                  currentUser={currentUser}
                 />
               </StreamVideoProvider>
             </Box>
