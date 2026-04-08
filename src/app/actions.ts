@@ -6,11 +6,9 @@ import { MessagesDal } from "@/dal/messages";
 import { ServerMemberDal } from "@/dal/serverMember";
 import { ServerRolesDal } from "@/dal/serverRoles";
 import { ServerDal } from "@/dal/server";
-import { UserDal } from "@/dal/user";
 import { ChannelType, Permission } from "@/generated/prisma/client";
 import {
   canAccessChannel,
-  canModerateTarget,
   getMembershipPermissions,
   hasServerPermission,
 } from "@/utils/permissions";
@@ -21,7 +19,6 @@ function toIsoString(value: Date): string {
   return value.toISOString();
 }
 
-const MAX_TIMEOUT_MINUTES = 60 * 24 * 28;
 const OWNER_ROLE_NAME = "Owner";
 
 function normalizeRoleName(roleName: string) {
@@ -266,39 +263,6 @@ export async function deleteServer(serverId: string) {
   return { success: true };
 }
 
-export async function inviteMember(serverId: string, email: string) {
-  const sessionUser = await requireUser();
-  const normalizedEmail = email.trim().toLowerCase();
-
-  if (!normalizedEmail) {
-    throw new Error("Email is required.");
-  }
-
-  const isMember = await ServerMemberDal.isUserMemberOfServer(sessionUser.id, serverId);
-  if (!isMember) {
-    throw new Error("Forbidden");
-  }
-
-  const canInvite = await hasServerPermission(sessionUser.id, serverId, Permission.CREATE_INVITE);
-  if (!canInvite) {
-    throw new Error("Forbidden");
-  }
-
-  const userToInvite = await UserDal.getByEmail(normalizedEmail);
-  if (!userToInvite) {
-    throw new Error("User not found.");
-  }
-
-  const existingMember = await ServerMemberDal.findByUserAndServer(userToInvite.id, serverId);
-  if (existingMember) {
-    throw new Error("User is already a server member.");
-  }
-
-  const memberRole = await ServerRolesDal.findByName(serverId, "Member");
-
-  return ServerMemberDal.createInServer(serverId, userToInvite.id, memberRole?.id);
-}
-
 export async function createInviteLink(
   serverId: string,
   options?: {
@@ -540,63 +504,6 @@ export async function setMessagePinned(serverId: string, channelId: string, mess
   return MessagesDal.setPinned(messageId, pinned);
 }
 
-export async function timeoutMember(serverId: string, targetUserId: string, durationMinutes: number) {
-  const sessionUser = await requireUser();
-
-  if (!Number.isFinite(durationMinutes) || durationMinutes <= 0 || durationMinutes > MAX_TIMEOUT_MINUTES) {
-    throw new Error(`durationMinutes must be between 1 and ${MAX_TIMEOUT_MINUTES}.`);
-  }
-
-  const isMember = await ServerMemberDal.isUserMemberOfServer(sessionUser.id, serverId);
-  if (!isMember) {
-    throw new Error("Forbidden");
-  }
-
-  const canModerate = await hasServerPermission(sessionUser.id, serverId, Permission.MODERATE_MEMBERS);
-  if (!canModerate) {
-    throw new Error("Forbidden");
-  }
-
-  const targetMember = await ServerMemberDal.findByUserAndServer(targetUserId, serverId);
-  if (!targetMember) {
-    throw new Error("Target user is not a server member.");
-  }
-
-  const canModerateTargetUser = await canModerateTarget(sessionUser.id, targetUserId, serverId);
-  if (!canModerateTargetUser) {
-    throw new Error("Cannot moderate this user due to role hierarchy.");
-  }
-
-  const timeoutUntil = new Date(Date.now() + durationMinutes * 60_000);
-  return ServerMemberDal.setTimeoutUntil(targetMember.id, timeoutUntil);
-}
-
-export async function clearMemberTimeout(serverId: string, targetUserId: string) {
-  const sessionUser = await requireUser();
-
-  const isMember = await ServerMemberDal.isUserMemberOfServer(sessionUser.id, serverId);
-  if (!isMember) {
-    throw new Error("Forbidden");
-  }
-
-  const canModerate = await hasServerPermission(sessionUser.id, serverId, Permission.MODERATE_MEMBERS);
-  if (!canModerate) {
-    throw new Error("Forbidden");
-  }
-
-  const targetMember = await ServerMemberDal.findByUserAndServer(targetUserId, serverId);
-  if (!targetMember) {
-    throw new Error("Target user is not a server member.");
-  }
-
-  const canModerateTargetUser = await canModerateTarget(sessionUser.id, targetUserId, serverId);
-  if (!canModerateTargetUser) {
-    throw new Error("Cannot moderate this user due to role hierarchy.");
-  }
-
-  return ServerMemberDal.setTimeoutUntil(targetMember.id, null);
-}
-
 export async function createServerRole(serverId: string, roleName: string, permissions: Permission[]) {
   const sessionUser = await requireUser();
   const actorMembership = await requireCanManageServer(sessionUser.id, serverId);
@@ -666,7 +573,7 @@ export async function updateServerRole(
     throw new Error("Only owner can grant administrator permission.");
   }
 
-  const updated = await ServerRolesDal.updateRole(role.id, serverId, normalizedName, normalizedPermissions);
+  const updated = await ServerRolesDal.updateRole(role.id, normalizedName, normalizedPermissions);
 
   return {
     id: updated.id,

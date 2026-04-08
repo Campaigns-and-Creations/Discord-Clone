@@ -2,39 +2,6 @@ import { Permission } from "@/generated/prisma/client";
 import { prisma } from "@/utils/prisma";
 
 export class ServerRolesDal {
-  static async findByName(serverId: string, name: string) {
-    return prisma.serverRoles.findFirst({
-      where: {
-        serverId,
-        name,
-      },
-      select: { id: true },
-    });
-  }
-
-  static async listForMember(serverMemberId: string) {
-    const member = await prisma.serverMember.findUnique({
-      where: { id: serverMemberId },
-      select: {
-        serverRoles: {
-          select: {
-            id: true,
-            name: true,
-            position: true,
-            permissions: {
-              select: {
-                permission: true,
-              },
-            },
-          },
-          orderBy: { position: "desc" },
-        },
-      },
-    });
-
-    return member?.serverRoles ?? [];
-  }
-
   static async listForUserInServer(userId: string, serverId: string) {
     const member = await prisma.serverMember.findFirst({
       where: {
@@ -164,7 +131,7 @@ export class ServerRolesDal {
     });
   }
 
-  static async updateRole(roleId: string, _serverId: string, name: string, permissions: Permission[]) {
+  static async updateRole(roleId: string, name: string, permissions: Permission[]) {
     return prisma.serverRoles.update({
       where: { id: roleId },
       data: {

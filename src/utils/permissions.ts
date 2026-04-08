@@ -103,32 +103,3 @@ export async function canAccessChannel(
 
   return false;
 }
-
-export async function canModerateTarget(
-  actorUserId: string,
-  targetUserId: string,
-  serverId: string,
-): Promise<boolean> {
-  if (actorUserId === targetUserId) {
-    return false;
-  }
-
-  const [actorMembership, targetMembership] = await Promise.all([
-    getMembershipPermissions(actorUserId, serverId),
-    getMembershipPermissions(targetUserId, serverId),
-  ]);
-
-  if (!actorMembership || !targetMembership) {
-    return false;
-  }
-
-  if (actorMembership.isOwner) {
-    return true;
-  }
-
-  if (targetMembership.isOwner) {
-    return false;
-  }
-
-  return actorMembership.highestRolePosition > targetMembership.highestRolePosition;
-}

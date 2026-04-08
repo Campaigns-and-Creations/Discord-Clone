@@ -1,6 +1,6 @@
 import { Button, Group, Modal, MultiSelect, SegmentedControl, Stack, Switch, TextInput } from "@mantine/core";
 import type { UseFormReturnType } from "@mantine/form";
-import { ChannelType, type ChannelType as ChannelTypeValue } from "@/generated/prisma/client";
+import { ChannelType } from "@/generated/prisma/client";
 
 type RoleOption = {
   value: string;

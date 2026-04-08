@@ -12,16 +12,4 @@ export class UserDal {
       },
     });
   }
-
-  static async getByEmail(email: string) {
-    return prisma.user.findUnique({
-      where: { email },
-      select: {
-        id: true,
-        name: true,
-        image: true,
-        email: true,
-      },
-    });
-  }
 }

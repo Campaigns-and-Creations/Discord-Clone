@@ -37,17 +37,6 @@ export class ServerMemberDal {
     return Boolean(membership);
   }
 
-  static async setTimeoutUntil(memberId: string, timeoutUntil: Date | null) {
-    return prisma.serverMember.update({
-      where: { id: memberId },
-      data: { timeoutUntil },
-      select: {
-        id: true,
-        timeoutUntil: true,
-      },
-    });
-  }
-
   static async createInServer(serverId: string, userId: string, roleId?: string) {
     return prisma.serverMember.create({
       data: {

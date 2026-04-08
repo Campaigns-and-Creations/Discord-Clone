@@ -13,20 +13,6 @@ export interface ProvidersProps {
 }
 
 export const Providers = ({ children }: ProvidersProps) => {
-  const isProduction = process.env.NEXT_PUBLIC_VERCEL_ENV === "production";
-
-  // In production, don't wrap with ClerkProvider
-  if (isProduction) {
-    return (
-      <MantineProvider defaultColorScheme="dark">
-        <ModalsProvider>
-          <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-        </ModalsProvider>
-      </MantineProvider>
-    );
-  }
-
-  // In development, include ClerkProvider
   return (
     <MantineProvider defaultColorScheme="dark">
       <ModalsProvider>
