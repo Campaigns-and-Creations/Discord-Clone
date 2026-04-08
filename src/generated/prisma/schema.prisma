@@ -41,6 +41,7 @@ model ServerMember {
   id           String        @id @default(uuid())
   userId       String
   serverId     String
+  nickname     String?
   server       Server        @relation(fields: [serverId], references: [id])
   user         User          @relation(fields: [userId], references: [id])
   timeoutUntil DateTime?

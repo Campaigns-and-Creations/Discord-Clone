@@ -141,6 +141,7 @@ exports.Prisma.ServerMemberScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
   serverId: 'serverId',
+  nickname: 'nickname',
   timeoutUntil: 'timeoutUntil'
 };
 

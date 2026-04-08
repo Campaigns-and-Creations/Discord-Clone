@@ -4503,6 +4503,7 @@ export namespace Prisma {
     id: string | null
     userId: string | null
     serverId: string | null
+    nickname: string | null
     timeoutUntil: Date | null
   }
 
@@ -4510,6 +4511,7 @@ export namespace Prisma {
     id: string | null
     userId: string | null
     serverId: string | null
+    nickname: string | null
     timeoutUntil: Date | null
   }
 
@@ -4517,6 +4519,7 @@ export namespace Prisma {
     id: number
     userId: number
     serverId: number
+    nickname: number
     timeoutUntil: number
     _all: number
   }
@@ -4526,6 +4529,7 @@ export namespace Prisma {
     id?: true
     userId?: true
     serverId?: true
+    nickname?: true
     timeoutUntil?: true
   }
 
@@ -4533,6 +4537,7 @@ export namespace Prisma {
     id?: true
     userId?: true
     serverId?: true
+    nickname?: true
     timeoutUntil?: true
   }
 
@@ -4540,6 +4545,7 @@ export namespace Prisma {
     id?: true
     userId?: true
     serverId?: true
+    nickname?: true
     timeoutUntil?: true
     _all?: true
   }
@@ -4620,6 +4626,7 @@ export namespace Prisma {
     id: string
     userId: string
     serverId: string
+    nickname: string | null
     timeoutUntil: Date | null
     _count: ServerMemberCountAggregateOutputType | null
     _min: ServerMemberMinAggregateOutputType | null
@@ -4644,6 +4651,7 @@ export namespace Prisma {
     id?: boolean
     userId?: boolean
     serverId?: boolean
+    nickname?: boolean
     timeoutUntil?: boolean
     server?: boolean | ServerDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -4655,6 +4663,7 @@ export namespace Prisma {
     id?: boolean
     userId?: boolean
     serverId?: boolean
+    nickname?: boolean
     timeoutUntil?: boolean
     server?: boolean | ServerDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -4664,6 +4673,7 @@ export namespace Prisma {
     id?: boolean
     userId?: boolean
     serverId?: boolean
+    nickname?: boolean
     timeoutUntil?: boolean
     server?: boolean | ServerDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -4673,10 +4683,11 @@ export namespace Prisma {
     id?: boolean
     userId?: boolean
     serverId?: boolean
+    nickname?: boolean
     timeoutUntil?: boolean
   }
 
-  export type ServerMemberOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "serverId" | "timeoutUntil", ExtArgs["result"]["serverMember"]>
+  export type ServerMemberOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "serverId" | "nickname" | "timeoutUntil", ExtArgs["result"]["serverMember"]>
   export type ServerMemberInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     server?: boolean | ServerDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -4703,6 +4714,7 @@ export namespace Prisma {
       id: string
       userId: string
       serverId: string
+      nickname: string | null
       timeoutUntil: Date | null
     }, ExtArgs["result"]["serverMember"]>
     composites: {}
@@ -5133,6 +5145,7 @@ export namespace Prisma {
     readonly id: FieldRef<"ServerMember", 'String'>
     readonly userId: FieldRef<"ServerMember", 'String'>
     readonly serverId: FieldRef<"ServerMember", 'String'>
+    readonly nickname: FieldRef<"ServerMember", 'String'>
     readonly timeoutUntil: FieldRef<"ServerMember", 'DateTime'>
   }
     
@@ -15657,6 +15670,7 @@ export namespace Prisma {
     id: 'id',
     userId: 'userId',
     serverId: 'serverId',
+    nickname: 'nickname',
     timeoutUntil: 'timeoutUntil'
   };
 
@@ -16039,6 +16053,7 @@ export namespace Prisma {
     id?: StringFilter<"ServerMember"> | string
     userId?: StringFilter<"ServerMember"> | string
     serverId?: StringFilter<"ServerMember"> | string
+    nickname?: StringNullableFilter<"ServerMember"> | string | null
     timeoutUntil?: DateTimeNullableFilter<"ServerMember"> | Date | string | null
     server?: XOR<ServerScalarRelationFilter, ServerWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -16049,6 +16064,7 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     serverId?: SortOrder
+    nickname?: SortOrderInput | SortOrder
     timeoutUntil?: SortOrderInput | SortOrder
     server?: ServerOrderByWithRelationInput
     user?: UserOrderByWithRelationInput
@@ -16062,6 +16078,7 @@ export namespace Prisma {
     NOT?: ServerMemberWhereInput | ServerMemberWhereInput[]
     userId?: StringFilter<"ServerMember"> | string
     serverId?: StringFilter<"ServerMember"> | string
+    nickname?: StringNullableFilter<"ServerMember"> | string | null
     timeoutUntil?: DateTimeNullableFilter<"ServerMember"> | Date | string | null
     server?: XOR<ServerScalarRelationFilter, ServerWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -16072,6 +16089,7 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     serverId?: SortOrder
+    nickname?: SortOrderInput | SortOrder
     timeoutUntil?: SortOrderInput | SortOrder
     _count?: ServerMemberCountOrderByAggregateInput
     _max?: ServerMemberMaxOrderByAggregateInput
@@ -16085,6 +16103,7 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"ServerMember"> | string
     userId?: StringWithAggregatesFilter<"ServerMember"> | string
     serverId?: StringWithAggregatesFilter<"ServerMember"> | string
+    nickname?: StringNullableWithAggregatesFilter<"ServerMember"> | string | null
     timeoutUntil?: DateTimeNullableWithAggregatesFilter<"ServerMember"> | Date | string | null
   }
 
@@ -16838,6 +16857,7 @@ export namespace Prisma {
 
   export type ServerMemberCreateInput = {
     id?: string
+    nickname?: string | null
     timeoutUntil?: Date | string | null
     server: ServerCreateNestedOneWithoutMembersInput
     user: UserCreateNestedOneWithoutMembershipsInput
@@ -16848,12 +16868,14 @@ export namespace Prisma {
     id?: string
     userId: string
     serverId: string
+    nickname?: string | null
     timeoutUntil?: Date | string | null
     serverRoles?: ServerRolesUncheckedCreateNestedManyWithoutMembersInput
   }
 
   export type ServerMemberUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    nickname?: NullableStringFieldUpdateOperationsInput | string | null
     timeoutUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     server?: ServerUpdateOneRequiredWithoutMembersNestedInput
     user?: UserUpdateOneRequiredWithoutMembershipsNestedInput
@@ -16864,6 +16886,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     serverId?: StringFieldUpdateOperationsInput | string
+    nickname?: NullableStringFieldUpdateOperationsInput | string | null
     timeoutUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     serverRoles?: ServerRolesUncheckedUpdateManyWithoutMembersNestedInput
   }
@@ -16872,11 +16895,13 @@ export namespace Prisma {
     id?: string
     userId: string
     serverId: string
+    nickname?: string | null
     timeoutUntil?: Date | string | null
   }
 
   export type ServerMemberUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    nickname?: NullableStringFieldUpdateOperationsInput | string | null
     timeoutUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
@@ -16884,6 +16909,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     serverId?: StringFieldUpdateOperationsInput | string
+    nickname?: NullableStringFieldUpdateOperationsInput | string | null
     timeoutUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
@@ -17787,6 +17813,7 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     serverId?: SortOrder
+    nickname?: SortOrder
     timeoutUntil?: SortOrder
   }
 
@@ -17794,6 +17821,7 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     serverId?: SortOrder
+    nickname?: SortOrder
     timeoutUntil?: SortOrder
   }
 
@@ -17801,6 +17829,7 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     serverId?: SortOrder
+    nickname?: SortOrder
     timeoutUntil?: SortOrder
   }
 
@@ -19422,6 +19451,7 @@ export namespace Prisma {
 
   export type ServerMemberCreateWithoutServerInput = {
     id?: string
+    nickname?: string | null
     timeoutUntil?: Date | string | null
     user: UserCreateNestedOneWithoutMembershipsInput
     serverRoles?: ServerRolesCreateNestedManyWithoutMembersInput
@@ -19430,6 +19460,7 @@ export namespace Prisma {
   export type ServerMemberUncheckedCreateWithoutServerInput = {
     id?: string
     userId: string
+    nickname?: string | null
     timeoutUntil?: Date | string | null
     serverRoles?: ServerRolesUncheckedCreateNestedManyWithoutMembersInput
   }
@@ -19556,6 +19587,7 @@ export namespace Prisma {
     id?: StringFilter<"ServerMember"> | string
     userId?: StringFilter<"ServerMember"> | string
     serverId?: StringFilter<"ServerMember"> | string
+    nickname?: StringNullableFilter<"ServerMember"> | string | null
     timeoutUntil?: DateTimeNullableFilter<"ServerMember"> | Date | string | null
   }
 
@@ -20033,6 +20065,7 @@ export namespace Prisma {
 
   export type ServerMemberCreateWithoutServerRolesInput = {
     id?: string
+    nickname?: string | null
     timeoutUntil?: Date | string | null
     server: ServerCreateNestedOneWithoutMembersInput
     user: UserCreateNestedOneWithoutMembershipsInput
@@ -20042,6 +20075,7 @@ export namespace Prisma {
     id?: string
     userId: string
     serverId: string
+    nickname?: string | null
     timeoutUntil?: Date | string | null
   }
 
@@ -20716,6 +20750,7 @@ export namespace Prisma {
 
   export type ServerMemberCreateWithoutUserInput = {
     id?: string
+    nickname?: string | null
     timeoutUntil?: Date | string | null
     server: ServerCreateNestedOneWithoutMembersInput
     serverRoles?: ServerRolesCreateNestedManyWithoutMembersInput
@@ -20724,6 +20759,7 @@ export namespace Prisma {
   export type ServerMemberUncheckedCreateWithoutUserInput = {
     id?: string
     serverId: string
+    nickname?: string | null
     timeoutUntil?: Date | string | null
     serverRoles?: ServerRolesUncheckedCreateNestedManyWithoutMembersInput
   }
@@ -21092,6 +21128,7 @@ export namespace Prisma {
   export type ServerMemberCreateManyServerInput = {
     id?: string
     userId: string
+    nickname?: string | null
     timeoutUntil?: Date | string | null
   }
 
@@ -21147,6 +21184,7 @@ export namespace Prisma {
 
   export type ServerMemberUpdateWithoutServerInput = {
     id?: StringFieldUpdateOperationsInput | string
+    nickname?: NullableStringFieldUpdateOperationsInput | string | null
     timeoutUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     user?: UserUpdateOneRequiredWithoutMembershipsNestedInput
     serverRoles?: ServerRolesUpdateManyWithoutMembersNestedInput
@@ -21155,6 +21193,7 @@ export namespace Prisma {
   export type ServerMemberUncheckedUpdateWithoutServerInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    nickname?: NullableStringFieldUpdateOperationsInput | string | null
     timeoutUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     serverRoles?: ServerRolesUncheckedUpdateManyWithoutMembersNestedInput
   }
@@ -21162,6 +21201,7 @@ export namespace Prisma {
   export type ServerMemberUncheckedUpdateManyWithoutServerInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    nickname?: NullableStringFieldUpdateOperationsInput | string | null
     timeoutUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
@@ -21351,6 +21391,7 @@ export namespace Prisma {
 
   export type ServerMemberUpdateWithoutServerRolesInput = {
     id?: StringFieldUpdateOperationsInput | string
+    nickname?: NullableStringFieldUpdateOperationsInput | string | null
     timeoutUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     server?: ServerUpdateOneRequiredWithoutMembersNestedInput
     user?: UserUpdateOneRequiredWithoutMembershipsNestedInput
@@ -21360,6 +21401,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     serverId?: StringFieldUpdateOperationsInput | string
+    nickname?: NullableStringFieldUpdateOperationsInput | string | null
     timeoutUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
@@ -21367,6 +21409,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     serverId?: StringFieldUpdateOperationsInput | string
+    nickname?: NullableStringFieldUpdateOperationsInput | string | null
     timeoutUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
@@ -21436,6 +21479,7 @@ export namespace Prisma {
   export type ServerMemberCreateManyUserInput = {
     id?: string
     serverId: string
+    nickname?: string | null
     timeoutUntil?: Date | string | null
   }
 
@@ -21551,6 +21595,7 @@ export namespace Prisma {
 
   export type ServerMemberUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
+    nickname?: NullableStringFieldUpdateOperationsInput | string | null
     timeoutUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     server?: ServerUpdateOneRequiredWithoutMembersNestedInput
     serverRoles?: ServerRolesUpdateManyWithoutMembersNestedInput
@@ -21559,6 +21604,7 @@ export namespace Prisma {
   export type ServerMemberUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     serverId?: StringFieldUpdateOperationsInput | string
+    nickname?: NullableStringFieldUpdateOperationsInput | string | null
     timeoutUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     serverRoles?: ServerRolesUncheckedUpdateManyWithoutMembersNestedInput
   }
@@ -21566,6 +21612,7 @@ export namespace Prisma {
   export type ServerMemberUncheckedUpdateManyWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     serverId?: StringFieldUpdateOperationsInput | string
+    nickname?: NullableStringFieldUpdateOperationsInput | string | null
     timeoutUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 

@@ -12,12 +12,10 @@ import {
   getMembershipPermissions,
   hasServerPermission,
 } from "@/utils/permissions";
+import { toIsoString } from "@/utils/date";
+import { resolveDisplayName } from "@/utils/display-name";
 import { requireUser } from "@/utils/session";
 import type { HomeServer } from "@/app/home-types";
-
-function toIsoString(value: Date): string {
-  return value.toISOString();
-}
 
 const OWNER_ROLE_NAME = "Owner";
 
@@ -96,6 +94,8 @@ export async function createServer(serverName: string): Promise<HomeServer> {
         memberId: result.membershipId,
         userId: sessionUser.id,
         name: sessionUser.name,
+        username: sessionUser.name,
+        nickname: null,
         image: sessionUser.image ?? null,
         roleIds: [result.ownerRole.id],
         roleNames: [result.ownerRole.name],
@@ -435,6 +435,7 @@ export async function sendMessage(serverId: string, channelId: string, content: 
   }
 
   const message = await MessagesDal.createInChannel(channelId, sessionUser.id, normalizedContent);
+  const displayName = resolveDisplayName(membership.nickname, message.author.name);
 
   return {
     id: message.id,
@@ -444,9 +445,66 @@ export async function sendMessage(serverId: string, channelId: string, content: 
     channelId: message.channelId,
     author: {
       id: message.author.id,
-      name: message.author.name,
+      name: displayName,
+      username: message.author.name,
+      nickname: membership.nickname,
       image: message.author.image,
     },
+  };
+}
+
+export async function updateOwnServerNickname(serverId: string, nickname: string) {
+  const sessionUser = await requireUser();
+  const normalizedNickname = nickname.trim();
+  const nextNickname = normalizedNickname.length > 0 ? normalizedNickname : null;
+
+  if (nextNickname && nextNickname.length > 60) {
+    throw new Error("Nickname must be at most 60 characters.");
+  }
+
+  const membership = await ServerMemberDal.findByUserAndServer(sessionUser.id, serverId);
+  if (!membership) {
+    throw new Error("Forbidden");
+  }
+
+  const result = await ServerMemberDal.updateNickname(sessionUser.id, serverId, nextNickname);
+  if (result.count !== 1) {
+    throw new Error("Unable to update nickname.");
+  }
+
+  return {
+    nickname: nextNickname,
+    name: resolveDisplayName(nextNickname, sessionUser.name),
+  };
+}
+
+export async function updateServerMemberNickname(serverId: string, memberId: string, nickname: string) {
+  const sessionUser = await requireUser();
+  const normalizedNickname = nickname.trim();
+  const nextNickname = normalizedNickname.length > 0 ? normalizedNickname : null;
+
+  if (nextNickname && nextNickname.length > 60) {
+    throw new Error("Nickname must be at most 60 characters.");
+  }
+
+  const actorMembership = await requireCanManageServer(sessionUser.id, serverId);
+  if (!actorMembership) {
+    throw new Error("Forbidden");
+  }
+
+  const targetMember = await ServerMemberDal.findByIdInServer(memberId, serverId);
+  if (!targetMember) {
+    throw new Error("Member not found.");
+  }
+
+  const result = await ServerMemberDal.updateNicknameByMemberIdInServer(memberId, serverId, nextNickname);
+  if (result.count !== 1) {
+    throw new Error("Unable to update nickname.");
+  }
+
+  return {
+    memberId,
+    nickname: nextNickname,
   };
 }
 

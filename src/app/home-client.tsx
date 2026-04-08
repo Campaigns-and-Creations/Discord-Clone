@@ -12,6 +12,8 @@ import {
   sendMessage,
   setMessagePinned,
   setServerMemberRoles,
+  updateServerMemberNickname,
+  updateOwnServerNickname,
   updateChannelAccess,
   updateServerRole,
 } from "@/app/actions";
@@ -25,7 +27,7 @@ import { ManageRolesModal } from "@/app/components/manage-roles-modal";
 import type { HomeMessage, HomePageData } from "@/app/home-types";
 import { ChannelType, Permission } from "@/generated/prisma/client";
 import { signOut } from "@/utils/auth-client";
-import { Box, Group } from "@mantine/core";
+import { Box, Button, Group, Modal, Stack, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { modals } from "@mantine/modals";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -102,6 +104,7 @@ export default function HomeClient({ initialData }: HomeClientProps) {
   const [createChannelModalOpened, setCreateChannelModalOpened] = useState(false);
   const [inviteModalOpened, setInviteModalOpened] = useState(false);
   const [manageRolesModalOpened, setManageRolesModalOpened] = useState(false);
+  const [nicknameModalOpened, setNicknameModalOpened] = useState(false);
   const [channelAccessModalOpened, setChannelAccessModalOpened] = useState(false);
   const [latestInviteLink, setLatestInviteLink] = useState<string | null>(null);
   const [linkCopied, setLinkCopied] = useState(false);
@@ -110,6 +113,7 @@ export default function HomeClient({ initialData }: HomeClientProps) {
   const [editingRoleId, setEditingRoleId] = useState<string | null>(null);
   const [editingChannelId, setEditingChannelId] = useState<string | null>(null);
   const [memberRoleDrafts, setMemberRoleDrafts] = useState<Record<string, string[]>>({});
+  const [memberNicknameDrafts, setMemberNicknameDrafts] = useState<Record<string, string>>({});
 
   const createServerForm = useForm({
     initialValues: {
@@ -235,6 +239,21 @@ export default function HomeClient({ initialData }: HomeClientProps) {
         if (trimmed.length > 60) {
           return "Role name must be at most 60 characters";
         }
+        return null;
+      },
+    },
+  });
+
+  const nicknameForm = useForm({
+    initialValues: {
+      nickname: "",
+    },
+    validate: {
+      nickname: (value) => {
+        if (value.trim().length > 60) {
+          return "Nickname must be at most 60 characters";
+        }
+
         return null;
       },
     },
@@ -462,10 +481,30 @@ export default function HomeClient({ initialData }: HomeClientProps) {
     },
   });
 
+  const setMemberNicknameMutation = useMutation({
+    mutationFn: async (payload: { serverId: string; memberId: string; nickname: string }) =>
+      updateServerMemberNickname(payload.serverId, payload.memberId, payload.nickname),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["discord", "home-data"] });
+    },
+  });
+
+  const updateNicknameMutation = useMutation({
+    mutationFn: async (payload: { serverId: string; nickname: string }) =>
+      updateOwnServerNickname(payload.serverId, payload.nickname),
+    onSuccess: async () => {
+      setNicknameModalOpened(false);
+      await queryClient.invalidateQueries({ queryKey: ["discord", "home-data"] });
+    },
+  });
+
   const selectedChannelId = selectedServer
     && (selectedChannelByServer[selectedServer.id] ?? selectedServer.channels[0]?.id ?? null);
 
   const selectedChannel = selectedServer?.channels.find((channel) => channel.id === selectedChannelId) ?? null;
+  const currentServerMember = selectedServer?.members.find(
+    (member) => member.userId === homeData.currentUser.id,
+  ) ?? null;
 
   const selectedChannelMessageState = selectedChannel
     && (channelMessagesById[selectedChannel.id] ?? {
@@ -492,6 +531,13 @@ export default function HomeClient({ initialData }: HomeClientProps) {
     setMemberRoleDrafts(() => {
       return selectedServer.members.reduce<Record<string, string[]>>((acc, member) => {
         acc[member.memberId] = member.roleIds;
+        return acc;
+      }, {});
+    });
+
+    setMemberNicknameDrafts(() => {
+      return selectedServer.members.reduce<Record<string, string>>((acc, member) => {
+        acc[member.memberId] = member.nickname ?? "";
         return acc;
       }, {});
     });
@@ -583,6 +629,11 @@ export default function HomeClient({ initialData }: HomeClientProps) {
   };
 
   const userDisplayName = useMemo(() => {
+    const selectedServerName = currentServerMember?.name?.trim();
+    if (selectedServerName) {
+      return selectedServerName;
+    }
+
     const name = homeData.currentUser.name.trim();
     if (name.length > 0) {
       return name;
@@ -594,7 +645,9 @@ export default function HomeClient({ initialData }: HomeClientProps) {
     }
 
     return "Unknown User";
-  }, [homeData.currentUser.email, homeData.currentUser.name]);
+  }, [currentServerMember?.name, homeData.currentUser.email, homeData.currentUser.name]);
+
+  const currentServerDisplayName = currentServerMember?.name ?? homeData.currentUser.name;
 
   const handleSignOut = async () => {
     if (isSigningOut) {
@@ -804,6 +857,8 @@ export default function HomeClient({ initialData }: HomeClientProps) {
         setEditingRoleId={setEditingRoleId}
         memberRoleDrafts={memberRoleDrafts}
         setMemberRoleDrafts={setMemberRoleDrafts}
+        memberNicknameDrafts={memberNicknameDrafts}
+        setMemberNicknameDrafts={setMemberNicknameDrafts}
         permissionOptions={PERMISSION_OPTIONS}
         createRoleForm={createRoleForm}
         editRoleForm={editRoleForm}
@@ -811,6 +866,7 @@ export default function HomeClient({ initialData }: HomeClientProps) {
         updateRolePending={updateRoleMutation.isPending}
         deleteRolePending={deleteRoleMutation.isPending}
         setMemberRolesPending={setMemberRolesMutation.isPending}
+        setMemberNicknamePending={setMemberNicknameMutation.isPending}
         onBeginEditRole={beginEditRole}
         onCreateRole={async (values) => {
           if (!selectedServer) {
@@ -864,7 +920,51 @@ export default function HomeClient({ initialData }: HomeClientProps) {
             roleIds,
           });
         }}
+        onSaveMemberNickname={(memberId, nickname) => {
+          if (!selectedServer) {
+            return;
+          }
+
+          void setMemberNicknameMutation.mutateAsync({
+            serverId: selectedServer.id,
+            memberId,
+            nickname,
+          });
+        }}
       />
+
+      <Modal
+        opened={nicknameModalOpened}
+        onClose={() => setNicknameModalOpened(false)}
+        title={selectedServer ? `Edit Nickname - ${selectedServer.name}` : "Edit Nickname"}
+        centered
+      >
+        <form
+          onSubmit={nicknameForm.onSubmit(async (values) => {
+            if (!selectedServer) {
+              return;
+            }
+
+            await updateNicknameMutation.mutateAsync({
+              serverId: selectedServer.id,
+              nickname: values.nickname,
+            });
+          })}
+        >
+          <Stack gap="sm">
+            <TextInput
+              label="Server nickname"
+              placeholder="Leave empty to use your username"
+              {...nicknameForm.getInputProps("nickname")}
+            />
+            <Group justify="flex-end">
+              <Button type="submit" loading={updateNicknameMutation.isPending}>
+                {updateNicknameMutation.isPending ? "Saving..." : "Save nickname"}
+              </Button>
+            </Group>
+          </Stack>
+        </form>
+      </Modal>
 
       <Group align="stretch" gap={0} wrap="nowrap" h="100%" style={{ overflow: "hidden" }}>
         <HomeSidebar
@@ -887,6 +987,12 @@ export default function HomeClient({ initialData }: HomeClientProps) {
           onOpenCreateChannel={() => setCreateChannelModalOpened(true)}
           onOpenInvite={() => setInviteModalOpened(true)}
           onOpenManageRoles={() => setManageRolesModalOpened(true)}
+          onOpenEditNickname={() => {
+            nicknameForm.setValues({
+              nickname: currentServerMember?.nickname ?? "",
+            });
+            setNicknameModalOpened(true);
+          }}
           onEditChannelAccess={beginEditChannelAccess}
           onDeleteChannel={(channelId, channelName) => {
             if (!selectedServer) {
@@ -934,7 +1040,7 @@ export default function HomeClient({ initialData }: HomeClientProps) {
           currentUserId={homeData.currentUser.id}
           currentUser={{
             id: homeData.currentUser.id,
-            name: homeData.currentUser.name,
+            name: currentServerDisplayName,
             image: homeData.currentUser.image,
           }}
           isFetching={homeDataQuery.isFetching}

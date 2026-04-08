@@ -40,6 +40,8 @@ type ManageRolesModalProps = {
   setEditingRoleId: (roleId: string | null) => void;
   memberRoleDrafts: Record<string, string[]>;
   setMemberRoleDrafts: Dispatch<SetStateAction<Record<string, string[]>>>;
+  memberNicknameDrafts: Record<string, string>;
+  setMemberNicknameDrafts: Dispatch<SetStateAction<Record<string, string>>>;
   permissionOptions: RoleOption[];
   createRoleForm: UseFormReturnType<CreateRoleFormValues>;
   editRoleForm: UseFormReturnType<EditRoleFormValues>;
@@ -47,11 +49,13 @@ type ManageRolesModalProps = {
   updateRolePending: boolean;
   deleteRolePending: boolean;
   setMemberRolesPending: boolean;
+  setMemberNicknamePending: boolean;
   onBeginEditRole: (roleId: string) => void;
   onCreateRole: (values: CreateRoleFormValues) => Promise<void>;
   onUpdateRole: (roleId: string, values: EditRoleFormValues) => Promise<void>;
   onDeleteRole: (roleId: string, roleName: string) => void;
   onSaveMemberRoles: (memberId: string, roleIds: string[]) => void;
+  onSaveMemberNickname: (memberId: string, nickname: string) => void;
 };
 
 export function ManageRolesModal({
@@ -63,6 +67,8 @@ export function ManageRolesModal({
   setEditingRoleId,
   memberRoleDrafts,
   setMemberRoleDrafts,
+  memberNicknameDrafts,
+  setMemberNicknameDrafts,
   permissionOptions,
   createRoleForm,
   editRoleForm,
@@ -70,11 +76,13 @@ export function ManageRolesModal({
   updateRolePending,
   deleteRolePending,
   setMemberRolesPending,
+  setMemberNicknamePending,
   onBeginEditRole,
   onCreateRole,
   onUpdateRole,
   onDeleteRole,
   onSaveMemberRoles,
+  onSaveMemberNickname,
 }: ManageRolesModalProps) {
   return (
     <Modal
@@ -207,9 +215,16 @@ export function ManageRolesModal({
                       <Group justify="space-between" align="center">
                         <Group gap="xs">
                           <Avatar src={member.image} name={member.name} size="sm" radius="xl" />
-                          <Text fw={600} c="gray.0">
-                            {member.name}
-                          </Text>
+                          <Stack gap={0}>
+                            <Text fw={600} c="gray.0">
+                              {member.name}
+                            </Text>
+                            {member.nickname && member.username !== member.name && (
+                              <Text size="xs" c="gray.5">
+                                @{member.username}
+                              </Text>
+                            )}
+                          </Stack>
                           {memberIsOwner && (
                             <Badge color="indigo" variant="filled">
                               Owner
@@ -219,6 +234,33 @@ export function ManageRolesModal({
                         <Text size="xs" c="gray.4">
                           {member.roleNames.length > 0 ? member.roleNames.join(", ") : "No roles"}
                         </Text>
+                      </Group>
+
+                      <Group align="flex-end" wrap="nowrap">
+                        <TextInput
+                          style={{ flex: 1 }}
+                          label="Nickname"
+                          placeholder="Empty uses username"
+                          value={memberNicknameDrafts[member.memberId] ?? member.nickname ?? ""}
+                          onChange={(event) => {
+                            const value = event.currentTarget.value;
+                            setMemberNicknameDrafts((current) => ({
+                              ...current,
+                              [member.memberId]: value,
+                            }));
+                          }}
+                        />
+                        <Button
+                          size="xs"
+                          variant="light"
+                          loading={setMemberNicknamePending}
+                          onClick={() => {
+                            const nickname = memberNicknameDrafts[member.memberId] ?? member.nickname ?? "";
+                            onSaveMemberNickname(member.memberId, nickname);
+                          }}
+                        >
+                          Save Nickname
+                        </Button>
                       </Group>
 
                       <Group align="flex-end" wrap="nowrap">

@@ -1,5 +1,8 @@
 import { ChannelDal } from "@/dal/channel";
+import { ServerMemberDal } from "@/dal/serverMember";
 import { ChannelType } from "@/generated/prisma/client";
+import { unauthorizedResponse } from "@/utils/api-response";
+import { resolveDisplayName } from "@/utils/display-name";
 import { logger } from "@/utils/logger";
 import { canAccessChannel } from "@/utils/permissions";
 import { getServerUser } from "@/utils/session";
@@ -116,7 +119,7 @@ export async function GET(request: Request) {
   const sessionUser = await getServerUser();
 
   if (!sessionUser) {
-    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    return unauthorizedResponse();
   }
 
   const url = new URL(request.url);
@@ -153,7 +156,7 @@ export async function POST(request: Request) {
   const sessionUser = await getServerUser();
 
   if (!sessionUser) {
-    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    return unauthorizedResponse();
   }
 
   const body = (await request.json().catch(() => null)) as RequestBody | null;
@@ -181,7 +184,11 @@ export async function POST(request: Request) {
     return accessError;
   }
 
-  const normalizedName = sessionUser.name?.trim() || sessionUser.email?.trim() || sessionUser.id;
+  const membership = await ServerMemberDal.findByUserAndServer(sessionUser.id, resolvedServerId);
+  const normalizedName = resolveDisplayName(
+    membership?.nickname,
+    sessionUser.name?.trim() || sessionUser.email?.trim() || sessionUser.id,
+  );
   const normalizedImage = sessionUser.image?.trim() || null;
   let resolvedTargetStreamerUserIdForResponse: string | null = null;
 

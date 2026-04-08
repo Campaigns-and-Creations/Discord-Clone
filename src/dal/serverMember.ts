@@ -11,6 +11,7 @@ export class ServerMemberDal {
         id: true,
         userId: true,
         serverId: true,
+        nickname: true,
         timeoutUntil: true,
       },
     });
@@ -90,6 +91,7 @@ export class ServerMemberDal {
       select: {
         id: true,
         userId: true,
+        nickname: true,
         user: {
           select: {
             name: true,
@@ -109,6 +111,34 @@ export class ServerMemberDal {
         user: {
           name: "asc",
         },
+      },
+    });
+  }
+
+  static async updateNickname(userId: string, serverId: string, nickname: string | null) {
+    return prisma.serverMember.updateMany({
+      where: {
+        userId,
+        serverId,
+      },
+      data: {
+        nickname,
+      },
+    });
+  }
+
+  static async updateNicknameByMemberIdInServer(
+    memberId: string,
+    serverId: string,
+    nickname: string | null,
+  ) {
+    return prisma.serverMember.updateMany({
+      where: {
+        id: memberId,
+        serverId,
+      },
+      data: {
+        nickname,
       },
     });
   }

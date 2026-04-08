@@ -10,6 +10,7 @@ type StreamTokenResponse = {
 };
 
 type StreamVideoProviderProps = {
+  serverId: string;
   user: {
     id: string;
     name: string;
@@ -18,10 +19,14 @@ type StreamVideoProviderProps = {
   children: ReactNode;
 };
 
-async function fetchStreamToken(): Promise<StreamTokenResponse> {
+async function fetchStreamToken(serverId: string): Promise<StreamTokenResponse> {
   const response = await fetch("/api/discord/stream-token", {
     method: "POST",
     cache: "no-store",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ serverId }),
   });
 
   if (!response.ok) {
@@ -31,7 +36,7 @@ async function fetchStreamToken(): Promise<StreamTokenResponse> {
   return (await response.json()) as StreamTokenResponse;
 }
 
-export function StreamVideoProvider({ children, user }: StreamVideoProviderProps) {
+export function StreamVideoProvider({ children, serverId, user }: StreamVideoProviderProps) {
   const [client, setClient] = useState<StreamVideoClient | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isInitializing, setIsInitializing] = useState(true);
@@ -47,9 +52,9 @@ export function StreamVideoProvider({ children, user }: StreamVideoProviderProps
   );
 
   const tokenProvider = useCallback(async () => {
-    const response = await fetchStreamToken();
+    const response = await fetchStreamToken(serverId);
     return response.token;
-  }, []);
+  }, [serverId]);
 
   useEffect(() => {
     let isCancelled = false;
@@ -60,7 +65,7 @@ export function StreamVideoProvider({ children, user }: StreamVideoProviderProps
       setError(null);
 
       try {
-        const { apiKey, token } = await fetchStreamToken();
+        const { apiKey, token } = await fetchStreamToken(serverId);
 
         if (isCancelled) {
           return;
@@ -99,7 +104,7 @@ export function StreamVideoProvider({ children, user }: StreamVideoProviderProps
         void mountedClient.disconnectUser();
       }
     };
-  }, [retryCounter, streamUser, tokenProvider]);
+  }, [retryCounter, serverId, streamUser, tokenProvider]);
 
   if (error) {
     return (

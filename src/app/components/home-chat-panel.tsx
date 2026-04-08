@@ -228,7 +228,7 @@ export function HomeChatPanel({
         <Group align="stretch" gap={0} wrap="nowrap" style={{ flex: 1, minHeight: 0 }}>
           {selectedChannel?.type === ChannelType.VOICE && selectedServer ? (
             <Box flex={1} p="md">
-              <StreamVideoProvider user={currentUser}>
+              <StreamVideoProvider serverId={selectedServer.id} user={currentUser}>
                 <VoiceCallPanel
                   serverId={selectedServer.id}
                   channelId={selectedChannel.id}

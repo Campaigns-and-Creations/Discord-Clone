@@ -30,6 +30,7 @@ type HomeSidebarProps = {
   onOpenCreateChannel: () => void;
   onOpenInvite: () => void;
   onOpenManageRoles: () => void;
+  onOpenEditNickname: () => void;
   onEditChannelAccess: (channelId: string) => void;
   onDeleteChannel: (channelId: string, channelName: string) => void;
   onDeleteServer: (serverId: string, serverName: string) => void;
@@ -50,6 +51,7 @@ export function HomeSidebar({
   onOpenCreateChannel,
   onOpenInvite,
   onOpenManageRoles,
+  onOpenEditNickname,
   onEditChannelAccess,
   onDeleteChannel,
   onDeleteServer,
@@ -143,6 +145,12 @@ export function HomeSidebar({
                     </Menu.Item>
                     <Menu.Item disabled={!selectedServerCapabilities?.canManageServer} onClick={onOpenManageRoles}>
                       Manage Roles
+                    </Menu.Item>
+                    <Menu.Item
+                      disabled={!selectedServer?.membershipId}
+                      onClick={onOpenEditNickname}
+                    >
+                      Edit My Nickname
                     </Menu.Item>
                     <Menu.Divider />
                     <Menu.Item

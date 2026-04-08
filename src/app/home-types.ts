@@ -16,6 +16,8 @@ export type HomeMessage = {
   author: {
     id: string;
     name: string;
+    username: string;
+    nickname: string | null;
     image: string | null;
   };
 };
@@ -43,6 +45,8 @@ export type HomeServerMember = {
   memberId: string;
   userId: string;
   name: string;
+  username: string;
+  nickname: string | null;
   image: string | null;
   roleIds: string[];
   roleNames: string[];

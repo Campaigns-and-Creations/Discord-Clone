@@ -1,15 +1,15 @@
 import { ChannelDal } from "@/dal/channel";
 import { MessagesDal } from "@/dal/messages";
+import { ServerMemberDal } from "@/dal/serverMember";
+import { unauthorizedResponse } from "@/utils/api-response";
+import { toIsoString } from "@/utils/date";
+import { resolveDisplayName } from "@/utils/display-name";
 import { canAccessChannel } from "@/utils/permissions";
 import { getServerUser } from "@/utils/session";
 import { NextResponse } from "next/server";
 
 const DEFAULT_LIMIT = 50;
 const MAX_LIMIT = 100;
-
-function toIsoString(value: Date): string {
-  return value.toISOString();
-}
 
 function parseLimit(rawLimit: string | null): number {
   if (!rawLimit) {
@@ -28,7 +28,7 @@ export async function GET(request: Request) {
   const sessionUser = await getServerUser();
 
   if (!sessionUser) {
-    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    return unauthorizedResponse();
   }
 
   const url = new URL(request.url);
@@ -51,20 +51,37 @@ export async function GET(request: Request) {
   }
 
   const result = await MessagesDal.listOlderByChannelId(channel.id, beforeMessageId, limit);
+  const members = await ServerMemberDal.listByServerId(channel.serverId);
+  const displayNameByUserId = new Map(
+    members.map((member) => [
+      member.userId,
+      {
+        nickname: member.nickname,
+        username: member.user.name,
+        displayName: resolveDisplayName(member.nickname, member.user.name),
+      },
+    ]),
+  );
 
   return NextResponse.json({
     hasOlderMessages: result.hasOlderMessages,
-    messages: result.messages.map((message) => ({
-      id: message.id,
-      content: message.content,
-      createdAt: toIsoString(message.createdAt),
-      pinned: message.pinned,
-      channelId: message.channelId,
-      author: {
-        id: message.author.id,
-        name: message.author.name,
-        image: message.author.image,
-      },
-    })),
+    messages: result.messages.map((message) => {
+      const authorIdentity = displayNameByUserId.get(message.author.id);
+
+      return {
+        id: message.id,
+        content: message.content,
+        createdAt: toIsoString(message.createdAt),
+        pinned: message.pinned,
+        channelId: message.channelId,
+        author: {
+          id: message.author.id,
+          name: authorIdentity?.displayName ?? message.author.name,
+          username: authorIdentity?.username ?? message.author.name,
+          nickname: authorIdentity?.nickname ?? null,
+          image: message.author.image,
+        },
+      };
+    }),
   });
 }

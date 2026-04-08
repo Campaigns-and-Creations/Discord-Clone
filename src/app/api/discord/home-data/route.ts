@@ -6,21 +6,20 @@ import { ServerMemberDal } from "@/dal/serverMember";
 import { ServerRolesDal } from "@/dal/serverRoles";
 import { Permission } from "@/generated/prisma/client";
 import { UserDal } from "@/dal/user";
+import { unauthorizedResponse } from "@/utils/api-response";
+import { toIsoString } from "@/utils/date";
+import { resolveDisplayName } from "@/utils/display-name";
 import { getMembershipPermissions } from "@/utils/permissions";
 import { getServerUser } from "@/utils/session";
 import { NextResponse } from "next/server";
 
 const INITIAL_CHANNEL_MESSAGES_LIMIT = 50;
 
-function toIsoString(value: Date): string {
-  return value.toISOString();
-}
-
 export async function GET() {
   const sessionUser = await getServerUser();
 
   if (!sessionUser) {
-    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    return unauthorizedResponse();
   }
 
   const [dbUser, servers] = await Promise.all([
@@ -46,6 +45,22 @@ export async function GET() {
         includeRestrictedBypass,
       );
 
+      const [roles, members] = await Promise.all([
+        ServerRolesDal.listByServerId(server.id),
+        ServerMemberDal.listByServerId(server.id),
+      ]);
+
+      const displayNameByUserId = new Map(
+        members.map((member) => [
+          member.userId,
+          {
+            nickname: member.nickname,
+            username: member.user.name,
+            displayName: resolveDisplayName(member.nickname, member.user.name),
+          },
+        ]),
+      );
+
       const channelsWithMessages = await Promise.all(
         channels.map(async (channel) => {
           const channelMessages = await MessagesDal.listLatestByChannelId(
@@ -57,27 +72,28 @@ export async function GET() {
             ...channel,
             createdAt: toIsoString(channel.createdAt),
             allowedRoleIds: channel.allowedRoles.map((item) => item.roleId),
-            messages: channelMessages.messages.map((message) => ({
-              id: message.id,
-              content: message.content,
-              createdAt: toIsoString(message.createdAt),
-              pinned: message.pinned,
-              channelId: message.channelId,
-              author: {
-                id: message.author.id,
-                name: message.author.name,
-                image: message.author.image,
-              },
-            })),
+            messages: channelMessages.messages.map((message) => {
+              const authorIdentity = displayNameByUserId.get(message.author.id);
+
+              return {
+                id: message.id,
+                content: message.content,
+                createdAt: toIsoString(message.createdAt),
+                pinned: message.pinned,
+                channelId: message.channelId,
+                author: {
+                  id: message.author.id,
+                  name: authorIdentity?.displayName ?? message.author.name,
+                  username: authorIdentity?.username ?? message.author.name,
+                  nickname: authorIdentity?.nickname ?? null,
+                  image: message.author.image,
+                },
+              };
+            }),
             hasOlderMessages: channelMessages.hasOlderMessages,
           };
         }),
       );
-
-      const [roles, members] = await Promise.all([
-        ServerRolesDal.listByServerId(server.id),
-        ServerMemberDal.listByServerId(server.id),
-      ]);
 
       const roleNames = server.membershipId
         ? membershipPermissions?.roleNames ?? []
@@ -114,14 +130,18 @@ export async function GET() {
           position: role.position,
           permissions: role.permissions.map((item) => item.permission),
         })),
-        members: members.map((member) => ({
-          memberId: member.id,
-          userId: member.userId,
-          name: member.user.name,
-          image: member.user.image,
-          roleIds: member.serverRoles.map((role) => role.id),
-          roleNames: member.serverRoles.map((role) => role.name),
-        })),
+        members: members
+          .map((member) => ({
+            memberId: member.id,
+            userId: member.userId,
+            name: resolveDisplayName(member.nickname, member.user.name),
+            username: member.user.name,
+            nickname: member.nickname,
+            image: member.user.image,
+            roleIds: member.serverRoles.map((role) => role.id),
+            roleNames: member.serverRoles.map((role) => role.name),
+          }))
+          .sort((a, b) => a.name.localeCompare(b.name)),
         channels: channelsWithMessages,
       };
     }),
