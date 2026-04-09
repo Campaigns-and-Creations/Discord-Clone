@@ -150,6 +150,7 @@ export async function GET() {
           ),
           canModerateMembers: hasPermission(Permission.ADMINISTRATOR, Permission.MODERATE_MEMBERS),
           canSendMessages: hasPermission(Permission.ADMINISTRATOR, Permission.SEND_MESSAGES),
+          canMentionEveryone: hasPermission(Permission.ADMINISTRATOR, Permission.MENTION_EVERYONE),
         },
         roles: roles.map((role) => ({
           id: role.id,

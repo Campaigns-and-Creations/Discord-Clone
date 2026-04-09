@@ -70,6 +70,7 @@ export type HomeServer = {
     canPinMessages: boolean;
     canModerateMembers: boolean;
     canSendMessages: boolean;
+    canMentionEveryone: boolean;
   };
   roles: HomeRole[];
   members: HomeServerMember[];

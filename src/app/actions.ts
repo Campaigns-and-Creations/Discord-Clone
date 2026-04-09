@@ -81,6 +81,7 @@ export async function createServer(serverName: string): Promise<HomeServer> {
       canPinMessages: true,
       canModerateMembers: true,
       canSendMessages: true,
+      canMentionEveryone: true,
     },
     roles: [
       {

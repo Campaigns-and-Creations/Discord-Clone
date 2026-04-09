@@ -1,5 +1,8 @@
 import type { HomeChannel, HomeServer } from "@/app/home-types";
-import { MarkdownDraftInput } from "@/app/components/markdown-draft-input";
+import {
+  MarkdownDraftInput,
+  type MentionSuggestionOption,
+} from "@/app/components/markdown-draft-input";
 import { MessageMarkdown } from "@/app/components/message-markdown";
 import { StreamVideoProvider } from "@/app/components/stream-video-provider";
 import { VoiceCallPanel } from "@/app/components/voice-call-panel";
@@ -128,6 +131,94 @@ export function HomeChatPanel({
   }, [selectedChannel, selectedServer]);
 
   const showMembersPanel = membersPanelExpanded && selectedServer && selectedChannel;
+
+  const mentionSuggestions = useMemo<MentionSuggestionOption[]>(() => {
+    if (!selectedServer || !selectedChannel) {
+      return [];
+    }
+
+    const suggestions: MentionSuggestionOption[] = [];
+    const seenKeys = new Set<string>();
+
+    for (const member of visibleMembers) {
+      const username = member.username.trim();
+      if (username.length > 0) {
+        const key = `member-username-${member.userId}-${username.toLowerCase()}`;
+        if (!seenKeys.has(key)) {
+          suggestions.push({
+            key,
+            kind: "member",
+            insertText: username,
+            label: member.name,
+            subtitle: member.nickname ? `${member.name} (${username})` : username,
+            searchTerms: [member.name, username, member.nickname ?? ""],
+          });
+          seenKeys.add(key);
+        }
+      }
+
+      const nickname = member.nickname?.trim() ?? "";
+      if (nickname.length > 0) {
+        const key = `member-nickname-${member.userId}-${nickname.toLowerCase()}`;
+        if (!seenKeys.has(key)) {
+          suggestions.push({
+            key,
+            kind: "member",
+            insertText: nickname,
+            label: member.name,
+            subtitle: `Nickname: ${nickname}`,
+            searchTerms: [member.name, member.username, nickname],
+          });
+          seenKeys.add(key);
+        }
+      }
+    }
+
+    for (const role of selectedServer.roles) {
+      const roleName = role.name.trim();
+      if (roleName.length === 0) {
+        continue;
+      }
+
+      const key = `role-${role.id}`;
+      if (seenKeys.has(key)) {
+        continue;
+      }
+
+      suggestions.push({
+        key,
+        kind: "role",
+        insertText: roleName,
+        label: roleName,
+        subtitle: "Role mention",
+        searchTerms: [roleName],
+      });
+      seenKeys.add(key);
+    }
+
+    if (selectedServer.capabilities.canMentionEveryone) {
+      suggestions.push(
+        {
+          key: "special-everyone",
+          kind: "special",
+          insertText: "everyone",
+          label: "everyone",
+          subtitle: "Mention everyone in this channel",
+          searchTerms: ["everyone", "all"],
+        },
+        {
+          key: "special-here",
+          kind: "special",
+          insertText: "here",
+          label: "here",
+          subtitle: "Mention everyone in this channel",
+          searchTerms: ["here", "all"],
+        },
+      );
+    }
+
+    return suggestions;
+  }, [selectedChannel, selectedServer, visibleMembers]);
 
   useEffect(() => {
     loadingOlderRef.current = isLoadingOlderMessages;
@@ -381,6 +472,7 @@ export function HomeChatPanel({
                         onChange={onChangeMessageDraft}
                         onSubmit={onSendMessage}
                         disabled={!selectedServer.capabilities.canSendMessages || isSendingMessage}
+                        mentionSuggestions={mentionSuggestions}
                         minRows={2}
                         maxRows={8}
                       />
