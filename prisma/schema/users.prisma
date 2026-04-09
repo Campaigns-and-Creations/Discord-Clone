@@ -9,6 +9,8 @@ model User {
   sessions      Session[]
   accounts      Account[]
   messages      Messages[]
+  mentions      MessageMention[] @relation("MentionedUser")
+  mentionReceipts MessageMentionReceipt[] @relation("MentionReceiptUser")
   memberships   ServerMember[]
   channels      Channel[] @relation("ChannelUsers")
   createdInvites ServerInvite[]

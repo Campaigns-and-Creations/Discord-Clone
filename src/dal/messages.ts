@@ -1,4 +1,6 @@
 import { prisma } from "@/utils/prisma";
+import { MessageMentionsDal } from "@/dal/messageMentions";
+import type { MentionPlan } from "@/utils/mentions";
 
 export class MessagesDal {
   static async listLatestByChannelId(channelId: string, limit: number) {
@@ -113,6 +115,47 @@ export class MessagesDal {
           },
         },
       },
+    });
+  }
+
+  static async createInChannelWithMentions(
+    channelId: string,
+    serverId: string,
+    authorId: string,
+    content: string,
+    mentionPlan: MentionPlan,
+  ) {
+    return prisma.$transaction(async (tx) => {
+      const message = await tx.messages.create({
+        data: {
+          channelId,
+          authorId,
+          content,
+        },
+        select: {
+          id: true,
+          content: true,
+          createdAt: true,
+          pinned: true,
+          channelId: true,
+          author: {
+            select: {
+              id: true,
+              name: true,
+              image: true,
+            },
+          },
+        },
+      });
+
+      await MessageMentionsDal.createForMessage(tx, {
+        messageId: message.id,
+        serverId,
+        channelId,
+        mentionPlan,
+      });
+
+      return message;
     });
   }
 

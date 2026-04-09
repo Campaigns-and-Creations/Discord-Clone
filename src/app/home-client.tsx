@@ -31,7 +31,7 @@ import { Box, Button, Group, Modal, Stack, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { modals } from "@mantine/modals";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 type HomeClientProps = {
   initialData: HomePageData;
@@ -100,6 +100,7 @@ function buildInitialChannelMessageState(data: HomePageData): Record<string, Cha
 
 export default function HomeClient({ initialData }: HomeClientProps) {
   const queryClient = useQueryClient();
+  const mentionSeenCursorByChannelRef = useRef<Record<string, string>>({});
   const [createModalOpened, setCreateModalOpened] = useState(false);
   const [createChannelModalOpened, setCreateChannelModalOpened] = useState(false);
   const [inviteModalOpened, setInviteModalOpened] = useState(false);
@@ -385,6 +386,25 @@ export default function HomeClient({ initialData }: HomeClientProps) {
     },
   });
 
+  const markMentionsSeenMutation = useMutation({
+    mutationFn: async (payload: { channelId: string; latestVisibleMessageId: string }) => {
+      const response = await fetch("/api/discord/mentions/seen", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to mark mentions as seen.");
+      }
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["discord", "home-data"] });
+    },
+  });
+
   const deleteMessageMutation = useMutation({
     mutationFn: async (payload: { serverId: string; channelId: string; messageId: string }) =>
       deleteMessage(payload.serverId, payload.channelId, payload.messageId),
@@ -514,6 +534,10 @@ export default function HomeClient({ initialData }: HomeClientProps) {
       });
 
   const selectedChannelMessages = selectedChannelMessageState?.messages ?? [];
+  const selectedChannelLatestMessageId =
+    selectedChannelMessages.length > 0
+      ? selectedChannelMessages[selectedChannelMessages.length - 1].id
+      : null;
   const selectedChannelHasOlderMessages = selectedChannelMessageState?.hasOlderMessages ?? false;
   const selectedChannelIsLoadingOlderMessages = selectedChannelMessageState?.isLoadingOlder ?? false;
 
@@ -592,6 +616,40 @@ export default function HomeClient({ initialData }: HomeClientProps) {
       return next;
     });
   }, [homeData.servers]);
+
+  useEffect(() => {
+    if (!selectedChannel || !selectedChannelLatestMessageId) {
+      return;
+    }
+
+    if (selectedChannel.unreadMentionCount <= 0) {
+      return;
+    }
+
+    if (markMentionsSeenMutation.isPending) {
+      return;
+    }
+
+    const previousCursor = mentionSeenCursorByChannelRef.current[selectedChannel.id];
+    if (previousCursor === selectedChannelLatestMessageId) {
+      return;
+    }
+
+    mentionSeenCursorByChannelRef.current[selectedChannel.id] = selectedChannelLatestMessageId;
+
+    void markMentionsSeenMutation
+      .mutateAsync({
+        channelId: selectedChannel.id,
+        latestVisibleMessageId: selectedChannelLatestMessageId,
+      })
+      .catch(() => {
+        delete mentionSeenCursorByChannelRef.current[selectedChannel.id];
+      });
+  }, [
+    selectedChannel,
+    selectedChannelLatestMessageId,
+    markMentionsSeenMutation,
+  ]);
 
   const beginEditChannelAccess = (channelId: string) => {
     if (!selectedServer) {

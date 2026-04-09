@@ -301,7 +301,13 @@ export function HomeChatPanel({
                           </Group>
                         )}
 
-                        <Paper p="sm" bg="#2b2d31" radius="md" withBorder style={{ borderColor: "#3a3d45" }}>
+                        <Paper
+                          p="sm"
+                          bg={message.isMentionedForCurrentUser ? "#3a2f1f" : "#2b2d31"}
+                          radius="md"
+                          withBorder
+                          style={{ borderColor: message.isMentionedForCurrentUser ? "#f08c00" : "#3a3d45" }}
+                        >
                           <Group align="flex-start" gap="sm" wrap="nowrap" justify="space-between">
                             <Avatar src={message.author.image} name={message.author.name} color="indigo" radius="xl" size="sm" />
                             <Stack gap={2} style={{ flex: 1, minWidth: 0 }}>

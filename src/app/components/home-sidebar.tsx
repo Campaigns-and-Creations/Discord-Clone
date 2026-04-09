@@ -3,6 +3,7 @@ import { ChannelType } from "@/generated/prisma/client";
 import {
   ActionIcon,
   Avatar,
+  Badge,
   Box,
   Button,
   Divider,
@@ -78,25 +79,40 @@ export function HomeSidebar({
                   {homeData.servers.map((server) => {
                     const isActive = server.id === selectedServerId;
                     return (
-                      <ActionIcon
-                        key={server.id}
-                        size={48}
-                        radius={isActive ? "md" : "xl"}
-                        variant={isActive ? "filled" : "subtle"}
-                        color={isActive ? "indigo" : "gray"}
-                        onClick={() => onSelectServer(server.id)}
-                        title={server.name}
-                      >
-                        <Avatar
+                      <Box key={server.id} pos="relative">
+                        <ActionIcon
+                          size={48}
                           radius={isActive ? "md" : "xl"}
-                          src={server.picture}
-                          name={server.name}
-                          color="indigo"
-                          size={40}
+                          variant={isActive ? "filled" : "subtle"}
+                          color={isActive ? "indigo" : "gray"}
+                          onClick={() => onSelectServer(server.id)}
+                          title={server.name}
                         >
-                          {formatServerBadge(server.name)}
-                        </Avatar>
-                      </ActionIcon>
+                          <Avatar
+                            radius={isActive ? "md" : "xl"}
+                            src={server.picture}
+                            name={server.name}
+                            color="indigo"
+                            size={40}
+                          >
+                            {formatServerBadge(server.name)}
+                          </Avatar>
+                        </ActionIcon>
+                        {server.hasUnreadMentions && (
+                          <Box
+                            pos="absolute"
+                            top={-2}
+                            right={-1}
+                            w={10}
+                            h={10}
+                            style={{
+                              borderRadius: 999,
+                              background: "#f08c00",
+                              border: "2px solid #1b1d22",
+                            }}
+                          />
+                        )}
+                      </Box>
                     );
                   })}
                 </Stack>
@@ -194,6 +210,13 @@ export function HomeSidebar({
                               onClick={() => onSelectChannel(channel.id)}
                               variant="light"
                               color="indigo"
+                              rightSection={
+                                channel.unreadMentionCount > 0 ? (
+                                  <Badge size="xs" variant="filled" color="orange">
+                                    @{channel.unreadMentionCount}
+                                  </Badge>
+                                ) : undefined
+                              }
                             />
                           </Box>
                           <Menu position="bottom-end" width={200} withinPortal={false}>

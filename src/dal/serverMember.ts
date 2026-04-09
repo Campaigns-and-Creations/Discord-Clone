@@ -103,6 +103,11 @@ export class ServerMemberDal {
             id: true,
             name: true,
             position: true,
+            permissions: {
+              select: {
+                permission: true,
+              },
+            },
           },
           orderBy: { position: "desc" },
         },

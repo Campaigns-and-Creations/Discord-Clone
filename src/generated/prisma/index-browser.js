@@ -173,6 +173,26 @@ exports.Prisma.MessagesScalarFieldEnum = {
   pinned: 'pinned'
 };
 
+exports.Prisma.MessageMentionScalarFieldEnum = {
+  id: 'id',
+  messageId: 'messageId',
+  type: 'type',
+  mentionedUserId: 'mentionedUserId',
+  mentionedRoleId: 'mentionedRoleId',
+  token: 'token',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.MessageMentionReceiptScalarFieldEnum = {
+  id: 'id',
+  messageId: 'messageId',
+  userId: 'userId',
+  serverId: 'serverId',
+  channelId: 'channelId',
+  createdAt: 'createdAt',
+  seenAt: 'seenAt'
+};
+
 exports.Prisma.ServerInviteScalarFieldEnum = {
   id: 'id',
   code: 'code',
@@ -260,9 +280,17 @@ exports.Permission = exports.$Enums.Permission = {
   MODERATE_MEMBERS: 'MODERATE_MEMBERS',
   KICK_MEMBERS: 'KICK_MEMBERS',
   BAN_MEMBERS: 'BAN_MEMBERS',
+  MENTION_EVERYONE: 'MENTION_EVERYONE',
   VIEW_CHANNEL: 'VIEW_CHANNEL',
   SEND_MESSAGES: 'SEND_MESSAGES',
   READ_MESSAGE_HISTORY: 'READ_MESSAGE_HISTORY'
+};
+
+exports.MentionType = exports.$Enums.MentionType = {
+  USER: 'USER',
+  ROLE: 'ROLE',
+  EVERYONE: 'EVERYONE',
+  HERE: 'HERE'
 };
 
 exports.Prisma.ModelName = {
@@ -273,6 +301,8 @@ exports.Prisma.ModelName = {
   ChannelRoleAccess: 'ChannelRoleAccess',
   ServerRolePermission: 'ServerRolePermission',
   Messages: 'Messages',
+  MessageMention: 'MessageMention',
+  MessageMentionReceipt: 'MessageMentionReceipt',
   ServerInvite: 'ServerInvite',
   User: 'User',
   Session: 'Session',

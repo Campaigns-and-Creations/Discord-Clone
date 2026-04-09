@@ -13,6 +13,7 @@ export type HomeMessage = {
   createdAt: string;
   pinned: boolean;
   channelId: string;
+  isMentionedForCurrentUser: boolean;
   author: {
     id: string;
     name: string;
@@ -32,6 +33,7 @@ export type HomeChannel = {
   allowedRoleIds: string[];
   messages: HomeMessage[];
   hasOlderMessages: boolean;
+  unreadMentionCount: number;
 };
 
 export type HomeRole = {
@@ -72,6 +74,7 @@ export type HomeServer = {
   roles: HomeRole[];
   members: HomeServerMember[];
   channels: HomeChannel[];
+  hasUnreadMentions: boolean;
 };
 
 export type HomePageData = {

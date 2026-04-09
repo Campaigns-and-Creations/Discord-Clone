@@ -1,5 +1,6 @@
 import type { HomePageData } from "@/app/home-types";
 import { ChannelDal } from "@/dal/channel";
+import { MessageMentionsDal } from "@/dal/messageMentions";
 import { MessagesDal } from "@/dal/messages";
 import { ServerDal } from "@/dal/server";
 import { ServerMemberDal } from "@/dal/serverMember";
@@ -95,6 +96,16 @@ export async function GET() {
         }),
       );
 
+      const channelIds = channelsWithMessages.map((channel) => channel.id);
+      const messageIds = channelsWithMessages.flatMap((channel) =>
+        channel.messages.map((message) => message.id),
+      );
+
+      const [mentionedMessageIds, unseenMentionCountsByChannel] = await Promise.all([
+        MessageMentionsDal.listMentionedMessageIdsForUser(sessionUser.id, messageIds),
+        MessageMentionsDal.listUnseenMentionCountsByChannelForUser(sessionUser.id, channelIds),
+      ]);
+
       const roleNames = server.membershipId
         ? membershipPermissions?.roleNames ?? []
         : server.roleNames;
@@ -102,6 +113,22 @@ export async function GET() {
 
       const hasPermission = (...required: Permission[]) =>
         required.some((permission) => permissions.includes(permission));
+
+      const hydratedChannels = channelsWithMessages.map((channel) => ({
+        ...channel,
+        unreadMentionCount: unseenMentionCountsByChannel.get(channel.id) ?? 0,
+        messages: channel.messages.map((message) => {
+          return {
+            id: message.id,
+            content: message.content,
+            createdAt: message.createdAt,
+            pinned: message.pinned,
+            channelId: message.channelId,
+            isMentionedForCurrentUser: mentionedMessageIds.has(message.id),
+            author: message.author,
+          };
+        }),
+      }));
 
       return {
         id: server.id,
@@ -142,7 +169,8 @@ export async function GET() {
             roleNames: member.serverRoles.map((role) => role.name),
           }))
           .sort((a, b) => a.name.localeCompare(b.name)),
-        channels: channelsWithMessages,
+        channels: hydratedChannels,
+        hasUnreadMentions: hydratedChannels.some((channel) => channel.unreadMentionCount > 0),
       };
     }),
   );

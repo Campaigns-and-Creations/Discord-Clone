@@ -1,4 +1,5 @@
 import { ChannelDal } from "@/dal/channel";
+import { MessageMentionsDal } from "@/dal/messageMentions";
 import { MessagesDal } from "@/dal/messages";
 import { ServerMemberDal } from "@/dal/serverMember";
 import { unauthorizedResponse } from "@/utils/api-response";
@@ -52,6 +53,10 @@ export async function GET(request: Request) {
 
   const result = await MessagesDal.listOlderByChannelId(channel.id, beforeMessageId, limit);
   const members = await ServerMemberDal.listByServerId(channel.serverId);
+  const mentionedMessageIds = await MessageMentionsDal.listMentionedMessageIdsForUser(
+    sessionUser.id,
+    result.messages.map((message) => message.id),
+  );
   const displayNameByUserId = new Map(
     members.map((member) => [
       member.userId,
@@ -74,6 +79,7 @@ export async function GET(request: Request) {
         createdAt: toIsoString(message.createdAt),
         pinned: message.pinned,
         channelId: message.channelId,
+        isMentionedForCurrentUser: mentionedMessageIds.has(message.id),
         author: {
           id: message.author.id,
           name: authorIdentity?.displayName ?? message.author.name,

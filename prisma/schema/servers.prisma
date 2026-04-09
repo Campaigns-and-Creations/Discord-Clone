@@ -43,6 +43,7 @@ model ServerRoles {
     members     ServerMember[] @relation("ServerMemberRoles")
     permissions ServerRolePermission[]
     channelAccess ChannelRoleAccess[]
+    mentions    MessageMention[]
 
     @@unique([serverId, name])
 }
@@ -76,6 +77,42 @@ model Messages {
     author      User     @relation(fields: [authorId], references: [id])
     createdAt   DateTime @default(now())
     pinned      Boolean  @default(false)
+    mentions    MessageMention[]
+    mentionReceipts MessageMentionReceipt[]
+}
+
+model MessageMention {
+    id              String      @id @default(uuid())
+    messageId       String
+    message         Messages    @relation(fields: [messageId], references: [id], onDelete: Cascade)
+    type            MentionType
+    mentionedUserId String?
+    mentionedUser   User?       @relation("MentionedUser", fields: [mentionedUserId], references: [id], onDelete: SetNull)
+    mentionedRoleId String?
+    mentionedRole   ServerRoles? @relation(fields: [mentionedRoleId], references: [id], onDelete: SetNull)
+    token           String
+    createdAt       DateTime    @default(now())
+
+    @@index([messageId])
+    @@index([mentionedUserId])
+    @@index([mentionedRoleId])
+}
+
+model MessageMentionReceipt {
+    id         String    @id @default(uuid())
+    messageId  String
+    message    Messages  @relation(fields: [messageId], references: [id], onDelete: Cascade)
+    userId     String
+    user       User      @relation("MentionReceiptUser", fields: [userId], references: [id], onDelete: Cascade)
+    serverId   String
+    channelId  String
+    createdAt  DateTime  @default(now())
+    seenAt     DateTime?
+
+    @@unique([messageId, userId])
+    @@index([userId, seenAt])
+    @@index([userId, serverId, seenAt])
+    @@index([userId, channelId, seenAt])
 }
 
 model ServerInvite {
@@ -110,7 +147,15 @@ enum Permission {
     MODERATE_MEMBERS
     KICK_MEMBERS
     BAN_MEMBERS
+    MENTION_EVERYONE
     VIEW_CHANNEL
     SEND_MESSAGES
     READ_MESSAGE_HISTORY
+}
+
+enum MentionType {
+    USER
+    ROLE
+    EVERYONE
+    HERE
 }

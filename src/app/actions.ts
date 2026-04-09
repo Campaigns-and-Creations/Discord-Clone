@@ -14,6 +14,7 @@ import {
 } from "@/utils/permissions";
 import { toIsoString } from "@/utils/date";
 import { resolveDisplayName } from "@/utils/display-name";
+import { buildMentionPlan } from "@/utils/mentions";
 import { requireUser } from "@/utils/session";
 import type { HomeServer } from "@/app/home-types";
 
@@ -112,8 +113,10 @@ export async function createServer(serverName: string): Promise<HomeServer> {
         allowedRoleIds: [],
         messages: [],
         hasOlderMessages: false,
+        unreadMentionCount: 0,
       },
     ],
+    hasUnreadMentions: false,
   };
 }
 
@@ -430,11 +433,37 @@ export async function sendMessage(serverId: string, channelId: string, content: 
     Permission.SEND_MESSAGES,
   );
 
+  const canUseMassMentions = await hasServerPermission(
+    sessionUser.id,
+    serverId,
+    Permission.MENTION_EVERYONE,
+  );
+
   if (!canSendMessages) {
     throw new Error("Forbidden");
   }
 
-  const message = await MessagesDal.createInChannel(channelId, sessionUser.id, normalizedContent);
+  const [members, roles] = await Promise.all([
+    ServerMemberDal.listByServerId(serverId),
+    ServerRolesDal.listByServerId(serverId),
+  ]);
+
+  const mentionPlan = buildMentionPlan({
+    content: normalizedContent,
+    authorId: sessionUser.id,
+    canUseMassMentions,
+    channel,
+    members,
+    roles,
+  });
+
+  const message = await MessagesDal.createInChannelWithMentions(
+    channelId,
+    serverId,
+    sessionUser.id,
+    normalizedContent,
+    mentionPlan,
+  );
   const displayName = resolveDisplayName(membership.nickname, message.author.name);
 
   return {
@@ -443,6 +472,7 @@ export async function sendMessage(serverId: string, channelId: string, content: 
     createdAt: toIsoString(message.createdAt),
     pinned: message.pinned,
     channelId: message.channelId,
+    isMentionedForCurrentUser: false,
     author: {
       id: message.author.id,
       name: displayName,
