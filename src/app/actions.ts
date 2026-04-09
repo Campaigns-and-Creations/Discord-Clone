@@ -2,6 +2,7 @@
 
 import { ChannelDal } from "@/dal/channel";
 import { InviteDal } from "@/dal/invite";
+import { MessageMentionsDal } from "@/dal/messageMentions";
 import { MessagesDal } from "@/dal/messages";
 import { ServerMemberDal } from "@/dal/serverMember";
 import { ServerRolesDal } from "@/dal/serverRoles";
@@ -14,8 +15,10 @@ import {
 } from "@/utils/permissions";
 import { toIsoString } from "@/utils/date";
 import { resolveDisplayName } from "@/utils/display-name";
+import { logger } from "@/utils/logger";
 import { buildMentionPlan } from "@/utils/mentions";
 import { requireUser } from "@/utils/session";
+import { createStreamUserToken, getStreamConfig, getStreamServerClient } from "@/utils/stream";
 import type { HomeServer } from "@/app/home-types";
 
 const OWNER_ROLE_NAME = "Owner";
@@ -591,6 +594,82 @@ export async function setMessagePinned(serverId: string, channelId: string, mess
   }
 
   return MessagesDal.setPinned(messageId, pinned);
+}
+
+export async function markMentionsSeen(channelId: string, latestVisibleMessageId: string) {
+  const sessionUser = await requireUser();
+  const normalizedChannelId = channelId.trim();
+  const normalizedLatestVisibleMessageId = latestVisibleMessageId.trim();
+
+  if (!normalizedChannelId || !normalizedLatestVisibleMessageId) {
+    throw new Error("channelId and latestVisibleMessageId are required.");
+  }
+
+  const channel = await ChannelDal.findById(normalizedChannelId);
+  if (!channel) {
+    throw new Error("Channel not found.");
+  }
+
+  const hasAccess = await canAccessChannel(sessionUser.id, channel.serverId, channel.id);
+  if (!hasAccess) {
+    throw new Error("Forbidden");
+  }
+
+  const updatedCount = await MessageMentionsDal.markSeenInChannelUpToMessage(
+    sessionUser.id,
+    channel.id,
+    normalizedLatestVisibleMessageId,
+  );
+
+  return { updatedCount };
+}
+
+export async function issueStreamToken(serverId: string) {
+  const sessionUser = await requireUser();
+  const normalizedServerId = serverId.trim();
+
+  const membership = normalizedServerId
+    ? await ServerMemberDal.findByUserAndServer(sessionUser.id, normalizedServerId)
+    : null;
+
+  const normalizedName = resolveDisplayName(
+    membership?.nickname,
+    sessionUser.name?.trim() || sessionUser.email?.trim() || sessionUser.id,
+  );
+  const userImage = sessionUser.image?.trim() || undefined;
+
+  try {
+    const [token, config] = await Promise.all([
+      Promise.resolve(createStreamUserToken(sessionUser.id)),
+      Promise.resolve(getStreamConfig()),
+      getStreamServerClient().upsertUsers([
+        {
+          id: sessionUser.id,
+          name: normalizedName,
+          image: userImage,
+        },
+      ]),
+    ]);
+
+    return {
+      apiKey: config.apiKey,
+      token,
+      user: {
+        id: sessionUser.id,
+        name: normalizedName,
+        image: userImage ?? null,
+      },
+    };
+  } catch (error) {
+    logger.error({
+      context: "stream_token.issue",
+      message: "Failed to issue Stream user token",
+      userId: sessionUser.id,
+      error,
+    });
+
+    throw new Error("Failed to issue Stream token");
+  }
 }
 
 export async function createServerRole(serverId: string, roleName: string, permissions: Permission[]) {

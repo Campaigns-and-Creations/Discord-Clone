@@ -9,6 +9,7 @@ import {
   deleteMessage,
   deleteServer,
   deleteServerRole,
+  markMentionsSeen,
   sendMessage,
   setMessagePinned,
   setServerMemberRoles,
@@ -387,19 +388,8 @@ export default function HomeClient({ initialData }: HomeClientProps) {
   });
 
   const markMentionsSeenMutation = useMutation({
-    mutationFn: async (payload: { channelId: string; latestVisibleMessageId: string }) => {
-      const response = await fetch("/api/discord/mentions/seen", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to mark mentions as seen.");
-      }
-    },
+    mutationFn: async (payload: { channelId: string; latestVisibleMessageId: string }) =>
+      markMentionsSeen(payload.channelId, payload.latestVisibleMessageId),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["discord", "home-data"] });
     },

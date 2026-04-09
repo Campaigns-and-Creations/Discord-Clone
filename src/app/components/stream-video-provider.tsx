@@ -1,5 +1,6 @@
 "use client";
 
+import { issueStreamToken } from "@/app/actions";
 import { Box, Button, Group, Paper, Stack, Text } from "@mantine/core";
 import { StreamVideo, StreamVideoClient } from "@stream-io/video-react-sdk";
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
@@ -20,20 +21,12 @@ type StreamVideoProviderProps = {
 };
 
 async function fetchStreamToken(serverId: string): Promise<StreamTokenResponse> {
-  const response = await fetch("/api/discord/stream-token", {
-    method: "POST",
-    cache: "no-store",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ serverId }),
-  });
+  const result = await issueStreamToken(serverId);
 
-  if (!response.ok) {
-    throw new Error("Failed to fetch Stream token");
-  }
-
-  return (await response.json()) as StreamTokenResponse;
+  return {
+    apiKey: result.apiKey,
+    token: result.token,
+  };
 }
 
 export function StreamVideoProvider({ children, serverId, user }: StreamVideoProviderProps) {
