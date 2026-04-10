@@ -13,6 +13,7 @@ import { toIsoString } from "@/utils/date";
 import { resolveDisplayName } from "@/utils/display-name";
 import { getMembershipPermissions } from "@/utils/permissions";
 import { getServerUser } from "@/utils/session";
+import { createSignedPictureUrls, isStoredPicturePath, resolvePictureUrl } from "@/utils/supabase";
 import { NextResponse } from "next/server";
 
 const INITIAL_CHANNEL_MESSAGES_LIMIT = 50;
@@ -186,14 +187,68 @@ export async function GET() {
     }),
   );
 
+  const storedPicturePaths = new Set<string>();
+
+  const collectStoredPath = (value: string | null | undefined) => {
+    if (isStoredPicturePath(value)) {
+      storedPicturePaths.add(value);
+    }
+  };
+
+  collectStoredPath(dbUser?.image ?? sessionUser.image ?? null);
+
+  for (const server of serversWithChannels) {
+    collectStoredPath(server.picture);
+
+    for (const member of server.members) {
+      collectStoredPath(member.image);
+    }
+
+    for (const bannedUser of server.bannedUsers) {
+      collectStoredPath(bannedUser.image);
+    }
+
+    for (const channel of server.channels) {
+      for (const message of channel.messages) {
+        collectStoredPath(message.author.image);
+      }
+    }
+  }
+
+  const signedUrlByPath = await createSignedPictureUrls(Array.from(storedPicturePaths));
+  const resolveImage = (value: string | null | undefined) => resolvePictureUrl(value, signedUrlByPath);
+
+  const hydratedServers = serversWithChannels.map((server) => ({
+    ...server,
+    picture: resolveImage(server.picture),
+    members: server.members.map((member) => ({
+      ...member,
+      image: resolveImage(member.image),
+    })),
+    bannedUsers: server.bannedUsers.map((bannedUser) => ({
+      ...bannedUser,
+      image: resolveImage(bannedUser.image),
+    })),
+    channels: server.channels.map((channel) => ({
+      ...channel,
+      messages: channel.messages.map((message) => ({
+        ...message,
+        author: {
+          ...message.author,
+          image: resolveImage(message.author.image),
+        },
+      })),
+    })),
+  }));
+
   const payload: HomePageData = {
     currentUser: {
       id: sessionUser.id,
       name: dbUser?.name ?? sessionUser.name,
-      image: dbUser?.image ?? (sessionUser.image ?? null),
+      image: resolveImage(dbUser?.image ?? sessionUser.image ?? null),
       email: dbUser?.email ?? sessionUser.email,
     },
-    servers: serversWithChannels,
+    servers: hydratedServers,
   };
 
   return NextResponse.json(payload);

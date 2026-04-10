@@ -6,6 +6,8 @@ import { FormEvent, useEffect, useState } from "react";
 
 import { signUp, useSession } from "@/utils/auth-client";
 
+const USERNAME_WHITESPACE_REGEX = /\s/;
+
 export default function SignUpPage() {
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -28,6 +30,12 @@ export default function SignUpPage() {
     async function onSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
         setError(null);
+
+        if (USERNAME_WHITESPACE_REGEX.test(name)) {
+            setError("Username cannot contain whitespace.");
+            return;
+        }
+
         setIsSubmitting(true);
 
         try {
@@ -65,7 +73,9 @@ export default function SignUpPage() {
                             className="rounded-md border border-zinc-300 px-3 py-2 outline-none focus:border-zinc-500"
                             disabled={isPending || isSubmitting}
                             onChange={(event) => setName(event.target.value)}
+                            pattern="^\\S+$"
                             required
+                            title="Username cannot contain whitespace."
                             type="text"
                             value={name}
                         />

@@ -1,8 +1,8 @@
 import type { HomePageData, HomeServer } from "@/app/home-types";
+import { ProfileAvatar } from "@/app/components/profile-avatar";
 import { ChannelType } from "@/generated/prisma/client";
 import {
   ActionIcon,
-  Avatar,
   Badge,
   Box,
   Button,
@@ -31,14 +31,16 @@ type HomeSidebarProps = {
   onOpenCreateChannel: () => void;
   onOpenInvite: () => void;
   onOpenManageRoles: () => void;
+  onOpenEditServerImage: () => void;
   onOpenEditNickname: () => void;
   onEditChannelAccess: (channelId: string) => void;
   onDeleteChannel: (channelId: string, channelName: string) => void;
   onDeleteServer: (serverId: string, serverName: string) => void;
+  currentUserImage: string | null;
   userDisplayName: string;
   isSigningOut: boolean;
+  onOpenEditProfileImage: () => void;
   onSignOut: () => void;
-  formatServerBadge: (name: string) => string;
 };
 
 export function HomeSidebar({
@@ -52,14 +54,16 @@ export function HomeSidebar({
   onOpenCreateChannel,
   onOpenInvite,
   onOpenManageRoles,
+  onOpenEditServerImage,
   onOpenEditNickname,
   onEditChannelAccess,
   onDeleteChannel,
   onDeleteServer,
+  currentUserImage,
   userDisplayName,
   isSigningOut,
+  onOpenEditProfileImage,
   onSignOut,
-  formatServerBadge,
 }: HomeSidebarProps) {
   const selectedServerCapabilities = selectedServer?.capabilities;
   const canDeleteSelectedServer =
@@ -93,15 +97,12 @@ export function HomeSidebar({
                           onClick={() => onSelectServer(server.id)}
                           title={server.name}
                         >
-                          <Avatar
+                          <ProfileAvatar
                             radius={isActive ? "md" : "xl"}
                             src={server.picture}
                             name={server.name}
-                            color="indigo"
                             size={40}
-                          >
-                            {formatServerBadge(server.name)}
-                          </Avatar>
+                          />
                         </ActionIcon>
                         {server.hasUnreadMentions && (
                           <Box
@@ -166,6 +167,12 @@ export function HomeSidebar({
                     </Menu.Item>
                     <Menu.Item disabled={!canOpenManageRoles} onClick={onOpenManageRoles}>
                       Manage Roles
+                    </Menu.Item>
+                    <Menu.Item
+                      disabled={!selectedServerCapabilities?.canManageServer}
+                      onClick={onOpenEditServerImage}
+                    >
+                      Edit Server Image
                     </Menu.Item>
                     <Menu.Item
                       disabled={!selectedServer?.membershipId}
@@ -273,13 +280,18 @@ export function HomeSidebar({
                   padding: "6px 8px",
                 }}
               >
-                <Text fw={600} c="gray.0" size="sm" truncate="end">
-                  {userDisplayName}
-                </Text>
+                <Group gap="sm" wrap="nowrap">
+                  <ProfileAvatar src={currentUserImage} name={userDisplayName} size="sm" radius="xl" />
+                  <Text fw={600} c="gray.0" size="sm" truncate="end" style={{ minWidth: 0 }}>
+                    {userDisplayName}
+                  </Text>
+                </Group>
               </UnstyledButton>
             </Menu.Target>
 
             <Menu.Dropdown>
+              <Menu.Item onClick={onOpenEditProfileImage}>Edit Profile Image</Menu.Item>
+              <Menu.Divider />
               <Menu.Item c="red.4" disabled={isSigningOut} onClick={onSignOut}>
                 {isSigningOut ? "Logging out..." : "Log out"}
               </Menu.Item>

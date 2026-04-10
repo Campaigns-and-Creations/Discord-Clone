@@ -1,8 +1,9 @@
-import { Button, Group, Modal, Stack, TextInput } from "@mantine/core";
+import { Button, FileInput, Group, Modal, Stack, TextInput } from "@mantine/core";
 import type { UseFormReturnType } from "@mantine/form";
 
 type CreateServerFormValues = {
   name: string;
+  picture: File | null;
 };
 
 type CreateServerModalProps = {
@@ -23,6 +24,13 @@ export function CreateServerModal({ opened, onClose, form, onSubmit, isPending }
             placeholder="for example: Design Crew"
             withAsterisk
             {...form.getInputProps("name")}
+          />
+          <FileInput
+            label="Server Image"
+            placeholder="Upload an image"
+            accept="image/png,image/jpeg,image/webp,image/gif"
+            clearable
+            {...form.getInputProps("picture")}
           />
           <Group justify="flex-end" mt="sm">
             <Button variant="default" onClick={onClose}>

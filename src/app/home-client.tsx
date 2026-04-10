@@ -15,11 +15,15 @@ import {
   sendMessage,
   setMessagePinned,
   setServerMemberRoles,
+  requestServerImageUpload,
+  requestUserImageUpload,
   unbanServerUser,
   updateServerMemberNickname,
   updateOwnServerNickname,
+  updateServerPicture,
   updateChannelAccess,
   updateServerRole,
+  updateUserImage,
 } from "@/app/actions";
 import { ChannelAccessModal } from "@/app/components/channel-access-modal";
 import { CreateChannelModal } from "@/app/components/create-channel-modal";
@@ -28,10 +32,12 @@ import { HomeChatPanel } from "@/app/components/home-chat-panel";
 import { HomeSidebar } from "@/app/components/home-sidebar";
 import { InviteModal } from "@/app/components/invite-modal";
 import { ManageRolesModal } from "@/app/components/manage-roles-modal";
+import { ProfileAvatar } from "@/app/components/profile-avatar";
 import type { HomeMessage, HomePageData } from "@/app/home-types";
 import { ChannelType, Permission } from "@/generated/prisma/client";
 import { signOut } from "@/utils/auth-client";
-import { Box, Button, Group, Modal, Stack, TextInput } from "@mantine/core";
+import { getSupabaseBrowserClient } from "@/utils/supabase-client";
+import { Box, Button, FileInput, Group, Modal, Stack, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { modals } from "@mantine/modals";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -40,15 +46,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 type HomeClientProps = {
   initialData: HomePageData;
 };
-
-function formatServerBadge(name: string): string {
-  return name
-    .split(" ")
-    .map((part) => part[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase();
-}
 
 const PERMISSION_OPTIONS = (Object.values(Permission) as Permission[]).map((permission) => ({
   value: permission,
@@ -61,6 +58,12 @@ type ChannelMessageState = {
   messages: HomeMessage[];
   hasOlderMessages: boolean;
   isLoadingOlder: boolean;
+};
+
+type SignedUploadTicket = {
+  path: string;
+  token: string;
+  signedUrl: string;
 };
 
 function compareMessages(a: HomeMessage, b: HomeMessage): number {
@@ -110,6 +113,8 @@ export default function HomeClient({ initialData }: HomeClientProps) {
   const [inviteModalOpened, setInviteModalOpened] = useState(false);
   const [manageRolesModalOpened, setManageRolesModalOpened] = useState(false);
   const [nicknameModalOpened, setNicknameModalOpened] = useState(false);
+  const [serverImageModalOpened, setServerImageModalOpened] = useState(false);
+  const [profileImageModalOpened, setProfileImageModalOpened] = useState(false);
   const [channelAccessModalOpened, setChannelAccessModalOpened] = useState(false);
   const [latestInviteLink, setLatestInviteLink] = useState<string | null>(null);
   const [linkCopied, setLinkCopied] = useState(false);
@@ -123,6 +128,7 @@ export default function HomeClient({ initialData }: HomeClientProps) {
   const createServerForm = useForm({
     initialValues: {
       name: "",
+      picture: null as File | null,
     },
     validate: {
       name: (value) => {
@@ -138,6 +144,29 @@ export default function HomeClient({ initialData }: HomeClientProps) {
 
         return null;
       },
+      picture: (value) => {
+        if (!value) {
+          return null;
+        }
+
+        if (value.size > 5 * 1024 * 1024) {
+          return "Image must be 5MB or smaller";
+        }
+
+        return null;
+      },
+    },
+  });
+
+  const serverImageForm = useForm({
+    initialValues: {
+      picture: null as File | null,
+    },
+  });
+
+  const profileImageForm = useForm({
+    initialValues: {
+      picture: null as File | null,
     },
   });
 
@@ -302,8 +331,45 @@ export default function HomeClient({ initialData }: HomeClientProps) {
     () => buildInitialChannelMessageState(initialData),
   );
 
+  const uploadPictureWithSignedTicket = async (file: File, ticket: SignedUploadTicket): Promise<string> => {
+    const supabase = getSupabaseBrowserClient();
+    const { error } = await supabase.storage.from("pictures").uploadToSignedUrl(
+      ticket.path,
+      ticket.token,
+      file,
+      {
+        upsert: false,
+        contentType: file.type,
+      },
+    );
+
+    if (error) {
+      throw new Error(`Failed to upload image: ${error.message}`);
+    }
+
+    return ticket.path;
+  };
+
+  const uploadServerPictureFile = async (serverId: string, file: File): Promise<string> => {
+    const ticket = await requestServerImageUpload(serverId, {
+      mimeType: file.type,
+      sizeBytes: file.size,
+    });
+
+    return uploadPictureWithSignedTicket(file, ticket);
+  };
+
+  const uploadUserPictureFile = async (file: File): Promise<string> => {
+    const ticket = await requestUserImageUpload({
+      mimeType: file.type,
+      sizeBytes: file.size,
+    });
+
+    return uploadPictureWithSignedTicket(file, ticket);
+  };
+
   const createServerMutation = useMutation({
-    mutationFn: async (name: string) => createServer(name),
+    mutationFn: async (name: string) => createServer(name, null),
     onSuccess: (createdServer) => {
       queryClient.setQueryData<HomePageData>(["discord", "home-data"], (oldData) => {
         if (!oldData) {
@@ -326,6 +392,21 @@ export default function HomeClient({ initialData }: HomeClientProps) {
       createServerForm.reset();
 
       void queryClient.invalidateQueries({ queryKey: ["discord", "home-data"] });
+    },
+  });
+
+  const updateServerPictureMutation = useMutation({
+    mutationFn: async (payload: { serverId: string; picturePath: string | null }) =>
+      updateServerPicture(payload.serverId, payload.picturePath),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["discord", "home-data"] });
+    },
+  });
+
+  const updateUserImageMutation = useMutation({
+    mutationFn: async (picturePath: string | null) => updateUserImage(picturePath),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["discord", "home-data"] });
     },
   });
 
@@ -821,12 +902,23 @@ export default function HomeClient({ initialData }: HomeClientProps) {
     <Box bg="#202225" h="100svh" p={0} style={{ overflow: "hidden" }}>
       <CreateServerModal
         opened={createModalOpened}
-        onClose={() => setCreateModalOpened(false)}
+        onClose={() => {
+          setCreateModalOpened(false);
+          createServerForm.reset();
+        }}
         form={createServerForm}
         onSubmit={async (values) => {
-          await createServerMutation.mutateAsync(values.name.trim());
+          const createdServer = await createServerMutation.mutateAsync(values.name.trim());
+
+          if (values.picture) {
+            const picturePath = await uploadServerPictureFile(createdServer.id, values.picture);
+            await updateServerPictureMutation.mutateAsync({
+              serverId: createdServer.id,
+              picturePath,
+            });
+          }
         }}
-        isPending={createServerMutation.isPending}
+        isPending={createServerMutation.isPending || updateServerPictureMutation.isPending}
       />
 
       <CreateChannelModal
@@ -1070,6 +1162,103 @@ export default function HomeClient({ initialData }: HomeClientProps) {
       />
 
       <Modal
+        opened={serverImageModalOpened}
+        onClose={() => {
+          setServerImageModalOpened(false);
+          serverImageForm.reset();
+        }}
+        title={selectedServer ? `Edit Server Image - ${selectedServer.name}` : "Edit Server Image"}
+        centered
+      >
+        <form
+          onSubmit={serverImageForm.onSubmit(async (values) => {
+            if (!selectedServer || !values.picture) {
+              return;
+            }
+
+            const picturePath = await uploadServerPictureFile(selectedServer.id, values.picture);
+            await updateServerPictureMutation.mutateAsync({
+              serverId: selectedServer.id,
+              picturePath,
+            });
+
+            serverImageForm.reset();
+            setServerImageModalOpened(false);
+          })}
+        >
+          <Stack gap="sm">
+            <Group gap="sm" align="center">
+              <ProfileAvatar src={selectedServer?.picture ?? null} name={selectedServer?.name ?? "Server"} size="lg" radius="md" />
+              <FileInput
+                style={{ flex: 1 }}
+                label="New Server Image"
+                placeholder="Upload an image"
+                accept="image/png,image/jpeg,image/webp,image/gif"
+                clearable
+                withAsterisk
+                {...serverImageForm.getInputProps("picture")}
+              />
+            </Group>
+            <Group justify="flex-end">
+              <Button variant="default" onClick={() => setServerImageModalOpened(false)}>
+                Cancel
+              </Button>
+              <Button type="submit" loading={updateServerPictureMutation.isPending}>
+                Save image
+              </Button>
+            </Group>
+          </Stack>
+        </form>
+      </Modal>
+
+      <Modal
+        opened={profileImageModalOpened}
+        onClose={() => {
+          setProfileImageModalOpened(false);
+          profileImageForm.reset();
+        }}
+        title="Edit Profile Image"
+        centered
+      >
+        <form
+          onSubmit={profileImageForm.onSubmit(async (values) => {
+            if (!values.picture) {
+              return;
+            }
+
+            const picturePath = await uploadUserPictureFile(values.picture);
+            await updateUserImageMutation.mutateAsync(picturePath);
+
+            profileImageForm.reset();
+            setProfileImageModalOpened(false);
+          })}
+        >
+          <Stack gap="sm">
+            <Group gap="sm" align="center">
+              <ProfileAvatar src={homeData.currentUser.image} name={userDisplayName} size="lg" radius="xl" />
+              <FileInput
+                style={{ flex: 1 }}
+                label="New Profile Image"
+                placeholder="Upload an image"
+                accept="image/png,image/jpeg,image/webp,image/gif"
+                clearable
+                withAsterisk
+                {...profileImageForm.getInputProps("picture")}
+              />
+            </Group>
+            <Group justify="flex-end">
+              <Button variant="default" onClick={() => setProfileImageModalOpened(false)}>
+                Cancel
+              </Button>
+              <Button type="submit" loading={updateUserImageMutation.isPending}>
+                Save image
+              </Button>
+            </Group>
+          </Stack>
+        </form>
+      </Modal>
+
+      <Modal
         opened={nicknameModalOpened}
         onClose={() => setNicknameModalOpened(false)}
         title={selectedServer ? `Edit Nickname - ${selectedServer.name}` : "Edit Nickname"}
@@ -1123,6 +1312,10 @@ export default function HomeClient({ initialData }: HomeClientProps) {
           onOpenCreateChannel={() => setCreateChannelModalOpened(true)}
           onOpenInvite={() => setInviteModalOpened(true)}
           onOpenManageRoles={() => setManageRolesModalOpened(true)}
+          onOpenEditServerImage={() => {
+            serverImageForm.reset();
+            setServerImageModalOpened(true);
+          }}
           onOpenEditNickname={() => {
             nicknameForm.setValues({
               nickname: currentServerMember?.nickname ?? "",
@@ -1159,12 +1352,16 @@ export default function HomeClient({ initialData }: HomeClientProps) {
               },
             });
           }}
+          currentUserImage={homeData.currentUser.image}
           userDisplayName={userDisplayName}
           isSigningOut={isSigningOut}
+          onOpenEditProfileImage={() => {
+            profileImageForm.reset();
+            setProfileImageModalOpened(true);
+          }}
           onSignOut={() => {
             void handleSignOut();
           }}
-          formatServerBadge={formatServerBadge}
         />
 
         <HomeChatPanel

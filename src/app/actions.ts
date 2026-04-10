@@ -8,6 +8,7 @@ import { BanListDal } from "@/dal/banlist";
 import { ServerMemberDal } from "@/dal/serverMember";
 import { ServerRolesDal } from "@/dal/serverRoles";
 import { ServerDal } from "@/dal/server";
+import { UserDal } from "@/dal/user";
 import { ChannelType, Permission } from "@/generated/prisma/client";
 import {
   canAccessChannel,
@@ -18,11 +19,18 @@ import { toIsoString } from "@/utils/date";
 import { resolveDisplayName } from "@/utils/display-name";
 import { logger } from "@/utils/logger";
 import { buildMentionPlan } from "@/utils/mentions";
+import { buildServerPicturePath, buildUserPicturePath, generateSignedUploadUrl, validatePictureMetadata } from "@/utils/pictures";
 import { requireUser } from "@/utils/session";
 import { createStreamUserToken, getStreamConfig, getStreamServerClient } from "@/utils/stream";
+import { deletePictureObject, isStoredPicturePath } from "@/utils/supabase";
 import type { HomeServer } from "@/app/home-types";
 
 const OWNER_ROLE_NAME = "Owner";
+
+type PictureUploadRequest = {
+  mimeType: string;
+  sizeBytes: number;
+};
 
 function normalizeRoleName(roleName: string) {
   return roleName.trim();
@@ -100,7 +108,23 @@ function assertCanModerateTarget(
   }
 }
 
-export async function createServer(serverName: string): Promise<HomeServer> {
+async function cleanupOldPicture(previousPath: string | null, nextPath: string | null) {
+  if (!previousPath || previousPath === nextPath || !isStoredPicturePath(previousPath)) {
+    return;
+  }
+
+  try {
+    await deletePictureObject(previousPath);
+  } catch (error) {
+    logger.warn({
+      context: "pictures.cleanup.failed",
+      previousPath,
+      message: error instanceof Error ? error.message : "Failed to remove old picture.",
+    });
+  }
+}
+
+export async function createServer(serverName: string, picturePath: string | null = null): Promise<HomeServer> {
   const sessionUser = await requireUser();
   const normalizedName = serverName.trim();
 
@@ -112,7 +136,12 @@ export async function createServer(serverName: string): Promise<HomeServer> {
     throw new Error("Server name must be at most 60 characters.");
   }
 
-  const result = await ServerDal.createForOwner(sessionUser.id, normalizedName);
+  if (picturePath !== null && picturePath.trim().length === 0) {
+    throw new Error("Invalid server picture path.");
+  }
+
+  const normalizedPicturePath = picturePath?.trim() || null;
+  const result = await ServerDal.createForOwner(sessionUser.id, normalizedName, normalizedPicturePath);
 
   return {
     id: result.server.id,
@@ -171,6 +200,28 @@ export async function createServer(serverName: string): Promise<HomeServer> {
     ],
     hasUnreadMentions: false,
   };
+}
+
+export async function requestUserImageUpload(payload: PictureUploadRequest) {
+  const sessionUser = await requireUser();
+  validatePictureMetadata(payload.mimeType, payload.sizeBytes);
+
+  const path = buildUserPicturePath(sessionUser.id, payload.mimeType);
+  return generateSignedUploadUrl(path);
+}
+
+export async function requestServerImageUpload(serverId: string, payload: PictureUploadRequest) {
+  const sessionUser = await requireUser();
+
+  if (!serverId || serverId.trim().length === 0) {
+    throw new Error("Server id is required.");
+  }
+
+  validatePictureMetadata(payload.mimeType, payload.sizeBytes);
+  await requireCanManageServer(sessionUser.id, serverId);
+
+  const path = buildServerPicturePath(serverId, payload.mimeType);
+  return generateSignedUploadUrl(path);
 }
 
 export async function createChannel(
@@ -415,6 +466,57 @@ export async function getInvitePreview(code: string) {
       currentUses: invite.currentUses,
       createdAt: toIsoString(invite.createdAt),
     },
+  };
+}
+
+export async function updateServerPicture(serverId: string, picturePath: string | null) {
+  const sessionUser = await requireUser();
+
+  if (!serverId || serverId.trim().length === 0) {
+    throw new Error("Server id is required.");
+  }
+
+  const normalizedPicturePath = picturePath?.trim() || null;
+
+  if (normalizedPicturePath !== null && normalizedPicturePath.length === 0) {
+    throw new Error("Invalid server picture path.");
+  }
+
+  await requireCanManageServer(sessionUser.id, serverId);
+
+  const existingServer = await ServerDal.getById(serverId);
+  if (!existingServer) {
+    throw new Error("Server not found.");
+  }
+
+  const updatedServer = await ServerDal.updatePicture(serverId, normalizedPicturePath);
+  await cleanupOldPicture(existingServer.picture, updatedServer.picture);
+
+  return {
+    id: updatedServer.id,
+    picture: updatedServer.picture,
+  };
+}
+
+export async function updateUserImage(picturePath: string | null) {
+  const sessionUser = await requireUser();
+  const normalizedPicturePath = picturePath?.trim() || null;
+
+  if (normalizedPicturePath !== null && normalizedPicturePath.length === 0) {
+    throw new Error("Invalid profile image path.");
+  }
+
+  const existingUser = await UserDal.getById(sessionUser.id);
+  if (!existingUser) {
+    throw new Error("User not found.");
+  }
+
+  const updatedUser = await UserDal.updateImage(sessionUser.id, normalizedPicturePath);
+  await cleanupOldPicture(existingUser.image, updatedUser.image);
+
+  return {
+    id: updatedUser.id,
+    image: updatedUser.image,
   };
 }
 

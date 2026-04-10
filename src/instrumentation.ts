@@ -5,6 +5,9 @@ const REQUIRED_ENV_VARIABLES = [
     "BETTER_AUTH_URL",
     "STREAM_API_KEY",
     "STREAM_SECRET",
+    "NEXT_PUBLIC_SUPABASE_URL",
+    "NEXT_PUBLIC_SUPABASE_ANON_KEY",
+    "SUPABASE_SERVICE_ROLE_KEY",
 ];
 
 export async function register() {

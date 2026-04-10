@@ -1,7 +1,7 @@
 import type { HomeServer } from "@/app/home-types";
+import { ProfileAvatar } from "@/app/components/profile-avatar";
 import {
   ActionIcon,
-  Avatar,
   Badge,
   Button,
   Group,
@@ -163,7 +163,7 @@ export function ManageRolesModal({
                       <Stack gap="xs">
                         <Group justify="space-between" align="center">
                           <Group gap="xs">
-                            <Avatar src={member.image} name={member.name} size="sm" radius="xl" />
+                            <ProfileAvatar src={member.image} name={member.name} size="sm" radius="xl" />
                             <Stack gap={0}>
                               <Text fw={600} c="gray.0">
                                 {member.name}
@@ -430,7 +430,7 @@ export function ManageRolesModal({
                     >
                       <Group justify="space-between" align="center">
                         <Group gap="xs">
-                          <Avatar src={bannedUser.image} name={bannedUser.name} size="sm" radius="xl" />
+                          <ProfileAvatar src={bannedUser.image} name={bannedUser.name} size="sm" radius="xl" />
                           <Stack gap={0}>
                             <Text fw={600} c="gray.0">
                               {bannedUser.name}

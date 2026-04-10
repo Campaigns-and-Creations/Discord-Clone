@@ -12,4 +12,15 @@ export class UserDal {
       },
     });
   }
+
+  static async updateImage(userId: string, image: string | null) {
+    return prisma.user.update({
+      where: { id: userId },
+      data: { image },
+      select: {
+        id: true,
+        image: true,
+      },
+    });
+  }
 }

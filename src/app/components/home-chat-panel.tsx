@@ -4,12 +4,12 @@ import {
   type MentionSuggestionOption,
 } from "@/app/components/markdown-draft-input";
 import { MessageMarkdown } from "@/app/components/message-markdown";
+import { ProfileAvatar } from "@/app/components/profile-avatar";
 import { StreamVideoProvider } from "@/app/components/stream-video-provider";
 import { VoiceCallPanel } from "@/app/components/voice-call-panel";
 import { ChannelType, Permission } from "@/generated/prisma/client";
 import {
   ActionIcon,
-  Avatar,
   Badge,
   Box,
   Group,
@@ -400,7 +400,7 @@ export function HomeChatPanel({
                           style={{ borderColor: message.isMentionedForCurrentUser ? "#f08c00" : "#3a3d45" }}
                         >
                           <Group align="flex-start" gap="sm" wrap="nowrap" justify="space-between">
-                            <Avatar src={message.author.image} name={message.author.name} color="indigo" radius="xl" size="sm" />
+                            <ProfileAvatar src={message.author.image} name={message.author.name} radius="xl" size="sm" />
                             <Stack gap={2} style={{ flex: 1, minWidth: 0 }}>
                               <Group gap="xs">
                                 <Text size="sm" fw={700} c="gray.0">
@@ -503,7 +503,7 @@ export function HomeChatPanel({
                           py={6}
                           style={{ borderRadius: 6 }}
                         >
-                          <Avatar src={member.image} name={member.name} color="indigo" radius="xl" size="sm" />
+                          <ProfileAvatar src={member.image} name={member.name} radius="xl" size="sm" />
                           <Stack gap={0} style={{ minWidth: 0 }}>
                             <Text size="sm" c="gray.0" truncate="end">
                               {member.name}

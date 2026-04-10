@@ -49,12 +49,12 @@ export class ServerDal {
     });
   }
 
-  static async createForOwner(userId: string, name: string) {
+  static async createForOwner(userId: string, name: string, picture: string | null = null) {
     return prisma.$transaction(async (tx) => {
       const server = await tx.server.create({
         data: {
           name,
-          picture: null,
+          picture,
         },
       });
 
@@ -112,6 +112,27 @@ export class ServerDal {
         ownerRole,
         generalChannel,
       };
+    });
+  }
+
+  static async getById(serverId: string) {
+    return prisma.server.findUnique({
+      where: { id: serverId },
+      select: {
+        id: true,
+        picture: true,
+      },
+    });
+  }
+
+  static async updatePicture(serverId: string, picture: string | null) {
+    return prisma.server.update({
+      where: { id: serverId },
+      data: { picture },
+      select: {
+        id: true,
+        picture: true,
+      },
     });
   }
 

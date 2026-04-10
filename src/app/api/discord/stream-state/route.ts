@@ -6,6 +6,7 @@ import { resolveDisplayName } from "@/utils/display-name";
 import { logger } from "@/utils/logger";
 import { canAccessChannel } from "@/utils/permissions";
 import { getServerUser } from "@/utils/session";
+import { createSignedPictureUrls, resolvePictureUrl } from "@/utils/supabase";
 import {
   getStreamStateSnapshot,
   heartbeatWatcher,
@@ -91,7 +92,39 @@ function resolveTargetStreamerUserId(
   return null;
 }
 
-function snapshotResponse(
+async function hydrateStreamSnapshotImages(
+  snapshot: ReturnType<typeof getStreamStateSnapshot>,
+) {
+  const storedPaths = new Set<string>();
+
+  for (const screenshare of snapshot.activeScreenshares) {
+    if (screenshare.streamerImage && !screenshare.streamerImage.startsWith("http")) {
+      storedPaths.add(screenshare.streamerImage);
+    }
+
+    for (const watcher of screenshare.watchers) {
+      if (watcher.image && !watcher.image.startsWith("http")) {
+        storedPaths.add(watcher.image);
+      }
+    }
+  }
+
+  const signedUrlByPath = await createSignedPictureUrls(Array.from(storedPaths));
+
+  return {
+    ...snapshot,
+    activeScreenshares: snapshot.activeScreenshares.map((screenshare) => ({
+      ...screenshare,
+      streamerImage: resolvePictureUrl(screenshare.streamerImage, signedUrlByPath),
+      watchers: screenshare.watchers.map((watcher) => ({
+        ...watcher,
+        image: resolvePictureUrl(watcher.image, signedUrlByPath),
+      })),
+    })),
+  };
+}
+
+async function snapshotResponse(
   serverId: string,
   channelId: string,
   sessionUserId: string,
@@ -100,7 +133,7 @@ function snapshotResponse(
     resolvedTargetStreamerUserId?: string | null;
   },
 ) {
-  const snapshot = getStreamStateSnapshot(serverId, channelId);
+  const snapshot = await hydrateStreamSnapshotImages(getStreamStateSnapshot(serverId, channelId));
   const watchingStreamerUserIds = snapshot.activeScreenshares
     .filter((screenshare) =>
       screenshare.watchers.some((watcher) => watcher.userId === sessionUserId),
@@ -139,7 +172,7 @@ export async function GET(request: Request) {
     return accessError;
   }
 
-  const snapshot = getStreamStateSnapshot(resolvedServerId, resolvedChannelId);
+  const snapshot = await hydrateStreamSnapshotImages(getStreamStateSnapshot(resolvedServerId, resolvedChannelId));
   const watchingStreamerUserIds = snapshot.activeScreenshares
     .filter((screenshare) =>
       screenshare.watchers.some((watcher) => watcher.userId === sessionUser.id),
@@ -266,7 +299,7 @@ export async function POST(request: Request) {
         requestedTargetStreamerName: targetStreamerName,
       });
 
-      return snapshotResponse(resolvedServerId, resolvedChannelId, sessionUser.id, {
+      return await snapshotResponse(resolvedServerId, resolvedChannelId, sessionUser.id, {
         message: "This screenshare is not active anymore.",
       });
     }
@@ -322,7 +355,7 @@ export async function POST(request: Request) {
       });
 
       if (result.reason === "stream-not-live") {
-        return snapshotResponse(resolvedServerId, resolvedChannelId, sessionUser.id, {
+        return await snapshotResponse(resolvedServerId, resolvedChannelId, sessionUser.id, {
           message: "This screenshare is not active anymore.",
           resolvedTargetStreamerUserId: resolvedTargetStreamerUserIdForResponse,
         });
@@ -361,7 +394,7 @@ export async function POST(request: Request) {
     );
 
     if (!resolvedTargetStreamerUserId) {
-      return snapshotResponse(resolvedServerId, resolvedChannelId, sessionUser.id, {
+      return await snapshotResponse(resolvedServerId, resolvedChannelId, sessionUser.id, {
         message: "This screenshare is not active anymore.",
       });
     }
@@ -377,7 +410,7 @@ export async function POST(request: Request) {
     });
 
     if (!result.ok && result.reason === "stream-not-live") {
-      return snapshotResponse(resolvedServerId, resolvedChannelId, sessionUser.id, {
+      return await snapshotResponse(resolvedServerId, resolvedChannelId, sessionUser.id, {
         message: "This screenshare is not active anymore.",
         resolvedTargetStreamerUserId: resolvedTargetStreamerUserIdForResponse,
       });
@@ -397,7 +430,7 @@ export async function POST(request: Request) {
     );
 
     if (!resolvedTargetStreamerUserId) {
-      return snapshotResponse(resolvedServerId, resolvedChannelId, sessionUser.id, {
+      return await snapshotResponse(resolvedServerId, resolvedChannelId, sessionUser.id, {
         message: "This screenshare is not active anymore.",
       });
     }
@@ -414,7 +447,7 @@ export async function POST(request: Request) {
     );
 
     if (!result.ok && result.reason === "stream-not-live") {
-      return snapshotResponse(resolvedServerId, resolvedChannelId, sessionUser.id, {
+      return await snapshotResponse(resolvedServerId, resolvedChannelId, sessionUser.id, {
         message: "This screenshare is not active anymore.",
         resolvedTargetStreamerUserId: resolvedTargetStreamerUserIdForResponse,
       });
@@ -425,7 +458,7 @@ export async function POST(request: Request) {
     unwatchAllScreenshares(resolvedServerId, resolvedChannelId, sessionUser.id);
   }
 
-  return snapshotResponse(resolvedServerId, resolvedChannelId, sessionUser.id, {
+  return await snapshotResponse(resolvedServerId, resolvedChannelId, sessionUser.id, {
     resolvedTargetStreamerUserId: resolvedTargetStreamerUserIdForResponse,
   });
 }

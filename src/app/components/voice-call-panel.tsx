@@ -25,6 +25,7 @@ import {
 } from "@stream-io/video-react-sdk";
 import { EyeIcon, EyeSlashIcon, MonitorPlayIcon, UsersThreeIcon } from "@phosphor-icons/react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { ProfileAvatar } from "./profile-avatar";
 
 type VoiceCallPanelProps = {
   serverId: string;
@@ -159,52 +160,19 @@ function getParticipantName(participant: StreamVideoParticipant): string {
   return "Unknown User";
 }
 
-function getParticipantInitials(participant: StreamVideoParticipant): string {
-  const name = getParticipantName(participant);
-  const parts = name.split(/\s+/).filter(Boolean);
-
-  if (parts.length === 0) {
-    return "?";
+function getParticipantImage(participant: StreamVideoParticipant): string | null {
+  const image = participant.image?.trim();
+  if (image) {
+    return image;
   }
 
-  return parts
-    .slice(0, 2)
-    .map((part) => part[0]?.toUpperCase() ?? "")
-    .join("") || "?";
+  return null;
 }
 
-function getInitialsFromName(name: string): string {
-  const parts = name.split(/\s+/).filter(Boolean);
-
-  if (parts.length === 0) {
-    return "?";
-  }
-
-  return parts
-    .slice(0, 2)
-    .map((part) => part[0]?.toUpperCase() ?? "")
-    .join("") || "?";
-}
-
-function IdentityPill({ name }: { name: string }) {
-  const initials = getInitialsFromName(name);
-
+function IdentityPill({ image, name }: { image?: string | null; name: string }) {
   return (
     <Group gap={6} wrap="nowrap" style={{ minWidth: 0 }}>
-      <Center
-        style={{
-          width: 22,
-          height: 22,
-          borderRadius: 999,
-          background: "#3a3d45",
-          color: "#f1f3f5",
-          fontWeight: 700,
-          fontSize: 10,
-          flexShrink: 0,
-        }}
-      >
-        {initials}
-      </Center>
+      <ProfileAvatar src={image ?? null} name={name} size={22} />
       <Text size="sm" c="gray.1" fw={600} truncate="end">
         {name}
       </Text>
@@ -798,7 +766,7 @@ function VoiceCallContent({ channelId, channelName, serverId, currentUser }: Voi
                 >
                   {selectedWatcherScreenshare.watchers.map((watcher) => (
                     <Paper key={watcher.userId} bg="#1f2125" p="xs" withBorder style={{ borderColor: "#3a3d45" }}>
-                      <IdentityPill name={watcher.name} />
+                      <IdentityPill name={watcher.name} image={watcher.image} />
                     </Paper>
                   ))}
                 </Box>
@@ -873,7 +841,10 @@ function VoiceCallContent({ channelId, channelName, serverId, currentUser }: Voi
                     style={{ position: "absolute", left: 8, bottom: 8, right: 8, justifyContent: "space-between" }}
                   >
                     <Paper bg="rgba(0,0,0,0.55)" p={4} radius="sm">
-                      <IdentityPill name={streamerName} />
+                      <IdentityPill
+                        name={streamerName}
+                        image={matchedState?.streamerImage ?? getParticipantImage(participant)}
+                      />
                     </Paper>
                     <Badge size="xs" color="red" variant="filled" radius="sm">
                       LIVE
@@ -930,7 +901,7 @@ function VoiceCallContent({ channelId, channelName, serverId, currentUser }: Voi
             const participantId = participant.sessionId;
             const isVideoOn = hasVideo(participant);
             const name = getParticipantName(participant);
-            const initials = getParticipantInitials(participant);
+            const image = getParticipantImage(participant);
 
             return (
               <Paper
@@ -951,25 +922,13 @@ function VoiceCallContent({ channelId, channelName, serverId, currentUser }: Voi
                         background: "linear-gradient(135deg, #1a1d22, #0f1217)",
                       }}
                     >
-                      <Center
-                        style={{
-                          width: 62,
-                          height: 62,
-                          borderRadius: 999,
-                          background: "#3a3d45",
-                          color: "#f1f3f5",
-                          fontWeight: 700,
-                          fontSize: 18,
-                        }}
-                      >
-                        {initials}
-                      </Center>
+                      <ProfileAvatar src={image} name={name} size={62} />
                     </Center>
                   )}
 
                   <Box style={{ position: "absolute", left: 8, bottom: 8 }}>
                     <Paper bg="rgba(0,0,0,0.55)" p={4} radius="sm">
-                      <IdentityPill name={name} />
+                      <IdentityPill name={name} image={image} />
                     </Paper>
                   </Box>
                 </Box>
@@ -995,22 +954,10 @@ function VoiceCallContent({ channelId, channelName, serverId, currentUser }: Voi
               style={{ borderColor: "#2f3136", minHeight: 242, overflow: "hidden" }}
             >
               <Center style={{ height: 176, background: "linear-gradient(135deg, #1a1d22, #0f1217)" }}>
-                <Center
-                  style={{
-                    width: 62,
-                    height: 62,
-                    borderRadius: 999,
-                    background: "#3a3d45",
-                    color: "#f1f3f5",
-                    fontWeight: 700,
-                    fontSize: 18,
-                  }}
-                >
-                  {getInitialsFromName(currentUser.name || "You")}
-                </Center>
+                <ProfileAvatar src={currentUser.image} name={currentUser.name || "You"} size={62} />
               </Center>
               <Group px="xs" py={6} justify="space-between" wrap="nowrap">
-                <IdentityPill name={currentUser.name || "You"} />
+                <IdentityPill name={currentUser.name || "You"} image={currentUser.image} />
                 <Badge size="xs" color="gray" variant="light" radius="sm">
                   Joining...
                 </Badge>

@@ -60,17 +60,18 @@ function getMessageTimestamp(base: Date, offsetMinutes: number): Date {
 async function main() {
     const email = "goethalsdiego@gmail.com";
     const password = "test123!";
+    const name = "DiegoGoethals";
 
     const user = await prisma.user.upsert({
         where: { email },
         update: {
             emailVerified: true,
-            name: "Diego Goethals",
+            name,
         },
         create: {
             email,
             emailVerified: true,
-            name: "Diego Goethals",
+            name,
         },
     });
 
