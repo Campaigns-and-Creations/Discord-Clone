@@ -2,8 +2,6 @@ import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "./prisma";
 
-const USERNAME_WHITESPACE_REGEX = /\s/;
-
 export const auth = betterAuth({
     database: prismaAdapter(prisma, {
         provider: "postgresql",
@@ -12,8 +10,19 @@ export const auth = betterAuth({
     user: {
       create: {
         async before(user) {
-          if (typeof user.name === "string" && USERNAME_WHITESPACE_REGEX.test(user.name)) {
-            throw new Error("Username cannot contain whitespace.");
+          if (typeof user.name === "string") {
+            const normalizedName = user.name.replace(/\s+/gu, "").trim();
+
+            if (!normalizedName) {
+              throw new Error("Username is required.");
+            }
+
+            return {
+              data: {
+                ...user,
+                name: normalizedName,
+              },
+            };
           }
 
           return {
@@ -23,8 +32,19 @@ export const auth = betterAuth({
       },
       update: {
         async before(user) {
-          if (typeof user.name === "string" && USERNAME_WHITESPACE_REGEX.test(user.name)) {
-            throw new Error("Username cannot contain whitespace.");
+          if (typeof user.name === "string") {
+            const normalizedName = user.name.replace(/\s+/gu, "").trim();
+
+            if (!normalizedName) {
+              throw new Error("Username is required.");
+            }
+
+            return {
+              data: {
+                ...user,
+                name: normalizedName,
+              },
+            };
           }
 
           return {

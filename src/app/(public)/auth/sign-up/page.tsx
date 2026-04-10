@@ -6,8 +6,6 @@ import { FormEvent, Suspense, useEffect, useState } from "react";
 
 import { signUp, useSession } from "@/utils/auth-client";
 
-const USERNAME_WHITESPACE_REGEX = /\s/;
-
 export default function SignUpPage() {
     return (
         <Suspense fallback={null}>
@@ -39,8 +37,10 @@ function SignUpPageContent() {
         event.preventDefault();
         setError(null);
 
-        if (USERNAME_WHITESPACE_REGEX.test(name)) {
-            setError("Username cannot contain whitespace.");
+        const normalizedName = name.replace(/\s+/gu, "").trim();
+
+        if (!normalizedName) {
+            setError("Username is required.");
             return;
         }
 
@@ -50,7 +50,7 @@ function SignUpPageContent() {
             const result = await signUp.email({
                 callbackURL: signInPath,
                 email,
-                name,
+                name: normalizedName,
                 password,
             });
 
@@ -81,9 +81,7 @@ function SignUpPageContent() {
                             className="rounded-md border border-zinc-300 px-3 py-2 outline-none focus:border-zinc-500"
                             disabled={isPending || isSubmitting}
                             onChange={(event) => setName(event.target.value)}
-                            pattern="^\\S+$"
                             required
-                            title="Username cannot contain whitespace."
                             type="text"
                             value={name}
                         />
