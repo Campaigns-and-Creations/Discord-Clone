@@ -78,8 +78,23 @@ model Messages {
     author      User     @relation(fields: [authorId], references: [id])
     createdAt   DateTime @default(now())
     pinned      Boolean  @default(false)
+    attachments MessageAttachment[]
     mentions    MessageMention[]
     mentionReceipts MessageMentionReceipt[]
+}
+
+model MessageAttachment {
+    id          String   @id @default(uuid())
+    messageId   String
+    message     Messages @relation(fields: [messageId], references: [id], onDelete: Cascade)
+    storagePath String
+    fileName    String
+    mimeType    String
+    sizeBytes   Int
+    createdAt   DateTime @default(now())
+
+    @@index([messageId])
+    @@index([createdAt])
 }
 
 model MessageMention {

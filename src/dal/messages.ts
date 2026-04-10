@@ -1,6 +1,43 @@
 import { prisma } from "@/utils/prisma";
 import { MessageMentionsDal } from "@/dal/messageMentions";
 import type { MentionPlan } from "@/utils/mentions";
+import type { Prisma } from "@/generated/prisma/client";
+
+type CreateMessageAttachmentInput = {
+  storagePath: string;
+  fileName: string;
+  mimeType: string;
+  sizeBytes: number;
+};
+
+const MESSAGE_WITH_ATTACHMENTS_SELECT = {
+  id: true,
+  content: true,
+  createdAt: true,
+  pinned: true,
+  channelId: true,
+  attachments: {
+    select: {
+      id: true,
+      fileName: true,
+      mimeType: true,
+      sizeBytes: true,
+      storagePath: true,
+    },
+    orderBy: [{ createdAt: "asc" }, { id: "asc" }],
+  },
+  author: {
+    select: {
+      id: true,
+      name: true,
+      image: true,
+    },
+  },
+} satisfies Prisma.MessagesSelect;
+
+type MessageWithAttachments = Prisma.MessagesGetPayload<{
+  select: typeof MESSAGE_WITH_ATTACHMENTS_SELECT;
+}>;
 
 export class MessagesDal {
   static async listLatestByChannelId(channelId: string, limit: number) {
@@ -8,27 +45,14 @@ export class MessagesDal {
       where: { channelId },
       orderBy: [{ createdAt: "desc" }, { id: "desc" }],
       take: limit + 1,
-      select: {
-        id: true,
-        content: true,
-        createdAt: true,
-        pinned: true,
-        channelId: true,
-        author: {
-          select: {
-            id: true,
-            name: true,
-            image: true,
-          },
-        },
-      },
+      select: MESSAGE_WITH_ATTACHMENTS_SELECT,
     });
 
     const hasOlderMessages = rows.length > limit;
     const messages = (hasOlderMessages ? rows.slice(0, limit) : rows).reverse();
 
     return {
-      messages,
+      messages: messages as MessageWithAttachments[],
       hasOlderMessages,
     };
   }
@@ -45,7 +69,7 @@ export class MessagesDal {
 
     if (!cursor || cursor.channelId !== channelId) {
       return {
-        messages: [],
+        messages: [] as MessageWithAttachments[],
         hasOlderMessages: false,
       };
     }
@@ -69,27 +93,14 @@ export class MessagesDal {
       },
       orderBy: [{ createdAt: "desc" }, { id: "desc" }],
       take: limit + 1,
-      select: {
-        id: true,
-        content: true,
-        createdAt: true,
-        pinned: true,
-        channelId: true,
-        author: {
-          select: {
-            id: true,
-            name: true,
-            image: true,
-          },
-        },
-      },
+      select: MESSAGE_WITH_ATTACHMENTS_SELECT,
     });
 
     const hasOlderMessages = rows.length > limit;
     const messages = (hasOlderMessages ? rows.slice(0, limit) : rows).reverse();
 
     return {
-      messages,
+      messages: messages as MessageWithAttachments[],
       hasOlderMessages,
     };
   }
@@ -101,21 +112,8 @@ export class MessagesDal {
         authorId,
         content,
       },
-      select: {
-        id: true,
-        content: true,
-        createdAt: true,
-        pinned: true,
-        channelId: true,
-        author: {
-          select: {
-            id: true,
-            name: true,
-            image: true,
-          },
-        },
-      },
-    });
+      select: MESSAGE_WITH_ATTACHMENTS_SELECT,
+    }) as Promise<MessageWithAttachments>;
   }
 
   static async createInChannelWithMentions(
@@ -124,6 +122,7 @@ export class MessagesDal {
     authorId: string,
     content: string,
     mentionPlan: MentionPlan,
+    attachments: CreateMessageAttachmentInput[] = [],
   ) {
     return prisma.$transaction(async (tx) => {
       const message = await tx.messages.create({
@@ -131,21 +130,15 @@ export class MessagesDal {
           channelId,
           authorId,
           content,
+          attachments: attachments.length > 0
+            ? {
+                createMany: {
+                  data: attachments,
+                },
+              }
+            : undefined,
         },
-        select: {
-          id: true,
-          content: true,
-          createdAt: true,
-          pinned: true,
-          channelId: true,
-          author: {
-            select: {
-              id: true,
-              name: true,
-              image: true,
-            },
-          },
-        },
+        select: MESSAGE_WITH_ATTACHMENTS_SELECT,
       });
 
       await MessageMentionsDal.createForMessage(tx, {
@@ -156,7 +149,7 @@ export class MessagesDal {
       });
 
       return message;
-    });
+    }) as Promise<MessageWithAttachments>;
   }
 
   static async findById(messageId: string) {

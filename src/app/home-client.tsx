@@ -17,6 +17,7 @@ import {
   setServerMemberRoles,
   requestServerImageUpload,
   requestUserImageUpload,
+  requestMessageAttachmentUpload,
   unbanServerUser,
   updateServerMemberNickname,
   updateOwnServerNickname,
@@ -37,6 +38,7 @@ import type { HomeMessage, HomePageData } from "@/app/home-types";
 import { ChannelType, Permission } from "@/generated/prisma/client";
 import { signOut } from "@/utils/auth-client";
 import { getSupabaseBrowserClient } from "@/utils/supabase-client";
+import { getMessageAttachmentLimits } from "@/utils/message-attachments";
 import { Box, Button, FileInput, Group, Modal, Stack, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { modals } from "@mantine/modals";
@@ -65,6 +67,17 @@ type SignedUploadTicket = {
   token: string;
   signedUrl: string;
 };
+
+type DraftMessageAttachment = {
+  id: string;
+  file: File;
+  previewUrl: string | null;
+  status: "uploading" | "uploaded" | "failed";
+  storagePath: string | null;
+  error: string | null;
+};
+
+const ATTACHMENT_LIMITS = getMessageAttachmentLimits();
 
 function compareMessages(a: HomeMessage, b: HomeMessage): number {
   const createdAtDelta = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
@@ -120,6 +133,7 @@ export default function HomeClient({ initialData }: HomeClientProps) {
   const [linkCopied, setLinkCopied] = useState(false);
   const [isSigningOut, setIsSigningOut] = useState(false);
   const [messageDraft, setMessageDraft] = useState("");
+  const [messageDraftAttachments, setMessageDraftAttachments] = useState<DraftMessageAttachment[]>([]);
   const [editingRoleId, setEditingRoleId] = useState<string | null>(null);
   const [editingChannelId, setEditingChannelId] = useState<string | null>(null);
   const [memberRoleDrafts, setMemberRoleDrafts] = useState<Record<string, string[]>>({});
@@ -368,6 +382,35 @@ export default function HomeClient({ initialData }: HomeClientProps) {
     return uploadPictureWithSignedTicket(file, ticket);
   };
 
+  const uploadMessageAttachmentFile = async (
+    serverId: string,
+    channelId: string,
+    file: File,
+  ): Promise<string> => {
+    const ticket = await requestMessageAttachmentUpload(serverId, channelId, {
+      fileName: file.name,
+      mimeType: file.type || "application/octet-stream",
+      sizeBytes: file.size,
+    });
+
+    const supabase = getSupabaseBrowserClient();
+    const { error } = await supabase.storage.from("messages").uploadToSignedUrl(
+      ticket.path,
+      ticket.token,
+      file,
+      {
+        upsert: false,
+        contentType: file.type || "application/octet-stream",
+      },
+    );
+
+    if (error) {
+      throw new Error(`Failed to upload attachment: ${error.message}`);
+    }
+
+    return ticket.path;
+  };
+
   const createServerMutation = useMutation({
     mutationFn: async (name: string) => createServer(name, null),
     onSuccess: (createdServer) => {
@@ -463,10 +506,27 @@ export default function HomeClient({ initialData }: HomeClientProps) {
   });
 
   const sendMessageMutation = useMutation({
-    mutationFn: async (payload: { serverId: string; channelId: string; content: string }) =>
-      sendMessage(payload.serverId, payload.channelId, payload.content),
+    mutationFn: async (payload: {
+      serverId: string;
+      channelId: string;
+      content: string;
+      attachments: Array<{
+        storagePath: string;
+        fileName: string;
+        mimeType: string;
+        sizeBytes: number;
+      }>;
+    }) =>
+      sendMessage(payload.serverId, payload.channelId, payload.content, payload.attachments),
     onSuccess: async () => {
+      for (const attachment of messageDraftAttachments) {
+        if (attachment.previewUrl) {
+          URL.revokeObjectURL(attachment.previewUrl);
+        }
+      }
+
       setMessageDraft("");
+      setMessageDraftAttachments([]);
       await queryClient.invalidateQueries({ queryKey: ["discord", "home-data"] });
     },
   });
@@ -714,6 +774,100 @@ export default function HomeClient({ initialData }: HomeClientProps) {
       return next;
     });
   }, [homeData.servers]);
+
+  useEffect(() => {
+    setMessageDraftAttachments((current) => {
+      for (const attachment of current) {
+        if (attachment.previewUrl) {
+          URL.revokeObjectURL(attachment.previewUrl);
+        }
+      }
+
+      return [];
+    });
+  }, [selectedChannel?.id]);
+
+  const handleAddMessageAttachments = (files: File[]) => {
+    if (!selectedServer || !selectedChannel || files.length === 0) {
+      return;
+    }
+
+    const availableSlots = Math.max(0, ATTACHMENT_LIMITS.maxCountPerMessage - messageDraftAttachments.length);
+    const filesToUpload = files.slice(0, availableSlots);
+
+    for (const file of filesToUpload) {
+      const id = crypto.randomUUID();
+      const previewUrl = file.type.startsWith("image/") ? URL.createObjectURL(file) : null;
+
+      setMessageDraftAttachments((current) => {
+        if (current.length >= ATTACHMENT_LIMITS.maxCountPerMessage) {
+          if (previewUrl) {
+            URL.revokeObjectURL(previewUrl);
+          }
+
+          return current;
+        }
+
+        return [
+          ...current,
+          {
+            id,
+            file,
+            previewUrl,
+            status: "uploading",
+            storagePath: null,
+            error: null,
+          },
+        ];
+      });
+
+      void uploadMessageAttachmentFile(selectedServer.id, selectedChannel.id, file)
+        .then((storagePath) => {
+          setMessageDraftAttachments((current) => current.map((item) => {
+            if (item.id !== id) {
+              return item;
+            }
+
+            return {
+              ...item,
+              status: "uploaded",
+              storagePath,
+              error: null,
+            };
+          }));
+        })
+        .catch((error) => {
+          setMessageDraftAttachments((current) => current.map((item) => {
+            if (item.id !== id) {
+              return item;
+            }
+
+            return {
+              ...item,
+              status: "failed",
+              storagePath: null,
+              error: error instanceof Error ? error.message : "Upload failed.",
+            };
+          }));
+        });
+    }
+  };
+
+  const handleRemoveMessageAttachment = (attachmentId: string) => {
+    setMessageDraftAttachments((current) => {
+      const next = current.filter((item) => item.id !== attachmentId);
+      const removed = current.find((item) => item.id === attachmentId);
+      if (removed?.previewUrl) {
+        URL.revokeObjectURL(removed.previewUrl);
+      }
+
+      return next;
+    });
+  };
+
+  const isUploadingMessageAttachments = messageDraftAttachments.some(
+    (attachment) => attachment.status === "uploading",
+  );
 
   useEffect(() => {
     if (!selectedChannel || !selectedChannelLatestMessageId) {
@@ -1408,7 +1562,20 @@ export default function HomeClient({ initialData }: HomeClientProps) {
             }
 
             const normalized = messageDraft.trim();
-            if (!normalized) {
+            const uploadedAttachments = messageDraftAttachments
+              .filter((attachment) => attachment.status === "uploaded" && attachment.storagePath)
+              .map((attachment) => ({
+                storagePath: attachment.storagePath!,
+                fileName: attachment.file.name,
+                mimeType: attachment.file.type || "application/octet-stream",
+                sizeBytes: attachment.file.size,
+              }));
+
+            if (!normalized && uploadedAttachments.length === 0) {
+              return;
+            }
+
+            if (isUploadingMessageAttachments) {
               return;
             }
 
@@ -1416,10 +1583,23 @@ export default function HomeClient({ initialData }: HomeClientProps) {
               serverId: selectedServer.id,
               channelId: selectedChannel.id,
               content: normalized,
+              attachments: uploadedAttachments,
             });
           }}
+          messageDraftAttachments={messageDraftAttachments.map((attachment) => ({
+            id: attachment.id,
+            fileName: attachment.file.name,
+            mimeType: attachment.file.type || "application/octet-stream",
+            sizeBytes: attachment.file.size,
+            previewUrl: attachment.previewUrl,
+            status: attachment.status,
+            error: attachment.error,
+          }))}
+          onAddMessageAttachments={handleAddMessageAttachments}
+          onRemoveMessageAttachment={handleRemoveMessageAttachment}
+          isUploadingMessageAttachments={isUploadingMessageAttachments}
           onLoadOlderMessages={handleLoadOlderMessages}
-          isSendingMessage={sendMessageMutation.isPending}
+          isSendingMessage={sendMessageMutation.isPending || isUploadingMessageAttachments}
         />
       </Group>
     </Box>

@@ -49,6 +49,11 @@ export type ServerRolePermission = $Result.DefaultSelection<Prisma.$ServerRolePe
  */
 export type Messages = $Result.DefaultSelection<Prisma.$MessagesPayload>
 /**
+ * Model MessageAttachment
+ * 
+ */
+export type MessageAttachment = $Result.DefaultSelection<Prisma.$MessageAttachmentPayload>
+/**
  * Model MessageMention
  * 
  */
@@ -333,6 +338,16 @@ export class PrismaClient<
     * ```
     */
   get messages(): Prisma.MessagesDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.messageAttachment`: Exposes CRUD operations for the **MessageAttachment** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more MessageAttachments
+    * const messageAttachments = await prisma.messageAttachment.findMany()
+    * ```
+    */
+  get messageAttachment(): Prisma.MessageAttachmentDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.messageMention`: Exposes CRUD operations for the **MessageMention** model.
@@ -854,6 +869,7 @@ export namespace Prisma {
     ChannelRoleAccess: 'ChannelRoleAccess',
     ServerRolePermission: 'ServerRolePermission',
     Messages: 'Messages',
+    MessageAttachment: 'MessageAttachment',
     MessageMention: 'MessageMention',
     MessageMentionReceipt: 'MessageMentionReceipt',
     ServerInvite: 'ServerInvite',
@@ -877,7 +893,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "server" | "channel" | "serverMember" | "serverRoles" | "channelRoleAccess" | "serverRolePermission" | "messages" | "messageMention" | "messageMentionReceipt" | "serverInvite" | "banList" | "user" | "session" | "account" | "verification"
+      modelProps: "server" | "channel" | "serverMember" | "serverRoles" | "channelRoleAccess" | "serverRolePermission" | "messages" | "messageAttachment" | "messageMention" | "messageMentionReceipt" | "serverInvite" | "banList" | "user" | "session" | "account" | "verification"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1396,6 +1412,80 @@ export namespace Prisma {
           count: {
             args: Prisma.MessagesCountArgs<ExtArgs>
             result: $Utils.Optional<MessagesCountAggregateOutputType> | number
+          }
+        }
+      }
+      MessageAttachment: {
+        payload: Prisma.$MessageAttachmentPayload<ExtArgs>
+        fields: Prisma.MessageAttachmentFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.MessageAttachmentFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessageAttachmentPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.MessageAttachmentFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessageAttachmentPayload>
+          }
+          findFirst: {
+            args: Prisma.MessageAttachmentFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessageAttachmentPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.MessageAttachmentFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessageAttachmentPayload>
+          }
+          findMany: {
+            args: Prisma.MessageAttachmentFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessageAttachmentPayload>[]
+          }
+          create: {
+            args: Prisma.MessageAttachmentCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessageAttachmentPayload>
+          }
+          createMany: {
+            args: Prisma.MessageAttachmentCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.MessageAttachmentCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessageAttachmentPayload>[]
+          }
+          delete: {
+            args: Prisma.MessageAttachmentDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessageAttachmentPayload>
+          }
+          update: {
+            args: Prisma.MessageAttachmentUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessageAttachmentPayload>
+          }
+          deleteMany: {
+            args: Prisma.MessageAttachmentDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.MessageAttachmentUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.MessageAttachmentUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessageAttachmentPayload>[]
+          }
+          upsert: {
+            args: Prisma.MessageAttachmentUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessageAttachmentPayload>
+          }
+          aggregate: {
+            args: Prisma.MessageAttachmentAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateMessageAttachment>
+          }
+          groupBy: {
+            args: Prisma.MessageAttachmentGroupByArgs<ExtArgs>
+            result: $Utils.Optional<MessageAttachmentGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.MessageAttachmentCountArgs<ExtArgs>
+            result: $Utils.Optional<MessageAttachmentCountAggregateOutputType> | number
           }
         }
       }
@@ -2106,6 +2196,7 @@ export namespace Prisma {
     channelRoleAccess?: ChannelRoleAccessOmit
     serverRolePermission?: ServerRolePermissionOmit
     messages?: MessagesOmit
+    messageAttachment?: MessageAttachmentOmit
     messageMention?: MessageMentionOmit
     messageMentionReceipt?: MessageMentionReceiptOmit
     serverInvite?: ServerInviteOmit
@@ -2390,11 +2481,13 @@ export namespace Prisma {
    */
 
   export type MessagesCountOutputType = {
+    attachments: number
     mentions: number
     mentionReceipts: number
   }
 
   export type MessagesCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    attachments?: boolean | MessagesCountOutputTypeCountAttachmentsArgs
     mentions?: boolean | MessagesCountOutputTypeCountMentionsArgs
     mentionReceipts?: boolean | MessagesCountOutputTypeCountMentionReceiptsArgs
   }
@@ -2408,6 +2501,13 @@ export namespace Prisma {
      * Select specific fields to fetch from the MessagesCountOutputType
      */
     select?: MessagesCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * MessagesCountOutputType without action
+   */
+  export type MessagesCountOutputTypeCountAttachmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MessageAttachmentWhereInput
   }
 
   /**
@@ -9462,6 +9562,7 @@ export namespace Prisma {
     pinned?: boolean
     channel?: boolean | ChannelDefaultArgs<ExtArgs>
     author?: boolean | UserDefaultArgs<ExtArgs>
+    attachments?: boolean | Messages$attachmentsArgs<ExtArgs>
     mentions?: boolean | Messages$mentionsArgs<ExtArgs>
     mentionReceipts?: boolean | Messages$mentionReceiptsArgs<ExtArgs>
     _count?: boolean | MessagesCountOutputTypeDefaultArgs<ExtArgs>
@@ -9502,6 +9603,7 @@ export namespace Prisma {
   export type MessagesInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     channel?: boolean | ChannelDefaultArgs<ExtArgs>
     author?: boolean | UserDefaultArgs<ExtArgs>
+    attachments?: boolean | Messages$attachmentsArgs<ExtArgs>
     mentions?: boolean | Messages$mentionsArgs<ExtArgs>
     mentionReceipts?: boolean | Messages$mentionReceiptsArgs<ExtArgs>
     _count?: boolean | MessagesCountOutputTypeDefaultArgs<ExtArgs>
@@ -9520,6 +9622,7 @@ export namespace Prisma {
     objects: {
       channel: Prisma.$ChannelPayload<ExtArgs>
       author: Prisma.$UserPayload<ExtArgs>
+      attachments: Prisma.$MessageAttachmentPayload<ExtArgs>[]
       mentions: Prisma.$MessageMentionPayload<ExtArgs>[]
       mentionReceipts: Prisma.$MessageMentionReceiptPayload<ExtArgs>[]
     }
@@ -9926,6 +10029,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     channel<T extends ChannelDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ChannelDefaultArgs<ExtArgs>>): Prisma__ChannelClient<$Result.GetResult<Prisma.$ChannelPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     author<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    attachments<T extends Messages$attachmentsArgs<ExtArgs> = {}>(args?: Subset<T, Messages$attachmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessageAttachmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     mentions<T extends Messages$mentionsArgs<ExtArgs> = {}>(args?: Subset<T, Messages$mentionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessageMentionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     mentionReceipts<T extends Messages$mentionReceiptsArgs<ExtArgs> = {}>(args?: Subset<T, Messages$mentionReceiptsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessageMentionReceiptPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
@@ -10364,6 +10468,30 @@ export namespace Prisma {
   }
 
   /**
+   * Messages.attachments
+   */
+  export type Messages$attachmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MessageAttachment
+     */
+    select?: MessageAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MessageAttachment
+     */
+    omit?: MessageAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageAttachmentInclude<ExtArgs> | null
+    where?: MessageAttachmentWhereInput
+    orderBy?: MessageAttachmentOrderByWithRelationInput | MessageAttachmentOrderByWithRelationInput[]
+    cursor?: MessageAttachmentWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: MessageAttachmentScalarFieldEnum | MessageAttachmentScalarFieldEnum[]
+  }
+
+  /**
    * Messages.mentions
    */
   export type Messages$mentionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -10427,6 +10555,1129 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: MessagesInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model MessageAttachment
+   */
+
+  export type AggregateMessageAttachment = {
+    _count: MessageAttachmentCountAggregateOutputType | null
+    _avg: MessageAttachmentAvgAggregateOutputType | null
+    _sum: MessageAttachmentSumAggregateOutputType | null
+    _min: MessageAttachmentMinAggregateOutputType | null
+    _max: MessageAttachmentMaxAggregateOutputType | null
+  }
+
+  export type MessageAttachmentAvgAggregateOutputType = {
+    sizeBytes: number | null
+  }
+
+  export type MessageAttachmentSumAggregateOutputType = {
+    sizeBytes: number | null
+  }
+
+  export type MessageAttachmentMinAggregateOutputType = {
+    id: string | null
+    messageId: string | null
+    storagePath: string | null
+    fileName: string | null
+    mimeType: string | null
+    sizeBytes: number | null
+    createdAt: Date | null
+  }
+
+  export type MessageAttachmentMaxAggregateOutputType = {
+    id: string | null
+    messageId: string | null
+    storagePath: string | null
+    fileName: string | null
+    mimeType: string | null
+    sizeBytes: number | null
+    createdAt: Date | null
+  }
+
+  export type MessageAttachmentCountAggregateOutputType = {
+    id: number
+    messageId: number
+    storagePath: number
+    fileName: number
+    mimeType: number
+    sizeBytes: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type MessageAttachmentAvgAggregateInputType = {
+    sizeBytes?: true
+  }
+
+  export type MessageAttachmentSumAggregateInputType = {
+    sizeBytes?: true
+  }
+
+  export type MessageAttachmentMinAggregateInputType = {
+    id?: true
+    messageId?: true
+    storagePath?: true
+    fileName?: true
+    mimeType?: true
+    sizeBytes?: true
+    createdAt?: true
+  }
+
+  export type MessageAttachmentMaxAggregateInputType = {
+    id?: true
+    messageId?: true
+    storagePath?: true
+    fileName?: true
+    mimeType?: true
+    sizeBytes?: true
+    createdAt?: true
+  }
+
+  export type MessageAttachmentCountAggregateInputType = {
+    id?: true
+    messageId?: true
+    storagePath?: true
+    fileName?: true
+    mimeType?: true
+    sizeBytes?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type MessageAttachmentAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which MessageAttachment to aggregate.
+     */
+    where?: MessageAttachmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MessageAttachments to fetch.
+     */
+    orderBy?: MessageAttachmentOrderByWithRelationInput | MessageAttachmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: MessageAttachmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MessageAttachments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MessageAttachments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned MessageAttachments
+    **/
+    _count?: true | MessageAttachmentCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: MessageAttachmentAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: MessageAttachmentSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: MessageAttachmentMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: MessageAttachmentMaxAggregateInputType
+  }
+
+  export type GetMessageAttachmentAggregateType<T extends MessageAttachmentAggregateArgs> = {
+        [P in keyof T & keyof AggregateMessageAttachment]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateMessageAttachment[P]>
+      : GetScalarType<T[P], AggregateMessageAttachment[P]>
+  }
+
+
+
+
+  export type MessageAttachmentGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MessageAttachmentWhereInput
+    orderBy?: MessageAttachmentOrderByWithAggregationInput | MessageAttachmentOrderByWithAggregationInput[]
+    by: MessageAttachmentScalarFieldEnum[] | MessageAttachmentScalarFieldEnum
+    having?: MessageAttachmentScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: MessageAttachmentCountAggregateInputType | true
+    _avg?: MessageAttachmentAvgAggregateInputType
+    _sum?: MessageAttachmentSumAggregateInputType
+    _min?: MessageAttachmentMinAggregateInputType
+    _max?: MessageAttachmentMaxAggregateInputType
+  }
+
+  export type MessageAttachmentGroupByOutputType = {
+    id: string
+    messageId: string
+    storagePath: string
+    fileName: string
+    mimeType: string
+    sizeBytes: number
+    createdAt: Date
+    _count: MessageAttachmentCountAggregateOutputType | null
+    _avg: MessageAttachmentAvgAggregateOutputType | null
+    _sum: MessageAttachmentSumAggregateOutputType | null
+    _min: MessageAttachmentMinAggregateOutputType | null
+    _max: MessageAttachmentMaxAggregateOutputType | null
+  }
+
+  type GetMessageAttachmentGroupByPayload<T extends MessageAttachmentGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<MessageAttachmentGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof MessageAttachmentGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], MessageAttachmentGroupByOutputType[P]>
+            : GetScalarType<T[P], MessageAttachmentGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type MessageAttachmentSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    messageId?: boolean
+    storagePath?: boolean
+    fileName?: boolean
+    mimeType?: boolean
+    sizeBytes?: boolean
+    createdAt?: boolean
+    message?: boolean | MessagesDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["messageAttachment"]>
+
+  export type MessageAttachmentSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    messageId?: boolean
+    storagePath?: boolean
+    fileName?: boolean
+    mimeType?: boolean
+    sizeBytes?: boolean
+    createdAt?: boolean
+    message?: boolean | MessagesDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["messageAttachment"]>
+
+  export type MessageAttachmentSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    messageId?: boolean
+    storagePath?: boolean
+    fileName?: boolean
+    mimeType?: boolean
+    sizeBytes?: boolean
+    createdAt?: boolean
+    message?: boolean | MessagesDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["messageAttachment"]>
+
+  export type MessageAttachmentSelectScalar = {
+    id?: boolean
+    messageId?: boolean
+    storagePath?: boolean
+    fileName?: boolean
+    mimeType?: boolean
+    sizeBytes?: boolean
+    createdAt?: boolean
+  }
+
+  export type MessageAttachmentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "messageId" | "storagePath" | "fileName" | "mimeType" | "sizeBytes" | "createdAt", ExtArgs["result"]["messageAttachment"]>
+  export type MessageAttachmentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    message?: boolean | MessagesDefaultArgs<ExtArgs>
+  }
+  export type MessageAttachmentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    message?: boolean | MessagesDefaultArgs<ExtArgs>
+  }
+  export type MessageAttachmentIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    message?: boolean | MessagesDefaultArgs<ExtArgs>
+  }
+
+  export type $MessageAttachmentPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "MessageAttachment"
+    objects: {
+      message: Prisma.$MessagesPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      messageId: string
+      storagePath: string
+      fileName: string
+      mimeType: string
+      sizeBytes: number
+      createdAt: Date
+    }, ExtArgs["result"]["messageAttachment"]>
+    composites: {}
+  }
+
+  type MessageAttachmentGetPayload<S extends boolean | null | undefined | MessageAttachmentDefaultArgs> = $Result.GetResult<Prisma.$MessageAttachmentPayload, S>
+
+  type MessageAttachmentCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<MessageAttachmentFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: MessageAttachmentCountAggregateInputType | true
+    }
+
+  export interface MessageAttachmentDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['MessageAttachment'], meta: { name: 'MessageAttachment' } }
+    /**
+     * Find zero or one MessageAttachment that matches the filter.
+     * @param {MessageAttachmentFindUniqueArgs} args - Arguments to find a MessageAttachment
+     * @example
+     * // Get one MessageAttachment
+     * const messageAttachment = await prisma.messageAttachment.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends MessageAttachmentFindUniqueArgs>(args: SelectSubset<T, MessageAttachmentFindUniqueArgs<ExtArgs>>): Prisma__MessageAttachmentClient<$Result.GetResult<Prisma.$MessageAttachmentPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one MessageAttachment that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {MessageAttachmentFindUniqueOrThrowArgs} args - Arguments to find a MessageAttachment
+     * @example
+     * // Get one MessageAttachment
+     * const messageAttachment = await prisma.messageAttachment.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends MessageAttachmentFindUniqueOrThrowArgs>(args: SelectSubset<T, MessageAttachmentFindUniqueOrThrowArgs<ExtArgs>>): Prisma__MessageAttachmentClient<$Result.GetResult<Prisma.$MessageAttachmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first MessageAttachment that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageAttachmentFindFirstArgs} args - Arguments to find a MessageAttachment
+     * @example
+     * // Get one MessageAttachment
+     * const messageAttachment = await prisma.messageAttachment.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends MessageAttachmentFindFirstArgs>(args?: SelectSubset<T, MessageAttachmentFindFirstArgs<ExtArgs>>): Prisma__MessageAttachmentClient<$Result.GetResult<Prisma.$MessageAttachmentPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first MessageAttachment that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageAttachmentFindFirstOrThrowArgs} args - Arguments to find a MessageAttachment
+     * @example
+     * // Get one MessageAttachment
+     * const messageAttachment = await prisma.messageAttachment.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends MessageAttachmentFindFirstOrThrowArgs>(args?: SelectSubset<T, MessageAttachmentFindFirstOrThrowArgs<ExtArgs>>): Prisma__MessageAttachmentClient<$Result.GetResult<Prisma.$MessageAttachmentPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more MessageAttachments that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageAttachmentFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all MessageAttachments
+     * const messageAttachments = await prisma.messageAttachment.findMany()
+     * 
+     * // Get first 10 MessageAttachments
+     * const messageAttachments = await prisma.messageAttachment.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const messageAttachmentWithIdOnly = await prisma.messageAttachment.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends MessageAttachmentFindManyArgs>(args?: SelectSubset<T, MessageAttachmentFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessageAttachmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a MessageAttachment.
+     * @param {MessageAttachmentCreateArgs} args - Arguments to create a MessageAttachment.
+     * @example
+     * // Create one MessageAttachment
+     * const MessageAttachment = await prisma.messageAttachment.create({
+     *   data: {
+     *     // ... data to create a MessageAttachment
+     *   }
+     * })
+     * 
+     */
+    create<T extends MessageAttachmentCreateArgs>(args: SelectSubset<T, MessageAttachmentCreateArgs<ExtArgs>>): Prisma__MessageAttachmentClient<$Result.GetResult<Prisma.$MessageAttachmentPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many MessageAttachments.
+     * @param {MessageAttachmentCreateManyArgs} args - Arguments to create many MessageAttachments.
+     * @example
+     * // Create many MessageAttachments
+     * const messageAttachment = await prisma.messageAttachment.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends MessageAttachmentCreateManyArgs>(args?: SelectSubset<T, MessageAttachmentCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many MessageAttachments and returns the data saved in the database.
+     * @param {MessageAttachmentCreateManyAndReturnArgs} args - Arguments to create many MessageAttachments.
+     * @example
+     * // Create many MessageAttachments
+     * const messageAttachment = await prisma.messageAttachment.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many MessageAttachments and only return the `id`
+     * const messageAttachmentWithIdOnly = await prisma.messageAttachment.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends MessageAttachmentCreateManyAndReturnArgs>(args?: SelectSubset<T, MessageAttachmentCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessageAttachmentPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a MessageAttachment.
+     * @param {MessageAttachmentDeleteArgs} args - Arguments to delete one MessageAttachment.
+     * @example
+     * // Delete one MessageAttachment
+     * const MessageAttachment = await prisma.messageAttachment.delete({
+     *   where: {
+     *     // ... filter to delete one MessageAttachment
+     *   }
+     * })
+     * 
+     */
+    delete<T extends MessageAttachmentDeleteArgs>(args: SelectSubset<T, MessageAttachmentDeleteArgs<ExtArgs>>): Prisma__MessageAttachmentClient<$Result.GetResult<Prisma.$MessageAttachmentPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one MessageAttachment.
+     * @param {MessageAttachmentUpdateArgs} args - Arguments to update one MessageAttachment.
+     * @example
+     * // Update one MessageAttachment
+     * const messageAttachment = await prisma.messageAttachment.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends MessageAttachmentUpdateArgs>(args: SelectSubset<T, MessageAttachmentUpdateArgs<ExtArgs>>): Prisma__MessageAttachmentClient<$Result.GetResult<Prisma.$MessageAttachmentPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more MessageAttachments.
+     * @param {MessageAttachmentDeleteManyArgs} args - Arguments to filter MessageAttachments to delete.
+     * @example
+     * // Delete a few MessageAttachments
+     * const { count } = await prisma.messageAttachment.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends MessageAttachmentDeleteManyArgs>(args?: SelectSubset<T, MessageAttachmentDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more MessageAttachments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageAttachmentUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many MessageAttachments
+     * const messageAttachment = await prisma.messageAttachment.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends MessageAttachmentUpdateManyArgs>(args: SelectSubset<T, MessageAttachmentUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more MessageAttachments and returns the data updated in the database.
+     * @param {MessageAttachmentUpdateManyAndReturnArgs} args - Arguments to update many MessageAttachments.
+     * @example
+     * // Update many MessageAttachments
+     * const messageAttachment = await prisma.messageAttachment.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more MessageAttachments and only return the `id`
+     * const messageAttachmentWithIdOnly = await prisma.messageAttachment.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends MessageAttachmentUpdateManyAndReturnArgs>(args: SelectSubset<T, MessageAttachmentUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessageAttachmentPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one MessageAttachment.
+     * @param {MessageAttachmentUpsertArgs} args - Arguments to update or create a MessageAttachment.
+     * @example
+     * // Update or create a MessageAttachment
+     * const messageAttachment = await prisma.messageAttachment.upsert({
+     *   create: {
+     *     // ... data to create a MessageAttachment
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the MessageAttachment we want to update
+     *   }
+     * })
+     */
+    upsert<T extends MessageAttachmentUpsertArgs>(args: SelectSubset<T, MessageAttachmentUpsertArgs<ExtArgs>>): Prisma__MessageAttachmentClient<$Result.GetResult<Prisma.$MessageAttachmentPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of MessageAttachments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageAttachmentCountArgs} args - Arguments to filter MessageAttachments to count.
+     * @example
+     * // Count the number of MessageAttachments
+     * const count = await prisma.messageAttachment.count({
+     *   where: {
+     *     // ... the filter for the MessageAttachments we want to count
+     *   }
+     * })
+    **/
+    count<T extends MessageAttachmentCountArgs>(
+      args?: Subset<T, MessageAttachmentCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], MessageAttachmentCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a MessageAttachment.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageAttachmentAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends MessageAttachmentAggregateArgs>(args: Subset<T, MessageAttachmentAggregateArgs>): Prisma.PrismaPromise<GetMessageAttachmentAggregateType<T>>
+
+    /**
+     * Group by MessageAttachment.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageAttachmentGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends MessageAttachmentGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: MessageAttachmentGroupByArgs['orderBy'] }
+        : { orderBy?: MessageAttachmentGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, MessageAttachmentGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetMessageAttachmentGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the MessageAttachment model
+   */
+  readonly fields: MessageAttachmentFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for MessageAttachment.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__MessageAttachmentClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    message<T extends MessagesDefaultArgs<ExtArgs> = {}>(args?: Subset<T, MessagesDefaultArgs<ExtArgs>>): Prisma__MessagesClient<$Result.GetResult<Prisma.$MessagesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the MessageAttachment model
+   */
+  interface MessageAttachmentFieldRefs {
+    readonly id: FieldRef<"MessageAttachment", 'String'>
+    readonly messageId: FieldRef<"MessageAttachment", 'String'>
+    readonly storagePath: FieldRef<"MessageAttachment", 'String'>
+    readonly fileName: FieldRef<"MessageAttachment", 'String'>
+    readonly mimeType: FieldRef<"MessageAttachment", 'String'>
+    readonly sizeBytes: FieldRef<"MessageAttachment", 'Int'>
+    readonly createdAt: FieldRef<"MessageAttachment", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * MessageAttachment findUnique
+   */
+  export type MessageAttachmentFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MessageAttachment
+     */
+    select?: MessageAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MessageAttachment
+     */
+    omit?: MessageAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageAttachmentInclude<ExtArgs> | null
+    /**
+     * Filter, which MessageAttachment to fetch.
+     */
+    where: MessageAttachmentWhereUniqueInput
+  }
+
+  /**
+   * MessageAttachment findUniqueOrThrow
+   */
+  export type MessageAttachmentFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MessageAttachment
+     */
+    select?: MessageAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MessageAttachment
+     */
+    omit?: MessageAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageAttachmentInclude<ExtArgs> | null
+    /**
+     * Filter, which MessageAttachment to fetch.
+     */
+    where: MessageAttachmentWhereUniqueInput
+  }
+
+  /**
+   * MessageAttachment findFirst
+   */
+  export type MessageAttachmentFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MessageAttachment
+     */
+    select?: MessageAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MessageAttachment
+     */
+    omit?: MessageAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageAttachmentInclude<ExtArgs> | null
+    /**
+     * Filter, which MessageAttachment to fetch.
+     */
+    where?: MessageAttachmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MessageAttachments to fetch.
+     */
+    orderBy?: MessageAttachmentOrderByWithRelationInput | MessageAttachmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for MessageAttachments.
+     */
+    cursor?: MessageAttachmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MessageAttachments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MessageAttachments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of MessageAttachments.
+     */
+    distinct?: MessageAttachmentScalarFieldEnum | MessageAttachmentScalarFieldEnum[]
+  }
+
+  /**
+   * MessageAttachment findFirstOrThrow
+   */
+  export type MessageAttachmentFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MessageAttachment
+     */
+    select?: MessageAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MessageAttachment
+     */
+    omit?: MessageAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageAttachmentInclude<ExtArgs> | null
+    /**
+     * Filter, which MessageAttachment to fetch.
+     */
+    where?: MessageAttachmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MessageAttachments to fetch.
+     */
+    orderBy?: MessageAttachmentOrderByWithRelationInput | MessageAttachmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for MessageAttachments.
+     */
+    cursor?: MessageAttachmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MessageAttachments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MessageAttachments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of MessageAttachments.
+     */
+    distinct?: MessageAttachmentScalarFieldEnum | MessageAttachmentScalarFieldEnum[]
+  }
+
+  /**
+   * MessageAttachment findMany
+   */
+  export type MessageAttachmentFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MessageAttachment
+     */
+    select?: MessageAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MessageAttachment
+     */
+    omit?: MessageAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageAttachmentInclude<ExtArgs> | null
+    /**
+     * Filter, which MessageAttachments to fetch.
+     */
+    where?: MessageAttachmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MessageAttachments to fetch.
+     */
+    orderBy?: MessageAttachmentOrderByWithRelationInput | MessageAttachmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing MessageAttachments.
+     */
+    cursor?: MessageAttachmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MessageAttachments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MessageAttachments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of MessageAttachments.
+     */
+    distinct?: MessageAttachmentScalarFieldEnum | MessageAttachmentScalarFieldEnum[]
+  }
+
+  /**
+   * MessageAttachment create
+   */
+  export type MessageAttachmentCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MessageAttachment
+     */
+    select?: MessageAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MessageAttachment
+     */
+    omit?: MessageAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageAttachmentInclude<ExtArgs> | null
+    /**
+     * The data needed to create a MessageAttachment.
+     */
+    data: XOR<MessageAttachmentCreateInput, MessageAttachmentUncheckedCreateInput>
+  }
+
+  /**
+   * MessageAttachment createMany
+   */
+  export type MessageAttachmentCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many MessageAttachments.
+     */
+    data: MessageAttachmentCreateManyInput | MessageAttachmentCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * MessageAttachment createManyAndReturn
+   */
+  export type MessageAttachmentCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MessageAttachment
+     */
+    select?: MessageAttachmentSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the MessageAttachment
+     */
+    omit?: MessageAttachmentOmit<ExtArgs> | null
+    /**
+     * The data used to create many MessageAttachments.
+     */
+    data: MessageAttachmentCreateManyInput | MessageAttachmentCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageAttachmentIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * MessageAttachment update
+   */
+  export type MessageAttachmentUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MessageAttachment
+     */
+    select?: MessageAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MessageAttachment
+     */
+    omit?: MessageAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageAttachmentInclude<ExtArgs> | null
+    /**
+     * The data needed to update a MessageAttachment.
+     */
+    data: XOR<MessageAttachmentUpdateInput, MessageAttachmentUncheckedUpdateInput>
+    /**
+     * Choose, which MessageAttachment to update.
+     */
+    where: MessageAttachmentWhereUniqueInput
+  }
+
+  /**
+   * MessageAttachment updateMany
+   */
+  export type MessageAttachmentUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update MessageAttachments.
+     */
+    data: XOR<MessageAttachmentUpdateManyMutationInput, MessageAttachmentUncheckedUpdateManyInput>
+    /**
+     * Filter which MessageAttachments to update
+     */
+    where?: MessageAttachmentWhereInput
+    /**
+     * Limit how many MessageAttachments to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * MessageAttachment updateManyAndReturn
+   */
+  export type MessageAttachmentUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MessageAttachment
+     */
+    select?: MessageAttachmentSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the MessageAttachment
+     */
+    omit?: MessageAttachmentOmit<ExtArgs> | null
+    /**
+     * The data used to update MessageAttachments.
+     */
+    data: XOR<MessageAttachmentUpdateManyMutationInput, MessageAttachmentUncheckedUpdateManyInput>
+    /**
+     * Filter which MessageAttachments to update
+     */
+    where?: MessageAttachmentWhereInput
+    /**
+     * Limit how many MessageAttachments to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageAttachmentIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * MessageAttachment upsert
+   */
+  export type MessageAttachmentUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MessageAttachment
+     */
+    select?: MessageAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MessageAttachment
+     */
+    omit?: MessageAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageAttachmentInclude<ExtArgs> | null
+    /**
+     * The filter to search for the MessageAttachment to update in case it exists.
+     */
+    where: MessageAttachmentWhereUniqueInput
+    /**
+     * In case the MessageAttachment found by the `where` argument doesn't exist, create a new MessageAttachment with this data.
+     */
+    create: XOR<MessageAttachmentCreateInput, MessageAttachmentUncheckedCreateInput>
+    /**
+     * In case the MessageAttachment was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<MessageAttachmentUpdateInput, MessageAttachmentUncheckedUpdateInput>
+  }
+
+  /**
+   * MessageAttachment delete
+   */
+  export type MessageAttachmentDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MessageAttachment
+     */
+    select?: MessageAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MessageAttachment
+     */
+    omit?: MessageAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageAttachmentInclude<ExtArgs> | null
+    /**
+     * Filter which MessageAttachment to delete.
+     */
+    where: MessageAttachmentWhereUniqueInput
+  }
+
+  /**
+   * MessageAttachment deleteMany
+   */
+  export type MessageAttachmentDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which MessageAttachments to delete
+     */
+    where?: MessageAttachmentWhereInput
+    /**
+     * Limit how many MessageAttachments to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * MessageAttachment without action
+   */
+  export type MessageAttachmentDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MessageAttachment
+     */
+    select?: MessageAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MessageAttachment
+     */
+    omit?: MessageAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageAttachmentInclude<ExtArgs> | null
   }
 
 
@@ -19625,6 +20876,19 @@ export namespace Prisma {
   export type MessagesScalarFieldEnum = (typeof MessagesScalarFieldEnum)[keyof typeof MessagesScalarFieldEnum]
 
 
+  export const MessageAttachmentScalarFieldEnum: {
+    id: 'id',
+    messageId: 'messageId',
+    storagePath: 'storagePath',
+    fileName: 'fileName',
+    mimeType: 'mimeType',
+    sizeBytes: 'sizeBytes',
+    createdAt: 'createdAt'
+  };
+
+  export type MessageAttachmentScalarFieldEnum = (typeof MessageAttachmentScalarFieldEnum)[keyof typeof MessageAttachmentScalarFieldEnum]
+
+
   export const MessageMentionScalarFieldEnum: {
     id: 'id',
     messageId: 'messageId',
@@ -20240,6 +21504,7 @@ export namespace Prisma {
     pinned?: BoolFilter<"Messages"> | boolean
     channel?: XOR<ChannelScalarRelationFilter, ChannelWhereInput>
     author?: XOR<UserScalarRelationFilter, UserWhereInput>
+    attachments?: MessageAttachmentListRelationFilter
     mentions?: MessageMentionListRelationFilter
     mentionReceipts?: MessageMentionReceiptListRelationFilter
   }
@@ -20253,6 +21518,7 @@ export namespace Prisma {
     pinned?: SortOrder
     channel?: ChannelOrderByWithRelationInput
     author?: UserOrderByWithRelationInput
+    attachments?: MessageAttachmentOrderByRelationAggregateInput
     mentions?: MessageMentionOrderByRelationAggregateInput
     mentionReceipts?: MessageMentionReceiptOrderByRelationAggregateInput
   }
@@ -20269,6 +21535,7 @@ export namespace Prisma {
     pinned?: BoolFilter<"Messages"> | boolean
     channel?: XOR<ChannelScalarRelationFilter, ChannelWhereInput>
     author?: XOR<UserScalarRelationFilter, UserWhereInput>
+    attachments?: MessageAttachmentListRelationFilter
     mentions?: MessageMentionListRelationFilter
     mentionReceipts?: MessageMentionReceiptListRelationFilter
   }, "id">
@@ -20295,6 +21562,73 @@ export namespace Prisma {
     authorId?: StringWithAggregatesFilter<"Messages"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Messages"> | Date | string
     pinned?: BoolWithAggregatesFilter<"Messages"> | boolean
+  }
+
+  export type MessageAttachmentWhereInput = {
+    AND?: MessageAttachmentWhereInput | MessageAttachmentWhereInput[]
+    OR?: MessageAttachmentWhereInput[]
+    NOT?: MessageAttachmentWhereInput | MessageAttachmentWhereInput[]
+    id?: StringFilter<"MessageAttachment"> | string
+    messageId?: StringFilter<"MessageAttachment"> | string
+    storagePath?: StringFilter<"MessageAttachment"> | string
+    fileName?: StringFilter<"MessageAttachment"> | string
+    mimeType?: StringFilter<"MessageAttachment"> | string
+    sizeBytes?: IntFilter<"MessageAttachment"> | number
+    createdAt?: DateTimeFilter<"MessageAttachment"> | Date | string
+    message?: XOR<MessagesScalarRelationFilter, MessagesWhereInput>
+  }
+
+  export type MessageAttachmentOrderByWithRelationInput = {
+    id?: SortOrder
+    messageId?: SortOrder
+    storagePath?: SortOrder
+    fileName?: SortOrder
+    mimeType?: SortOrder
+    sizeBytes?: SortOrder
+    createdAt?: SortOrder
+    message?: MessagesOrderByWithRelationInput
+  }
+
+  export type MessageAttachmentWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: MessageAttachmentWhereInput | MessageAttachmentWhereInput[]
+    OR?: MessageAttachmentWhereInput[]
+    NOT?: MessageAttachmentWhereInput | MessageAttachmentWhereInput[]
+    messageId?: StringFilter<"MessageAttachment"> | string
+    storagePath?: StringFilter<"MessageAttachment"> | string
+    fileName?: StringFilter<"MessageAttachment"> | string
+    mimeType?: StringFilter<"MessageAttachment"> | string
+    sizeBytes?: IntFilter<"MessageAttachment"> | number
+    createdAt?: DateTimeFilter<"MessageAttachment"> | Date | string
+    message?: XOR<MessagesScalarRelationFilter, MessagesWhereInput>
+  }, "id">
+
+  export type MessageAttachmentOrderByWithAggregationInput = {
+    id?: SortOrder
+    messageId?: SortOrder
+    storagePath?: SortOrder
+    fileName?: SortOrder
+    mimeType?: SortOrder
+    sizeBytes?: SortOrder
+    createdAt?: SortOrder
+    _count?: MessageAttachmentCountOrderByAggregateInput
+    _avg?: MessageAttachmentAvgOrderByAggregateInput
+    _max?: MessageAttachmentMaxOrderByAggregateInput
+    _min?: MessageAttachmentMinOrderByAggregateInput
+    _sum?: MessageAttachmentSumOrderByAggregateInput
+  }
+
+  export type MessageAttachmentScalarWhereWithAggregatesInput = {
+    AND?: MessageAttachmentScalarWhereWithAggregatesInput | MessageAttachmentScalarWhereWithAggregatesInput[]
+    OR?: MessageAttachmentScalarWhereWithAggregatesInput[]
+    NOT?: MessageAttachmentScalarWhereWithAggregatesInput | MessageAttachmentScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"MessageAttachment"> | string
+    messageId?: StringWithAggregatesFilter<"MessageAttachment"> | string
+    storagePath?: StringWithAggregatesFilter<"MessageAttachment"> | string
+    fileName?: StringWithAggregatesFilter<"MessageAttachment"> | string
+    mimeType?: StringWithAggregatesFilter<"MessageAttachment"> | string
+    sizeBytes?: IntWithAggregatesFilter<"MessageAttachment"> | number
+    createdAt?: DateTimeWithAggregatesFilter<"MessageAttachment"> | Date | string
   }
 
   export type MessageMentionWhereInput = {
@@ -21241,6 +22575,7 @@ export namespace Prisma {
     pinned?: boolean
     channel: ChannelCreateNestedOneWithoutMessagesInput
     author: UserCreateNestedOneWithoutMessagesInput
+    attachments?: MessageAttachmentCreateNestedManyWithoutMessageInput
     mentions?: MessageMentionCreateNestedManyWithoutMessageInput
     mentionReceipts?: MessageMentionReceiptCreateNestedManyWithoutMessageInput
   }
@@ -21252,6 +22587,7 @@ export namespace Prisma {
     authorId: string
     createdAt?: Date | string
     pinned?: boolean
+    attachments?: MessageAttachmentUncheckedCreateNestedManyWithoutMessageInput
     mentions?: MessageMentionUncheckedCreateNestedManyWithoutMessageInput
     mentionReceipts?: MessageMentionReceiptUncheckedCreateNestedManyWithoutMessageInput
   }
@@ -21263,6 +22599,7 @@ export namespace Prisma {
     pinned?: BoolFieldUpdateOperationsInput | boolean
     channel?: ChannelUpdateOneRequiredWithoutMessagesNestedInput
     author?: UserUpdateOneRequiredWithoutMessagesNestedInput
+    attachments?: MessageAttachmentUpdateManyWithoutMessageNestedInput
     mentions?: MessageMentionUpdateManyWithoutMessageNestedInput
     mentionReceipts?: MessageMentionReceiptUpdateManyWithoutMessageNestedInput
   }
@@ -21274,6 +22611,7 @@ export namespace Prisma {
     authorId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     pinned?: BoolFieldUpdateOperationsInput | boolean
+    attachments?: MessageAttachmentUncheckedUpdateManyWithoutMessageNestedInput
     mentions?: MessageMentionUncheckedUpdateManyWithoutMessageNestedInput
     mentionReceipts?: MessageMentionReceiptUncheckedUpdateManyWithoutMessageNestedInput
   }
@@ -21301,6 +22639,75 @@ export namespace Prisma {
     authorId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     pinned?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type MessageAttachmentCreateInput = {
+    id?: string
+    storagePath: string
+    fileName: string
+    mimeType: string
+    sizeBytes: number
+    createdAt?: Date | string
+    message: MessagesCreateNestedOneWithoutAttachmentsInput
+  }
+
+  export type MessageAttachmentUncheckedCreateInput = {
+    id?: string
+    messageId: string
+    storagePath: string
+    fileName: string
+    mimeType: string
+    sizeBytes: number
+    createdAt?: Date | string
+  }
+
+  export type MessageAttachmentUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    storagePath?: StringFieldUpdateOperationsInput | string
+    fileName?: StringFieldUpdateOperationsInput | string
+    mimeType?: StringFieldUpdateOperationsInput | string
+    sizeBytes?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    message?: MessagesUpdateOneRequiredWithoutAttachmentsNestedInput
+  }
+
+  export type MessageAttachmentUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    messageId?: StringFieldUpdateOperationsInput | string
+    storagePath?: StringFieldUpdateOperationsInput | string
+    fileName?: StringFieldUpdateOperationsInput | string
+    mimeType?: StringFieldUpdateOperationsInput | string
+    sizeBytes?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MessageAttachmentCreateManyInput = {
+    id?: string
+    messageId: string
+    storagePath: string
+    fileName: string
+    mimeType: string
+    sizeBytes: number
+    createdAt?: Date | string
+  }
+
+  export type MessageAttachmentUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    storagePath?: StringFieldUpdateOperationsInput | string
+    fileName?: StringFieldUpdateOperationsInput | string
+    mimeType?: StringFieldUpdateOperationsInput | string
+    sizeBytes?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MessageAttachmentUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    messageId?: StringFieldUpdateOperationsInput | string
+    storagePath?: StringFieldUpdateOperationsInput | string
+    fileName?: StringFieldUpdateOperationsInput | string
+    mimeType?: StringFieldUpdateOperationsInput | string
+    sizeBytes?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type MessageMentionCreateInput = {
@@ -22393,10 +23800,20 @@ export namespace Prisma {
     _max?: NestedEnumPermissionFilter<$PrismaModel>
   }
 
+  export type MessageAttachmentListRelationFilter = {
+    every?: MessageAttachmentWhereInput
+    some?: MessageAttachmentWhereInput
+    none?: MessageAttachmentWhereInput
+  }
+
   export type MessageMentionReceiptListRelationFilter = {
     every?: MessageMentionReceiptWhereInput
     some?: MessageMentionReceiptWhereInput
     none?: MessageMentionReceiptWhereInput
+  }
+
+  export type MessageAttachmentOrderByRelationAggregateInput = {
+    _count?: SortOrder
   }
 
   export type MessageMentionReceiptOrderByRelationAggregateInput = {
@@ -22430,16 +23847,54 @@ export namespace Prisma {
     pinned?: SortOrder
   }
 
+  export type MessagesScalarRelationFilter = {
+    is?: MessagesWhereInput
+    isNot?: MessagesWhereInput
+  }
+
+  export type MessageAttachmentCountOrderByAggregateInput = {
+    id?: SortOrder
+    messageId?: SortOrder
+    storagePath?: SortOrder
+    fileName?: SortOrder
+    mimeType?: SortOrder
+    sizeBytes?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type MessageAttachmentAvgOrderByAggregateInput = {
+    sizeBytes?: SortOrder
+  }
+
+  export type MessageAttachmentMaxOrderByAggregateInput = {
+    id?: SortOrder
+    messageId?: SortOrder
+    storagePath?: SortOrder
+    fileName?: SortOrder
+    mimeType?: SortOrder
+    sizeBytes?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type MessageAttachmentMinOrderByAggregateInput = {
+    id?: SortOrder
+    messageId?: SortOrder
+    storagePath?: SortOrder
+    fileName?: SortOrder
+    mimeType?: SortOrder
+    sizeBytes?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type MessageAttachmentSumOrderByAggregateInput = {
+    sizeBytes?: SortOrder
+  }
+
   export type EnumMentionTypeFilter<$PrismaModel = never> = {
     equals?: $Enums.MentionType | EnumMentionTypeFieldRefInput<$PrismaModel>
     in?: $Enums.MentionType[] | ListEnumMentionTypeFieldRefInput<$PrismaModel>
     notIn?: $Enums.MentionType[] | ListEnumMentionTypeFieldRefInput<$PrismaModel>
     not?: NestedEnumMentionTypeFilter<$PrismaModel> | $Enums.MentionType
-  }
-
-  export type MessagesScalarRelationFilter = {
-    is?: MessagesWhereInput
-    isNot?: MessagesWhereInput
   }
 
   export type UserNullableScalarRelationFilter = {
@@ -23459,6 +24914,13 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
+  export type MessageAttachmentCreateNestedManyWithoutMessageInput = {
+    create?: XOR<MessageAttachmentCreateWithoutMessageInput, MessageAttachmentUncheckedCreateWithoutMessageInput> | MessageAttachmentCreateWithoutMessageInput[] | MessageAttachmentUncheckedCreateWithoutMessageInput[]
+    connectOrCreate?: MessageAttachmentCreateOrConnectWithoutMessageInput | MessageAttachmentCreateOrConnectWithoutMessageInput[]
+    createMany?: MessageAttachmentCreateManyMessageInputEnvelope
+    connect?: MessageAttachmentWhereUniqueInput | MessageAttachmentWhereUniqueInput[]
+  }
+
   export type MessageMentionCreateNestedManyWithoutMessageInput = {
     create?: XOR<MessageMentionCreateWithoutMessageInput, MessageMentionUncheckedCreateWithoutMessageInput> | MessageMentionCreateWithoutMessageInput[] | MessageMentionUncheckedCreateWithoutMessageInput[]
     connectOrCreate?: MessageMentionCreateOrConnectWithoutMessageInput | MessageMentionCreateOrConnectWithoutMessageInput[]
@@ -23471,6 +24933,13 @@ export namespace Prisma {
     connectOrCreate?: MessageMentionReceiptCreateOrConnectWithoutMessageInput | MessageMentionReceiptCreateOrConnectWithoutMessageInput[]
     createMany?: MessageMentionReceiptCreateManyMessageInputEnvelope
     connect?: MessageMentionReceiptWhereUniqueInput | MessageMentionReceiptWhereUniqueInput[]
+  }
+
+  export type MessageAttachmentUncheckedCreateNestedManyWithoutMessageInput = {
+    create?: XOR<MessageAttachmentCreateWithoutMessageInput, MessageAttachmentUncheckedCreateWithoutMessageInput> | MessageAttachmentCreateWithoutMessageInput[] | MessageAttachmentUncheckedCreateWithoutMessageInput[]
+    connectOrCreate?: MessageAttachmentCreateOrConnectWithoutMessageInput | MessageAttachmentCreateOrConnectWithoutMessageInput[]
+    createMany?: MessageAttachmentCreateManyMessageInputEnvelope
+    connect?: MessageAttachmentWhereUniqueInput | MessageAttachmentWhereUniqueInput[]
   }
 
   export type MessageMentionUncheckedCreateNestedManyWithoutMessageInput = {
@@ -23503,6 +24972,20 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutMessagesInput, UserUpdateWithoutMessagesInput>, UserUncheckedUpdateWithoutMessagesInput>
   }
 
+  export type MessageAttachmentUpdateManyWithoutMessageNestedInput = {
+    create?: XOR<MessageAttachmentCreateWithoutMessageInput, MessageAttachmentUncheckedCreateWithoutMessageInput> | MessageAttachmentCreateWithoutMessageInput[] | MessageAttachmentUncheckedCreateWithoutMessageInput[]
+    connectOrCreate?: MessageAttachmentCreateOrConnectWithoutMessageInput | MessageAttachmentCreateOrConnectWithoutMessageInput[]
+    upsert?: MessageAttachmentUpsertWithWhereUniqueWithoutMessageInput | MessageAttachmentUpsertWithWhereUniqueWithoutMessageInput[]
+    createMany?: MessageAttachmentCreateManyMessageInputEnvelope
+    set?: MessageAttachmentWhereUniqueInput | MessageAttachmentWhereUniqueInput[]
+    disconnect?: MessageAttachmentWhereUniqueInput | MessageAttachmentWhereUniqueInput[]
+    delete?: MessageAttachmentWhereUniqueInput | MessageAttachmentWhereUniqueInput[]
+    connect?: MessageAttachmentWhereUniqueInput | MessageAttachmentWhereUniqueInput[]
+    update?: MessageAttachmentUpdateWithWhereUniqueWithoutMessageInput | MessageAttachmentUpdateWithWhereUniqueWithoutMessageInput[]
+    updateMany?: MessageAttachmentUpdateManyWithWhereWithoutMessageInput | MessageAttachmentUpdateManyWithWhereWithoutMessageInput[]
+    deleteMany?: MessageAttachmentScalarWhereInput | MessageAttachmentScalarWhereInput[]
+  }
+
   export type MessageMentionUpdateManyWithoutMessageNestedInput = {
     create?: XOR<MessageMentionCreateWithoutMessageInput, MessageMentionUncheckedCreateWithoutMessageInput> | MessageMentionCreateWithoutMessageInput[] | MessageMentionUncheckedCreateWithoutMessageInput[]
     connectOrCreate?: MessageMentionCreateOrConnectWithoutMessageInput | MessageMentionCreateOrConnectWithoutMessageInput[]
@@ -23531,6 +25014,20 @@ export namespace Prisma {
     deleteMany?: MessageMentionReceiptScalarWhereInput | MessageMentionReceiptScalarWhereInput[]
   }
 
+  export type MessageAttachmentUncheckedUpdateManyWithoutMessageNestedInput = {
+    create?: XOR<MessageAttachmentCreateWithoutMessageInput, MessageAttachmentUncheckedCreateWithoutMessageInput> | MessageAttachmentCreateWithoutMessageInput[] | MessageAttachmentUncheckedCreateWithoutMessageInput[]
+    connectOrCreate?: MessageAttachmentCreateOrConnectWithoutMessageInput | MessageAttachmentCreateOrConnectWithoutMessageInput[]
+    upsert?: MessageAttachmentUpsertWithWhereUniqueWithoutMessageInput | MessageAttachmentUpsertWithWhereUniqueWithoutMessageInput[]
+    createMany?: MessageAttachmentCreateManyMessageInputEnvelope
+    set?: MessageAttachmentWhereUniqueInput | MessageAttachmentWhereUniqueInput[]
+    disconnect?: MessageAttachmentWhereUniqueInput | MessageAttachmentWhereUniqueInput[]
+    delete?: MessageAttachmentWhereUniqueInput | MessageAttachmentWhereUniqueInput[]
+    connect?: MessageAttachmentWhereUniqueInput | MessageAttachmentWhereUniqueInput[]
+    update?: MessageAttachmentUpdateWithWhereUniqueWithoutMessageInput | MessageAttachmentUpdateWithWhereUniqueWithoutMessageInput[]
+    updateMany?: MessageAttachmentUpdateManyWithWhereWithoutMessageInput | MessageAttachmentUpdateManyWithWhereWithoutMessageInput[]
+    deleteMany?: MessageAttachmentScalarWhereInput | MessageAttachmentScalarWhereInput[]
+  }
+
   export type MessageMentionUncheckedUpdateManyWithoutMessageNestedInput = {
     create?: XOR<MessageMentionCreateWithoutMessageInput, MessageMentionUncheckedCreateWithoutMessageInput> | MessageMentionCreateWithoutMessageInput[] | MessageMentionUncheckedCreateWithoutMessageInput[]
     connectOrCreate?: MessageMentionCreateOrConnectWithoutMessageInput | MessageMentionCreateOrConnectWithoutMessageInput[]
@@ -23557,6 +25054,20 @@ export namespace Prisma {
     update?: MessageMentionReceiptUpdateWithWhereUniqueWithoutMessageInput | MessageMentionReceiptUpdateWithWhereUniqueWithoutMessageInput[]
     updateMany?: MessageMentionReceiptUpdateManyWithWhereWithoutMessageInput | MessageMentionReceiptUpdateManyWithWhereWithoutMessageInput[]
     deleteMany?: MessageMentionReceiptScalarWhereInput | MessageMentionReceiptScalarWhereInput[]
+  }
+
+  export type MessagesCreateNestedOneWithoutAttachmentsInput = {
+    create?: XOR<MessagesCreateWithoutAttachmentsInput, MessagesUncheckedCreateWithoutAttachmentsInput>
+    connectOrCreate?: MessagesCreateOrConnectWithoutAttachmentsInput
+    connect?: MessagesWhereUniqueInput
+  }
+
+  export type MessagesUpdateOneRequiredWithoutAttachmentsNestedInput = {
+    create?: XOR<MessagesCreateWithoutAttachmentsInput, MessagesUncheckedCreateWithoutAttachmentsInput>
+    connectOrCreate?: MessagesCreateOrConnectWithoutAttachmentsInput
+    upsert?: MessagesUpsertWithoutAttachmentsInput
+    connect?: MessagesWhereUniqueInput
+    update?: XOR<XOR<MessagesUpdateToOneWithWhereWithoutAttachmentsInput, MessagesUpdateWithoutAttachmentsInput>, MessagesUncheckedUpdateWithoutAttachmentsInput>
   }
 
   export type MessagesCreateNestedOneWithoutMentionsInput = {
@@ -24689,6 +26200,7 @@ export namespace Prisma {
     createdAt?: Date | string
     pinned?: boolean
     author: UserCreateNestedOneWithoutMessagesInput
+    attachments?: MessageAttachmentCreateNestedManyWithoutMessageInput
     mentions?: MessageMentionCreateNestedManyWithoutMessageInput
     mentionReceipts?: MessageMentionReceiptCreateNestedManyWithoutMessageInput
   }
@@ -24699,6 +26211,7 @@ export namespace Prisma {
     authorId: string
     createdAt?: Date | string
     pinned?: boolean
+    attachments?: MessageAttachmentUncheckedCreateNestedManyWithoutMessageInput
     mentions?: MessageMentionUncheckedCreateNestedManyWithoutMessageInput
     mentionReceipts?: MessageMentionReceiptUncheckedCreateNestedManyWithoutMessageInput
   }
@@ -25559,6 +27072,34 @@ export namespace Prisma {
     create: XOR<UserCreateWithoutMessagesInput, UserUncheckedCreateWithoutMessagesInput>
   }
 
+  export type MessageAttachmentCreateWithoutMessageInput = {
+    id?: string
+    storagePath: string
+    fileName: string
+    mimeType: string
+    sizeBytes: number
+    createdAt?: Date | string
+  }
+
+  export type MessageAttachmentUncheckedCreateWithoutMessageInput = {
+    id?: string
+    storagePath: string
+    fileName: string
+    mimeType: string
+    sizeBytes: number
+    createdAt?: Date | string
+  }
+
+  export type MessageAttachmentCreateOrConnectWithoutMessageInput = {
+    where: MessageAttachmentWhereUniqueInput
+    create: XOR<MessageAttachmentCreateWithoutMessageInput, MessageAttachmentUncheckedCreateWithoutMessageInput>
+  }
+
+  export type MessageAttachmentCreateManyMessageInputEnvelope = {
+    data: MessageAttachmentCreateManyMessageInput | MessageAttachmentCreateManyMessageInput[]
+    skipDuplicates?: boolean
+  }
+
   export type MessageMentionCreateWithoutMessageInput = {
     id?: string
     type: $Enums.MentionType
@@ -25697,6 +27238,35 @@ export namespace Prisma {
     banLists?: BanListUncheckedUpdateManyWithoutUsersNestedInput
   }
 
+  export type MessageAttachmentUpsertWithWhereUniqueWithoutMessageInput = {
+    where: MessageAttachmentWhereUniqueInput
+    update: XOR<MessageAttachmentUpdateWithoutMessageInput, MessageAttachmentUncheckedUpdateWithoutMessageInput>
+    create: XOR<MessageAttachmentCreateWithoutMessageInput, MessageAttachmentUncheckedCreateWithoutMessageInput>
+  }
+
+  export type MessageAttachmentUpdateWithWhereUniqueWithoutMessageInput = {
+    where: MessageAttachmentWhereUniqueInput
+    data: XOR<MessageAttachmentUpdateWithoutMessageInput, MessageAttachmentUncheckedUpdateWithoutMessageInput>
+  }
+
+  export type MessageAttachmentUpdateManyWithWhereWithoutMessageInput = {
+    where: MessageAttachmentScalarWhereInput
+    data: XOR<MessageAttachmentUpdateManyMutationInput, MessageAttachmentUncheckedUpdateManyWithoutMessageInput>
+  }
+
+  export type MessageAttachmentScalarWhereInput = {
+    AND?: MessageAttachmentScalarWhereInput | MessageAttachmentScalarWhereInput[]
+    OR?: MessageAttachmentScalarWhereInput[]
+    NOT?: MessageAttachmentScalarWhereInput | MessageAttachmentScalarWhereInput[]
+    id?: StringFilter<"MessageAttachment"> | string
+    messageId?: StringFilter<"MessageAttachment"> | string
+    storagePath?: StringFilter<"MessageAttachment"> | string
+    fileName?: StringFilter<"MessageAttachment"> | string
+    mimeType?: StringFilter<"MessageAttachment"> | string
+    sizeBytes?: IntFilter<"MessageAttachment"> | number
+    createdAt?: DateTimeFilter<"MessageAttachment"> | Date | string
+  }
+
   export type MessageMentionUpsertWithWhereUniqueWithoutMessageInput = {
     where: MessageMentionWhereUniqueInput
     update: XOR<MessageMentionUpdateWithoutMessageInput, MessageMentionUncheckedUpdateWithoutMessageInput>
@@ -25742,6 +27312,66 @@ export namespace Prisma {
     seenAt?: DateTimeNullableFilter<"MessageMentionReceipt"> | Date | string | null
   }
 
+  export type MessagesCreateWithoutAttachmentsInput = {
+    id?: string
+    content: string
+    createdAt?: Date | string
+    pinned?: boolean
+    channel: ChannelCreateNestedOneWithoutMessagesInput
+    author: UserCreateNestedOneWithoutMessagesInput
+    mentions?: MessageMentionCreateNestedManyWithoutMessageInput
+    mentionReceipts?: MessageMentionReceiptCreateNestedManyWithoutMessageInput
+  }
+
+  export type MessagesUncheckedCreateWithoutAttachmentsInput = {
+    id?: string
+    content: string
+    channelId: string
+    authorId: string
+    createdAt?: Date | string
+    pinned?: boolean
+    mentions?: MessageMentionUncheckedCreateNestedManyWithoutMessageInput
+    mentionReceipts?: MessageMentionReceiptUncheckedCreateNestedManyWithoutMessageInput
+  }
+
+  export type MessagesCreateOrConnectWithoutAttachmentsInput = {
+    where: MessagesWhereUniqueInput
+    create: XOR<MessagesCreateWithoutAttachmentsInput, MessagesUncheckedCreateWithoutAttachmentsInput>
+  }
+
+  export type MessagesUpsertWithoutAttachmentsInput = {
+    update: XOR<MessagesUpdateWithoutAttachmentsInput, MessagesUncheckedUpdateWithoutAttachmentsInput>
+    create: XOR<MessagesCreateWithoutAttachmentsInput, MessagesUncheckedCreateWithoutAttachmentsInput>
+    where?: MessagesWhereInput
+  }
+
+  export type MessagesUpdateToOneWithWhereWithoutAttachmentsInput = {
+    where?: MessagesWhereInput
+    data: XOR<MessagesUpdateWithoutAttachmentsInput, MessagesUncheckedUpdateWithoutAttachmentsInput>
+  }
+
+  export type MessagesUpdateWithoutAttachmentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    pinned?: BoolFieldUpdateOperationsInput | boolean
+    channel?: ChannelUpdateOneRequiredWithoutMessagesNestedInput
+    author?: UserUpdateOneRequiredWithoutMessagesNestedInput
+    mentions?: MessageMentionUpdateManyWithoutMessageNestedInput
+    mentionReceipts?: MessageMentionReceiptUpdateManyWithoutMessageNestedInput
+  }
+
+  export type MessagesUncheckedUpdateWithoutAttachmentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    channelId?: StringFieldUpdateOperationsInput | string
+    authorId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    pinned?: BoolFieldUpdateOperationsInput | boolean
+    mentions?: MessageMentionUncheckedUpdateManyWithoutMessageNestedInput
+    mentionReceipts?: MessageMentionReceiptUncheckedUpdateManyWithoutMessageNestedInput
+  }
+
   export type MessagesCreateWithoutMentionsInput = {
     id?: string
     content: string
@@ -25749,6 +27379,7 @@ export namespace Prisma {
     pinned?: boolean
     channel: ChannelCreateNestedOneWithoutMessagesInput
     author: UserCreateNestedOneWithoutMessagesInput
+    attachments?: MessageAttachmentCreateNestedManyWithoutMessageInput
     mentionReceipts?: MessageMentionReceiptCreateNestedManyWithoutMessageInput
   }
 
@@ -25759,6 +27390,7 @@ export namespace Prisma {
     authorId: string
     createdAt?: Date | string
     pinned?: boolean
+    attachments?: MessageAttachmentUncheckedCreateNestedManyWithoutMessageInput
     mentionReceipts?: MessageMentionReceiptUncheckedCreateNestedManyWithoutMessageInput
   }
 
@@ -25851,6 +27483,7 @@ export namespace Prisma {
     pinned?: BoolFieldUpdateOperationsInput | boolean
     channel?: ChannelUpdateOneRequiredWithoutMessagesNestedInput
     author?: UserUpdateOneRequiredWithoutMessagesNestedInput
+    attachments?: MessageAttachmentUpdateManyWithoutMessageNestedInput
     mentionReceipts?: MessageMentionReceiptUpdateManyWithoutMessageNestedInput
   }
 
@@ -25861,6 +27494,7 @@ export namespace Prisma {
     authorId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     pinned?: BoolFieldUpdateOperationsInput | boolean
+    attachments?: MessageAttachmentUncheckedUpdateManyWithoutMessageNestedInput
     mentionReceipts?: MessageMentionReceiptUncheckedUpdateManyWithoutMessageNestedInput
   }
 
@@ -25949,6 +27583,7 @@ export namespace Prisma {
     pinned?: boolean
     channel: ChannelCreateNestedOneWithoutMessagesInput
     author: UserCreateNestedOneWithoutMessagesInput
+    attachments?: MessageAttachmentCreateNestedManyWithoutMessageInput
     mentions?: MessageMentionCreateNestedManyWithoutMessageInput
   }
 
@@ -25959,6 +27594,7 @@ export namespace Prisma {
     authorId: string
     createdAt?: Date | string
     pinned?: boolean
+    attachments?: MessageAttachmentUncheckedCreateNestedManyWithoutMessageInput
     mentions?: MessageMentionUncheckedCreateNestedManyWithoutMessageInput
   }
 
@@ -26026,6 +27662,7 @@ export namespace Prisma {
     pinned?: BoolFieldUpdateOperationsInput | boolean
     channel?: ChannelUpdateOneRequiredWithoutMessagesNestedInput
     author?: UserUpdateOneRequiredWithoutMessagesNestedInput
+    attachments?: MessageAttachmentUpdateManyWithoutMessageNestedInput
     mentions?: MessageMentionUpdateManyWithoutMessageNestedInput
   }
 
@@ -26036,6 +27673,7 @@ export namespace Prisma {
     authorId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     pinned?: BoolFieldUpdateOperationsInput | boolean
+    attachments?: MessageAttachmentUncheckedUpdateManyWithoutMessageNestedInput
     mentions?: MessageMentionUncheckedUpdateManyWithoutMessageNestedInput
   }
 
@@ -26427,6 +28065,7 @@ export namespace Prisma {
     createdAt?: Date | string
     pinned?: boolean
     channel: ChannelCreateNestedOneWithoutMessagesInput
+    attachments?: MessageAttachmentCreateNestedManyWithoutMessageInput
     mentions?: MessageMentionCreateNestedManyWithoutMessageInput
     mentionReceipts?: MessageMentionReceiptCreateNestedManyWithoutMessageInput
   }
@@ -26437,6 +28076,7 @@ export namespace Prisma {
     channelId: string
     createdAt?: Date | string
     pinned?: boolean
+    attachments?: MessageAttachmentUncheckedCreateNestedManyWithoutMessageInput
     mentions?: MessageMentionUncheckedCreateNestedManyWithoutMessageInput
     mentionReceipts?: MessageMentionReceiptUncheckedCreateNestedManyWithoutMessageInput
   }
@@ -27143,6 +28783,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     pinned?: BoolFieldUpdateOperationsInput | boolean
     author?: UserUpdateOneRequiredWithoutMessagesNestedInput
+    attachments?: MessageAttachmentUpdateManyWithoutMessageNestedInput
     mentions?: MessageMentionUpdateManyWithoutMessageNestedInput
     mentionReceipts?: MessageMentionReceiptUpdateManyWithoutMessageNestedInput
   }
@@ -27153,6 +28794,7 @@ export namespace Prisma {
     authorId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     pinned?: BoolFieldUpdateOperationsInput | boolean
+    attachments?: MessageAttachmentUncheckedUpdateManyWithoutMessageNestedInput
     mentions?: MessageMentionUncheckedUpdateManyWithoutMessageNestedInput
     mentionReceipts?: MessageMentionReceiptUncheckedUpdateManyWithoutMessageNestedInput
   }
@@ -27353,6 +28995,15 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type MessageAttachmentCreateManyMessageInput = {
+    id?: string
+    storagePath: string
+    fileName: string
+    mimeType: string
+    sizeBytes: number
+    createdAt?: Date | string
+  }
+
   export type MessageMentionCreateManyMessageInput = {
     id?: string
     type: $Enums.MentionType
@@ -27369,6 +29020,33 @@ export namespace Prisma {
     channelId: string
     createdAt?: Date | string
     seenAt?: Date | string | null
+  }
+
+  export type MessageAttachmentUpdateWithoutMessageInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    storagePath?: StringFieldUpdateOperationsInput | string
+    fileName?: StringFieldUpdateOperationsInput | string
+    mimeType?: StringFieldUpdateOperationsInput | string
+    sizeBytes?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MessageAttachmentUncheckedUpdateWithoutMessageInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    storagePath?: StringFieldUpdateOperationsInput | string
+    fileName?: StringFieldUpdateOperationsInput | string
+    mimeType?: StringFieldUpdateOperationsInput | string
+    sizeBytes?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MessageAttachmentUncheckedUpdateManyWithoutMessageInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    storagePath?: StringFieldUpdateOperationsInput | string
+    fileName?: StringFieldUpdateOperationsInput | string
+    mimeType?: StringFieldUpdateOperationsInput | string
+    sizeBytes?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type MessageMentionUpdateWithoutMessageInput = {
@@ -27621,6 +29299,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     pinned?: BoolFieldUpdateOperationsInput | boolean
     channel?: ChannelUpdateOneRequiredWithoutMessagesNestedInput
+    attachments?: MessageAttachmentUpdateManyWithoutMessageNestedInput
     mentions?: MessageMentionUpdateManyWithoutMessageNestedInput
     mentionReceipts?: MessageMentionReceiptUpdateManyWithoutMessageNestedInput
   }
@@ -27631,6 +29310,7 @@ export namespace Prisma {
     channelId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     pinned?: BoolFieldUpdateOperationsInput | boolean
+    attachments?: MessageAttachmentUncheckedUpdateManyWithoutMessageNestedInput
     mentions?: MessageMentionUncheckedUpdateManyWithoutMessageNestedInput
     mentionReceipts?: MessageMentionReceiptUncheckedUpdateManyWithoutMessageNestedInput
   }

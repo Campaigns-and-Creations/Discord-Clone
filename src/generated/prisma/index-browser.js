@@ -173,6 +173,16 @@ exports.Prisma.MessagesScalarFieldEnum = {
   pinned: 'pinned'
 };
 
+exports.Prisma.MessageAttachmentScalarFieldEnum = {
+  id: 'id',
+  messageId: 'messageId',
+  storagePath: 'storagePath',
+  fileName: 'fileName',
+  mimeType: 'mimeType',
+  sizeBytes: 'sizeBytes',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.MessageMentionScalarFieldEnum = {
   id: 'id',
   messageId: 'messageId',
@@ -308,6 +318,7 @@ exports.Prisma.ModelName = {
   ChannelRoleAccess: 'ChannelRoleAccess',
   ServerRolePermission: 'ServerRolePermission',
   Messages: 'Messages',
+  MessageAttachment: 'MessageAttachment',
   MessageMention: 'MessageMention',
   MessageMentionReceipt: 'MessageMentionReceipt',
   ServerInvite: 'ServerInvite',

@@ -1,15 +1,29 @@
-import { Box, Paper, Stack, Text } from "@mantine/core";
-import { Fragment, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { ActionIcon, Box, Group, Paper, Stack, Text } from "@mantine/core";
+import { Fragment, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { AppImage } from "./app-image";
 
 type MarkdownDraftInputProps = {
   value: string;
   onChange: (value: string) => void;
   onSubmit?: () => void;
+  attachments?: DraftInputAttachment[];
+  onAddAttachments?: (files: File[]) => void;
+  onRemoveAttachment?: (id: string) => void;
   placeholder: string;
   disabled?: boolean;
   minRows?: number;
   maxRows?: number;
   mentionSuggestions?: MentionSuggestionOption[];
+};
+
+export type DraftInputAttachment = {
+  id: string;
+  fileName: string;
+  mimeType: string;
+  sizeBytes: number;
+  previewUrl: string | null;
+  status: "uploading" | "uploaded" | "failed";
+  error: string | null;
 };
 
 export type MentionSuggestionOption = {
@@ -174,6 +188,9 @@ export function MarkdownDraftInput({
   value,
   onChange,
   onSubmit,
+  attachments = [],
+  onAddAttachments,
+  onRemoveAttachment,
   placeholder,
   disabled = false,
   minRows = 2,
@@ -181,9 +198,44 @@ export function MarkdownDraftInput({
   mentionSuggestions = [],
 }: MarkdownDraftInputProps) {
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const previewRef = useRef<HTMLDivElement | null>(null);
   const [activeMention, setActiveMention] = useState<MentionTrigger | null>(null);
   const [selectedMentionIndex, setSelectedMentionIndex] = useState(0);
+  const [isDraggingFileOver, setIsDraggingFileOver] = useState(false);
+
+  const formatBytes = (bytes: number) => {
+    if (bytes < 1024) {
+      return `${bytes} B`;
+    }
+
+    const kb = bytes / 1024;
+    if (kb < 1024) {
+      return `${kb.toFixed(1)} KB`;
+    }
+
+    const mb = kb / 1024;
+    return `${mb.toFixed(1)} MB`;
+  };
+
+  const openFilePicker = () => {
+    if (disabled) {
+      return;
+    }
+
+    fileInputRef.current?.click();
+  };
+
+  const pushFiles = (files: File[]) => {
+    if (disabled || !onAddAttachments || files.length === 0) {
+      return;
+    }
+
+    onAddAttachments(files);
+    requestAnimationFrame(() => {
+      textareaRef.current?.focus();
+    });
+  };
 
   const previewLines = useMemo(() => {
     const source = value.length > 0 ? value : "";
@@ -238,6 +290,14 @@ export function MarkdownDraftInput({
     return rows;
   }, [activeMention, mentionSuggestions]);
 
+  const clampedMentionIndex = useMemo(() => {
+    if (rankedMentionSuggestions.length === 0) {
+      return 0;
+    }
+
+    return Math.min(selectedMentionIndex, rankedMentionSuggestions.length - 1);
+  }, [rankedMentionSuggestions.length, selectedMentionIndex]);
+
   const isMentionMenuOpen = !disabled && Boolean(activeMention) && rankedMentionSuggestions.length > 0;
 
   const refreshMentionState = (nextValue: string, cursor: number) => {
@@ -276,14 +336,6 @@ export function MarkdownDraftInput({
     });
   };
 
-  useEffect(() => {
-    if (selectedMentionIndex < rankedMentionSuggestions.length) {
-      return;
-    }
-
-    setSelectedMentionIndex(0);
-  }, [rankedMentionSuggestions.length, selectedMentionIndex]);
-
   useLayoutEffect(() => {
     const textarea = textareaRef.current;
     if (!textarea) {
@@ -315,29 +367,169 @@ export function MarkdownDraftInput({
 
   return (
     <Box
+      onDragOver={(event) => {
+        if (disabled || !onAddAttachments) {
+          return;
+        }
+
+        event.preventDefault();
+        setIsDraggingFileOver(true);
+      }}
+      onDragEnter={(event) => {
+        if (disabled || !onAddAttachments) {
+          return;
+        }
+
+        event.preventDefault();
+        setIsDraggingFileOver(true);
+      }}
+      onDragLeave={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
+          setIsDraggingFileOver(false);
+        }
+      }}
+      onDrop={(event) => {
+        if (disabled || !onAddAttachments) {
+          return;
+        }
+
+        event.preventDefault();
+        setIsDraggingFileOver(false);
+        const droppedFiles = Array.from(event.dataTransfer.files);
+        pushFiles(droppedFiles);
+      }}
       style={{
         position: "relative",
         borderRadius: 4,
-        border: "1px solid #3a3d45",
+        border: isDraggingFileOver ? "1px solid #4dabf7" : "1px solid #3a3d45",
         backgroundColor: disabled ? "#24262b" : "#2b2d31",
       }}
     >
-      <Box
-        ref={previewRef}
+      <input
+        ref={fileInputRef}
+        type="file"
+        hidden
+        multiple
+        tabIndex={-1}
         aria-hidden
-        style={{
-          pointerEvents: "none",
-          padding: "9px 12px",
-          minHeight: 48,
-          maxHeight: 192,
-          overflow: "hidden",
-          whiteSpace: "pre-wrap",
-          wordBreak: "break-word",
-          fontSize: "var(--mantine-font-size-sm)",
-          lineHeight: "calc(var(--mantine-line-height) * var(--mantine-font-size-sm))",
-          color: "var(--mantine-color-gray-1)",
+        onChange={(event) => {
+          const selectedFiles = Array.from(event.currentTarget.files ?? []);
+          pushFiles(selectedFiles);
+          event.currentTarget.value = "";
         }}
-      >
+      />
+
+      {!disabled && onAddAttachments && (
+        <Group justify="space-between" px="xs" py={6} style={{ borderBottom: "1px solid #3a3d45" }}>
+          <Text size="xs" c="gray.4">Drag files here or attach</Text>
+          <ActionIcon variant="subtle" color="gray" aria-label="Attach files" onClick={openFilePicker}>
+            +
+          </ActionIcon>
+        </Group>
+      )}
+
+      {attachments.length > 0 && (
+        <Box px="xs" py="xs" style={{ borderBottom: "1px solid #3a3d45" }}>
+          <Stack gap={6}>
+            {attachments.map((attachment) => {
+              const isImage = attachment.mimeType.startsWith("image/") && Boolean(attachment.previewUrl);
+              const isVideo = attachment.mimeType.startsWith("video/") && Boolean(attachment.previewUrl);
+              const isMedia = isImage || isVideo;
+
+              return (
+                <Group
+                  key={attachment.id}
+                  justify="space-between"
+                  align="center"
+                  style={{
+                    border: "1px solid #3a3d45",
+                    borderRadius: 6,
+                    padding: "6px 8px",
+                    backgroundColor: "#232428",
+                  }}
+                >
+                  <Group gap="xs" style={{ minWidth: 0, flex: 1 }}>
+                    {isImage ? (
+                      <AppImage
+                        src={attachment.previewUrl!}
+                        alt={attachment.fileName}
+                        style={{ width: 40, height: 40, borderRadius: 4, objectFit: "cover" }}
+                      />
+                    ) : isVideo ? (
+                      <video
+                        src={attachment.previewUrl ?? undefined}
+                        muted
+                        playsInline
+                        preload="metadata"
+                        style={{ width: 40, height: 40, borderRadius: 4, objectFit: "cover" }}
+                      />
+                    ) : (
+                      <Box
+                        style={{
+                          width: 40,
+                          height: 40,
+                          borderRadius: 4,
+                          backgroundColor: "#2f3136",
+                          display: "grid",
+                          placeItems: "center",
+                          fontSize: 12,
+                          color: "#ced4da",
+                        }}
+                      >
+                        FILE
+                      </Box>
+                    )}
+                    {!isMedia && (
+                      <Stack gap={0} style={{ minWidth: 0 }}>
+                        <Text size="sm" c="gray.0" truncate="end">{attachment.fileName}</Text>
+                        <Text size="xs" c="gray.5" truncate="end">
+                          {formatBytes(attachment.sizeBytes)} - {attachment.status}
+                        </Text>
+                        {attachment.error && (
+                          <Text size="xs" c="red.4" truncate="end">{attachment.error}</Text>
+                        )}
+                      </Stack>
+                    )}
+                  </Group>
+                  {onRemoveAttachment && (
+                    <ActionIcon
+                      variant="subtle"
+                      color="gray"
+                      aria-label={`Remove ${attachment.fileName}`}
+                      onClick={() => {
+                        onRemoveAttachment(attachment.id);
+                        requestAnimationFrame(() => {
+                          textareaRef.current?.focus();
+                        });
+                      }}
+                    >
+                      x
+                    </ActionIcon>
+                  )}
+                </Group>
+              );
+            })}
+          </Stack>
+        </Box>
+      )}
+
+      <Box style={{ position: "relative" }}>
+        <Box
+          ref={previewRef}
+          aria-hidden
+          style={{
+            pointerEvents: "none",
+            padding: "9px 12px",
+            minHeight: 48,
+            maxHeight: 192,
+            overflow: "hidden",
+            whiteSpace: "pre-wrap",
+            wordBreak: "break-word",
+            fontSize: "var(--mantine-font-size-sm)",
+            lineHeight: "calc(var(--mantine-line-height) * var(--mantine-font-size-sm))",
+            color: "var(--mantine-color-gray-1)",
+          }}
+        >
         {value.length === 0 ? (
           <span style={{ color: "var(--mantine-color-gray-5)" }}>{placeholder}</span>
         ) : (
@@ -430,114 +622,115 @@ export function MarkdownDraftInput({
             </Fragment>
           ))
         )}
-      </Box>
+        </Box>
 
-      <textarea
-        ref={textareaRef}
-        value={value}
-        disabled={disabled}
-        onChange={(event) => {
-          const nextValue = event.currentTarget.value;
-          onChange(nextValue);
-          refreshMentionState(nextValue, event.currentTarget.selectionStart);
-        }}
-        onKeyDown={(event) => {
-          if (isMentionMenuOpen) {
-            if (event.key === "ArrowDown") {
-              event.preventDefault();
-              setSelectedMentionIndex((current) => {
-                if (rankedMentionSuggestions.length === 0) {
-                  return 0;
-                }
-
-                return (current + 1) % rankedMentionSuggestions.length;
-              });
-              return;
-            }
-
-            if (event.key === "ArrowUp") {
-              event.preventDefault();
-              setSelectedMentionIndex((current) => {
-                if (rankedMentionSuggestions.length === 0) {
-                  return 0;
-                }
-
-                return (current - 1 + rankedMentionSuggestions.length) % rankedMentionSuggestions.length;
-              });
-              return;
-            }
-
-            if (event.key === "Escape") {
-              event.preventDefault();
-              setActiveMention(null);
-              return;
-            }
-
-            if (event.key === "Enter" || event.key === "Tab") {
-              const selectedSuggestion = rankedMentionSuggestions[selectedMentionIndex];
-              if (selectedSuggestion) {
+        <textarea
+          ref={textareaRef}
+          value={value}
+          disabled={disabled}
+          onChange={(event) => {
+            const nextValue = event.currentTarget.value;
+            onChange(nextValue);
+            refreshMentionState(nextValue, event.currentTarget.selectionStart);
+          }}
+          onKeyDown={(event) => {
+            if (isMentionMenuOpen) {
+              if (event.key === "ArrowDown") {
                 event.preventDefault();
-                applyMentionSuggestion(selectedSuggestion);
+                setSelectedMentionIndex((current) => {
+                  if (rankedMentionSuggestions.length === 0) {
+                    return 0;
+                  }
+
+                  return (current + 1) % rankedMentionSuggestions.length;
+                });
                 return;
               }
+
+              if (event.key === "ArrowUp") {
+                event.preventDefault();
+                setSelectedMentionIndex((current) => {
+                  if (rankedMentionSuggestions.length === 0) {
+                    return 0;
+                  }
+
+                  return (current - 1 + rankedMentionSuggestions.length) % rankedMentionSuggestions.length;
+                });
+                return;
+              }
+
+              if (event.key === "Escape") {
+                event.preventDefault();
+                setActiveMention(null);
+                return;
+              }
+
+              if (event.key === "Enter" || event.key === "Tab") {
+                const selectedSuggestion = rankedMentionSuggestions[clampedMentionIndex];
+                if (selectedSuggestion) {
+                  event.preventDefault();
+                  applyMentionSuggestion(selectedSuggestion);
+                  return;
+                }
+              }
             }
-          }
 
-          if (event.key !== "Enter" || event.shiftKey || event.nativeEvent.isComposing) {
-            return;
-          }
-
-          event.preventDefault();
-          onSubmit?.();
-        }}
-        onScroll={(event) => {
-          const preview = previewRef.current;
-          if (!preview) {
-            return;
-          }
-
-          preview.scrollTop = event.currentTarget.scrollTop;
-          preview.scrollLeft = event.currentTarget.scrollLeft;
-        }}
-        onSelect={(event) => {
-          refreshMentionState(value, event.currentTarget.selectionStart);
-        }}
-        onClick={(event) => {
-          refreshMentionState(value, event.currentTarget.selectionStart);
-        }}
-        onBlur={() => {
-          requestAnimationFrame(() => {
-            const activeElement = document.activeElement;
-            const nextTextarea = textareaRef.current;
-
-            if (activeElement === nextTextarea) {
+            if (event.key !== "Enter" || event.shiftKey || event.nativeEvent.isComposing) {
               return;
             }
 
-            setActiveMention(null);
-          });
-        }}
-        style={{
-          position: "absolute",
-          inset: 0,
-          width: "100%",
-          minHeight: 48,
-          maxHeight: 192,
-          resize: "none",
-          border: "none",
-          outline: "none",
-          background: "transparent",
-          padding: "9px 12px",
-          fontSize: "var(--mantine-font-size-sm)",
-          lineHeight: "calc(var(--mantine-line-height) * var(--mantine-font-size-sm))",
-          color: "transparent",
-          caretColor: "var(--mantine-color-gray-0)",
-          whiteSpace: "pre-wrap",
-          overflowWrap: "break-word",
-        }}
-        spellCheck
-        aria-label="Message input"
-      />
+            event.preventDefault();
+            onSubmit?.();
+          }}
+          onScroll={(event) => {
+            const preview = previewRef.current;
+            if (!preview) {
+              return;
+            }
+
+            preview.scrollTop = event.currentTarget.scrollTop;
+            preview.scrollLeft = event.currentTarget.scrollLeft;
+          }}
+          onSelect={(event) => {
+            refreshMentionState(value, event.currentTarget.selectionStart);
+          }}
+          onClick={(event) => {
+            refreshMentionState(value, event.currentTarget.selectionStart);
+          }}
+          onBlur={() => {
+            requestAnimationFrame(() => {
+              const activeElement = document.activeElement;
+              const nextTextarea = textareaRef.current;
+
+              if (activeElement === nextTextarea) {
+                return;
+              }
+
+              setActiveMention(null);
+            });
+          }}
+          style={{
+            position: "absolute",
+            inset: 0,
+            width: "100%",
+            minHeight: 48,
+            maxHeight: 192,
+            resize: "none",
+            border: "none",
+            outline: "none",
+            background: "transparent",
+            padding: "9px 12px",
+            fontSize: "var(--mantine-font-size-sm)",
+            lineHeight: "calc(var(--mantine-line-height) * var(--mantine-font-size-sm))",
+            color: "transparent",
+            caretColor: "var(--mantine-color-gray-0)",
+            whiteSpace: "pre-wrap",
+            overflowWrap: "break-word",
+          }}
+          spellCheck
+          aria-label="Message input"
+        />
+      </Box>
 
       {isMentionMenuOpen && (
         <Paper
@@ -558,7 +751,7 @@ export function MarkdownDraftInput({
         >
           <Stack gap={2} p={4}>
             {rankedMentionSuggestions.map((suggestion, index) => {
-              const isSelected = index === selectedMentionIndex;
+              const isSelected = index === clampedMentionIndex;
 
               return (
                 <Box

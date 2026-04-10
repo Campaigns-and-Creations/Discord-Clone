@@ -7,6 +7,7 @@ import { toIsoString } from "@/utils/date";
 import { resolveDisplayName } from "@/utils/display-name";
 import { canAccessChannel } from "@/utils/permissions";
 import { getServerUser } from "@/utils/session";
+import { createSignedMessageUrls } from "@/utils/supabase";
 import { NextResponse } from "next/server";
 
 const DEFAULT_LIMIT = 50;
@@ -52,7 +53,11 @@ export async function GET(request: Request) {
   }
 
   const result = await MessagesDal.listOlderByChannelId(channel.id, beforeMessageId, limit);
+  const attachmentPaths = result.messages.flatMap((message) =>
+    message.attachments.map((attachment) => attachment.storagePath),
+  );
   const members = await ServerMemberDal.listByServerId(channel.serverId);
+  const signedAttachmentUrls = await createSignedMessageUrls(attachmentPaths);
   const mentionedMessageIds = await MessageMentionsDal.listMentionedMessageIdsForUser(
     sessionUser.id,
     result.messages.map((message) => message.id),
@@ -80,6 +85,14 @@ export async function GET(request: Request) {
         pinned: message.pinned,
         channelId: message.channelId,
         isMentionedForCurrentUser: mentionedMessageIds.has(message.id),
+        attachments: message.attachments.map((attachment) => ({
+          id: attachment.id,
+          fileName: attachment.fileName,
+          mimeType: attachment.mimeType,
+          sizeBytes: attachment.sizeBytes,
+          storagePath: attachment.storagePath,
+          url: signedAttachmentUrls.get(attachment.storagePath) ?? null,
+        })),
         author: {
           id: message.author.id,
           name: authorIdentity?.displayName ?? message.author.name,

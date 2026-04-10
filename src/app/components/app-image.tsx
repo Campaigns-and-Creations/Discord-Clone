@@ -5,8 +5,17 @@ import NextImage, { type ImageProps as NextImageProps } from "next/image";
 
 type AppImageProps = Omit<MantineImageProps, "component"> & {
   unoptimized?: boolean;
-} & Pick<NextImageProps, "src" | "alt" | "width" | "height" | "sizes">;
+} & Pick<NextImageProps, "src" | "alt" | "sizes"> & Partial<Pick<NextImageProps, "width" | "height">>;
 
-export function AppImage({ unoptimized = true, ...props }: AppImageProps) {
-  return <MantineImage component={NextImage} unoptimized={unoptimized} {...props} />;
+export function AppImage({ unoptimized = true, width, height, ...props }: AppImageProps) {
+  return (
+    <MantineImage
+      component={NextImage}
+      unoptimized={unoptimized}
+      fit="contain"
+      width={width ?? 1}
+      height={height ?? 1}
+      {...props}
+    />
+  );
 }

@@ -1,6 +1,7 @@
 import type { HomeChannel, HomeServer } from "@/app/home-types";
 import {
   MarkdownDraftInput,
+  type DraftInputAttachment,
   type MentionSuggestionOption,
 } from "@/app/components/markdown-draft-input";
 import { MessageMarkdown } from "@/app/components/message-markdown";
@@ -14,6 +15,7 @@ import {
   Box,
   Group,
   Menu,
+  Modal,
   Paper,
   ScrollArea,
   Stack,
@@ -21,6 +23,7 @@ import {
 } from "@mantine/core";
 import { UsersThreeIcon } from "@phosphor-icons/react";
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
+import { AppImage } from "./app-image";
 
 type HomeChatPanelProps = {
   selectedChannel: HomeChannel | null;
@@ -40,9 +43,42 @@ type HomeChatPanelProps = {
   messageDraft: string;
   onChangeMessageDraft: (value: string) => void;
   onSendMessage: () => void;
+  messageDraftAttachments: DraftInputAttachment[];
+  onAddMessageAttachments: (files: File[]) => void;
+  onRemoveMessageAttachment: (attachmentId: string) => void;
+  isUploadingMessageAttachments: boolean;
   onLoadOlderMessages: () => Promise<void>;
   isSendingMessage: boolean;
 };
+
+type MediaPreviewState = {
+  kind: "image" | "video";
+  url: string;
+};
+
+function formatAttachmentSize(sizeBytes: number): string {
+  if (sizeBytes < 1024) {
+    return `${sizeBytes} B`;
+  }
+
+  if (sizeBytes < 1024 * 1024) {
+    return `${(sizeBytes / 1024).toFixed(1)} KB`;
+  }
+
+  return `${(sizeBytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+function getAttachmentKind(mimeType: string): "image" | "video" | "other" {
+  if (mimeType.startsWith("image/")) {
+    return "image";
+  }
+
+  if (mimeType.startsWith("video/")) {
+    return "video";
+  }
+
+  return "other";
+}
 
 function formatMessageTime(createdAt: string): string {
   return new Date(createdAt).toLocaleTimeString([], {
@@ -65,6 +101,23 @@ function formatDateDivider(createdAt: string): string {
   });
 }
 
+async function forceDownloadAttachment(url: string, fileName: string): Promise<void> {
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`Failed to download attachment (${response.status})`);
+  }
+
+  const fileBlob = await response.blob();
+  const objectUrl = URL.createObjectURL(fileBlob);
+  const link = document.createElement("a");
+  link.href = objectUrl;
+  link.download = fileName;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(objectUrl);
+}
+
 export function HomeChatPanel({
   selectedChannel,
   selectedServer,
@@ -79,10 +132,15 @@ export function HomeChatPanel({
   messageDraft,
   onChangeMessageDraft,
   onSendMessage,
+  messageDraftAttachments,
+  onAddMessageAttachments,
+  onRemoveMessageAttachment,
+  isUploadingMessageAttachments,
   onLoadOlderMessages,
   isSendingMessage,
 }: HomeChatPanelProps) {
   const [membersPanelExpanded, setMembersPanelExpanded] = useState(true);
+  const [mediaPreview, setMediaPreview] = useState<MediaPreviewState | null>(null);
   const messageViewportRef = useRef<HTMLDivElement | null>(null);
   const previousChannelIdRef = useRef<string | null>(null);
   const previousMessageCountRef = useRef<number>(0);
@@ -290,6 +348,28 @@ export function HomeChatPanel({
 
   return (
     <Paper flex={1} bg="#313338" radius={0} p={0} style={{ minHeight: 0, overflow: "hidden" }}>
+      <Modal
+        opened={mediaPreview !== null}
+        onClose={() => setMediaPreview(null)}
+        centered
+        size="xl"
+      >
+        {mediaPreview?.kind === "image" ? (
+          <AppImage
+            src={mediaPreview.url}
+            alt="Media preview"
+            style={{ width: "100%", maxHeight: "70vh", objectFit: "contain", borderRadius: 8 }}
+          />
+        ) : mediaPreview?.kind === "video" ? (
+          <video
+            src={mediaPreview.url}
+            controls
+            autoPlay
+            style={{ width: "100%", maxHeight: "70vh", borderRadius: 8 }}
+          />
+        ) : null}
+      </Modal>
+
       <Stack h="100%" gap={0}>
         <Box p="md" style={{ borderBottom: "1px solid #232428" }}>
           <Group justify="space-between" wrap="nowrap" gap="sm">
@@ -416,6 +496,107 @@ export function HomeChatPanel({
                                 )}
                               </Group>
                               <MessageMarkdown content={message.content} />
+                              {message.attachments.length > 0 && (
+                                <Stack gap={6} mt={6}>
+                                  {message.attachments.map((attachment) => {
+                                    const kind = getAttachmentKind(attachment.mimeType);
+                                    const hasUrl = Boolean(attachment.url);
+
+                                    const openMediaPreview = () => {
+                                      if (!attachment.url || kind === "other") {
+                                        return;
+                                      }
+
+                                      setMediaPreview({
+                                        kind,
+                                        url: attachment.url,
+                                      });
+                                    };
+
+                                    const content = (
+                                      <Paper
+                                        p="xs"
+                                        bg="#232428"
+                                        radius="sm"
+                                        withBorder
+                                        style={{ borderColor: "#3a3d45" }}
+                                      >
+                                        {kind === "image" && hasUrl && (
+                                          <AppImage
+                                            src={attachment.url!}
+                                            alt={attachment.fileName}
+                                            style={{
+                                              maxWidth: 280,
+                                              width: "100%",
+                                              borderRadius: 6,
+                                              objectFit: "cover",
+                                              marginBottom: 6,
+                                            }}
+                                          />
+                                        )}
+                                        {kind === "video" && hasUrl && (
+                                          <video
+                                            src={attachment.url ?? undefined}
+                                            muted
+                                            playsInline
+                                            preload="metadata"
+                                            style={{
+                                              maxWidth: 280,
+                                              width: "100%",
+                                              borderRadius: 6,
+                                              objectFit: "cover",
+                                              marginBottom: 6,
+                                            }}
+                                          />
+                                        )}
+                                        {kind === "other" && (
+                                          <>
+                                            <Text size="sm" c="gray.0" truncate="end">{attachment.fileName}</Text>
+                                            <Text size="xs" c="gray.5">
+                                              {attachment.mimeType} - {formatAttachmentSize(attachment.sizeBytes)}
+                                            </Text>
+                                          </>
+                                        )}
+                                      </Paper>
+                                    );
+
+                                    return (
+                                      <Box key={attachment.id}>
+                                        {kind === "other" && hasUrl ? (
+                                          <Box
+                                            component="button"
+                                            type="button"
+                                            onClick={() => {
+                                              if (!attachment.url) {
+                                                return;
+                                              }
+
+                                              void forceDownloadAttachment(attachment.url, attachment.fileName);
+                                            }}
+                                            style={{
+                                              all: "unset",
+                                              display: "block",
+                                              width: "100%",
+                                              cursor: "pointer",
+                                            }}
+                                          >
+                                            {content}
+                                          </Box>
+                                        ) : kind !== "other" && hasUrl ? (
+                                          <Box
+                                            onClick={openMediaPreview}
+                                            style={{ cursor: "zoom-in" }}
+                                          >
+                                            {content}
+                                          </Box>
+                                        ) : (
+                                          content
+                                        )}
+                                      </Box>
+                                    );
+                                  })}
+                                </Stack>
+                              )}
                             </Stack>
 
                             {selectedServer && (
@@ -471,11 +652,17 @@ export function HomeChatPanel({
                         value={messageDraft}
                         onChange={onChangeMessageDraft}
                         onSubmit={onSendMessage}
+                        attachments={messageDraftAttachments}
+                        onAddAttachments={onAddMessageAttachments}
+                        onRemoveAttachment={onRemoveMessageAttachment}
                         disabled={!selectedServer.capabilities.canSendMessages || isSendingMessage}
                         mentionSuggestions={mentionSuggestions}
                         minRows={2}
                         maxRows={8}
                       />
+                      {isUploadingMessageAttachments && (
+                        <Text size="xs" c="gray.5">Uploading attachments...</Text>
+                      )}
                     </Stack>
                   </form>
                 </Paper>

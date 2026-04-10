@@ -2,6 +2,7 @@ import "server-only";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
 const PICTURES_BUCKET = "pictures";
+const MESSAGES_BUCKET = "messages";
 const SIGNED_URL_TTL_SECONDS = 60 * 60;
 
 let supabaseClient: SupabaseClient | null = null;
@@ -20,7 +21,8 @@ export function getSupabaseConfig() {
   return {
     url: readRequiredEnv("NEXT_PUBLIC_SUPABASE_URL"),
     serviceRoleKey: readRequiredEnv("SUPABASE_SERVICE_ROLE_KEY"),
-    bucket: PICTURES_BUCKET,
+    picturesBucket: PICTURES_BUCKET,
+    messagesBucket: MESSAGES_BUCKET,
     signedUrlTtlSeconds: SIGNED_URL_TTL_SECONDS,
   };
 }
@@ -51,8 +53,8 @@ export function isStoredPicturePath(value: string | null | undefined): value is 
 
 export async function uploadPictureObject(path: string, bytes: Uint8Array, contentType: string) {
   const client = getSupabaseServerClient();
-  const { bucket } = getSupabaseConfig();
-  const { error } = await client.storage.from(bucket).upload(path, bytes, {
+  const { picturesBucket } = getSupabaseConfig();
+  const { error } = await client.storage.from(picturesBucket).upload(path, bytes, {
     contentType,
     upsert: false,
   });
@@ -66,8 +68,8 @@ export async function uploadPictureObject(path: string, bytes: Uint8Array, conte
 
 export async function createSignedPictureUploadUrl(path: string, options?: { upsert?: boolean }) {
   const client = getSupabaseServerClient();
-  const { bucket } = getSupabaseConfig();
-  const { data, error } = await client.storage.from(bucket).createSignedUploadUrl(path, {
+  const { picturesBucket } = getSupabaseConfig();
+  const { data, error } = await client.storage.from(picturesBucket).createSignedUploadUrl(path, {
     upsert: options?.upsert ?? false,
   });
 
@@ -84,8 +86,8 @@ export async function createSignedPictureUploadUrl(path: string, options?: { ups
 
 export async function createSignedPictureReadUrl(path: string) {
   const client = getSupabaseServerClient();
-  const { bucket, signedUrlTtlSeconds } = getSupabaseConfig();
-  const { data, error } = await client.storage.from(bucket).createSignedUrl(path, signedUrlTtlSeconds);
+  const { picturesBucket, signedUrlTtlSeconds } = getSupabaseConfig();
+  const { data, error } = await client.storage.from(picturesBucket).createSignedUrl(path, signedUrlTtlSeconds);
 
   if (error || !data?.signedUrl) {
     throw new Error(`Failed to create signed read URL: ${error?.message ?? "Unknown error"}`);
@@ -96,8 +98,8 @@ export async function createSignedPictureReadUrl(path: string) {
 
 export async function deletePictureObject(path: string) {
   const client = getSupabaseServerClient();
-  const { bucket } = getSupabaseConfig();
-  const { error } = await client.storage.from(bucket).remove([path]);
+  const { picturesBucket } = getSupabaseConfig();
+  const { error } = await client.storage.from(picturesBucket).remove([path]);
 
   if (error) {
     throw new Error(`Failed to delete image: ${error.message}`);
@@ -110,9 +112,9 @@ export async function createSignedPictureUrls(paths: string[]) {
   }
 
   const client = getSupabaseServerClient();
-  const { bucket, signedUrlTtlSeconds } = getSupabaseConfig();
+  const { picturesBucket, signedUrlTtlSeconds } = getSupabaseConfig();
   const { data, error } = await client.storage
-    .from(bucket)
+    .from(picturesBucket)
     .createSignedUrls(paths, signedUrlTtlSeconds);
 
   if (error) {
@@ -121,6 +123,49 @@ export async function createSignedPictureUrls(paths: string[]) {
 
   const result = new Map<string, string>();
 
+  for (const item of data) {
+    if (item.path && item.signedUrl) {
+      result.set(item.path, item.signedUrl);
+    }
+  }
+
+  return result;
+}
+
+export async function createSignedMessageUploadUrl(path: string, options?: { upsert?: boolean }) {
+  const client = getSupabaseServerClient();
+  const { messagesBucket } = getSupabaseConfig();
+  const { data, error } = await client.storage.from(messagesBucket).createSignedUploadUrl(path, {
+    upsert: options?.upsert ?? false,
+  });
+
+  if (error || !data?.signedUrl || !data?.token || !data?.path) {
+    throw new Error(`Failed to create signed upload URL: ${error?.message ?? "Unknown error"}`);
+  }
+
+  return {
+    path: data.path,
+    signedUrl: data.signedUrl,
+    token: data.token,
+  };
+}
+
+export async function createSignedMessageUrls(paths: string[]) {
+  if (paths.length === 0) {
+    return new Map<string, string>();
+  }
+
+  const client = getSupabaseServerClient();
+  const { messagesBucket, signedUrlTtlSeconds } = getSupabaseConfig();
+  const { data, error } = await client.storage
+    .from(messagesBucket)
+    .createSignedUrls(paths, signedUrlTtlSeconds);
+
+  if (error) {
+    throw new Error(`Failed to create signed URLs: ${error.message}`);
+  }
+
+  const result = new Map<string, string>();
   for (const item of data) {
     if (item.path && item.signedUrl) {
       result.set(item.path, item.signedUrl);

@@ -14,6 +14,14 @@ export type HomeMessage = {
   pinned: boolean;
   channelId: string;
   isMentionedForCurrentUser: boolean;
+  attachments: {
+    id: string;
+    fileName: string;
+    mimeType: string;
+    sizeBytes: number;
+    storagePath: string;
+    url: string | null;
+  }[];
   author: {
     id: string;
     name: string;

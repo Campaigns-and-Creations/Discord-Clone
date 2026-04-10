@@ -13,7 +13,12 @@ import { toIsoString } from "@/utils/date";
 import { resolveDisplayName } from "@/utils/display-name";
 import { getMembershipPermissions } from "@/utils/permissions";
 import { getServerUser } from "@/utils/session";
-import { createSignedPictureUrls, isStoredPicturePath, resolvePictureUrl } from "@/utils/supabase";
+import {
+  createSignedMessageUrls,
+  createSignedPictureUrls,
+  isStoredPicturePath,
+  resolvePictureUrl,
+} from "@/utils/supabase";
 import { NextResponse } from "next/server";
 
 const INITIAL_CHANNEL_MESSAGES_LIMIT = 50;
@@ -85,6 +90,13 @@ export async function GET() {
                 createdAt: toIsoString(message.createdAt),
                 pinned: message.pinned,
                 channelId: message.channelId,
+                attachments: message.attachments.map((attachment) => ({
+                  id: attachment.id,
+                  fileName: attachment.fileName,
+                  mimeType: attachment.mimeType,
+                  sizeBytes: attachment.sizeBytes,
+                  storagePath: attachment.storagePath,
+                })),
                 author: {
                   id: message.author.id,
                   name: authorIdentity?.displayName ?? message.author.name,
@@ -128,6 +140,7 @@ export async function GET() {
             pinned: message.pinned,
             channelId: message.channelId,
             isMentionedForCurrentUser: mentionedMessageIds.has(message.id),
+            attachments: message.attachments,
             author: message.author,
           };
         }),
@@ -188,6 +201,7 @@ export async function GET() {
   );
 
   const storedPicturePaths = new Set<string>();
+  const messageAttachmentPaths = new Set<string>();
 
   const collectStoredPath = (value: string | null | undefined) => {
     if (isStoredPicturePath(value)) {
@@ -211,11 +225,20 @@ export async function GET() {
     for (const channel of server.channels) {
       for (const message of channel.messages) {
         collectStoredPath(message.author.image);
+
+        for (const attachment of message.attachments) {
+          if (attachment.storagePath.trim().length > 0) {
+            messageAttachmentPaths.add(attachment.storagePath);
+          }
+        }
       }
     }
   }
 
-  const signedUrlByPath = await createSignedPictureUrls(Array.from(storedPicturePaths));
+  const [signedUrlByPath, signedAttachmentUrlByPath] = await Promise.all([
+    createSignedPictureUrls(Array.from(storedPicturePaths)),
+    createSignedMessageUrls(Array.from(messageAttachmentPaths)),
+  ]);
   const resolveImage = (value: string | null | undefined) => resolvePictureUrl(value, signedUrlByPath);
 
   const hydratedServers = serversWithChannels.map((server) => ({
@@ -233,6 +256,10 @@ export async function GET() {
       ...channel,
       messages: channel.messages.map((message) => ({
         ...message,
+        attachments: message.attachments.map((attachment) => ({
+          ...attachment,
+          url: signedAttachmentUrlByPath.get(attachment.storagePath) ?? null,
+        })),
         author: {
           ...message.author,
           image: resolveImage(message.author.image),

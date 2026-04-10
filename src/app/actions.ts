@@ -18,16 +18,31 @@ import {
 import { toIsoString } from "@/utils/date";
 import { resolveDisplayName } from "@/utils/display-name";
 import { logger } from "@/utils/logger";
+import {
+  assertMessageAttachmentPathOwnership,
+  buildMessageAttachmentPath,
+  type MessageAttachmentMetadata,
+  type MessageAttachmentUploadRequest,
+  validateMessageAttachmentBatch,
+  validateMessageAttachmentMetadata,
+} from "@/utils/message-attachments";
 import { buildMentionPlan } from "@/utils/mentions";
 import { buildServerPicturePath, buildUserPicturePath, generateSignedUploadUrl, validatePictureMetadata } from "@/utils/pictures";
 import { requireUser } from "@/utils/session";
 import { createStreamUserToken, getStreamConfig, getStreamServerClient } from "@/utils/stream";
-import { deletePictureObject, isStoredPicturePath } from "@/utils/supabase";
+import { createSignedMessageUploadUrl, deletePictureObject, isStoredPicturePath } from "@/utils/supabase";
 import type { HomeServer } from "@/app/home-types";
 
 const OWNER_ROLE_NAME = "Owner";
 
 type PictureUploadRequest = {
+  mimeType: string;
+  sizeBytes: number;
+};
+
+type MessageAttachmentInput = {
+  storagePath: string;
+  fileName: string;
   mimeType: string;
   sizeBytes: number;
 };
@@ -79,6 +94,33 @@ async function requireServerPermission(
   }
 
   return membership;
+}
+
+async function requireChannelSendContext(userId: string, serverId: string, channelId: string) {
+  const [isMember, channel, membership, hasChannelAccess, canSendMessages] = await Promise.all([
+    ServerMemberDal.isUserMemberOfChannel(userId, channelId),
+    ChannelDal.findById(channelId),
+    ServerMemberDal.findByUserAndServer(userId, serverId),
+    canAccessChannel(userId, serverId, channelId),
+    hasServerPermission(userId, serverId, Permission.SEND_MESSAGES),
+  ]);
+
+  if (!isMember || !channel || channel.serverId !== serverId || !membership || !hasChannelAccess) {
+    throw new Error("Forbidden");
+  }
+
+  if (membership.timeoutUntil && membership.timeoutUntil > new Date()) {
+    throw new Error("You are currently timed out in this server.");
+  }
+
+  if (!canSendMessages) {
+    throw new Error("Forbidden");
+  }
+
+  return {
+    channel,
+    membership,
+  };
 }
 
 function assertCanModerateTarget(
@@ -222,6 +264,34 @@ export async function requestServerImageUpload(serverId: string, payload: Pictur
 
   const path = buildServerPicturePath(serverId, payload.mimeType);
   return generateSignedUploadUrl(path);
+}
+
+export async function requestMessageAttachmentUpload(
+  serverId: string,
+  channelId: string,
+  payload: MessageAttachmentUploadRequest,
+) {
+  const sessionUser = await requireUser();
+
+  const normalizedServerId = serverId.trim();
+  const normalizedChannelId = channelId.trim();
+
+  if (!normalizedServerId || !normalizedChannelId) {
+    throw new Error("serverId and channelId are required.");
+  }
+
+  await requireChannelSendContext(sessionUser.id, normalizedServerId, normalizedChannelId);
+
+  const validated = validateMessageAttachmentMetadata(payload);
+  const path = buildMessageAttachmentPath(
+    normalizedServerId,
+    normalizedChannelId,
+    sessionUser.id,
+    validated.fileName,
+    validated.mimeType,
+  );
+
+  return createSignedMessageUploadUrl(path, { upsert: false });
 }
 
 export async function createChannel(
@@ -555,52 +625,61 @@ export async function revokeInvite(serverId: string, inviteId: string) {
   }
 }
 
-export async function sendMessage(serverId: string, channelId: string, content: string) {
+export async function sendMessage(
+  serverId: string,
+  channelId: string,
+  content: string,
+  attachments: MessageAttachmentInput[] = [],
+) {
   const sessionUser = await requireUser();
+  const normalizedServerId = serverId.trim();
+  const normalizedChannelId = channelId.trim();
   const normalizedContent = content.trim();
+  const normalizedAttachments: MessageAttachmentMetadata[] = attachments.map((attachment) => {
+    const validated = validateMessageAttachmentMetadata({
+      fileName: attachment.fileName,
+      mimeType: attachment.mimeType,
+      sizeBytes: attachment.sizeBytes,
+    });
 
-  if (!normalizedContent) {
-    throw new Error("Message content is required.");
+    return {
+      fileName: validated.fileName,
+      mimeType: validated.mimeType,
+      sizeBytes: validated.sizeBytes,
+      storagePath: assertMessageAttachmentPathOwnership(
+        attachment.storagePath,
+        normalizedServerId,
+        normalizedChannelId,
+        sessionUser.id,
+      ),
+    };
+  });
+
+  validateMessageAttachmentBatch(normalizedAttachments);
+
+  if (!normalizedContent && normalizedAttachments.length === 0) {
+    throw new Error("Message must include text or at least one attachment.");
   }
 
   if (normalizedContent.length > 4000) {
     throw new Error("Message must be at most 4000 characters.");
   }
 
-  const [isMember, channel, membership, hasChannelAccess] = await Promise.all([
-    ServerMemberDal.isUserMemberOfChannel(sessionUser.id, channelId),
-    ChannelDal.findById(channelId),
-    ServerMemberDal.findByUserAndServer(sessionUser.id, serverId),
-    canAccessChannel(sessionUser.id, serverId, channelId),
-  ]);
-
-  if (!isMember || !channel || channel.serverId !== serverId || !membership || !hasChannelAccess) {
-    throw new Error("Forbidden");
-  }
-
-  if (membership.timeoutUntil && membership.timeoutUntil > new Date()) {
-    throw new Error("You are currently timed out in this server.");
-  }
-
-  const canSendMessages = await hasServerPermission(
+  const { channel, membership } = await requireChannelSendContext(
     sessionUser.id,
-    serverId,
-    Permission.SEND_MESSAGES,
+    normalizedServerId,
+    normalizedChannelId,
   );
 
   const canUseMassMentions = await hasServerPermission(
     sessionUser.id,
-    serverId,
+    normalizedServerId,
     Permission.MENTION_EVERYONE,
   );
 
-  if (!canSendMessages) {
-    throw new Error("Forbidden");
-  }
-
   const [members, roles] = await Promise.all([
-    ServerMemberDal.listByServerId(serverId),
-    ServerRolesDal.listByServerId(serverId),
+    ServerMemberDal.listByServerId(normalizedServerId),
+    ServerRolesDal.listByServerId(normalizedServerId),
   ]);
 
   const mentionPlan = buildMentionPlan({
@@ -613,11 +692,12 @@ export async function sendMessage(serverId: string, channelId: string, content: 
   });
 
   const message = await MessagesDal.createInChannelWithMentions(
-    channelId,
-    serverId,
+    normalizedChannelId,
+    normalizedServerId,
     sessionUser.id,
     normalizedContent,
     mentionPlan,
+    normalizedAttachments,
   );
   const displayName = resolveDisplayName(membership.nickname, message.author.name);
 
@@ -628,6 +708,14 @@ export async function sendMessage(serverId: string, channelId: string, content: 
     pinned: message.pinned,
     channelId: message.channelId,
     isMentionedForCurrentUser: false,
+    attachments: message.attachments.map((attachment) => ({
+      id: attachment.id,
+      fileName: attachment.fileName,
+      mimeType: attachment.mimeType,
+      sizeBytes: attachment.sizeBytes,
+      storagePath: attachment.storagePath,
+      url: null,
+    })),
     author: {
       id: message.author.id,
       name: displayName,
