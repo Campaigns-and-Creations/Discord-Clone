@@ -2,13 +2,21 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, Suspense, useEffect, useState } from "react";
 
 import { signUp, useSession } from "@/utils/auth-client";
 
 const USERNAME_WHITESPACE_REGEX = /\s/;
 
 export default function SignUpPage() {
+    return (
+        <Suspense fallback={null}>
+            <SignUpPageContent />
+        </Suspense>
+    );
+}
+
+function SignUpPageContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const { data: session, isPending } = useSession();

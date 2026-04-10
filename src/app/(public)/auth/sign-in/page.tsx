@@ -2,11 +2,19 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, Suspense, useEffect, useState } from "react";
 
 import { signIn, useSession } from "@/utils/auth-client";
 
 export default function SignInPage() {
+	return (
+		<Suspense fallback={null}>
+			<SignInPageContent />
+		</Suspense>
+	);
+}
+
+function SignInPageContent() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const { data: session, isPending } = useSession();
