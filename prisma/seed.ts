@@ -60,18 +60,17 @@ function getMessageTimestamp(base: Date, offsetMinutes: number): Date {
 async function main() {
     const email = "goethalsdiego@gmail.com";
     const password = "test123!";
-    const name = "DiegoGoethals";
 
     const user = await prisma.user.upsert({
         where: { email },
         update: {
             emailVerified: true,
-            name,
+            name: "Diego Goethals",
         },
         create: {
             email,
             emailVerified: true,
-            name,
+            name: "Diego Goethals",
         },
     });
 
@@ -189,10 +188,10 @@ async function main() {
             ),
         );
 
-        const adminRole = createdRoles.find((role) => role.name === "Admin");
+        const ownerRole = createdRoles.find((role) => role.name === "Owner");
 
-        if (!adminRole) {
-            throw new Error("Failed to seed Admin role");
+        if (!ownerRole) {
+            throw new Error("Failed to seed Owner role");
         }
 
         await prisma.serverMember.update({
@@ -202,7 +201,7 @@ async function main() {
             data: {
                 serverRoles: {
                     connect: {
-                        id: adminRole.id,
+                        id: ownerRole.id,
                     },
                 },
             },
