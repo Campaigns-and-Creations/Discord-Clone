@@ -149,6 +149,27 @@ export class InviteDal {
         };
       }
 
+      const banList = await tx.banList.findUnique({
+        where: {
+          serverId: invite.serverId,
+        },
+        select: {
+          users: {
+            where: {
+              id: userId,
+            },
+            select: {
+              id: true,
+            },
+            take: 1,
+          },
+        },
+      });
+
+      if (banList && banList.users.length > 0) {
+        throw new Error("You are banned from this server.");
+      }
+
       const memberRole = await tx.serverRoles.findFirst({
         where: {
           serverId: invite.serverId,

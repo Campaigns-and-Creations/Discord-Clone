@@ -1,4 +1,5 @@
 import type { HomePageData } from "@/app/home-types";
+import { BanListDal } from "@/dal/banlist";
 import { ChannelDal } from "@/dal/channel";
 import { MessageMentionsDal } from "@/dal/messageMentions";
 import { MessagesDal } from "@/dal/messages";
@@ -46,9 +47,10 @@ export async function GET() {
         includeRestrictedBypass,
       );
 
-      const [roles, members] = await Promise.all([
+      const [roles, members, bannedUsers] = await Promise.all([
         ServerRolesDal.listByServerId(server.id),
         ServerMemberDal.listByServerId(server.id),
+        BanListDal.listBannedUsers(server.id),
       ]);
 
       const displayNameByUserId = new Map(
@@ -149,6 +151,8 @@ export async function GET() {
             Permission.MANAGE_MESSAGES,
           ),
           canModerateMembers: hasPermission(Permission.ADMINISTRATOR, Permission.MODERATE_MEMBERS),
+          canKickMembers: hasPermission(Permission.ADMINISTRATOR, Permission.KICK_MEMBERS),
+          canBanMembers: hasPermission(Permission.ADMINISTRATOR, Permission.BAN_MEMBERS),
           canSendMessages: hasPermission(Permission.ADMINISTRATOR, Permission.SEND_MESSAGES),
           canMentionEveryone: hasPermission(Permission.ADMINISTRATOR, Permission.MENTION_EVERYONE),
         },
@@ -170,6 +174,12 @@ export async function GET() {
             roleNames: member.serverRoles.map((role) => role.name),
           }))
           .sort((a, b) => a.name.localeCompare(b.name)),
+        bannedUsers: bannedUsers.map((bannedUser) => ({
+          userId: bannedUser.id,
+          name: bannedUser.name,
+          username: bannedUser.name,
+          image: bannedUser.image,
+        })),
         channels: hydratedChannels,
         hasUnreadMentions: hydratedChannels.some((channel) => channel.unreadMentionCount > 0),
       };

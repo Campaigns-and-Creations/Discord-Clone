@@ -7,6 +7,7 @@ model Server {
     members     ServerMember[]
     roles       ServerRoles[]
     invites     ServerInvite[]
+    banList     BanList?
 }
 
 model Channel {
@@ -130,6 +131,17 @@ model ServerInvite {
 
     @@index([serverId])
     @@index([expiresAt])
+}
+
+model BanList {
+    id          String   @id @default(uuid())
+    serverId    String
+    server      Server   @relation(fields: [serverId], references: [id], onDelete: Cascade)
+    users       User[]   @relation("BanListUsers")
+    reason      String?
+    bannedAt    DateTime @default(now())
+
+    @@unique([serverId])
 }
 
 enum ChannelType {

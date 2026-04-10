@@ -205,6 +205,13 @@ exports.Prisma.ServerInviteScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.BanListScalarFieldEnum = {
+  id: 'id',
+  serverId: 'serverId',
+  reason: 'reason',
+  bannedAt: 'bannedAt'
+};
+
 exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -304,6 +311,7 @@ exports.Prisma.ModelName = {
   MessageMention: 'MessageMention',
   MessageMentionReceipt: 'MessageMentionReceipt',
   ServerInvite: 'ServerInvite',
+  BanList: 'BanList',
   User: 'User',
   Session: 'Session',
   Account: 'Account',

@@ -64,6 +64,11 @@ export function HomeSidebar({
   const selectedServerCapabilities = selectedServer?.capabilities;
   const canDeleteSelectedServer =
     Boolean(selectedServer?.membershipId) && (selectedServer?.members.length ?? 0) === 1;
+  const canOpenManageRoles = Boolean(
+    selectedServerCapabilities?.canManageServer
+      || selectedServerCapabilities?.canKickMembers
+      || selectedServerCapabilities?.canBanMembers,
+  );
 
   return (
     <Stack w={366} h="100svh" gap={0}>
@@ -159,7 +164,7 @@ export function HomeSidebar({
                     <Menu.Item disabled={!selectedServerCapabilities?.canInviteMembers} onClick={onOpenInvite}>
                       Invite People
                     </Menu.Item>
-                    <Menu.Item disabled={!selectedServerCapabilities?.canManageServer} onClick={onOpenManageRoles}>
+                    <Menu.Item disabled={!canOpenManageRoles} onClick={onOpenManageRoles}>
                       Manage Roles
                     </Menu.Item>
                     <Menu.Item

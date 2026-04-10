@@ -54,6 +54,13 @@ export type HomeServerMember = {
   roleNames: string[];
 };
 
+export type HomeBannedUser = {
+  userId: string;
+  name: string;
+  username: string;
+  image: string | null;
+};
+
 export type HomeServer = {
   id: string;
   name: string;
@@ -69,11 +76,14 @@ export type HomeServer = {
     canManageMessages: boolean;
     canPinMessages: boolean;
     canModerateMembers: boolean;
+    canKickMembers: boolean;
+    canBanMembers: boolean;
     canSendMessages: boolean;
     canMentionEveryone: boolean;
   };
   roles: HomeRole[];
   members: HomeServerMember[];
+  bannedUsers: HomeBannedUser[];
   channels: HomeChannel[];
   hasUnreadMentions: boolean;
 };

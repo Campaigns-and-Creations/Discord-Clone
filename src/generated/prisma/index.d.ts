@@ -64,6 +64,11 @@ export type MessageMentionReceipt = $Result.DefaultSelection<Prisma.$MessageMent
  */
 export type ServerInvite = $Result.DefaultSelection<Prisma.$ServerInvitePayload>
 /**
+ * Model BanList
+ * 
+ */
+export type BanList = $Result.DefaultSelection<Prisma.$BanListPayload>
+/**
  * Model User
  * 
  */
@@ -358,6 +363,16 @@ export class PrismaClient<
     * ```
     */
   get serverInvite(): Prisma.ServerInviteDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.banList`: Exposes CRUD operations for the **BanList** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more BanLists
+    * const banLists = await prisma.banList.findMany()
+    * ```
+    */
+  get banList(): Prisma.BanListDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.user`: Exposes CRUD operations for the **User** model.
@@ -842,6 +857,7 @@ export namespace Prisma {
     MessageMention: 'MessageMention',
     MessageMentionReceipt: 'MessageMentionReceipt',
     ServerInvite: 'ServerInvite',
+    BanList: 'BanList',
     User: 'User',
     Session: 'Session',
     Account: 'Account',
@@ -861,7 +877,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "server" | "channel" | "serverMember" | "serverRoles" | "channelRoleAccess" | "serverRolePermission" | "messages" | "messageMention" | "messageMentionReceipt" | "serverInvite" | "user" | "session" | "account" | "verification"
+      modelProps: "server" | "channel" | "serverMember" | "serverRoles" | "channelRoleAccess" | "serverRolePermission" | "messages" | "messageMention" | "messageMentionReceipt" | "serverInvite" | "banList" | "user" | "session" | "account" | "verification"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1605,6 +1621,80 @@ export namespace Prisma {
           }
         }
       }
+      BanList: {
+        payload: Prisma.$BanListPayload<ExtArgs>
+        fields: Prisma.BanListFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.BanListFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BanListPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.BanListFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BanListPayload>
+          }
+          findFirst: {
+            args: Prisma.BanListFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BanListPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.BanListFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BanListPayload>
+          }
+          findMany: {
+            args: Prisma.BanListFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BanListPayload>[]
+          }
+          create: {
+            args: Prisma.BanListCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BanListPayload>
+          }
+          createMany: {
+            args: Prisma.BanListCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.BanListCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BanListPayload>[]
+          }
+          delete: {
+            args: Prisma.BanListDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BanListPayload>
+          }
+          update: {
+            args: Prisma.BanListUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BanListPayload>
+          }
+          deleteMany: {
+            args: Prisma.BanListDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.BanListUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.BanListUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BanListPayload>[]
+          }
+          upsert: {
+            args: Prisma.BanListUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BanListPayload>
+          }
+          aggregate: {
+            args: Prisma.BanListAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateBanList>
+          }
+          groupBy: {
+            args: Prisma.BanListGroupByArgs<ExtArgs>
+            result: $Utils.Optional<BanListGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.BanListCountArgs<ExtArgs>
+            result: $Utils.Optional<BanListCountAggregateOutputType> | number
+          }
+        }
+      }
       User: {
         payload: Prisma.$UserPayload<ExtArgs>
         fields: Prisma.UserFieldRefs
@@ -2019,6 +2109,7 @@ export namespace Prisma {
     messageMention?: MessageMentionOmit
     messageMentionReceipt?: MessageMentionReceiptOmit
     serverInvite?: ServerInviteOmit
+    banList?: BanListOmit
     user?: UserOmit
     session?: SessionOmit
     account?: AccountOmit
@@ -2335,6 +2426,37 @@ export namespace Prisma {
 
 
   /**
+   * Count Type BanListCountOutputType
+   */
+
+  export type BanListCountOutputType = {
+    users: number
+  }
+
+  export type BanListCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    users?: boolean | BanListCountOutputTypeCountUsersArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * BanListCountOutputType without action
+   */
+  export type BanListCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BanListCountOutputType
+     */
+    select?: BanListCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * BanListCountOutputType without action
+   */
+  export type BanListCountOutputTypeCountUsersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserWhereInput
+  }
+
+
+  /**
    * Count Type UserCountOutputType
    */
 
@@ -2347,6 +2469,7 @@ export namespace Prisma {
     memberships: number
     channels: number
     createdInvites: number
+    banLists: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2358,6 +2481,7 @@ export namespace Prisma {
     memberships?: boolean | UserCountOutputTypeCountMembershipsArgs
     channels?: boolean | UserCountOutputTypeCountChannelsArgs
     createdInvites?: boolean | UserCountOutputTypeCountCreatedInvitesArgs
+    banLists?: boolean | UserCountOutputTypeCountBanListsArgs
   }
 
   // Custom InputTypes
@@ -2425,6 +2549,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountCreatedInvitesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ServerInviteWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountBanListsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BanListWhereInput
   }
 
 
@@ -2592,6 +2723,7 @@ export namespace Prisma {
     members?: boolean | Server$membersArgs<ExtArgs>
     roles?: boolean | Server$rolesArgs<ExtArgs>
     invites?: boolean | Server$invitesArgs<ExtArgs>
+    banList?: boolean | Server$banListArgs<ExtArgs>
     _count?: boolean | ServerCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["server"]>
 
@@ -2622,6 +2754,7 @@ export namespace Prisma {
     members?: boolean | Server$membersArgs<ExtArgs>
     roles?: boolean | Server$rolesArgs<ExtArgs>
     invites?: boolean | Server$invitesArgs<ExtArgs>
+    banList?: boolean | Server$banListArgs<ExtArgs>
     _count?: boolean | ServerCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ServerIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -2634,6 +2767,7 @@ export namespace Prisma {
       members: Prisma.$ServerMemberPayload<ExtArgs>[]
       roles: Prisma.$ServerRolesPayload<ExtArgs>[]
       invites: Prisma.$ServerInvitePayload<ExtArgs>[]
+      banList: Prisma.$BanListPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -3038,6 +3172,7 @@ export namespace Prisma {
     members<T extends Server$membersArgs<ExtArgs> = {}>(args?: Subset<T, Server$membersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ServerMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     roles<T extends Server$rolesArgs<ExtArgs> = {}>(args?: Subset<T, Server$rolesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ServerRolesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     invites<T extends Server$invitesArgs<ExtArgs> = {}>(args?: Subset<T, Server$invitesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ServerInvitePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    banList<T extends Server$banListArgs<ExtArgs> = {}>(args?: Subset<T, Server$banListArgs<ExtArgs>>): Prisma__BanListClient<$Result.GetResult<Prisma.$BanListPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3557,6 +3692,25 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ServerInviteScalarFieldEnum | ServerInviteScalarFieldEnum[]
+  }
+
+  /**
+   * Server.banList
+   */
+  export type Server$banListArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BanList
+     */
+    select?: BanListSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BanList
+     */
+    omit?: BanListOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BanListInclude<ExtArgs> | null
+    where?: BanListWhereInput
   }
 
   /**
@@ -13697,6 +13851,1086 @@ export namespace Prisma {
 
 
   /**
+   * Model BanList
+   */
+
+  export type AggregateBanList = {
+    _count: BanListCountAggregateOutputType | null
+    _min: BanListMinAggregateOutputType | null
+    _max: BanListMaxAggregateOutputType | null
+  }
+
+  export type BanListMinAggregateOutputType = {
+    id: string | null
+    serverId: string | null
+    reason: string | null
+    bannedAt: Date | null
+  }
+
+  export type BanListMaxAggregateOutputType = {
+    id: string | null
+    serverId: string | null
+    reason: string | null
+    bannedAt: Date | null
+  }
+
+  export type BanListCountAggregateOutputType = {
+    id: number
+    serverId: number
+    reason: number
+    bannedAt: number
+    _all: number
+  }
+
+
+  export type BanListMinAggregateInputType = {
+    id?: true
+    serverId?: true
+    reason?: true
+    bannedAt?: true
+  }
+
+  export type BanListMaxAggregateInputType = {
+    id?: true
+    serverId?: true
+    reason?: true
+    bannedAt?: true
+  }
+
+  export type BanListCountAggregateInputType = {
+    id?: true
+    serverId?: true
+    reason?: true
+    bannedAt?: true
+    _all?: true
+  }
+
+  export type BanListAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which BanList to aggregate.
+     */
+    where?: BanListWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BanLists to fetch.
+     */
+    orderBy?: BanListOrderByWithRelationInput | BanListOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: BanListWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BanLists from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BanLists.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned BanLists
+    **/
+    _count?: true | BanListCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: BanListMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: BanListMaxAggregateInputType
+  }
+
+  export type GetBanListAggregateType<T extends BanListAggregateArgs> = {
+        [P in keyof T & keyof AggregateBanList]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateBanList[P]>
+      : GetScalarType<T[P], AggregateBanList[P]>
+  }
+
+
+
+
+  export type BanListGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BanListWhereInput
+    orderBy?: BanListOrderByWithAggregationInput | BanListOrderByWithAggregationInput[]
+    by: BanListScalarFieldEnum[] | BanListScalarFieldEnum
+    having?: BanListScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: BanListCountAggregateInputType | true
+    _min?: BanListMinAggregateInputType
+    _max?: BanListMaxAggregateInputType
+  }
+
+  export type BanListGroupByOutputType = {
+    id: string
+    serverId: string
+    reason: string | null
+    bannedAt: Date
+    _count: BanListCountAggregateOutputType | null
+    _min: BanListMinAggregateOutputType | null
+    _max: BanListMaxAggregateOutputType | null
+  }
+
+  type GetBanListGroupByPayload<T extends BanListGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<BanListGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof BanListGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], BanListGroupByOutputType[P]>
+            : GetScalarType<T[P], BanListGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type BanListSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    serverId?: boolean
+    reason?: boolean
+    bannedAt?: boolean
+    server?: boolean | ServerDefaultArgs<ExtArgs>
+    users?: boolean | BanList$usersArgs<ExtArgs>
+    _count?: boolean | BanListCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["banList"]>
+
+  export type BanListSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    serverId?: boolean
+    reason?: boolean
+    bannedAt?: boolean
+    server?: boolean | ServerDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["banList"]>
+
+  export type BanListSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    serverId?: boolean
+    reason?: boolean
+    bannedAt?: boolean
+    server?: boolean | ServerDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["banList"]>
+
+  export type BanListSelectScalar = {
+    id?: boolean
+    serverId?: boolean
+    reason?: boolean
+    bannedAt?: boolean
+  }
+
+  export type BanListOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "serverId" | "reason" | "bannedAt", ExtArgs["result"]["banList"]>
+  export type BanListInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    server?: boolean | ServerDefaultArgs<ExtArgs>
+    users?: boolean | BanList$usersArgs<ExtArgs>
+    _count?: boolean | BanListCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type BanListIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    server?: boolean | ServerDefaultArgs<ExtArgs>
+  }
+  export type BanListIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    server?: boolean | ServerDefaultArgs<ExtArgs>
+  }
+
+  export type $BanListPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "BanList"
+    objects: {
+      server: Prisma.$ServerPayload<ExtArgs>
+      users: Prisma.$UserPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      serverId: string
+      reason: string | null
+      bannedAt: Date
+    }, ExtArgs["result"]["banList"]>
+    composites: {}
+  }
+
+  type BanListGetPayload<S extends boolean | null | undefined | BanListDefaultArgs> = $Result.GetResult<Prisma.$BanListPayload, S>
+
+  type BanListCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<BanListFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: BanListCountAggregateInputType | true
+    }
+
+  export interface BanListDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['BanList'], meta: { name: 'BanList' } }
+    /**
+     * Find zero or one BanList that matches the filter.
+     * @param {BanListFindUniqueArgs} args - Arguments to find a BanList
+     * @example
+     * // Get one BanList
+     * const banList = await prisma.banList.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends BanListFindUniqueArgs>(args: SelectSubset<T, BanListFindUniqueArgs<ExtArgs>>): Prisma__BanListClient<$Result.GetResult<Prisma.$BanListPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one BanList that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {BanListFindUniqueOrThrowArgs} args - Arguments to find a BanList
+     * @example
+     * // Get one BanList
+     * const banList = await prisma.banList.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends BanListFindUniqueOrThrowArgs>(args: SelectSubset<T, BanListFindUniqueOrThrowArgs<ExtArgs>>): Prisma__BanListClient<$Result.GetResult<Prisma.$BanListPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first BanList that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BanListFindFirstArgs} args - Arguments to find a BanList
+     * @example
+     * // Get one BanList
+     * const banList = await prisma.banList.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends BanListFindFirstArgs>(args?: SelectSubset<T, BanListFindFirstArgs<ExtArgs>>): Prisma__BanListClient<$Result.GetResult<Prisma.$BanListPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first BanList that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BanListFindFirstOrThrowArgs} args - Arguments to find a BanList
+     * @example
+     * // Get one BanList
+     * const banList = await prisma.banList.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends BanListFindFirstOrThrowArgs>(args?: SelectSubset<T, BanListFindFirstOrThrowArgs<ExtArgs>>): Prisma__BanListClient<$Result.GetResult<Prisma.$BanListPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more BanLists that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BanListFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all BanLists
+     * const banLists = await prisma.banList.findMany()
+     * 
+     * // Get first 10 BanLists
+     * const banLists = await prisma.banList.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const banListWithIdOnly = await prisma.banList.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends BanListFindManyArgs>(args?: SelectSubset<T, BanListFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BanListPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a BanList.
+     * @param {BanListCreateArgs} args - Arguments to create a BanList.
+     * @example
+     * // Create one BanList
+     * const BanList = await prisma.banList.create({
+     *   data: {
+     *     // ... data to create a BanList
+     *   }
+     * })
+     * 
+     */
+    create<T extends BanListCreateArgs>(args: SelectSubset<T, BanListCreateArgs<ExtArgs>>): Prisma__BanListClient<$Result.GetResult<Prisma.$BanListPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many BanLists.
+     * @param {BanListCreateManyArgs} args - Arguments to create many BanLists.
+     * @example
+     * // Create many BanLists
+     * const banList = await prisma.banList.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends BanListCreateManyArgs>(args?: SelectSubset<T, BanListCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many BanLists and returns the data saved in the database.
+     * @param {BanListCreateManyAndReturnArgs} args - Arguments to create many BanLists.
+     * @example
+     * // Create many BanLists
+     * const banList = await prisma.banList.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many BanLists and only return the `id`
+     * const banListWithIdOnly = await prisma.banList.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends BanListCreateManyAndReturnArgs>(args?: SelectSubset<T, BanListCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BanListPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a BanList.
+     * @param {BanListDeleteArgs} args - Arguments to delete one BanList.
+     * @example
+     * // Delete one BanList
+     * const BanList = await prisma.banList.delete({
+     *   where: {
+     *     // ... filter to delete one BanList
+     *   }
+     * })
+     * 
+     */
+    delete<T extends BanListDeleteArgs>(args: SelectSubset<T, BanListDeleteArgs<ExtArgs>>): Prisma__BanListClient<$Result.GetResult<Prisma.$BanListPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one BanList.
+     * @param {BanListUpdateArgs} args - Arguments to update one BanList.
+     * @example
+     * // Update one BanList
+     * const banList = await prisma.banList.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends BanListUpdateArgs>(args: SelectSubset<T, BanListUpdateArgs<ExtArgs>>): Prisma__BanListClient<$Result.GetResult<Prisma.$BanListPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more BanLists.
+     * @param {BanListDeleteManyArgs} args - Arguments to filter BanLists to delete.
+     * @example
+     * // Delete a few BanLists
+     * const { count } = await prisma.banList.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends BanListDeleteManyArgs>(args?: SelectSubset<T, BanListDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more BanLists.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BanListUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many BanLists
+     * const banList = await prisma.banList.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends BanListUpdateManyArgs>(args: SelectSubset<T, BanListUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more BanLists and returns the data updated in the database.
+     * @param {BanListUpdateManyAndReturnArgs} args - Arguments to update many BanLists.
+     * @example
+     * // Update many BanLists
+     * const banList = await prisma.banList.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more BanLists and only return the `id`
+     * const banListWithIdOnly = await prisma.banList.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends BanListUpdateManyAndReturnArgs>(args: SelectSubset<T, BanListUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BanListPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one BanList.
+     * @param {BanListUpsertArgs} args - Arguments to update or create a BanList.
+     * @example
+     * // Update or create a BanList
+     * const banList = await prisma.banList.upsert({
+     *   create: {
+     *     // ... data to create a BanList
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the BanList we want to update
+     *   }
+     * })
+     */
+    upsert<T extends BanListUpsertArgs>(args: SelectSubset<T, BanListUpsertArgs<ExtArgs>>): Prisma__BanListClient<$Result.GetResult<Prisma.$BanListPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of BanLists.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BanListCountArgs} args - Arguments to filter BanLists to count.
+     * @example
+     * // Count the number of BanLists
+     * const count = await prisma.banList.count({
+     *   where: {
+     *     // ... the filter for the BanLists we want to count
+     *   }
+     * })
+    **/
+    count<T extends BanListCountArgs>(
+      args?: Subset<T, BanListCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], BanListCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a BanList.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BanListAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends BanListAggregateArgs>(args: Subset<T, BanListAggregateArgs>): Prisma.PrismaPromise<GetBanListAggregateType<T>>
+
+    /**
+     * Group by BanList.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BanListGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends BanListGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: BanListGroupByArgs['orderBy'] }
+        : { orderBy?: BanListGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, BanListGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetBanListGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the BanList model
+   */
+  readonly fields: BanListFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for BanList.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__BanListClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    server<T extends ServerDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ServerDefaultArgs<ExtArgs>>): Prisma__ServerClient<$Result.GetResult<Prisma.$ServerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    users<T extends BanList$usersArgs<ExtArgs> = {}>(args?: Subset<T, BanList$usersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the BanList model
+   */
+  interface BanListFieldRefs {
+    readonly id: FieldRef<"BanList", 'String'>
+    readonly serverId: FieldRef<"BanList", 'String'>
+    readonly reason: FieldRef<"BanList", 'String'>
+    readonly bannedAt: FieldRef<"BanList", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * BanList findUnique
+   */
+  export type BanListFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BanList
+     */
+    select?: BanListSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BanList
+     */
+    omit?: BanListOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BanListInclude<ExtArgs> | null
+    /**
+     * Filter, which BanList to fetch.
+     */
+    where: BanListWhereUniqueInput
+  }
+
+  /**
+   * BanList findUniqueOrThrow
+   */
+  export type BanListFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BanList
+     */
+    select?: BanListSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BanList
+     */
+    omit?: BanListOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BanListInclude<ExtArgs> | null
+    /**
+     * Filter, which BanList to fetch.
+     */
+    where: BanListWhereUniqueInput
+  }
+
+  /**
+   * BanList findFirst
+   */
+  export type BanListFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BanList
+     */
+    select?: BanListSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BanList
+     */
+    omit?: BanListOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BanListInclude<ExtArgs> | null
+    /**
+     * Filter, which BanList to fetch.
+     */
+    where?: BanListWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BanLists to fetch.
+     */
+    orderBy?: BanListOrderByWithRelationInput | BanListOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for BanLists.
+     */
+    cursor?: BanListWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BanLists from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BanLists.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of BanLists.
+     */
+    distinct?: BanListScalarFieldEnum | BanListScalarFieldEnum[]
+  }
+
+  /**
+   * BanList findFirstOrThrow
+   */
+  export type BanListFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BanList
+     */
+    select?: BanListSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BanList
+     */
+    omit?: BanListOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BanListInclude<ExtArgs> | null
+    /**
+     * Filter, which BanList to fetch.
+     */
+    where?: BanListWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BanLists to fetch.
+     */
+    orderBy?: BanListOrderByWithRelationInput | BanListOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for BanLists.
+     */
+    cursor?: BanListWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BanLists from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BanLists.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of BanLists.
+     */
+    distinct?: BanListScalarFieldEnum | BanListScalarFieldEnum[]
+  }
+
+  /**
+   * BanList findMany
+   */
+  export type BanListFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BanList
+     */
+    select?: BanListSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BanList
+     */
+    omit?: BanListOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BanListInclude<ExtArgs> | null
+    /**
+     * Filter, which BanLists to fetch.
+     */
+    where?: BanListWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BanLists to fetch.
+     */
+    orderBy?: BanListOrderByWithRelationInput | BanListOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing BanLists.
+     */
+    cursor?: BanListWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BanLists from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BanLists.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of BanLists.
+     */
+    distinct?: BanListScalarFieldEnum | BanListScalarFieldEnum[]
+  }
+
+  /**
+   * BanList create
+   */
+  export type BanListCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BanList
+     */
+    select?: BanListSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BanList
+     */
+    omit?: BanListOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BanListInclude<ExtArgs> | null
+    /**
+     * The data needed to create a BanList.
+     */
+    data: XOR<BanListCreateInput, BanListUncheckedCreateInput>
+  }
+
+  /**
+   * BanList createMany
+   */
+  export type BanListCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many BanLists.
+     */
+    data: BanListCreateManyInput | BanListCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * BanList createManyAndReturn
+   */
+  export type BanListCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BanList
+     */
+    select?: BanListSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the BanList
+     */
+    omit?: BanListOmit<ExtArgs> | null
+    /**
+     * The data used to create many BanLists.
+     */
+    data: BanListCreateManyInput | BanListCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BanListIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * BanList update
+   */
+  export type BanListUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BanList
+     */
+    select?: BanListSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BanList
+     */
+    omit?: BanListOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BanListInclude<ExtArgs> | null
+    /**
+     * The data needed to update a BanList.
+     */
+    data: XOR<BanListUpdateInput, BanListUncheckedUpdateInput>
+    /**
+     * Choose, which BanList to update.
+     */
+    where: BanListWhereUniqueInput
+  }
+
+  /**
+   * BanList updateMany
+   */
+  export type BanListUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update BanLists.
+     */
+    data: XOR<BanListUpdateManyMutationInput, BanListUncheckedUpdateManyInput>
+    /**
+     * Filter which BanLists to update
+     */
+    where?: BanListWhereInput
+    /**
+     * Limit how many BanLists to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * BanList updateManyAndReturn
+   */
+  export type BanListUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BanList
+     */
+    select?: BanListSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the BanList
+     */
+    omit?: BanListOmit<ExtArgs> | null
+    /**
+     * The data used to update BanLists.
+     */
+    data: XOR<BanListUpdateManyMutationInput, BanListUncheckedUpdateManyInput>
+    /**
+     * Filter which BanLists to update
+     */
+    where?: BanListWhereInput
+    /**
+     * Limit how many BanLists to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BanListIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * BanList upsert
+   */
+  export type BanListUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BanList
+     */
+    select?: BanListSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BanList
+     */
+    omit?: BanListOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BanListInclude<ExtArgs> | null
+    /**
+     * The filter to search for the BanList to update in case it exists.
+     */
+    where: BanListWhereUniqueInput
+    /**
+     * In case the BanList found by the `where` argument doesn't exist, create a new BanList with this data.
+     */
+    create: XOR<BanListCreateInput, BanListUncheckedCreateInput>
+    /**
+     * In case the BanList was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<BanListUpdateInput, BanListUncheckedUpdateInput>
+  }
+
+  /**
+   * BanList delete
+   */
+  export type BanListDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BanList
+     */
+    select?: BanListSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BanList
+     */
+    omit?: BanListOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BanListInclude<ExtArgs> | null
+    /**
+     * Filter which BanList to delete.
+     */
+    where: BanListWhereUniqueInput
+  }
+
+  /**
+   * BanList deleteMany
+   */
+  export type BanListDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which BanLists to delete
+     */
+    where?: BanListWhereInput
+    /**
+     * Limit how many BanLists to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * BanList.users
+   */
+  export type BanList$usersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+    orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[]
+    cursor?: UserWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
+  }
+
+  /**
+   * BanList without action
+   */
+  export type BanListDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BanList
+     */
+    select?: BanListSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BanList
+     */
+    omit?: BanListOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BanListInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model User
    */
 
@@ -13884,6 +15118,7 @@ export namespace Prisma {
     memberships?: boolean | User$membershipsArgs<ExtArgs>
     channels?: boolean | User$channelsArgs<ExtArgs>
     createdInvites?: boolean | User$createdInvitesArgs<ExtArgs>
+    banLists?: boolean | User$banListsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -13927,6 +15162,7 @@ export namespace Prisma {
     memberships?: boolean | User$membershipsArgs<ExtArgs>
     channels?: boolean | User$channelsArgs<ExtArgs>
     createdInvites?: boolean | User$createdInvitesArgs<ExtArgs>
+    banLists?: boolean | User$banListsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -13943,6 +15179,7 @@ export namespace Prisma {
       memberships: Prisma.$ServerMemberPayload<ExtArgs>[]
       channels: Prisma.$ChannelPayload<ExtArgs>[]
       createdInvites: Prisma.$ServerInvitePayload<ExtArgs>[]
+      banLists: Prisma.$BanListPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -14354,6 +15591,7 @@ export namespace Prisma {
     memberships<T extends User$membershipsArgs<ExtArgs> = {}>(args?: Subset<T, User$membershipsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ServerMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     channels<T extends User$channelsArgs<ExtArgs> = {}>(args?: Subset<T, User$channelsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChannelPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     createdInvites<T extends User$createdInvitesArgs<ExtArgs> = {}>(args?: Subset<T, User$createdInvitesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ServerInvitePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    banLists<T extends User$banListsArgs<ExtArgs> = {}>(args?: Subset<T, User$banListsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BanListPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -14972,6 +16210,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ServerInviteScalarFieldEnum | ServerInviteScalarFieldEnum[]
+  }
+
+  /**
+   * User.banLists
+   */
+  export type User$banListsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BanList
+     */
+    select?: BanListSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BanList
+     */
+    omit?: BanListOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BanListInclude<ExtArgs> | null
+    where?: BanListWhereInput
+    orderBy?: BanListOrderByWithRelationInput | BanListOrderByWithRelationInput[]
+    cursor?: BanListWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: BanListScalarFieldEnum | BanListScalarFieldEnum[]
   }
 
   /**
@@ -18404,6 +19666,16 @@ export namespace Prisma {
   export type ServerInviteScalarFieldEnum = (typeof ServerInviteScalarFieldEnum)[keyof typeof ServerInviteScalarFieldEnum]
 
 
+  export const BanListScalarFieldEnum: {
+    id: 'id',
+    serverId: 'serverId',
+    reason: 'reason',
+    bannedAt: 'bannedAt'
+  };
+
+  export type BanListScalarFieldEnum = (typeof BanListScalarFieldEnum)[keyof typeof BanListScalarFieldEnum]
+
+
   export const UserScalarFieldEnum: {
     id: 'id',
     name: 'name',
@@ -18611,6 +19883,7 @@ export namespace Prisma {
     members?: ServerMemberListRelationFilter
     roles?: ServerRolesListRelationFilter
     invites?: ServerInviteListRelationFilter
+    banList?: XOR<BanListNullableScalarRelationFilter, BanListWhereInput> | null
   }
 
   export type ServerOrderByWithRelationInput = {
@@ -18622,6 +19895,7 @@ export namespace Prisma {
     members?: ServerMemberOrderByRelationAggregateInput
     roles?: ServerRolesOrderByRelationAggregateInput
     invites?: ServerInviteOrderByRelationAggregateInput
+    banList?: BanListOrderByWithRelationInput
   }
 
   export type ServerWhereUniqueInput = Prisma.AtLeast<{
@@ -18636,6 +19910,7 @@ export namespace Prisma {
     members?: ServerMemberListRelationFilter
     roles?: ServerRolesListRelationFilter
     invites?: ServerInviteListRelationFilter
+    banList?: XOR<BanListNullableScalarRelationFilter, BanListWhereInput> | null
   }, "id">
 
   export type ServerOrderByWithAggregationInput = {
@@ -19242,6 +20517,59 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"ServerInvite"> | Date | string
   }
 
+  export type BanListWhereInput = {
+    AND?: BanListWhereInput | BanListWhereInput[]
+    OR?: BanListWhereInput[]
+    NOT?: BanListWhereInput | BanListWhereInput[]
+    id?: StringFilter<"BanList"> | string
+    serverId?: StringFilter<"BanList"> | string
+    reason?: StringNullableFilter<"BanList"> | string | null
+    bannedAt?: DateTimeFilter<"BanList"> | Date | string
+    server?: XOR<ServerScalarRelationFilter, ServerWhereInput>
+    users?: UserListRelationFilter
+  }
+
+  export type BanListOrderByWithRelationInput = {
+    id?: SortOrder
+    serverId?: SortOrder
+    reason?: SortOrderInput | SortOrder
+    bannedAt?: SortOrder
+    server?: ServerOrderByWithRelationInput
+    users?: UserOrderByRelationAggregateInput
+  }
+
+  export type BanListWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    serverId?: string
+    AND?: BanListWhereInput | BanListWhereInput[]
+    OR?: BanListWhereInput[]
+    NOT?: BanListWhereInput | BanListWhereInput[]
+    reason?: StringNullableFilter<"BanList"> | string | null
+    bannedAt?: DateTimeFilter<"BanList"> | Date | string
+    server?: XOR<ServerScalarRelationFilter, ServerWhereInput>
+    users?: UserListRelationFilter
+  }, "id" | "serverId">
+
+  export type BanListOrderByWithAggregationInput = {
+    id?: SortOrder
+    serverId?: SortOrder
+    reason?: SortOrderInput | SortOrder
+    bannedAt?: SortOrder
+    _count?: BanListCountOrderByAggregateInput
+    _max?: BanListMaxOrderByAggregateInput
+    _min?: BanListMinOrderByAggregateInput
+  }
+
+  export type BanListScalarWhereWithAggregatesInput = {
+    AND?: BanListScalarWhereWithAggregatesInput | BanListScalarWhereWithAggregatesInput[]
+    OR?: BanListScalarWhereWithAggregatesInput[]
+    NOT?: BanListScalarWhereWithAggregatesInput | BanListScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"BanList"> | string
+    serverId?: StringWithAggregatesFilter<"BanList"> | string
+    reason?: StringNullableWithAggregatesFilter<"BanList"> | string | null
+    bannedAt?: DateTimeWithAggregatesFilter<"BanList"> | Date | string
+  }
+
   export type UserWhereInput = {
     AND?: UserWhereInput | UserWhereInput[]
     OR?: UserWhereInput[]
@@ -19261,6 +20589,7 @@ export namespace Prisma {
     memberships?: ServerMemberListRelationFilter
     channels?: ChannelListRelationFilter
     createdInvites?: ServerInviteListRelationFilter
+    banLists?: BanListListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -19279,6 +20608,7 @@ export namespace Prisma {
     memberships?: ServerMemberOrderByRelationAggregateInput
     channels?: ChannelOrderByRelationAggregateInput
     createdInvites?: ServerInviteOrderByRelationAggregateInput
+    banLists?: BanListOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -19300,6 +20630,7 @@ export namespace Prisma {
     memberships?: ServerMemberListRelationFilter
     channels?: ChannelListRelationFilter
     createdInvites?: ServerInviteListRelationFilter
+    banLists?: BanListListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -19559,6 +20890,7 @@ export namespace Prisma {
     members?: ServerMemberCreateNestedManyWithoutServerInput
     roles?: ServerRolesCreateNestedManyWithoutServerInput
     invites?: ServerInviteCreateNestedManyWithoutServerInput
+    banList?: BanListCreateNestedOneWithoutServerInput
   }
 
   export type ServerUncheckedCreateInput = {
@@ -19570,6 +20902,7 @@ export namespace Prisma {
     members?: ServerMemberUncheckedCreateNestedManyWithoutServerInput
     roles?: ServerRolesUncheckedCreateNestedManyWithoutServerInput
     invites?: ServerInviteUncheckedCreateNestedManyWithoutServerInput
+    banList?: BanListUncheckedCreateNestedOneWithoutServerInput
   }
 
   export type ServerUpdateInput = {
@@ -19581,6 +20914,7 @@ export namespace Prisma {
     members?: ServerMemberUpdateManyWithoutServerNestedInput
     roles?: ServerRolesUpdateManyWithoutServerNestedInput
     invites?: ServerInviteUpdateManyWithoutServerNestedInput
+    banList?: BanListUpdateOneWithoutServerNestedInput
   }
 
   export type ServerUncheckedUpdateInput = {
@@ -19592,6 +20926,7 @@ export namespace Prisma {
     members?: ServerMemberUncheckedUpdateManyWithoutServerNestedInput
     roles?: ServerRolesUncheckedUpdateManyWithoutServerNestedInput
     invites?: ServerInviteUncheckedUpdateManyWithoutServerNestedInput
+    banList?: BanListUncheckedUpdateOneWithoutServerNestedInput
   }
 
   export type ServerCreateManyInput = {
@@ -20185,6 +21520,58 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type BanListCreateInput = {
+    id?: string
+    reason?: string | null
+    bannedAt?: Date | string
+    server: ServerCreateNestedOneWithoutBanListInput
+    users?: UserCreateNestedManyWithoutBanListsInput
+  }
+
+  export type BanListUncheckedCreateInput = {
+    id?: string
+    serverId: string
+    reason?: string | null
+    bannedAt?: Date | string
+    users?: UserUncheckedCreateNestedManyWithoutBanListsInput
+  }
+
+  export type BanListUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    bannedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    server?: ServerUpdateOneRequiredWithoutBanListNestedInput
+    users?: UserUpdateManyWithoutBanListsNestedInput
+  }
+
+  export type BanListUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    serverId?: StringFieldUpdateOperationsInput | string
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    bannedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUncheckedUpdateManyWithoutBanListsNestedInput
+  }
+
+  export type BanListCreateManyInput = {
+    id?: string
+    serverId: string
+    reason?: string | null
+    bannedAt?: Date | string
+  }
+
+  export type BanListUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    bannedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BanListUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    serverId?: StringFieldUpdateOperationsInput | string
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    bannedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type UserCreateInput = {
     id?: string
     name: string
@@ -20201,6 +21588,7 @@ export namespace Prisma {
     memberships?: ServerMemberCreateNestedManyWithoutUserInput
     channels?: ChannelCreateNestedManyWithoutUsersInput
     createdInvites?: ServerInviteCreateNestedManyWithoutCreatorInput
+    banLists?: BanListCreateNestedManyWithoutUsersInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -20219,6 +21607,7 @@ export namespace Prisma {
     memberships?: ServerMemberUncheckedCreateNestedManyWithoutUserInput
     channels?: ChannelUncheckedCreateNestedManyWithoutUsersInput
     createdInvites?: ServerInviteUncheckedCreateNestedManyWithoutCreatorInput
+    banLists?: BanListUncheckedCreateNestedManyWithoutUsersInput
   }
 
   export type UserUpdateInput = {
@@ -20237,6 +21626,7 @@ export namespace Prisma {
     memberships?: ServerMemberUpdateManyWithoutUserNestedInput
     channels?: ChannelUpdateManyWithoutUsersNestedInput
     createdInvites?: ServerInviteUpdateManyWithoutCreatorNestedInput
+    banLists?: BanListUpdateManyWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -20255,6 +21645,7 @@ export namespace Prisma {
     memberships?: ServerMemberUncheckedUpdateManyWithoutUserNestedInput
     channels?: ChannelUncheckedUpdateManyWithoutUsersNestedInput
     createdInvites?: ServerInviteUncheckedUpdateManyWithoutCreatorNestedInput
+    banLists?: BanListUncheckedUpdateManyWithoutUsersNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -20600,6 +21991,11 @@ export namespace Prisma {
     every?: ServerInviteWhereInput
     some?: ServerInviteWhereInput
     none?: ServerInviteWhereInput
+  }
+
+  export type BanListNullableScalarRelationFilter = {
+    is?: BanListWhereInput | null
+    isNot?: BanListWhereInput | null
   }
 
   export type SortOrderInput = {
@@ -21204,6 +22600,27 @@ export namespace Prisma {
     _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
+  export type BanListCountOrderByAggregateInput = {
+    id?: SortOrder
+    serverId?: SortOrder
+    reason?: SortOrder
+    bannedAt?: SortOrder
+  }
+
+  export type BanListMaxOrderByAggregateInput = {
+    id?: SortOrder
+    serverId?: SortOrder
+    reason?: SortOrder
+    bannedAt?: SortOrder
+  }
+
+  export type BanListMinOrderByAggregateInput = {
+    id?: SortOrder
+    serverId?: SortOrder
+    reason?: SortOrder
+    bannedAt?: SortOrder
+  }
+
   export type SessionListRelationFilter = {
     every?: SessionWhereInput
     some?: SessionWhereInput
@@ -21216,11 +22633,21 @@ export namespace Prisma {
     none?: AccountWhereInput
   }
 
+  export type BanListListRelationFilter = {
+    every?: BanListWhereInput
+    some?: BanListWhereInput
+    none?: BanListWhereInput
+  }
+
   export type SessionOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
   export type AccountOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type BanListOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -21390,6 +22817,12 @@ export namespace Prisma {
     connect?: ServerInviteWhereUniqueInput | ServerInviteWhereUniqueInput[]
   }
 
+  export type BanListCreateNestedOneWithoutServerInput = {
+    create?: XOR<BanListCreateWithoutServerInput, BanListUncheckedCreateWithoutServerInput>
+    connectOrCreate?: BanListCreateOrConnectWithoutServerInput
+    connect?: BanListWhereUniqueInput
+  }
+
   export type ChannelUncheckedCreateNestedManyWithoutServerInput = {
     create?: XOR<ChannelCreateWithoutServerInput, ChannelUncheckedCreateWithoutServerInput> | ChannelCreateWithoutServerInput[] | ChannelUncheckedCreateWithoutServerInput[]
     connectOrCreate?: ChannelCreateOrConnectWithoutServerInput | ChannelCreateOrConnectWithoutServerInput[]
@@ -21416,6 +22849,12 @@ export namespace Prisma {
     connectOrCreate?: ServerInviteCreateOrConnectWithoutServerInput | ServerInviteCreateOrConnectWithoutServerInput[]
     createMany?: ServerInviteCreateManyServerInputEnvelope
     connect?: ServerInviteWhereUniqueInput | ServerInviteWhereUniqueInput[]
+  }
+
+  export type BanListUncheckedCreateNestedOneWithoutServerInput = {
+    create?: XOR<BanListCreateWithoutServerInput, BanListUncheckedCreateWithoutServerInput>
+    connectOrCreate?: BanListCreateOrConnectWithoutServerInput
+    connect?: BanListWhereUniqueInput
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -21486,6 +22925,16 @@ export namespace Prisma {
     deleteMany?: ServerInviteScalarWhereInput | ServerInviteScalarWhereInput[]
   }
 
+  export type BanListUpdateOneWithoutServerNestedInput = {
+    create?: XOR<BanListCreateWithoutServerInput, BanListUncheckedCreateWithoutServerInput>
+    connectOrCreate?: BanListCreateOrConnectWithoutServerInput
+    upsert?: BanListUpsertWithoutServerInput
+    disconnect?: BanListWhereInput | boolean
+    delete?: BanListWhereInput | boolean
+    connect?: BanListWhereUniqueInput
+    update?: XOR<XOR<BanListUpdateToOneWithWhereWithoutServerInput, BanListUpdateWithoutServerInput>, BanListUncheckedUpdateWithoutServerInput>
+  }
+
   export type ChannelUncheckedUpdateManyWithoutServerNestedInput = {
     create?: XOR<ChannelCreateWithoutServerInput, ChannelUncheckedCreateWithoutServerInput> | ChannelCreateWithoutServerInput[] | ChannelUncheckedCreateWithoutServerInput[]
     connectOrCreate?: ChannelCreateOrConnectWithoutServerInput | ChannelCreateOrConnectWithoutServerInput[]
@@ -21540,6 +22989,16 @@ export namespace Prisma {
     update?: ServerInviteUpdateWithWhereUniqueWithoutServerInput | ServerInviteUpdateWithWhereUniqueWithoutServerInput[]
     updateMany?: ServerInviteUpdateManyWithWhereWithoutServerInput | ServerInviteUpdateManyWithWhereWithoutServerInput[]
     deleteMany?: ServerInviteScalarWhereInput | ServerInviteScalarWhereInput[]
+  }
+
+  export type BanListUncheckedUpdateOneWithoutServerNestedInput = {
+    create?: XOR<BanListCreateWithoutServerInput, BanListUncheckedCreateWithoutServerInput>
+    connectOrCreate?: BanListCreateOrConnectWithoutServerInput
+    upsert?: BanListUpsertWithoutServerInput
+    disconnect?: BanListWhereInput | boolean
+    delete?: BanListWhereInput | boolean
+    connect?: BanListWhereUniqueInput
+    update?: XOR<XOR<BanListUpdateToOneWithWhereWithoutServerInput, BanListUpdateWithoutServerInput>, BanListUncheckedUpdateWithoutServerInput>
   }
 
   export type ServerCreateNestedOneWithoutChannelsInput = {
@@ -22216,6 +23675,58 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCreatedInvitesInput, UserUpdateWithoutCreatedInvitesInput>, UserUncheckedUpdateWithoutCreatedInvitesInput>
   }
 
+  export type ServerCreateNestedOneWithoutBanListInput = {
+    create?: XOR<ServerCreateWithoutBanListInput, ServerUncheckedCreateWithoutBanListInput>
+    connectOrCreate?: ServerCreateOrConnectWithoutBanListInput
+    connect?: ServerWhereUniqueInput
+  }
+
+  export type UserCreateNestedManyWithoutBanListsInput = {
+    create?: XOR<UserCreateWithoutBanListsInput, UserUncheckedCreateWithoutBanListsInput> | UserCreateWithoutBanListsInput[] | UserUncheckedCreateWithoutBanListsInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutBanListsInput | UserCreateOrConnectWithoutBanListsInput[]
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+  }
+
+  export type UserUncheckedCreateNestedManyWithoutBanListsInput = {
+    create?: XOR<UserCreateWithoutBanListsInput, UserUncheckedCreateWithoutBanListsInput> | UserCreateWithoutBanListsInput[] | UserUncheckedCreateWithoutBanListsInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutBanListsInput | UserCreateOrConnectWithoutBanListsInput[]
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+  }
+
+  export type ServerUpdateOneRequiredWithoutBanListNestedInput = {
+    create?: XOR<ServerCreateWithoutBanListInput, ServerUncheckedCreateWithoutBanListInput>
+    connectOrCreate?: ServerCreateOrConnectWithoutBanListInput
+    upsert?: ServerUpsertWithoutBanListInput
+    connect?: ServerWhereUniqueInput
+    update?: XOR<XOR<ServerUpdateToOneWithWhereWithoutBanListInput, ServerUpdateWithoutBanListInput>, ServerUncheckedUpdateWithoutBanListInput>
+  }
+
+  export type UserUpdateManyWithoutBanListsNestedInput = {
+    create?: XOR<UserCreateWithoutBanListsInput, UserUncheckedCreateWithoutBanListsInput> | UserCreateWithoutBanListsInput[] | UserUncheckedCreateWithoutBanListsInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutBanListsInput | UserCreateOrConnectWithoutBanListsInput[]
+    upsert?: UserUpsertWithWhereUniqueWithoutBanListsInput | UserUpsertWithWhereUniqueWithoutBanListsInput[]
+    set?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    disconnect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    delete?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    update?: UserUpdateWithWhereUniqueWithoutBanListsInput | UserUpdateWithWhereUniqueWithoutBanListsInput[]
+    updateMany?: UserUpdateManyWithWhereWithoutBanListsInput | UserUpdateManyWithWhereWithoutBanListsInput[]
+    deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
+  }
+
+  export type UserUncheckedUpdateManyWithoutBanListsNestedInput = {
+    create?: XOR<UserCreateWithoutBanListsInput, UserUncheckedCreateWithoutBanListsInput> | UserCreateWithoutBanListsInput[] | UserUncheckedCreateWithoutBanListsInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutBanListsInput | UserCreateOrConnectWithoutBanListsInput[]
+    upsert?: UserUpsertWithWhereUniqueWithoutBanListsInput | UserUpsertWithWhereUniqueWithoutBanListsInput[]
+    set?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    disconnect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    delete?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    update?: UserUpdateWithWhereUniqueWithoutBanListsInput | UserUpdateWithWhereUniqueWithoutBanListsInput[]
+    updateMany?: UserUpdateManyWithWhereWithoutBanListsInput | UserUpdateManyWithWhereWithoutBanListsInput[]
+    deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
+  }
+
   export type SessionCreateNestedManyWithoutUserInput = {
     create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
     connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
@@ -22271,6 +23782,12 @@ export namespace Prisma {
     connect?: ServerInviteWhereUniqueInput | ServerInviteWhereUniqueInput[]
   }
 
+  export type BanListCreateNestedManyWithoutUsersInput = {
+    create?: XOR<BanListCreateWithoutUsersInput, BanListUncheckedCreateWithoutUsersInput> | BanListCreateWithoutUsersInput[] | BanListUncheckedCreateWithoutUsersInput[]
+    connectOrCreate?: BanListCreateOrConnectWithoutUsersInput | BanListCreateOrConnectWithoutUsersInput[]
+    connect?: BanListWhereUniqueInput | BanListWhereUniqueInput[]
+  }
+
   export type SessionUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
     connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
@@ -22324,6 +23841,12 @@ export namespace Prisma {
     connectOrCreate?: ServerInviteCreateOrConnectWithoutCreatorInput | ServerInviteCreateOrConnectWithoutCreatorInput[]
     createMany?: ServerInviteCreateManyCreatorInputEnvelope
     connect?: ServerInviteWhereUniqueInput | ServerInviteWhereUniqueInput[]
+  }
+
+  export type BanListUncheckedCreateNestedManyWithoutUsersInput = {
+    create?: XOR<BanListCreateWithoutUsersInput, BanListUncheckedCreateWithoutUsersInput> | BanListCreateWithoutUsersInput[] | BanListUncheckedCreateWithoutUsersInput[]
+    connectOrCreate?: BanListCreateOrConnectWithoutUsersInput | BanListCreateOrConnectWithoutUsersInput[]
+    connect?: BanListWhereUniqueInput | BanListWhereUniqueInput[]
   }
 
   export type SessionUpdateManyWithoutUserNestedInput = {
@@ -22437,6 +23960,19 @@ export namespace Prisma {
     deleteMany?: ServerInviteScalarWhereInput | ServerInviteScalarWhereInput[]
   }
 
+  export type BanListUpdateManyWithoutUsersNestedInput = {
+    create?: XOR<BanListCreateWithoutUsersInput, BanListUncheckedCreateWithoutUsersInput> | BanListCreateWithoutUsersInput[] | BanListUncheckedCreateWithoutUsersInput[]
+    connectOrCreate?: BanListCreateOrConnectWithoutUsersInput | BanListCreateOrConnectWithoutUsersInput[]
+    upsert?: BanListUpsertWithWhereUniqueWithoutUsersInput | BanListUpsertWithWhereUniqueWithoutUsersInput[]
+    set?: BanListWhereUniqueInput | BanListWhereUniqueInput[]
+    disconnect?: BanListWhereUniqueInput | BanListWhereUniqueInput[]
+    delete?: BanListWhereUniqueInput | BanListWhereUniqueInput[]
+    connect?: BanListWhereUniqueInput | BanListWhereUniqueInput[]
+    update?: BanListUpdateWithWhereUniqueWithoutUsersInput | BanListUpdateWithWhereUniqueWithoutUsersInput[]
+    updateMany?: BanListUpdateManyWithWhereWithoutUsersInput | BanListUpdateManyWithWhereWithoutUsersInput[]
+    deleteMany?: BanListScalarWhereInput | BanListScalarWhereInput[]
+  }
+
   export type SessionUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
     connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
@@ -22546,6 +24082,19 @@ export namespace Prisma {
     update?: ServerInviteUpdateWithWhereUniqueWithoutCreatorInput | ServerInviteUpdateWithWhereUniqueWithoutCreatorInput[]
     updateMany?: ServerInviteUpdateManyWithWhereWithoutCreatorInput | ServerInviteUpdateManyWithWhereWithoutCreatorInput[]
     deleteMany?: ServerInviteScalarWhereInput | ServerInviteScalarWhereInput[]
+  }
+
+  export type BanListUncheckedUpdateManyWithoutUsersNestedInput = {
+    create?: XOR<BanListCreateWithoutUsersInput, BanListUncheckedCreateWithoutUsersInput> | BanListCreateWithoutUsersInput[] | BanListUncheckedCreateWithoutUsersInput[]
+    connectOrCreate?: BanListCreateOrConnectWithoutUsersInput | BanListCreateOrConnectWithoutUsersInput[]
+    upsert?: BanListUpsertWithWhereUniqueWithoutUsersInput | BanListUpsertWithWhereUniqueWithoutUsersInput[]
+    set?: BanListWhereUniqueInput | BanListWhereUniqueInput[]
+    disconnect?: BanListWhereUniqueInput | BanListWhereUniqueInput[]
+    delete?: BanListWhereUniqueInput | BanListWhereUniqueInput[]
+    connect?: BanListWhereUniqueInput | BanListWhereUniqueInput[]
+    update?: BanListUpdateWithWhereUniqueWithoutUsersInput | BanListUpdateWithWhereUniqueWithoutUsersInput[]
+    updateMany?: BanListUpdateManyWithWhereWithoutUsersInput | BanListUpdateManyWithWhereWithoutUsersInput[]
+    deleteMany?: BanListScalarWhereInput | BanListScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutSessionsInput = {
@@ -22950,6 +24499,25 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type BanListCreateWithoutServerInput = {
+    id?: string
+    reason?: string | null
+    bannedAt?: Date | string
+    users?: UserCreateNestedManyWithoutBanListsInput
+  }
+
+  export type BanListUncheckedCreateWithoutServerInput = {
+    id?: string
+    reason?: string | null
+    bannedAt?: Date | string
+    users?: UserUncheckedCreateNestedManyWithoutBanListsInput
+  }
+
+  export type BanListCreateOrConnectWithoutServerInput = {
+    where: BanListWhereUniqueInput
+    create: XOR<BanListCreateWithoutServerInput, BanListUncheckedCreateWithoutServerInput>
+  }
+
   export type ChannelUpsertWithWhereUniqueWithoutServerInput = {
     where: ChannelWhereUniqueInput
     update: XOR<ChannelUpdateWithoutServerInput, ChannelUncheckedUpdateWithoutServerInput>
@@ -23063,6 +24631,31 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"ServerInvite"> | Date | string
   }
 
+  export type BanListUpsertWithoutServerInput = {
+    update: XOR<BanListUpdateWithoutServerInput, BanListUncheckedUpdateWithoutServerInput>
+    create: XOR<BanListCreateWithoutServerInput, BanListUncheckedCreateWithoutServerInput>
+    where?: BanListWhereInput
+  }
+
+  export type BanListUpdateToOneWithWhereWithoutServerInput = {
+    where?: BanListWhereInput
+    data: XOR<BanListUpdateWithoutServerInput, BanListUncheckedUpdateWithoutServerInput>
+  }
+
+  export type BanListUpdateWithoutServerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    bannedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUpdateManyWithoutBanListsNestedInput
+  }
+
+  export type BanListUncheckedUpdateWithoutServerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    bannedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUncheckedUpdateManyWithoutBanListsNestedInput
+  }
+
   export type ServerCreateWithoutChannelsInput = {
     id?: string
     name: string
@@ -23071,6 +24664,7 @@ export namespace Prisma {
     members?: ServerMemberCreateNestedManyWithoutServerInput
     roles?: ServerRolesCreateNestedManyWithoutServerInput
     invites?: ServerInviteCreateNestedManyWithoutServerInput
+    banList?: BanListCreateNestedOneWithoutServerInput
   }
 
   export type ServerUncheckedCreateWithoutChannelsInput = {
@@ -23081,6 +24675,7 @@ export namespace Prisma {
     members?: ServerMemberUncheckedCreateNestedManyWithoutServerInput
     roles?: ServerRolesUncheckedCreateNestedManyWithoutServerInput
     invites?: ServerInviteUncheckedCreateNestedManyWithoutServerInput
+    banList?: BanListUncheckedCreateNestedOneWithoutServerInput
   }
 
   export type ServerCreateOrConnectWithoutChannelsInput = {
@@ -23133,6 +24728,7 @@ export namespace Prisma {
     mentionReceipts?: MessageMentionReceiptCreateNestedManyWithoutUserInput
     memberships?: ServerMemberCreateNestedManyWithoutUserInput
     createdInvites?: ServerInviteCreateNestedManyWithoutCreatorInput
+    banLists?: BanListCreateNestedManyWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutChannelsInput = {
@@ -23150,6 +24746,7 @@ export namespace Prisma {
     mentionReceipts?: MessageMentionReceiptUncheckedCreateNestedManyWithoutUserInput
     memberships?: ServerMemberUncheckedCreateNestedManyWithoutUserInput
     createdInvites?: ServerInviteUncheckedCreateNestedManyWithoutCreatorInput
+    banLists?: BanListUncheckedCreateNestedManyWithoutUsersInput
   }
 
   export type UserCreateOrConnectWithoutChannelsInput = {
@@ -23196,6 +24793,7 @@ export namespace Prisma {
     members?: ServerMemberUpdateManyWithoutServerNestedInput
     roles?: ServerRolesUpdateManyWithoutServerNestedInput
     invites?: ServerInviteUpdateManyWithoutServerNestedInput
+    banList?: BanListUpdateOneWithoutServerNestedInput
   }
 
   export type ServerUncheckedUpdateWithoutChannelsInput = {
@@ -23206,6 +24804,7 @@ export namespace Prisma {
     members?: ServerMemberUncheckedUpdateManyWithoutServerNestedInput
     roles?: ServerRolesUncheckedUpdateManyWithoutServerNestedInput
     invites?: ServerInviteUncheckedUpdateManyWithoutServerNestedInput
+    banList?: BanListUncheckedUpdateOneWithoutServerNestedInput
   }
 
   export type MessagesUpsertWithWhereUniqueWithoutChannelInput = {
@@ -23298,6 +24897,7 @@ export namespace Prisma {
     channels?: ChannelCreateNestedManyWithoutServerInput
     roles?: ServerRolesCreateNestedManyWithoutServerInput
     invites?: ServerInviteCreateNestedManyWithoutServerInput
+    banList?: BanListCreateNestedOneWithoutServerInput
   }
 
   export type ServerUncheckedCreateWithoutMembersInput = {
@@ -23308,6 +24908,7 @@ export namespace Prisma {
     channels?: ChannelUncheckedCreateNestedManyWithoutServerInput
     roles?: ServerRolesUncheckedCreateNestedManyWithoutServerInput
     invites?: ServerInviteUncheckedCreateNestedManyWithoutServerInput
+    banList?: BanListUncheckedCreateNestedOneWithoutServerInput
   }
 
   export type ServerCreateOrConnectWithoutMembersInput = {
@@ -23330,6 +24931,7 @@ export namespace Prisma {
     mentionReceipts?: MessageMentionReceiptCreateNestedManyWithoutUserInput
     channels?: ChannelCreateNestedManyWithoutUsersInput
     createdInvites?: ServerInviteCreateNestedManyWithoutCreatorInput
+    banLists?: BanListCreateNestedManyWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutMembershipsInput = {
@@ -23347,6 +24949,7 @@ export namespace Prisma {
     mentionReceipts?: MessageMentionReceiptUncheckedCreateNestedManyWithoutUserInput
     channels?: ChannelUncheckedCreateNestedManyWithoutUsersInput
     createdInvites?: ServerInviteUncheckedCreateNestedManyWithoutCreatorInput
+    banLists?: BanListUncheckedCreateNestedManyWithoutUsersInput
   }
 
   export type UserCreateOrConnectWithoutMembershipsInput = {
@@ -23398,6 +25001,7 @@ export namespace Prisma {
     channels?: ChannelUpdateManyWithoutServerNestedInput
     roles?: ServerRolesUpdateManyWithoutServerNestedInput
     invites?: ServerInviteUpdateManyWithoutServerNestedInput
+    banList?: BanListUpdateOneWithoutServerNestedInput
   }
 
   export type ServerUncheckedUpdateWithoutMembersInput = {
@@ -23408,6 +25012,7 @@ export namespace Prisma {
     channels?: ChannelUncheckedUpdateManyWithoutServerNestedInput
     roles?: ServerRolesUncheckedUpdateManyWithoutServerNestedInput
     invites?: ServerInviteUncheckedUpdateManyWithoutServerNestedInput
+    banList?: BanListUncheckedUpdateOneWithoutServerNestedInput
   }
 
   export type UserUpsertWithoutMembershipsInput = {
@@ -23436,6 +25041,7 @@ export namespace Prisma {
     mentionReceipts?: MessageMentionReceiptUpdateManyWithoutUserNestedInput
     channels?: ChannelUpdateManyWithoutUsersNestedInput
     createdInvites?: ServerInviteUpdateManyWithoutCreatorNestedInput
+    banLists?: BanListUpdateManyWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMembershipsInput = {
@@ -23453,6 +25059,7 @@ export namespace Prisma {
     mentionReceipts?: MessageMentionReceiptUncheckedUpdateManyWithoutUserNestedInput
     channels?: ChannelUncheckedUpdateManyWithoutUsersNestedInput
     createdInvites?: ServerInviteUncheckedUpdateManyWithoutCreatorNestedInput
+    banLists?: BanListUncheckedUpdateManyWithoutUsersNestedInput
   }
 
   export type ServerRolesUpsertWithWhereUniqueWithoutMembersInput = {
@@ -23479,6 +25086,7 @@ export namespace Prisma {
     channels?: ChannelCreateNestedManyWithoutServerInput
     members?: ServerMemberCreateNestedManyWithoutServerInput
     invites?: ServerInviteCreateNestedManyWithoutServerInput
+    banList?: BanListCreateNestedOneWithoutServerInput
   }
 
   export type ServerUncheckedCreateWithoutRolesInput = {
@@ -23489,6 +25097,7 @@ export namespace Prisma {
     channels?: ChannelUncheckedCreateNestedManyWithoutServerInput
     members?: ServerMemberUncheckedCreateNestedManyWithoutServerInput
     invites?: ServerInviteUncheckedCreateNestedManyWithoutServerInput
+    banList?: BanListUncheckedCreateNestedOneWithoutServerInput
   }
 
   export type ServerCreateOrConnectWithoutRolesInput = {
@@ -23604,6 +25213,7 @@ export namespace Prisma {
     channels?: ChannelUpdateManyWithoutServerNestedInput
     members?: ServerMemberUpdateManyWithoutServerNestedInput
     invites?: ServerInviteUpdateManyWithoutServerNestedInput
+    banList?: BanListUpdateOneWithoutServerNestedInput
   }
 
   export type ServerUncheckedUpdateWithoutRolesInput = {
@@ -23614,6 +25224,7 @@ export namespace Prisma {
     channels?: ChannelUncheckedUpdateManyWithoutServerNestedInput
     members?: ServerMemberUncheckedUpdateManyWithoutServerNestedInput
     invites?: ServerInviteUncheckedUpdateManyWithoutServerNestedInput
+    banList?: BanListUncheckedUpdateOneWithoutServerNestedInput
   }
 
   export type ServerMemberUpsertWithWhereUniqueWithoutServerRolesInput = {
@@ -23922,6 +25533,7 @@ export namespace Prisma {
     memberships?: ServerMemberCreateNestedManyWithoutUserInput
     channels?: ChannelCreateNestedManyWithoutUsersInput
     createdInvites?: ServerInviteCreateNestedManyWithoutCreatorInput
+    banLists?: BanListCreateNestedManyWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutMessagesInput = {
@@ -23939,6 +25551,7 @@ export namespace Prisma {
     memberships?: ServerMemberUncheckedCreateNestedManyWithoutUserInput
     channels?: ChannelUncheckedCreateNestedManyWithoutUsersInput
     createdInvites?: ServerInviteUncheckedCreateNestedManyWithoutCreatorInput
+    banLists?: BanListUncheckedCreateNestedManyWithoutUsersInput
   }
 
   export type UserCreateOrConnectWithoutMessagesInput = {
@@ -24063,6 +25676,7 @@ export namespace Prisma {
     memberships?: ServerMemberUpdateManyWithoutUserNestedInput
     channels?: ChannelUpdateManyWithoutUsersNestedInput
     createdInvites?: ServerInviteUpdateManyWithoutCreatorNestedInput
+    banLists?: BanListUpdateManyWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMessagesInput = {
@@ -24080,6 +25694,7 @@ export namespace Prisma {
     memberships?: ServerMemberUncheckedUpdateManyWithoutUserNestedInput
     channels?: ChannelUncheckedUpdateManyWithoutUsersNestedInput
     createdInvites?: ServerInviteUncheckedUpdateManyWithoutCreatorNestedInput
+    banLists?: BanListUncheckedUpdateManyWithoutUsersNestedInput
   }
 
   export type MessageMentionUpsertWithWhereUniqueWithoutMessageInput = {
@@ -24167,6 +25782,7 @@ export namespace Prisma {
     memberships?: ServerMemberCreateNestedManyWithoutUserInput
     channels?: ChannelCreateNestedManyWithoutUsersInput
     createdInvites?: ServerInviteCreateNestedManyWithoutCreatorInput
+    banLists?: BanListCreateNestedManyWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutMentionsInput = {
@@ -24184,6 +25800,7 @@ export namespace Prisma {
     memberships?: ServerMemberUncheckedCreateNestedManyWithoutUserInput
     channels?: ChannelUncheckedCreateNestedManyWithoutUsersInput
     createdInvites?: ServerInviteUncheckedCreateNestedManyWithoutCreatorInput
+    banLists?: BanListUncheckedCreateNestedManyWithoutUsersInput
   }
 
   export type UserCreateOrConnectWithoutMentionsInput = {
@@ -24273,6 +25890,7 @@ export namespace Prisma {
     memberships?: ServerMemberUpdateManyWithoutUserNestedInput
     channels?: ChannelUpdateManyWithoutUsersNestedInput
     createdInvites?: ServerInviteUpdateManyWithoutCreatorNestedInput
+    banLists?: BanListUpdateManyWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMentionsInput = {
@@ -24290,6 +25908,7 @@ export namespace Prisma {
     memberships?: ServerMemberUncheckedUpdateManyWithoutUserNestedInput
     channels?: ChannelUncheckedUpdateManyWithoutUsersNestedInput
     createdInvites?: ServerInviteUncheckedUpdateManyWithoutCreatorNestedInput
+    banLists?: BanListUncheckedUpdateManyWithoutUsersNestedInput
   }
 
   export type ServerRolesUpsertWithoutMentionsInput = {
@@ -24363,6 +25982,7 @@ export namespace Prisma {
     memberships?: ServerMemberCreateNestedManyWithoutUserInput
     channels?: ChannelCreateNestedManyWithoutUsersInput
     createdInvites?: ServerInviteCreateNestedManyWithoutCreatorInput
+    banLists?: BanListCreateNestedManyWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutMentionReceiptsInput = {
@@ -24380,6 +26000,7 @@ export namespace Prisma {
     memberships?: ServerMemberUncheckedCreateNestedManyWithoutUserInput
     channels?: ChannelUncheckedCreateNestedManyWithoutUsersInput
     createdInvites?: ServerInviteUncheckedCreateNestedManyWithoutCreatorInput
+    banLists?: BanListUncheckedCreateNestedManyWithoutUsersInput
   }
 
   export type UserCreateOrConnectWithoutMentionReceiptsInput = {
@@ -24444,6 +26065,7 @@ export namespace Prisma {
     memberships?: ServerMemberUpdateManyWithoutUserNestedInput
     channels?: ChannelUpdateManyWithoutUsersNestedInput
     createdInvites?: ServerInviteUpdateManyWithoutCreatorNestedInput
+    banLists?: BanListUpdateManyWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMentionReceiptsInput = {
@@ -24461,6 +26083,7 @@ export namespace Prisma {
     memberships?: ServerMemberUncheckedUpdateManyWithoutUserNestedInput
     channels?: ChannelUncheckedUpdateManyWithoutUsersNestedInput
     createdInvites?: ServerInviteUncheckedUpdateManyWithoutCreatorNestedInput
+    banLists?: BanListUncheckedUpdateManyWithoutUsersNestedInput
   }
 
   export type ServerCreateWithoutInvitesInput = {
@@ -24471,6 +26094,7 @@ export namespace Prisma {
     channels?: ChannelCreateNestedManyWithoutServerInput
     members?: ServerMemberCreateNestedManyWithoutServerInput
     roles?: ServerRolesCreateNestedManyWithoutServerInput
+    banList?: BanListCreateNestedOneWithoutServerInput
   }
 
   export type ServerUncheckedCreateWithoutInvitesInput = {
@@ -24481,6 +26105,7 @@ export namespace Prisma {
     channels?: ChannelUncheckedCreateNestedManyWithoutServerInput
     members?: ServerMemberUncheckedCreateNestedManyWithoutServerInput
     roles?: ServerRolesUncheckedCreateNestedManyWithoutServerInput
+    banList?: BanListUncheckedCreateNestedOneWithoutServerInput
   }
 
   export type ServerCreateOrConnectWithoutInvitesInput = {
@@ -24503,6 +26128,7 @@ export namespace Prisma {
     mentionReceipts?: MessageMentionReceiptCreateNestedManyWithoutUserInput
     memberships?: ServerMemberCreateNestedManyWithoutUserInput
     channels?: ChannelCreateNestedManyWithoutUsersInput
+    banLists?: BanListCreateNestedManyWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutCreatedInvitesInput = {
@@ -24520,6 +26146,7 @@ export namespace Prisma {
     mentionReceipts?: MessageMentionReceiptUncheckedCreateNestedManyWithoutUserInput
     memberships?: ServerMemberUncheckedCreateNestedManyWithoutUserInput
     channels?: ChannelUncheckedCreateNestedManyWithoutUsersInput
+    banLists?: BanListUncheckedCreateNestedManyWithoutUsersInput
   }
 
   export type UserCreateOrConnectWithoutCreatedInvitesInput = {
@@ -24546,6 +26173,7 @@ export namespace Prisma {
     channels?: ChannelUpdateManyWithoutServerNestedInput
     members?: ServerMemberUpdateManyWithoutServerNestedInput
     roles?: ServerRolesUpdateManyWithoutServerNestedInput
+    banList?: BanListUpdateOneWithoutServerNestedInput
   }
 
   export type ServerUncheckedUpdateWithoutInvitesInput = {
@@ -24556,6 +26184,7 @@ export namespace Prisma {
     channels?: ChannelUncheckedUpdateManyWithoutServerNestedInput
     members?: ServerMemberUncheckedUpdateManyWithoutServerNestedInput
     roles?: ServerRolesUncheckedUpdateManyWithoutServerNestedInput
+    banList?: BanListUncheckedUpdateOneWithoutServerNestedInput
   }
 
   export type UserUpsertWithoutCreatedInvitesInput = {
@@ -24584,6 +26213,7 @@ export namespace Prisma {
     mentionReceipts?: MessageMentionReceiptUpdateManyWithoutUserNestedInput
     memberships?: ServerMemberUpdateManyWithoutUserNestedInput
     channels?: ChannelUpdateManyWithoutUsersNestedInput
+    banLists?: BanListUpdateManyWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedInvitesInput = {
@@ -24601,6 +26231,124 @@ export namespace Prisma {
     mentionReceipts?: MessageMentionReceiptUncheckedUpdateManyWithoutUserNestedInput
     memberships?: ServerMemberUncheckedUpdateManyWithoutUserNestedInput
     channels?: ChannelUncheckedUpdateManyWithoutUsersNestedInput
+    banLists?: BanListUncheckedUpdateManyWithoutUsersNestedInput
+  }
+
+  export type ServerCreateWithoutBanListInput = {
+    id?: string
+    name: string
+    picture?: string | null
+    createdAt?: Date | string
+    channels?: ChannelCreateNestedManyWithoutServerInput
+    members?: ServerMemberCreateNestedManyWithoutServerInput
+    roles?: ServerRolesCreateNestedManyWithoutServerInput
+    invites?: ServerInviteCreateNestedManyWithoutServerInput
+  }
+
+  export type ServerUncheckedCreateWithoutBanListInput = {
+    id?: string
+    name: string
+    picture?: string | null
+    createdAt?: Date | string
+    channels?: ChannelUncheckedCreateNestedManyWithoutServerInput
+    members?: ServerMemberUncheckedCreateNestedManyWithoutServerInput
+    roles?: ServerRolesUncheckedCreateNestedManyWithoutServerInput
+    invites?: ServerInviteUncheckedCreateNestedManyWithoutServerInput
+  }
+
+  export type ServerCreateOrConnectWithoutBanListInput = {
+    where: ServerWhereUniqueInput
+    create: XOR<ServerCreateWithoutBanListInput, ServerUncheckedCreateWithoutBanListInput>
+  }
+
+  export type UserCreateWithoutBanListsInput = {
+    id?: string
+    name: string
+    email: string
+    emailVerified?: boolean
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    messages?: MessagesCreateNestedManyWithoutAuthorInput
+    mentions?: MessageMentionCreateNestedManyWithoutMentionedUserInput
+    mentionReceipts?: MessageMentionReceiptCreateNestedManyWithoutUserInput
+    memberships?: ServerMemberCreateNestedManyWithoutUserInput
+    channels?: ChannelCreateNestedManyWithoutUsersInput
+    createdInvites?: ServerInviteCreateNestedManyWithoutCreatorInput
+  }
+
+  export type UserUncheckedCreateWithoutBanListsInput = {
+    id?: string
+    name: string
+    email: string
+    emailVerified?: boolean
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    messages?: MessagesUncheckedCreateNestedManyWithoutAuthorInput
+    mentions?: MessageMentionUncheckedCreateNestedManyWithoutMentionedUserInput
+    mentionReceipts?: MessageMentionReceiptUncheckedCreateNestedManyWithoutUserInput
+    memberships?: ServerMemberUncheckedCreateNestedManyWithoutUserInput
+    channels?: ChannelUncheckedCreateNestedManyWithoutUsersInput
+    createdInvites?: ServerInviteUncheckedCreateNestedManyWithoutCreatorInput
+  }
+
+  export type UserCreateOrConnectWithoutBanListsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutBanListsInput, UserUncheckedCreateWithoutBanListsInput>
+  }
+
+  export type ServerUpsertWithoutBanListInput = {
+    update: XOR<ServerUpdateWithoutBanListInput, ServerUncheckedUpdateWithoutBanListInput>
+    create: XOR<ServerCreateWithoutBanListInput, ServerUncheckedCreateWithoutBanListInput>
+    where?: ServerWhereInput
+  }
+
+  export type ServerUpdateToOneWithWhereWithoutBanListInput = {
+    where?: ServerWhereInput
+    data: XOR<ServerUpdateWithoutBanListInput, ServerUncheckedUpdateWithoutBanListInput>
+  }
+
+  export type ServerUpdateWithoutBanListInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    picture?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    channels?: ChannelUpdateManyWithoutServerNestedInput
+    members?: ServerMemberUpdateManyWithoutServerNestedInput
+    roles?: ServerRolesUpdateManyWithoutServerNestedInput
+    invites?: ServerInviteUpdateManyWithoutServerNestedInput
+  }
+
+  export type ServerUncheckedUpdateWithoutBanListInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    picture?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    channels?: ChannelUncheckedUpdateManyWithoutServerNestedInput
+    members?: ServerMemberUncheckedUpdateManyWithoutServerNestedInput
+    roles?: ServerRolesUncheckedUpdateManyWithoutServerNestedInput
+    invites?: ServerInviteUncheckedUpdateManyWithoutServerNestedInput
+  }
+
+  export type UserUpsertWithWhereUniqueWithoutBanListsInput = {
+    where: UserWhereUniqueInput
+    update: XOR<UserUpdateWithoutBanListsInput, UserUncheckedUpdateWithoutBanListsInput>
+    create: XOR<UserCreateWithoutBanListsInput, UserUncheckedCreateWithoutBanListsInput>
+  }
+
+  export type UserUpdateWithWhereUniqueWithoutBanListsInput = {
+    where: UserWhereUniqueInput
+    data: XOR<UserUpdateWithoutBanListsInput, UserUncheckedUpdateWithoutBanListsInput>
+  }
+
+  export type UserUpdateManyWithWhereWithoutBanListsInput = {
+    where: UserScalarWhereInput
+    data: XOR<UserUpdateManyMutationInput, UserUncheckedUpdateManyWithoutBanListsInput>
   }
 
   export type SessionCreateWithoutUserInput = {
@@ -24846,6 +26594,25 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type BanListCreateWithoutUsersInput = {
+    id?: string
+    reason?: string | null
+    bannedAt?: Date | string
+    server: ServerCreateNestedOneWithoutBanListInput
+  }
+
+  export type BanListUncheckedCreateWithoutUsersInput = {
+    id?: string
+    serverId: string
+    reason?: string | null
+    bannedAt?: Date | string
+  }
+
+  export type BanListCreateOrConnectWithoutUsersInput = {
+    where: BanListWhereUniqueInput
+    create: XOR<BanListCreateWithoutUsersInput, BanListUncheckedCreateWithoutUsersInput>
+  }
+
   export type SessionUpsertWithWhereUniqueWithoutUserInput = {
     where: SessionWhereUniqueInput
     update: XOR<SessionUpdateWithoutUserInput, SessionUncheckedUpdateWithoutUserInput>
@@ -25007,6 +26774,32 @@ export namespace Prisma {
     data: XOR<ServerInviteUpdateManyMutationInput, ServerInviteUncheckedUpdateManyWithoutCreatorInput>
   }
 
+  export type BanListUpsertWithWhereUniqueWithoutUsersInput = {
+    where: BanListWhereUniqueInput
+    update: XOR<BanListUpdateWithoutUsersInput, BanListUncheckedUpdateWithoutUsersInput>
+    create: XOR<BanListCreateWithoutUsersInput, BanListUncheckedCreateWithoutUsersInput>
+  }
+
+  export type BanListUpdateWithWhereUniqueWithoutUsersInput = {
+    where: BanListWhereUniqueInput
+    data: XOR<BanListUpdateWithoutUsersInput, BanListUncheckedUpdateWithoutUsersInput>
+  }
+
+  export type BanListUpdateManyWithWhereWithoutUsersInput = {
+    where: BanListScalarWhereInput
+    data: XOR<BanListUpdateManyMutationInput, BanListUncheckedUpdateManyWithoutUsersInput>
+  }
+
+  export type BanListScalarWhereInput = {
+    AND?: BanListScalarWhereInput | BanListScalarWhereInput[]
+    OR?: BanListScalarWhereInput[]
+    NOT?: BanListScalarWhereInput | BanListScalarWhereInput[]
+    id?: StringFilter<"BanList"> | string
+    serverId?: StringFilter<"BanList"> | string
+    reason?: StringNullableFilter<"BanList"> | string | null
+    bannedAt?: DateTimeFilter<"BanList"> | Date | string
+  }
+
   export type UserCreateWithoutSessionsInput = {
     id?: string
     name: string
@@ -25022,6 +26815,7 @@ export namespace Prisma {
     memberships?: ServerMemberCreateNestedManyWithoutUserInput
     channels?: ChannelCreateNestedManyWithoutUsersInput
     createdInvites?: ServerInviteCreateNestedManyWithoutCreatorInput
+    banLists?: BanListCreateNestedManyWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutSessionsInput = {
@@ -25039,6 +26833,7 @@ export namespace Prisma {
     memberships?: ServerMemberUncheckedCreateNestedManyWithoutUserInput
     channels?: ChannelUncheckedCreateNestedManyWithoutUsersInput
     createdInvites?: ServerInviteUncheckedCreateNestedManyWithoutCreatorInput
+    banLists?: BanListUncheckedCreateNestedManyWithoutUsersInput
   }
 
   export type UserCreateOrConnectWithoutSessionsInput = {
@@ -25072,6 +26867,7 @@ export namespace Prisma {
     memberships?: ServerMemberUpdateManyWithoutUserNestedInput
     channels?: ChannelUpdateManyWithoutUsersNestedInput
     createdInvites?: ServerInviteUpdateManyWithoutCreatorNestedInput
+    banLists?: BanListUpdateManyWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -25089,6 +26885,7 @@ export namespace Prisma {
     memberships?: ServerMemberUncheckedUpdateManyWithoutUserNestedInput
     channels?: ChannelUncheckedUpdateManyWithoutUsersNestedInput
     createdInvites?: ServerInviteUncheckedUpdateManyWithoutCreatorNestedInput
+    banLists?: BanListUncheckedUpdateManyWithoutUsersNestedInput
   }
 
   export type UserCreateWithoutAccountsInput = {
@@ -25106,6 +26903,7 @@ export namespace Prisma {
     memberships?: ServerMemberCreateNestedManyWithoutUserInput
     channels?: ChannelCreateNestedManyWithoutUsersInput
     createdInvites?: ServerInviteCreateNestedManyWithoutCreatorInput
+    banLists?: BanListCreateNestedManyWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutAccountsInput = {
@@ -25123,6 +26921,7 @@ export namespace Prisma {
     memberships?: ServerMemberUncheckedCreateNestedManyWithoutUserInput
     channels?: ChannelUncheckedCreateNestedManyWithoutUsersInput
     createdInvites?: ServerInviteUncheckedCreateNestedManyWithoutCreatorInput
+    banLists?: BanListUncheckedCreateNestedManyWithoutUsersInput
   }
 
   export type UserCreateOrConnectWithoutAccountsInput = {
@@ -25156,6 +26955,7 @@ export namespace Prisma {
     memberships?: ServerMemberUpdateManyWithoutUserNestedInput
     channels?: ChannelUpdateManyWithoutUsersNestedInput
     createdInvites?: ServerInviteUpdateManyWithoutCreatorNestedInput
+    banLists?: BanListUpdateManyWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -25173,6 +26973,7 @@ export namespace Prisma {
     memberships?: ServerMemberUncheckedUpdateManyWithoutUserNestedInput
     channels?: ChannelUncheckedUpdateManyWithoutUsersNestedInput
     createdInvites?: ServerInviteUncheckedUpdateManyWithoutCreatorNestedInput
+    banLists?: BanListUncheckedUpdateManyWithoutUsersNestedInput
   }
 
   export type ChannelCreateManyServerInput = {
@@ -25379,6 +27180,7 @@ export namespace Prisma {
     mentionReceipts?: MessageMentionReceiptUpdateManyWithoutUserNestedInput
     memberships?: ServerMemberUpdateManyWithoutUserNestedInput
     createdInvites?: ServerInviteUpdateManyWithoutCreatorNestedInput
+    banLists?: BanListUpdateManyWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutChannelsInput = {
@@ -25396,6 +27198,7 @@ export namespace Prisma {
     mentionReceipts?: MessageMentionReceiptUncheckedUpdateManyWithoutUserNestedInput
     memberships?: ServerMemberUncheckedUpdateManyWithoutUserNestedInput
     createdInvites?: ServerInviteUncheckedUpdateManyWithoutCreatorNestedInput
+    banLists?: BanListUncheckedUpdateManyWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutChannelsInput = {
@@ -25620,6 +27423,52 @@ export namespace Prisma {
     channelId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     seenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type UserUpdateWithoutBanListsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    messages?: MessagesUpdateManyWithoutAuthorNestedInput
+    mentions?: MessageMentionUpdateManyWithoutMentionedUserNestedInput
+    mentionReceipts?: MessageMentionReceiptUpdateManyWithoutUserNestedInput
+    memberships?: ServerMemberUpdateManyWithoutUserNestedInput
+    channels?: ChannelUpdateManyWithoutUsersNestedInput
+    createdInvites?: ServerInviteUpdateManyWithoutCreatorNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutBanListsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    messages?: MessagesUncheckedUpdateManyWithoutAuthorNestedInput
+    mentions?: MessageMentionUncheckedUpdateManyWithoutMentionedUserNestedInput
+    mentionReceipts?: MessageMentionReceiptUncheckedUpdateManyWithoutUserNestedInput
+    memberships?: ServerMemberUncheckedUpdateManyWithoutUserNestedInput
+    channels?: ChannelUncheckedUpdateManyWithoutUsersNestedInput
+    createdInvites?: ServerInviteUncheckedUpdateManyWithoutCreatorNestedInput
+  }
+
+  export type UserUncheckedUpdateManyWithoutBanListsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type SessionCreateManyUserInput = {
@@ -25936,6 +27785,27 @@ export namespace Prisma {
     currentUses?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BanListUpdateWithoutUsersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    bannedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    server?: ServerUpdateOneRequiredWithoutBanListNestedInput
+  }
+
+  export type BanListUncheckedUpdateWithoutUsersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    serverId?: StringFieldUpdateOperationsInput | string
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    bannedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BanListUncheckedUpdateManyWithoutUsersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    serverId?: StringFieldUpdateOperationsInput | string
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    bannedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 

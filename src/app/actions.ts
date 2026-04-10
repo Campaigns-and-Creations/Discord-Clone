@@ -4,6 +4,7 @@ import { ChannelDal } from "@/dal/channel";
 import { InviteDal } from "@/dal/invite";
 import { MessageMentionsDal } from "@/dal/messageMentions";
 import { MessagesDal } from "@/dal/messages";
+import { BanListDal } from "@/dal/banlist";
 import { ServerMemberDal } from "@/dal/serverMember";
 import { ServerRolesDal } from "@/dal/serverRoles";
 import { ServerDal } from "@/dal/server";
@@ -54,6 +55,51 @@ async function requireCanManageServer(userId: string, serverId: string) {
   return membership;
 }
 
+async function requireServerPermission(
+  userId: string,
+  serverId: string,
+  permission: Permission,
+) {
+  const [isMember, hasPermission, membership] = await Promise.all([
+    ServerMemberDal.isUserMemberOfServer(userId, serverId),
+    hasServerPermission(userId, serverId, permission),
+    getMembershipPermissions(userId, serverId),
+  ]);
+
+  if (!isMember || !hasPermission || !membership) {
+    throw new Error("Forbidden");
+  }
+
+  return membership;
+}
+
+function assertCanModerateTarget(
+  actorMembership: Awaited<ReturnType<typeof getMembershipPermissions>>,
+  targetMember: {
+    userId: string;
+    serverRoles: Array<{ name: string; position: number }>;
+  },
+) {
+  if (!actorMembership) {
+    throw new Error("Forbidden");
+  }
+
+  if (targetMember.serverRoles.some((role) => role.name === OWNER_ROLE_NAME)) {
+    throw new Error("Owner member cannot be moderated.");
+  }
+
+  if (!actorMembership.isOwner) {
+    const targetHighestRole = targetMember.serverRoles.reduce(
+      (highest, role) => Math.max(highest, role.position),
+      0,
+    );
+
+    if (targetHighestRole > actorMembership.highestRolePosition) {
+      throw new Error("Cannot moderate this member due to role hierarchy.");
+    }
+  }
+}
+
 export async function createServer(serverName: string): Promise<HomeServer> {
   const sessionUser = await requireUser();
   const normalizedName = serverName.trim();
@@ -83,6 +129,8 @@ export async function createServer(serverName: string): Promise<HomeServer> {
       canManageMessages: true,
       canPinMessages: true,
       canModerateMembers: true,
+      canKickMembers: true,
+      canBanMembers: true,
       canSendMessages: true,
       canMentionEveryone: true,
     },
@@ -106,6 +154,7 @@ export async function createServer(serverName: string): Promise<HomeServer> {
         roleNames: [result.ownerRole.name],
       },
     ],
+    bannedUsers: [],
     channels: [
       {
         id: result.generalChannel.id,
@@ -831,4 +880,86 @@ export async function setServerMemberRoles(serverId: string, memberId: string, r
   await ServerRolesDal.replaceMemberRoles(targetMember.id, normalizedRoleIds);
 
   return { success: true };
+}
+
+export async function kickServerMember(serverId: string, memberId: string) {
+  const sessionUser = await requireUser();
+  const actorMembership = await requireServerPermission(
+    sessionUser.id,
+    serverId,
+    Permission.KICK_MEMBERS,
+  );
+
+  const targetMember = await ServerMemberDal.findByIdInServer(memberId, serverId);
+
+  if (!targetMember) {
+    throw new Error("Member not found.");
+  }
+
+  if (targetMember.userId === sessionUser.id) {
+    throw new Error("You cannot kick yourself.");
+  }
+
+  assertCanModerateTarget(actorMembership, targetMember);
+
+  const deleted = await ServerMemberDal.deleteByMemberIdInServer(memberId, serverId);
+  if (deleted.count !== 1) {
+    throw new Error("Unable to kick member.");
+  }
+
+  return {
+    success: true,
+    memberId,
+  };
+}
+
+export async function banServerMember(serverId: string, memberId: string) {
+  const sessionUser = await requireUser();
+  const actorMembership = await requireServerPermission(
+    sessionUser.id,
+    serverId,
+    Permission.BAN_MEMBERS,
+  );
+
+  const targetMember = await ServerMemberDal.findByIdInServer(memberId, serverId);
+  if (!targetMember) {
+    throw new Error("Member not found.");
+  }
+
+  if (targetMember.userId === sessionUser.id) {
+    throw new Error("You cannot ban yourself.");
+  }
+
+  assertCanModerateTarget(actorMembership, targetMember);
+
+  await BanListDal.banUser(serverId, targetMember.userId);
+
+  const deleted = await ServerMemberDal.deleteByMemberIdInServer(memberId, serverId);
+  if (deleted.count !== 1) {
+    throw new Error("Unable to ban member.");
+  }
+
+  return {
+    success: true,
+    memberId,
+    userId: targetMember.userId,
+  };
+}
+
+export async function unbanServerUser(serverId: string, userId: string) {
+  const sessionUser = await requireUser();
+
+  await requireServerPermission(sessionUser.id, serverId, Permission.BAN_MEMBERS);
+
+  if (userId === sessionUser.id) {
+    throw new Error("You cannot unban yourself.");
+  }
+
+  const result = await BanListDal.unbanUser(serverId, userId);
+
+  return {
+    success: true,
+    userId,
+    wasBanned: result.wasBanned,
+  };
 }

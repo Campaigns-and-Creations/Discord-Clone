@@ -147,4 +147,13 @@ export class ServerMemberDal {
       },
     });
   }
+
+  static async deleteByMemberIdInServer(memberId: string, serverId: string) {
+    return prisma.serverMember.deleteMany({
+      where: {
+        id: memberId,
+        serverId,
+      },
+    });
+  }
 }

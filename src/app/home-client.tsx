@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  banServerMember,
   createChannel,
   createInviteLink,
   createServer,
@@ -9,10 +10,12 @@ import {
   deleteMessage,
   deleteServer,
   deleteServerRole,
+  kickServerMember,
   markMentionsSeen,
   sendMessage,
   setMessagePinned,
   setServerMemberRoles,
+  unbanServerUser,
   updateServerMemberNickname,
   updateOwnServerNickname,
   updateChannelAccess,
@@ -499,6 +502,30 @@ export default function HomeClient({ initialData }: HomeClientProps) {
     },
   });
 
+  const kickMemberMutation = useMutation({
+    mutationFn: async (payload: { serverId: string; memberId: string }) =>
+      kickServerMember(payload.serverId, payload.memberId),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["discord", "home-data"] });
+    },
+  });
+
+  const banMemberMutation = useMutation({
+    mutationFn: async (payload: { serverId: string; memberId: string }) =>
+      banServerMember(payload.serverId, payload.memberId),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["discord", "home-data"] });
+    },
+  });
+
+  const unbanUserMutation = useMutation({
+    mutationFn: async (payload: { serverId: string; userId: string }) =>
+      unbanServerUser(payload.serverId, payload.userId),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["discord", "home-data"] });
+    },
+  });
+
   const updateNicknameMutation = useMutation({
     mutationFn: async (payload: { serverId: string; nickname: string }) =>
       updateOwnServerNickname(payload.serverId, payload.nickname),
@@ -915,6 +942,13 @@ export default function HomeClient({ initialData }: HomeClientProps) {
         deleteRolePending={deleteRoleMutation.isPending}
         setMemberRolesPending={setMemberRolesMutation.isPending}
         setMemberNicknamePending={setMemberNicknameMutation.isPending}
+        kickMemberPending={kickMemberMutation.isPending}
+        banMemberPending={banMemberMutation.isPending}
+        unbanUserPending={unbanUserMutation.isPending}
+        currentUserId={homeData.currentUser.id}
+        canManageRoles={Boolean(selectedServer?.capabilities.canManageServer)}
+        canKickMembers={Boolean(selectedServer?.capabilities.canKickMembers)}
+        canBanMembers={Boolean(selectedServer?.capabilities.canBanMembers)}
         onBeginEditRole={beginEditRole}
         onCreateRole={async (values) => {
           if (!selectedServer) {
@@ -977,6 +1011,60 @@ export default function HomeClient({ initialData }: HomeClientProps) {
             serverId: selectedServer.id,
             memberId,
             nickname,
+          });
+        }}
+        onKickMember={(memberId, memberName) => {
+          if (!selectedServer) {
+            return;
+          }
+
+          modals.openConfirmModal({
+            title: "Kick member",
+            children: `Kick ${memberName} from this server? They can rejoin with an invite.`,
+            labels: { cancel: "Cancel", confirm: "Kick" },
+            confirmProps: { color: "orange" },
+            onConfirm: () => {
+              void kickMemberMutation.mutateAsync({
+                serverId: selectedServer.id,
+                memberId,
+              });
+            },
+          });
+        }}
+        onBanMember={(memberId, memberName) => {
+          if (!selectedServer) {
+            return;
+          }
+
+          modals.openConfirmModal({
+            title: "Ban member",
+            children: `Ban ${memberName} from this server? They will not be able to rejoin with invites until unbanned.`,
+            labels: { cancel: "Cancel", confirm: "Ban" },
+            confirmProps: { color: "red" },
+            onConfirm: () => {
+              void banMemberMutation.mutateAsync({
+                serverId: selectedServer.id,
+                memberId,
+              });
+            },
+          });
+        }}
+        onUnbanUser={(userId, userName) => {
+          if (!selectedServer) {
+            return;
+          }
+
+          modals.openConfirmModal({
+            title: "Unban user",
+            children: `Unban ${userName}? They will be able to join again using an invite.`,
+            labels: { cancel: "Cancel", confirm: "Unban" },
+            confirmProps: { color: "teal" },
+            onConfirm: () => {
+              void unbanUserMutation.mutateAsync({
+                serverId: selectedServer.id,
+                userId,
+              });
+            },
           });
         }}
       />
