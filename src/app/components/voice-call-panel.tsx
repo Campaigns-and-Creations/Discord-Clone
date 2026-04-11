@@ -23,7 +23,14 @@ import {
   useCallStateHooks,
   useStreamVideoClient,
 } from "@stream-io/video-react-sdk";
-import { EyeIcon, EyeSlashIcon, MonitorPlayIcon, UsersThreeIcon } from "@phosphor-icons/react";
+import {
+  ArrowsInSimpleIcon,
+  ArrowsOutSimpleIcon,
+  EyeIcon,
+  EyeSlashIcon,
+  MonitorPlayIcon,
+  UsersThreeIcon,
+} from "@phosphor-icons/react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ProfileAvatar } from "./profile-avatar";
 
@@ -60,6 +67,39 @@ type StreamStateResponse = {
 
 const JOIN_SOUND_SRC = "/sounds/join-call.mp3";
 const JOIN_SOUND_MAX_DURATION_MS = 10_000;
+const CONTROLS_FOOTER_MIN_HEIGHT = 86;
+
+function getGridCardMinWidth(participantCount: number): string {
+  if (participantCount >= 12) {
+    return "150px";
+  }
+
+  if (participantCount >= 8) {
+    return "170px";
+  }
+
+  if (participantCount >= 5) {
+    return "190px";
+  }
+
+  return "220px";
+}
+
+function getBottomRowCardBasis(participantCount: number): string {
+  if (participantCount >= 12) {
+    return "clamp(120px, 15vw, 150px)";
+  }
+
+  if (participantCount >= 8) {
+    return "clamp(130px, 17vw, 170px)";
+  }
+
+  if (participantCount >= 5) {
+    return "clamp(145px, 19vw, 185px)";
+  }
+
+  return "clamp(165px, 21vw, 210px)";
+}
 
 function buildVoiceCallId(serverId: string, channelId: string): string {
   const normalizedServerId = serverId.replace(/-/g, "").toLowerCase();
@@ -327,6 +367,7 @@ function VoiceCallContent({ channelId, channelName, serverId, currentUser }: Voi
   const [streamActionPendingByStreamer, setStreamActionPendingByStreamer] = useState<Record<string, boolean>>({});
   const [openWatcherListForStreamer, setOpenWatcherListForStreamer] = useState<string | null>(null);
   const [streamError, setStreamError] = useState<string | null>(null);
+  const [fullscreenCardId, setFullscreenCardId] = useState<string | null>(null);
 
   const screenshareParticipants = useMemo(
     () => participants.filter((participant) => hasScreenShare(participant)),
@@ -347,6 +388,60 @@ function VoiceCallContent({ channelId, channelName, serverId, currentUser }: Voi
 
   const watchedStreamerIdsSet = useMemo(() => new Set(watchIntentStreamerUserIds), [watchIntentStreamerUserIds]);
   const watchedStreamerIds = useMemo(() => Array.from(watchedStreamerIdsSet), [watchedStreamerIdsSet]);
+
+  const watchedSpotlightParticipant = useMemo(() => {
+    if (watchedStreamerIds.length === 0) {
+      return null;
+    }
+
+    for (const watchedStreamerId of watchedStreamerIds) {
+      const match = screenshareParticipants.find((participant) => {
+        const streamerName = getParticipantName(participant).toLowerCase();
+        const matchedState =
+          screenshareStateByStreamerId.get(participant.userId) ??
+          screenshareStateByStreamerName.get(streamerName) ??
+          null;
+        const normalizedStreamerId = matchedState?.streamerUserId ?? participant.userId;
+        return normalizedStreamerId === watchedStreamerId;
+      });
+
+      if (match) {
+        return match;
+      }
+    }
+
+    return null;
+  }, [screenshareParticipants, screenshareStateByStreamerId, screenshareStateByStreamerName, watchedStreamerIds]);
+
+  const hasSpotlightStream = watchedSpotlightParticipant !== null;
+  const gridCardMinWidth = useMemo(() => getGridCardMinWidth(participants.length), [participants.length]);
+  const bottomRowCardBasis = useMemo(() => getBottomRowCardBasis(participants.length), [participants.length]);
+  const contentScrollMode = hasSpotlightStream ? "hidden" : "auto";
+
+  const toggleCardFullscreen = useCallback(
+    async (cardId: string) => {
+      const targetElement = document.getElementById(cardId);
+      if (!targetElement) {
+        return;
+      }
+
+      if (document.fullscreenElement?.id === cardId) {
+        try {
+          await document.exitFullscreen();
+        } catch {
+          // Ignore browser fullscreen API errors.
+        }
+        return;
+      }
+
+      try {
+        await targetElement.requestFullscreen();
+      } catch {
+        // Ignore browser fullscreen API errors.
+      }
+    },
+    [],
+  );
 
   const isLocalScreensharing = useMemo(
     () =>
@@ -704,6 +799,20 @@ function VoiceCallContent({ channelId, channelName, serverId, currentUser }: Voi
     }
   }, [openWatcherListForStreamer, streamState.activeScreenshares]);
 
+  useEffect(() => {
+    const updateFullscreenState = () => {
+      const fullscreenElement = document.fullscreenElement;
+      setFullscreenCardId(fullscreenElement ? fullscreenElement.id : null);
+    };
+
+    document.addEventListener("fullscreenchange", updateFullscreenState);
+    updateFullscreenState();
+
+    return () => {
+      document.removeEventListener("fullscreenchange", updateFullscreenState);
+    };
+  }, []);
+
   return (
     <Stack h="100%" gap={0} style={{ overflow: "hidden", background: "#000" }}>
       <Group
@@ -735,10 +844,13 @@ function VoiceCallContent({ channelId, channelName, serverId, currentUser }: Voi
 
       <Box
         style={{
-          overflow: "auto",
           padding: "8px",
           flex: 1,
           minHeight: 0,
+          overflow: "hidden",
+          display: "flex",
+          flexDirection: "column",
+          gap: "8px",
         }}
       >
         {selectedWatcherScreenshare && selectedWatcherStreamerName && (
@@ -777,11 +889,281 @@ function VoiceCallContent({ channelId, channelName, serverId, currentUser }: Voi
 
         <Box
           style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(230px, 1fr))",
-            gap: "8px",
+            flex: 1,
+            minHeight: 0,
+            overflow: contentScrollMode,
+            paddingBottom: 2,
+            display: "flex",
+            flexDirection: "column",
           }}
         >
+          {hasSpotlightStream && watchedSpotlightParticipant && (() => {
+            const participant = watchedSpotlightParticipant;
+            const streamerUserId = participant.userId;
+            const streamerName = getParticipantName(participant);
+            const matchedState =
+              screenshareStateByStreamerId.get(streamerUserId) ??
+              screenshareStateByStreamerName.get(streamerName.toLowerCase()) ??
+              null;
+            const fallbackSingleActiveStreamKey =
+              streamState.activeScreenshares.length === 1
+                ? streamState.activeScreenshares[0].streamerUserId
+                : null;
+            const streamStateKey =
+              matchedState?.streamerUserId ??
+              fallbackSingleActiveStreamKey ??
+              streamerUserId;
+            const isOwnScreenshare = streamerUserId === currentUser.id || streamStateKey === currentUser.id;
+            const isWatching = watchedStreamerIdsSet.has(streamStateKey);
+            const canView = isOwnScreenshare || isWatching;
+            const watcherCount = matchedState?.watcherCount ?? 0;
+            const pending =
+              streamActionPendingByStreamer[streamerUserId] ??
+              streamActionPendingByStreamer[streamStateKey] ??
+              false;
+            const spotlightCardId = `spotlight-${participant.sessionId}`;
+            const spotlightStageId = `spotlight-stage-${participant.sessionId}`;
+
+            return (
+              <Stack gap="xs" h="100%" style={{ minHeight: 0, flex: 1 }}>
+                <Paper
+                  id={spotlightCardId}
+                  className="voice-media-card"
+                  radius="md"
+                  withBorder
+                  bg="#111214"
+                  p={0}
+                  style={{
+                    borderColor: "#2f3136",
+                    flex: 1,
+                    minHeight: 0,
+                    overflow: "hidden",
+                    display: "flex",
+                    flexDirection: "column",
+                  }}
+                >
+                  <Box
+                    id={spotlightStageId}
+                    className="voice-media-stage voice-fullscreen-target"
+                    style={{
+                      flex: 1,
+                      minHeight: "clamp(180px, 36vh, 520px)",
+                      position: "relative",
+                      background: "#0b0c0e",
+                    }}
+                  >
+                    {canView ? (
+                      <Box className="voice-media-surface voice-media-surface-screen" style={{ position: "absolute", inset: 0 }}>
+                        <ParticipantView participant={participant} trackType="screenShareTrack" ParticipantViewUI={null} />
+                      </Box>
+                    ) : (
+                      <Center
+                        style={{
+                          position: "absolute",
+                          inset: 0,
+                          background: "linear-gradient(135deg, #221f26, #101216)",
+                        }}
+                      >
+                        <Stack gap={4} align="center">
+                          <MonitorPlayIcon size={24} color="#f08c8c" />
+                          <Text size="sm" c="gray.1" fw={600}>
+                            Stream hidden
+                          </Text>
+                        </Stack>
+                      </Center>
+                    )}
+
+                    <Group
+                      gap="xs"
+                      wrap="nowrap"
+                      style={{ position: "absolute", left: 8, bottom: 8, right: 8, justifyContent: "space-between" }}
+                    >
+                      <Paper bg="rgba(0,0,0,0.55)" p={4} radius="sm">
+                        <IdentityPill
+                          name={streamerName}
+                          image={matchedState?.streamerImage ?? getParticipantImage(participant)}
+                        />
+                      </Paper>
+                      <Group gap={6} wrap="nowrap">
+                        <Badge size="xs" color="red" variant="filled" radius="sm">
+                          LIVE
+                        </Badge>
+                        {canView && (
+                          <Button
+                            size="compact-xs"
+                            radius="xl"
+                            variant="filled"
+                            color="dark"
+                            onClick={() => {
+                              void toggleCardFullscreen(spotlightStageId);
+                            }}
+                            leftSection={
+                              fullscreenCardId === spotlightStageId ? (
+                                <ArrowsInSimpleIcon size={13} />
+                              ) : (
+                                <ArrowsOutSimpleIcon size={13} />
+                              )
+                            }
+                          >
+                            {fullscreenCardId === spotlightStageId ? "Exit" : "Fullscreen"}
+                          </Button>
+                        )}
+                      </Group>
+                    </Group>
+                  </Box>
+
+                  <Group px="xs" py={8} gap={6} wrap="wrap" justify="space-between">
+                    <Group gap={6} wrap="wrap">
+                      {!isOwnScreenshare && (
+                        <Button
+                          size="compact-xs"
+                          radius="xl"
+                          variant={isWatching ? "default" : "light"}
+                          loading={pending}
+                          leftSection={isWatching ? <EyeSlashIcon size={13} /> : <EyeIcon size={13} />}
+                          onClick={() => {
+                            void runStreamAction(
+                              isWatching ? "unwatch-screenshare" : "watch-screenshare",
+                              streamStateKey,
+                              {
+                                targetStreamerName: streamerName,
+                                targetStreamerImage: participant.image ?? null,
+                              },
+                            );
+                          }}
+                        >
+                          {isWatching ? "Watching" : "Watch"}
+                        </Button>
+                      )}
+
+                      {isOwnScreenshare && (
+                        <Button
+                          size="compact-xs"
+                          radius="xl"
+                          variant="subtle"
+                          leftSection={<UsersThreeIcon size={13} />}
+                          onClick={() => {
+                            setOpenWatcherListForStreamer((current) =>
+                              current === streamStateKey ? null : streamStateKey,
+                            );
+                          }}
+                        >
+                          {openWatcherListForStreamer === streamStateKey
+                            ? "Hide watchers"
+                            : `Watchers ${watcherCount}`}
+                        </Button>
+                      )}
+                    </Group>
+
+                    <Text size="xs" c="gray.4">
+                      Livestream spotlight
+                    </Text>
+                  </Group>
+                </Paper>
+
+                <Box
+                  className="voice-bottom-row"
+                  style={{
+                    display: "flex",
+                    gap: "8px",
+                    overflowX: "auto",
+                    overflowY: "hidden",
+                    paddingBottom: 2,
+                    flexShrink: 0,
+                    maxHeight: "clamp(140px, 24vh, 210px)",
+                  }}
+                >
+                  {participants.map((participant) => {
+                    const participantId = participant.sessionId;
+                    const isVideoOn = hasVideo(participant);
+                    const name = getParticipantName(participant);
+                    const image = getParticipantImage(participant);
+                    const participantCardId = `participant-row-${participant.sessionId}`;
+                    const participantStageId = `participant-row-stage-${participant.sessionId}`;
+
+                    return (
+                      <Paper
+                        key={`row-participant-${participantId}`}
+                        id={participantCardId}
+                        className="voice-media-card"
+                        radius="md"
+                        withBorder
+                        bg="#111214"
+                        p={0}
+                        style={{
+                          borderColor: "#2f3136",
+                          overflow: "hidden",
+                          flex: `0 0 ${bottomRowCardBasis}`,
+                          minWidth: 118,
+                        }}
+                      >
+                        <Box style={{ height: "clamp(88px, 16vh, 130px)", position: "relative", background: "#0b0c0e" }}>
+                          <Box
+                            id={participantStageId}
+                            className="voice-media-surface voice-fullscreen-target"
+                            style={{ position: "absolute", inset: 0 }}
+                          >
+                            <ParticipantView participant={participant} trackType="videoTrack" ParticipantViewUI={null} />
+                          </Box>
+                          {!isVideoOn && (
+                            <Center
+                              style={{
+                                position: "absolute",
+                                inset: 0,
+                                background: "linear-gradient(135deg, #1a1d22, #0f1217)",
+                              }}
+                            >
+                              <ProfileAvatar src={image} name={name} size={40} />
+                            </Center>
+                          )}
+
+                          <Box style={{ position: "absolute", left: 6, bottom: 6, right: 6 }}>
+                            <Paper bg="rgba(0,0,0,0.55)" p={4} radius="sm">
+                              <IdentityPill name={name} image={image} />
+                            </Paper>
+                          </Box>
+                        </Box>
+
+                        <Group px="xs" py={6} justify="space-between" wrap="nowrap">
+                          <Badge size="xs" color={isVideoOn ? "teal" : "gray"} variant="light" radius="sm">
+                            {isVideoOn ? "Camera" : "No camera"}
+                          </Badge>
+                          {isVideoOn && (
+                            <Button
+                              size="compact-xs"
+                              radius="xl"
+                              variant="subtle"
+                              onClick={() => {
+                                void toggleCardFullscreen(participantStageId);
+                              }}
+                              leftSection={
+                                fullscreenCardId === participantStageId ? (
+                                  <ArrowsInSimpleIcon size={12} />
+                                ) : (
+                                  <ArrowsOutSimpleIcon size={12} />
+                                )
+                              }
+                            >
+                              {fullscreenCardId === participantStageId ? "Exit" : "Full"}
+                            </Button>
+                          )}
+                        </Group>
+                      </Paper>
+                    );
+                  })}
+                </Box>
+              </Stack>
+            );
+          })()}
+
+          {!hasSpotlightStream && (
+            <Box
+              style={{
+                display: "grid",
+                gridTemplateColumns: `repeat(auto-fit, minmax(${gridCardMinWidth}, 1fr))`,
+                gap: "8px",
+              }}
+            >
           {screenshareParticipants.map((participant) => {
             const streamerUserId = participant.userId;
             const streamerName = getParticipantName(participant);
@@ -805,19 +1187,32 @@ function VoiceCallContent({ channelId, channelName, serverId, currentUser }: Voi
               streamActionPendingByStreamer[streamerUserId] ??
               streamActionPendingByStreamer[streamStateKey] ??
               false;
+            const screenshareStageId = `screenshare-stage-${participant.sessionId}`;
 
             return (
               <Paper
                 key={`screenshare-${participant.sessionId}`}
+                id={`screenshare-${participant.sessionId}`}
+                className="voice-media-card"
                 radius="md"
                 withBorder
                 bg="#111214"
                 p={0}
-                style={{ borderColor: "#2f3136", minHeight: 242, overflow: "hidden" }}
+                style={{
+                  borderColor: "#2f3136",
+                  minHeight: "clamp(188px, 30vh, 242px)",
+                  overflow: "hidden",
+                }}
               >
-                <Box style={{ height: 176, position: "relative", background: "#0b0c0e" }}>
+                <Box style={{ height: "clamp(128px, 21vh, 176px)", position: "relative", background: "#0b0c0e" }}>
                   {canView ? (
-                    <ParticipantView participant={participant} trackType="screenShareTrack" ParticipantViewUI={null} />
+                    <Box
+                      id={screenshareStageId}
+                      className="voice-media-surface voice-media-surface-screen voice-fullscreen-target"
+                      style={{ position: "absolute", inset: 0 }}
+                    >
+                      <ParticipantView participant={participant} trackType="screenShareTrack" ParticipantViewUI={null} />
+                    </Box>
                   ) : (
                     <Center
                       style={{
@@ -892,6 +1287,26 @@ function VoiceCallContent({ channelId, channelName, serverId, currentUser }: Voi
                         : `Watchers ${watcherCount}`}
                     </Button>
                   )}
+
+                  {canView && (
+                    <Button
+                      size="compact-xs"
+                      radius="xl"
+                      variant="subtle"
+                      onClick={() => {
+                        void toggleCardFullscreen(screenshareStageId);
+                      }}
+                      leftSection={
+                        fullscreenCardId === screenshareStageId ? (
+                          <ArrowsInSimpleIcon size={13} />
+                        ) : (
+                          <ArrowsOutSimpleIcon size={13} />
+                        )
+                      }
+                    >
+                      {fullscreenCardId === screenshareStageId ? "Exit" : "Fullscreen"}
+                    </Button>
+                  )}
                 </Group>
               </Paper>
             );
@@ -902,18 +1317,31 @@ function VoiceCallContent({ channelId, channelName, serverId, currentUser }: Voi
             const isVideoOn = hasVideo(participant);
             const name = getParticipantName(participant);
             const image = getParticipantImage(participant);
+            const participantStageId = `participant-stage-${participant.sessionId}`;
 
             return (
               <Paper
                 key={`participant-${participantId}`}
+                id={`participant-${participantId}`}
+                className="voice-media-card"
                 radius="md"
                 withBorder
                 bg="#111214"
                 p={0}
-                style={{ borderColor: "#2f3136", minHeight: 242, overflow: "hidden" }}
+                style={{
+                  borderColor: "#2f3136",
+                  minHeight: "clamp(188px, 30vh, 242px)",
+                  overflow: "hidden",
+                }}
               >
-                <Box style={{ height: 176, position: "relative", background: "#0b0c0e" }}>
-                  <ParticipantView participant={participant} trackType="videoTrack" ParticipantViewUI={null} />
+                <Box style={{ height: "clamp(128px, 21vh, 176px)", position: "relative", background: "#0b0c0e" }}>
+                  <Box
+                    id={participantStageId}
+                    className="voice-media-surface voice-fullscreen-target"
+                    style={{ position: "absolute", inset: 0 }}
+                  >
+                    <ParticipantView participant={participant} trackType="videoTrack" ParticipantViewUI={null} />
+                  </Box>
                   {!isVideoOn && (
                     <Center
                       style={{
@@ -937,9 +1365,30 @@ function VoiceCallContent({ channelId, channelName, serverId, currentUser }: Voi
                   <Text size="xs" c="gray.4">
                     Participant
                   </Text>
-                  <Badge size="xs" color={isVideoOn ? "teal" : "gray"} variant="light" radius="sm">
-                    {isVideoOn ? "Camera" : "No camera"}
-                  </Badge>
+                  <Group gap={6} wrap="nowrap">
+                    <Badge size="xs" color={isVideoOn ? "teal" : "gray"} variant="light" radius="sm">
+                      {isVideoOn ? "Camera" : "No camera"}
+                    </Badge>
+                    {isVideoOn && (
+                      <Button
+                        size="compact-xs"
+                        radius="xl"
+                        variant="subtle"
+                        onClick={() => {
+                          void toggleCardFullscreen(participantStageId);
+                        }}
+                        leftSection={
+                          fullscreenCardId === participantStageId ? (
+                            <ArrowsInSimpleIcon size={13} />
+                          ) : (
+                            <ArrowsOutSimpleIcon size={13} />
+                          )
+                        }
+                      >
+                        {fullscreenCardId === participantStageId ? "Exit" : "Fullscreen"}
+                      </Button>
+                    )}
+                  </Group>
                 </Group>
               </Paper>
             );
@@ -951,9 +1400,9 @@ function VoiceCallContent({ channelId, channelName, serverId, currentUser }: Voi
               withBorder
               bg="#111214"
               p={0}
-              style={{ borderColor: "#2f3136", minHeight: 242, overflow: "hidden" }}
+              style={{ borderColor: "#2f3136", minHeight: "clamp(188px, 30vh, 242px)", overflow: "hidden" }}
             >
-              <Center style={{ height: 176, background: "linear-gradient(135deg, #1a1d22, #0f1217)" }}>
+              <Center style={{ height: "clamp(128px, 21vh, 176px)", background: "linear-gradient(135deg, #1a1d22, #0f1217)" }}>
                 <ProfileAvatar src={currentUser.image} name={currentUser.name || "You"} size={62} />
               </Center>
               <Group px="xs" py={6} justify="space-between" wrap="nowrap">
@@ -964,10 +1413,22 @@ function VoiceCallContent({ channelId, channelName, serverId, currentUser }: Voi
               </Group>
             </Paper>
           )}
+
+            </Box>
+          )}
         </Box>
       </Box>
 
-      <Box style={{ display: "flex", justifyContent: "center", paddingBottom: 12, paddingTop: 6 }}>
+      <Box
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          paddingBottom: 12,
+          paddingTop: 6,
+          minHeight: CONTROLS_FOOTER_MIN_HEIGHT,
+          flexShrink: 0,
+        }}
+      >
         <Paper
           px="md"
           py="xs"
