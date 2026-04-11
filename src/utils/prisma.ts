@@ -12,10 +12,10 @@ const isVercelProduction = process.env.VERCEL_ENV === "production";
 
 function getPoolMax(): number {
     const raw = process.env.PG_POOL_MAX;
-    const parsed = Number.parseInt(raw ?? "3", 10);
+    const parsed = Number.parseInt(raw ?? "2", 10);
 
     if (!Number.isFinite(parsed) || parsed < 1) {
-        return 3;
+        return 2;
     }
 
     return parsed;
