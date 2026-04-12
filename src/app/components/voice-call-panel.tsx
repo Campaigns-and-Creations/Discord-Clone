@@ -31,6 +31,11 @@ import {
   MonitorPlayIcon,
   UsersThreeIcon,
 } from "@phosphor-icons/react";
+import { getSupabaseBrowserClient } from "@/utils/supabase-client";
+import {
+  STREAM_STATE_BROADCAST_EVENT,
+  type StreamStatePayload,
+} from "@/utils/stream-realtime-shared";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ProfileAvatar } from "./profile-avatar";
 
@@ -45,25 +50,7 @@ type VoiceCallPanelProps = {
   };
 };
 
-type StreamWatcher = {
-  userId: string;
-  name: string;
-  image: string | null;
-};
-
-type ActiveScreenshare = {
-  streamerUserId: string;
-  streamerName: string;
-  streamerImage: string | null;
-  watcherCount: number;
-  watchers: StreamWatcher[];
-};
-
-type StreamStateResponse = {
-  activeScreenshares: ActiveScreenshare[];
-  watchingStreamerUserIds: string[];
-  resolvedTargetStreamerUserId?: string;
-};
+type StreamStateResponse = StreamStatePayload;
 
 const JOIN_SOUND_SRC = "/sounds/join-call.mp3";
 const JOIN_SOUND_MAX_DURATION_MS = 10_000;
@@ -362,12 +349,14 @@ function VoiceCallContent({ channelId, channelName, serverId, currentUser }: Voi
   const [streamState, setStreamState] = useState<StreamStateResponse>({
     activeScreenshares: [],
     watchingStreamerUserIds: [],
+    realtimeChannel: "",
   });
   const [watchIntentStreamerUserIds, setWatchIntentStreamerUserIds] = useState<string[]>([]);
   const [streamActionPendingByStreamer, setStreamActionPendingByStreamer] = useState<Record<string, boolean>>({});
   const [openWatcherListForStreamer, setOpenWatcherListForStreamer] = useState<string | null>(null);
   const [streamError, setStreamError] = useState<string | null>(null);
   const [fullscreenCardId, setFullscreenCardId] = useState<string | null>(null);
+  const [realtimeChannelName, setRealtimeChannelName] = useState<string | null>(null);
 
   const screenshareParticipants = useMemo(
     () => participants.filter((participant) => hasScreenShare(participant)),
@@ -496,6 +485,8 @@ function VoiceCallContent({ channelId, channelName, serverId, currentUser }: Voi
       }
 
       setStreamState(payload);
+      setWatchIntentStreamerUserIds(payload.watchingStreamerUserIds);
+      setRealtimeChannelName(payload.realtimeChannel);
       setStreamError(null);
     } catch {
       setStreamError("Unable to refresh screenshare state.");
@@ -582,6 +573,7 @@ function VoiceCallContent({ channelId, channelName, serverId, currentUser }: Voi
       }
 
       setStreamState(payload);
+      setRealtimeChannelName(payload.realtimeChannel);
       const resolvedTargetStreamerUserId = payload.resolvedTargetStreamerUserId ?? targetStreamerUserId;
 
       setWatchIntentStreamerUserIds((current) => {
@@ -624,27 +616,45 @@ function VoiceCallContent({ channelId, channelName, serverId, currentUser }: Voi
   };
 
   useEffect(() => {
-    let isCancelled = false;
+    void fetchStreamState();
+  }, [fetchStreamState]);
 
-    const refresh = async () => {
-      if (isCancelled) {
+  useEffect(() => {
+    if (!realtimeChannelName) {
+      return;
+    }
+
+    const supabase = getSupabaseBrowserClient();
+    const realtimeChannel = supabase.channel(realtimeChannelName, {
+      config: {
+        broadcast: {
+          self: false,
+          ack: false,
+        },
+      },
+    });
+
+    realtimeChannel.on("broadcast", { event: STREAM_STATE_BROADCAST_EVENT }, ({ payload }) => {
+      if (!payload || typeof payload !== "object") {
         return;
       }
 
-      await fetchStreamState();
-    };
+      const parsedPayload = payload as StreamStateResponse;
+      setStreamState(parsedPayload);
+      setWatchIntentStreamerUserIds(parsedPayload.watchingStreamerUserIds ?? []);
+      setStreamError(null);
+    });
 
-    void refresh();
-
-    const intervalId = window.setInterval(() => {
-      void refresh();
-    }, 4_000);
+    realtimeChannel.subscribe((status) => {
+      if (status === "CHANNEL_ERROR" || status === "TIMED_OUT") {
+        setStreamError("Realtime connection issue. Reconnecting...");
+      }
+    });
 
     return () => {
-      isCancelled = true;
-      window.clearInterval(intervalId);
+      void supabase.removeChannel(realtimeChannel);
     };
-  }, [fetchStreamState]);
+  }, [realtimeChannelName]);
 
   useEffect(() => {
     if (stopScreenshareTimeoutRef.current !== null) {
@@ -692,70 +702,7 @@ function VoiceCallContent({ channelId, channelName, serverId, currentUser }: Voi
     if (!isLocalScreensharing) {
       return;
     }
-
-    const intervalId = window.setInterval(() => {
-      void fetch("/api/discord/stream-state", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          action: "sync-screenshare",
-          serverId,
-          channelId,
-        }),
-      });
-    }, 12_000);
-
-    return () => {
-      window.clearInterval(intervalId);
-    };
   }, [channelId, isLocalScreensharing, serverId]);
-
-  useEffect(() => {
-    if (watchedStreamerIds.length === 0) {
-      return;
-    }
-
-    const sendHeartbeat = async () => {
-      const failedStreamerIds: string[] = [];
-
-      for (const targetStreamerUserId of watchedStreamerIds) {
-        try {
-          const response = await fetch("/api/discord/stream-state", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              action: "heartbeat-screenshare",
-              serverId,
-              channelId,
-              targetStreamerUserId,
-            }),
-          });
-
-          if (!response.ok && response.status === 409) {
-            failedStreamerIds.push(targetStreamerUserId);
-          }
-        } catch {
-          failedStreamerIds.push(targetStreamerUserId);
-        }
-      }
-
-      if (failedStreamerIds.length > 0) {
-        setWatchIntentStreamerUserIds((current) =>
-          current.filter((streamerUserId) => !failedStreamerIds.includes(streamerUserId)),
-        );
-      }
-    };
-
-    void sendHeartbeat();
-
-    const intervalId = window.setInterval(() => {
-      void sendHeartbeat();
-    }, 5_000);
-
-    return () => {
-      window.clearInterval(intervalId);
-    };
-  }, [channelId, watchedStreamerIds, serverId]);
 
   useEffect(() => {
     return () => {

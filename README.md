@@ -14,6 +14,7 @@ This project is a custom Discord clone built with Next.js, Prisma, and Postgres.
 		- `NEXT_PUBLIC_SUPABASE_URL`
 		- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 		- `SUPABASE_SERVICE_ROLE_KEY`
+		- `STREAM_REALTIME_SECRET` (optional but recommended; falls back to `BETTER_AUTH_SECRET`)
 	- If you do not have the values, ask Diego for the env variables.
 	- Ensure Supabase Storage has a private bucket named `pictures`.
 2. Open `prisma/seed.ts` and set the seeded user email to your own email address.

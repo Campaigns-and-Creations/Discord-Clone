@@ -35,9 +35,6 @@ export type StreamChannelSnapshot = {
   activeScreenshares: ActiveScreenshareSummary[];
 };
 
-const WATCHER_STALE_MS = 45_000;
-const SCREENSHARE_STALE_MS = 45_000;
-
 type GlobalStreamState = typeof globalThis & {
   __discordStreamChannelStateByKey?: Map<string, StreamChannelState>;
 };
@@ -70,21 +67,8 @@ function getOrCreateChannelState(serverId: string, channelId: string): StreamCha
   return created;
 }
 
-function cleanupChannelState(serverId: string, channelId: string, state: StreamChannelState): void {
-  const now = Date.now();
-
-  for (const [streamerUserId, screenshare] of state.screenshares) {
-    if (now - screenshare.lastSeenAt > SCREENSHARE_STALE_MS) {
-      state.screenshares.delete(streamerUserId);
-      continue;
-    }
-
-    for (const [watcherUserId, watcher] of screenshare.watchers) {
-      if (now - watcher.lastSeenAt > WATCHER_STALE_MS) {
-        screenshare.watchers.delete(watcherUserId);
-      }
-    }
-  }
+function cleanupChannelState(_serverId: string, _channelId: string, _state: StreamChannelState): void {
+  // Event-driven flow uses explicit start/stop/watch/unwatch mutations rather than heartbeat expiry.
 }
 
 export function getStreamStateSnapshot(serverId: string, channelId: string): StreamChannelSnapshot {

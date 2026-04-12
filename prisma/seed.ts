@@ -65,12 +65,12 @@ async function main() {
         where: { email },
         update: {
             emailVerified: true,
-            name: "Diego Goethals",
+            name: "DiegoGoethals",
         },
         create: {
             email,
             emailVerified: true,
-            name: "Diego Goethals",
+            name: "DiegoGoethals",
         },
     });
 

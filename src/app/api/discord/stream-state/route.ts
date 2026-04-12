@@ -6,6 +6,11 @@ import { resolveDisplayName } from "@/utils/display-name";
 import { logger } from "@/utils/logger";
 import { canAccessChannel } from "@/utils/permissions";
 import { getServerUser } from "@/utils/session";
+import {
+  buildStreamRealtimeChannel,
+  publishStreamStateUpdate,
+} from "@/utils/stream-realtime-server";
+import { type StreamStatePayload } from "@/utils/stream-realtime-shared";
 import { createSignedPictureUrls, resolvePictureUrl } from "@/utils/supabase";
 import {
   getStreamStateSnapshot,
@@ -133,6 +138,20 @@ async function snapshotResponse(
     resolvedTargetStreamerUserId?: string | null;
   },
 ) {
+  const payload = await buildStreamStatePayload(serverId, channelId, sessionUserId, options);
+
+  return NextResponse.json(payload);
+}
+
+async function buildStreamStatePayload(
+  serverId: string,
+  channelId: string,
+  sessionUserId: string,
+  options?: {
+    message?: string;
+    resolvedTargetStreamerUserId?: string | null;
+  },
+): Promise<StreamStatePayload> {
   const snapshot = await hydrateStreamSnapshotImages(getStreamStateSnapshot(serverId, channelId));
   const watchingStreamerUserIds = snapshot.activeScreenshares
     .filter((screenshare) =>
@@ -140,12 +159,13 @@ async function snapshotResponse(
     )
     .map((screenshare) => screenshare.streamerUserId);
 
-  return NextResponse.json({
+  return {
     ...snapshot,
     watchingStreamerUserIds,
+    realtimeChannel: buildStreamRealtimeChannel(serverId, channelId),
     resolvedTargetStreamerUserId: options?.resolvedTargetStreamerUserId ?? undefined,
     message: options?.message,
-  });
+  };
 }
 
 export async function GET(request: Request) {
@@ -172,17 +192,7 @@ export async function GET(request: Request) {
     return accessError;
   }
 
-  const snapshot = await hydrateStreamSnapshotImages(getStreamStateSnapshot(resolvedServerId, resolvedChannelId));
-  const watchingStreamerUserIds = snapshot.activeScreenshares
-    .filter((screenshare) =>
-      screenshare.watchers.some((watcher) => watcher.userId === sessionUser.id),
-    )
-    .map((screenshare) => screenshare.streamerUserId);
-
-  return NextResponse.json({
-    ...snapshot,
-    watchingStreamerUserIds,
-  });
+  return await snapshotResponse(resolvedServerId, resolvedChannelId, sessionUser.id);
 }
 
 export async function POST(request: Request) {
@@ -458,7 +468,11 @@ export async function POST(request: Request) {
     unwatchAllScreenshares(resolvedServerId, resolvedChannelId, sessionUser.id);
   }
 
-  return await snapshotResponse(resolvedServerId, resolvedChannelId, sessionUser.id, {
+  const payload = await buildStreamStatePayload(resolvedServerId, resolvedChannelId, sessionUser.id, {
     resolvedTargetStreamerUserId: resolvedTargetStreamerUserIdForResponse,
   });
+
+  await publishStreamStateUpdate(payload);
+
+  return NextResponse.json(payload);
 }
