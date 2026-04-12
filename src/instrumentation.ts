@@ -8,6 +8,7 @@ const REQUIRED_ENV_VARIABLES = [
     "NEXT_PUBLIC_SUPABASE_URL",
     "NEXT_PUBLIC_SUPABASE_ANON_KEY",
     "SUPABASE_SERVICE_ROLE_KEY",
+    "REDIS_URL",
 ];
 
 export async function register() {
