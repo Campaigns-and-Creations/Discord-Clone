@@ -13,6 +13,7 @@ import {
 import { type StreamStatePayload } from "@/utils/stream-realtime-shared";
 import { createSignedPictureUrls, resolvePictureUrl } from "@/utils/supabase";
 import {
+  type StreamChannelSnapshot,
   getStreamStateSnapshot,
   heartbeatWatcher,
   setWatchingState,
@@ -69,8 +70,20 @@ function resolveTargetStreamerUserId(
   channelId: string,
   targetStreamerUserId: string,
   targetStreamerName?: string,
-): string | null {
-  const snapshot = getStreamStateSnapshot(serverId, channelId);
+): Promise<string | null> {
+  return resolveTargetStreamerUserIdFromSnapshot(
+    getStreamStateSnapshot(serverId, channelId),
+    targetStreamerUserId,
+    targetStreamerName,
+  );
+}
+
+async function resolveTargetStreamerUserIdFromSnapshot(
+  snapshotPromise: Promise<StreamChannelSnapshot>,
+  targetStreamerUserId: string,
+  targetStreamerName?: string,
+): Promise<string | null> {
+  const snapshot = await snapshotPromise;
 
   const exactIdMatch = snapshot.activeScreenshares.find(
     (screenshare) => screenshare.streamerUserId === targetStreamerUserId,
@@ -98,7 +111,7 @@ function resolveTargetStreamerUserId(
 }
 
 async function hydrateStreamSnapshotImages(
-  snapshot: ReturnType<typeof getStreamStateSnapshot>,
+  snapshot: StreamChannelSnapshot,
 ) {
   const storedPaths = new Set<string>();
 
@@ -152,7 +165,7 @@ async function buildStreamStatePayload(
     resolvedTargetStreamerUserId?: string | null;
   },
 ): Promise<StreamStatePayload> {
-  const snapshot = await hydrateStreamSnapshotImages(getStreamStateSnapshot(serverId, channelId));
+  const snapshot = await hydrateStreamSnapshotImages(await getStreamStateSnapshot(serverId, channelId));
   const watchingStreamerUserIds = snapshot.activeScreenshares
     .filter((screenshare) =>
       screenshare.watchers.some((watcher) => watcher.userId === sessionUserId),
@@ -236,7 +249,7 @@ export async function POST(request: Request) {
   let resolvedTargetStreamerUserIdForResponse: string | null = null;
 
   if (action === "sync-screenshare") {
-    syncScreenshare(resolvedServerId, resolvedChannelId, {
+    await syncScreenshare(resolvedServerId, resolvedChannelId, {
       streamerUserId: sessionUser.id,
       streamerName: normalizedName,
       streamerImage: normalizedImage,
@@ -244,7 +257,7 @@ export async function POST(request: Request) {
   }
 
   if (action === "stop-screenshare") {
-    stopScreenshare(resolvedServerId, resolvedChannelId, sessionUser.id);
+    await stopScreenshare(resolvedServerId, resolvedChannelId, sessionUser.id);
   }
 
   if (action === "watch-screenshare") {
@@ -252,9 +265,9 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: "targetStreamerUserId is required." }, { status: 400 });
     }
 
-    const snapshotBeforeWatch = getStreamStateSnapshot(resolvedServerId, resolvedChannelId);
+    const snapshotBeforeWatch = await getStreamStateSnapshot(resolvedServerId, resolvedChannelId);
 
-    let resolvedTargetStreamerUserId = resolveTargetStreamerUserId(
+    let resolvedTargetStreamerUserId = await resolveTargetStreamerUserId(
       resolvedServerId,
       resolvedChannelId,
       targetStreamerUserId,
@@ -288,7 +301,7 @@ export async function POST(request: Request) {
         requestedTargetStreamerName: targetStreamerName,
       });
 
-      syncScreenshare(resolvedServerId, resolvedChannelId, {
+      await syncScreenshare(resolvedServerId, resolvedChannelId, {
         streamerUserId: targetStreamerUserId,
         streamerName: fallbackName,
         streamerImage: fallbackImage,
@@ -316,7 +329,7 @@ export async function POST(request: Request) {
 
     resolvedTargetStreamerUserIdForResponse = resolvedTargetStreamerUserId;
 
-    let result = setWatchingState(resolvedServerId, resolvedChannelId, {
+    let result = await setWatchingState(resolvedServerId, resolvedChannelId, {
       targetStreamerUserId: resolvedTargetStreamerUserId,
       userId: sessionUser.id,
       name: normalizedName,
@@ -338,13 +351,13 @@ export async function POST(request: Request) {
         usedBootstrapSync,
       });
 
-      syncScreenshare(resolvedServerId, resolvedChannelId, {
+      await syncScreenshare(resolvedServerId, resolvedChannelId, {
         streamerUserId: resolvedTargetStreamerUserId,
         streamerName: retryName,
         streamerImage: retryImage,
       });
 
-      result = setWatchingState(resolvedServerId, resolvedChannelId, {
+      result = await setWatchingState(resolvedServerId, resolvedChannelId, {
         targetStreamerUserId: resolvedTargetStreamerUserId,
         userId: sessionUser.id,
         name: normalizedName,
@@ -374,7 +387,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: "Streamer cannot watch their own screenshare." }, { status: 400 });
     }
 
-    const snapshotAfterWatch = getStreamStateSnapshot(resolvedServerId, resolvedChannelId);
+    const snapshotAfterWatch = await getStreamStateSnapshot(resolvedServerId, resolvedChannelId);
     const targetScreenshare = snapshotAfterWatch.activeScreenshares.find(
       (item) => item.streamerUserId === resolvedTargetStreamerUserId,
     );
@@ -396,7 +409,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: "targetStreamerUserId is required." }, { status: 400 });
     }
 
-    const resolvedTargetStreamerUserId = resolveTargetStreamerUserId(
+    const resolvedTargetStreamerUserId = await resolveTargetStreamerUserId(
       resolvedServerId,
       resolvedChannelId,
       targetStreamerUserId,
@@ -411,7 +424,7 @@ export async function POST(request: Request) {
 
     resolvedTargetStreamerUserIdForResponse = resolvedTargetStreamerUserId;
 
-    const result = setWatchingState(resolvedServerId, resolvedChannelId, {
+    const result = await setWatchingState(resolvedServerId, resolvedChannelId, {
       targetStreamerUserId: resolvedTargetStreamerUserId,
       userId: sessionUser.id,
       name: normalizedName,
@@ -432,7 +445,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: "targetStreamerUserId is required." }, { status: 400 });
     }
 
-    const resolvedTargetStreamerUserId = resolveTargetStreamerUserId(
+    const resolvedTargetStreamerUserId = await resolveTargetStreamerUserId(
       resolvedServerId,
       resolvedChannelId,
       targetStreamerUserId,
@@ -447,7 +460,7 @@ export async function POST(request: Request) {
 
     resolvedTargetStreamerUserIdForResponse = resolvedTargetStreamerUserId;
 
-    const result = heartbeatWatcher(
+    const result = await heartbeatWatcher(
       resolvedServerId,
       resolvedChannelId,
       resolvedTargetStreamerUserId,
@@ -465,7 +478,7 @@ export async function POST(request: Request) {
   }
 
   if (action === "unwatch-all") {
-    unwatchAllScreenshares(resolvedServerId, resolvedChannelId, sessionUser.id);
+    await unwatchAllScreenshares(resolvedServerId, resolvedChannelId, sessionUser.id);
   }
 
   const payload = await buildStreamStatePayload(resolvedServerId, resolvedChannelId, sessionUser.id, {

@@ -1,21 +1,4 @@
-type StreamWatcher = {
-  userId: string;
-  name: string;
-  image: string | null;
-  lastSeenAt: number;
-};
-
-type ActiveScreenshare = {
-  streamerUserId: string;
-  streamerName: string;
-  streamerImage: string | null;
-  lastSeenAt: number;
-  watchers: Map<string, StreamWatcher>;
-};
-
-type StreamChannelState = {
-  screenshares: Map<string, ActiveScreenshare>;
-};
+import { getRedisClient } from "@/utils/redis";
 
 export type StreamWatcherSummary = {
   userId: string;
@@ -35,77 +18,105 @@ export type StreamChannelSnapshot = {
   activeScreenshares: ActiveScreenshareSummary[];
 };
 
-type GlobalStreamState = typeof globalThis & {
-  __discordStreamChannelStateByKey?: Map<string, StreamChannelState>;
+const ROOM_TTL_SECONDS = 60 * 60 * 6;
+
+type RedisWatcherValue = {
+  userId: string;
+  name: string;
+  image: string | null;
 };
 
-const globalStreamState = globalThis as GlobalStreamState;
-const streamChannelStateByKey =
-  globalStreamState.__discordStreamChannelStateByKey ?? new Map<string, StreamChannelState>();
-
-if (!globalStreamState.__discordStreamChannelStateByKey) {
-  globalStreamState.__discordStreamChannelStateByKey = streamChannelStateByKey;
+function roomStreamersKey(serverId: string, channelId: string): string {
+  return `stream:room:${serverId}:${channelId}:streamers`;
 }
 
-function getKey(serverId: string, channelId: string): string {
-  return `${serverId}:${channelId}`;
+function streamMetaKey(serverId: string, channelId: string, streamerUserId: string): string {
+  return `stream:room:${serverId}:${channelId}:streamer:${streamerUserId}:meta`;
 }
 
-function getOrCreateChannelState(serverId: string, channelId: string): StreamChannelState {
-  const key = getKey(serverId, channelId);
-  const existing = streamChannelStateByKey.get(key);
+function streamWatchersKey(serverId: string, channelId: string, streamerUserId: string): string {
+  return `stream:room:${serverId}:${channelId}:streamer:${streamerUserId}:watchers`;
+}
 
-  if (existing) {
-    return existing;
+async function touchRoomTtl(serverId: string, channelId: string, streamerUserId: string): Promise<void> {
+  const redis = getRedisClient();
+  await redis
+    .multi()
+    .expire(roomStreamersKey(serverId, channelId), ROOM_TTL_SECONDS)
+    .expire(streamMetaKey(serverId, channelId, streamerUserId), ROOM_TTL_SECONDS)
+    .expire(streamWatchersKey(serverId, channelId, streamerUserId), ROOM_TTL_SECONDS)
+    .exec();
+}
+
+function safeParseWatcher(value: string | null): RedisWatcherValue | null {
+  if (!value) {
+    return null;
   }
 
-  const created: StreamChannelState = {
-    screenshares: new Map(),
-  };
+  try {
+    const parsed = JSON.parse(value) as RedisWatcherValue;
+    if (!parsed.userId || !parsed.name) {
+      return null;
+    }
 
-  streamChannelStateByKey.set(key, created);
-  return created;
+    return {
+      userId: parsed.userId,
+      name: parsed.name,
+      image: parsed.image ?? null,
+    };
+  } catch {
+    return null;
+  }
 }
 
-function cleanupChannelState(_serverId: string, _channelId: string, _state: StreamChannelState): void {
-  // Event-driven flow uses explicit start/stop/watch/unwatch mutations rather than heartbeat expiry.
-}
+export async function getStreamStateSnapshot(serverId: string, channelId: string): Promise<StreamChannelSnapshot> {
+  const redis = getRedisClient();
+  const streamerUserIds = await redis.smembers(roomStreamersKey(serverId, channelId));
 
-export function getStreamStateSnapshot(serverId: string, channelId: string): StreamChannelSnapshot {
-  const key = getKey(serverId, channelId);
-  const state = streamChannelStateByKey.get(key);
-
-  if (!state) {
+  if (streamerUserIds.length === 0) {
     return { activeScreenshares: [] };
   }
 
-  cleanupChannelState(serverId, channelId, state);
+  const pipeline = redis.pipeline();
 
-  if (state.screenshares.size === 0) {
-    streamChannelStateByKey.delete(key);
-    return { activeScreenshares: [] };
+  for (const streamerUserId of streamerUserIds) {
+    pipeline.hgetall(streamMetaKey(serverId, channelId, streamerUserId));
+    pipeline.hgetall(streamWatchersKey(serverId, channelId, streamerUserId));
+  }
+
+  const results = await pipeline.exec();
+  const activeScreenshares: ActiveScreenshareSummary[] = [];
+
+  for (let index = 0; index < streamerUserIds.length; index += 1) {
+    const streamerUserId = streamerUserIds[index];
+    const metaResult = results?.[index * 2]?.[1] as Record<string, string> | undefined;
+    const watchersResult = results?.[index * 2 + 1]?.[1] as Record<string, string> | undefined;
+
+    if (!metaResult || !metaResult.streamerName) {
+      await redis.srem(roomStreamersKey(serverId, channelId), streamerUserId);
+      continue;
+    }
+
+    const watchers = Object.values(watchersResult ?? {})
+      .map((value) => safeParseWatcher(value))
+      .filter((watcher): watcher is RedisWatcherValue => watcher !== null)
+      .sort((a, b) => a.name.localeCompare(b.name));
+
+    activeScreenshares.push({
+      streamerUserId,
+      streamerName: metaResult.streamerName,
+      streamerImage: metaResult.streamerImage || null,
+      watcherCount: watchers.length,
+      watchers,
+    });
   }
 
   return {
-    activeScreenshares: Array.from(state.screenshares.values())
-      .map((screenshare) => ({
-        streamerUserId: screenshare.streamerUserId,
-        streamerName: screenshare.streamerName,
-        streamerImage: screenshare.streamerImage,
-        watcherCount: screenshare.watchers.size,
-        watchers: Array.from(screenshare.watchers.values())
-          .map((watcher) => ({
-            userId: watcher.userId,
-            name: watcher.name,
-            image: watcher.image,
-          }))
-          .sort((a, b) => a.name.localeCompare(b.name)),
-      }))
-      .sort((a, b) => a.streamerName.localeCompare(b.streamerName)),
+    activeScreenshares: activeScreenshares.sort((a, b) => a.streamerName.localeCompare(b.streamerName)),
   };
 }
 
-export function syncScreenshare(
+export async function syncScreenshare(
   serverId: string,
   channelId: string,
   payload: {
@@ -113,49 +124,41 @@ export function syncScreenshare(
     streamerName: string;
     streamerImage: string | null;
   },
-): { ok: true } {
-  const state = getOrCreateChannelState(serverId, channelId);
-  cleanupChannelState(serverId, channelId, state);
+): Promise<{ ok: true }> {
+  const redis = getRedisClient();
 
-  const existing = state.screenshares.get(payload.streamerUserId);
+  await redis
+    .multi()
+    .sadd(roomStreamersKey(serverId, channelId), payload.streamerUserId)
+    .hset(streamMetaKey(serverId, channelId, payload.streamerUserId), {
+      streamerName: payload.streamerName,
+      streamerImage: payload.streamerImage ?? "",
+    })
+    .exec();
 
-  if (existing) {
-    existing.lastSeenAt = Date.now();
-    existing.streamerName = payload.streamerName;
-    existing.streamerImage = payload.streamerImage;
-    state.screenshares.set(payload.streamerUserId, existing);
-    return { ok: true };
-  }
-
-  state.screenshares.set(payload.streamerUserId, {
-    streamerUserId: payload.streamerUserId,
-    streamerName: payload.streamerName,
-    streamerImage: payload.streamerImage,
-    lastSeenAt: Date.now(),
-    watchers: new Map(),
-  });
+  await touchRoomTtl(serverId, channelId, payload.streamerUserId);
 
   return { ok: true };
 }
 
-export function stopScreenshare(
+export async function stopScreenshare(
   serverId: string,
   channelId: string,
   streamerUserId: string,
-): { ok: true } {
-  const state = getOrCreateChannelState(serverId, channelId);
-  cleanupChannelState(serverId, channelId, state);
+): Promise<{ ok: true }> {
+  const redis = getRedisClient();
 
-  state.screenshares.delete(streamerUserId);
-
-  if (state.screenshares.size === 0) {
-    streamChannelStateByKey.delete(getKey(serverId, channelId));
-  }
+  await redis
+    .multi()
+    .srem(roomStreamersKey(serverId, channelId), streamerUserId)
+    .del(streamMetaKey(serverId, channelId, streamerUserId))
+    .del(streamWatchersKey(serverId, channelId, streamerUserId))
+    .exec();
 
   return { ok: true };
 }
 
-export function setWatchingState(
+export async function setWatchingState(
   serverId: string,
   channelId: string,
   payload: {
@@ -165,13 +168,15 @@ export function setWatchingState(
     image: string | null;
     watching: boolean;
   },
-): { ok: true } | { ok: false; reason: "stream-not-live" | "streamer-cannot-watch" } {
-  const state = getOrCreateChannelState(serverId, channelId);
-  cleanupChannelState(serverId, channelId, state);
+): Promise<{ ok: true } | { ok: false; reason: "stream-not-live" | "streamer-cannot-watch" }> {
+  const redis = getRedisClient();
 
-  const screenshare = state.screenshares.get(payload.targetStreamerUserId);
+  const exists = await redis.sismember(
+    roomStreamersKey(serverId, channelId),
+    payload.targetStreamerUserId,
+  );
 
-  if (!screenshare) {
+  if (exists !== 1) {
     return { ok: false, reason: "stream-not-live" };
   }
 
@@ -179,67 +184,78 @@ export function setWatchingState(
     return { ok: false, reason: "streamer-cannot-watch" };
   }
 
-  screenshare.lastSeenAt = Date.now();
-
   if (!payload.watching) {
-    screenshare.watchers.delete(payload.userId);
-    state.screenshares.set(payload.targetStreamerUserId, screenshare);
+    await redis.hdel(
+      streamWatchersKey(serverId, channelId, payload.targetStreamerUserId),
+      payload.userId,
+    );
+
+    await touchRoomTtl(serverId, channelId, payload.targetStreamerUserId);
     return { ok: true };
   }
 
-  screenshare.watchers.set(payload.userId, {
-    userId: payload.userId,
-    name: payload.name,
-    image: payload.image,
-    lastSeenAt: Date.now(),
-  });
+  await redis.hset(
+    streamWatchersKey(serverId, channelId, payload.targetStreamerUserId),
+    payload.userId,
+    JSON.stringify({
+      userId: payload.userId,
+      name: payload.name,
+      image: payload.image,
+    } satisfies RedisWatcherValue),
+  );
 
-  state.screenshares.set(payload.targetStreamerUserId, screenshare);
+  await touchRoomTtl(serverId, channelId, payload.targetStreamerUserId);
   return { ok: true };
 }
 
-export function heartbeatWatcher(
+export async function heartbeatWatcher(
   serverId: string,
   channelId: string,
   targetStreamerUserId: string,
   userId: string,
   name: string,
   image: string | null,
-): { ok: true } | { ok: false; reason: "stream-not-live" } {
-  const state = getOrCreateChannelState(serverId, channelId);
-  cleanupChannelState(serverId, channelId, state);
+): Promise<{ ok: true } | { ok: false; reason: "stream-not-live" }> {
+  const redis = getRedisClient();
+  const exists = await redis.sismember(roomStreamersKey(serverId, channelId), targetStreamerUserId);
 
-  const screenshare = state.screenshares.get(targetStreamerUserId);
-
-  if (!screenshare) {
+  if (exists !== 1) {
     return { ok: false, reason: "stream-not-live" };
   }
 
-  const existingWatcher = screenshare.watchers.get(userId);
-  screenshare.watchers.set(userId, {
+  await redis.hset(
+    streamWatchersKey(serverId, channelId, targetStreamerUserId),
     userId,
-    name,
-    image,
-    lastSeenAt: Date.now(),
-  });
+    JSON.stringify({ userId, name, image } satisfies RedisWatcherValue),
+  );
 
-  if (existingWatcher) {
-    existingWatcher.lastSeenAt = Date.now();
-  }
-
-  screenshare.lastSeenAt = Date.now();
-  state.screenshares.set(targetStreamerUserId, screenshare);
+  await touchRoomTtl(serverId, channelId, targetStreamerUserId);
 
   return { ok: true };
 }
 
-export function unwatchAllScreenshares(serverId: string, channelId: string, userId: string): { ok: true } {
-  const state = getOrCreateChannelState(serverId, channelId);
-  cleanupChannelState(serverId, channelId, state);
+export async function unwatchAllScreenshares(
+  serverId: string,
+  channelId: string,
+  userId: string,
+): Promise<{ ok: true }> {
+  const redis = getRedisClient();
+  const streamerUserIds = await redis.smembers(roomStreamersKey(serverId, channelId));
 
-  for (const screenshare of state.screenshares.values()) {
-    screenshare.watchers.delete(userId);
+  if (streamerUserIds.length === 0) {
+    return { ok: true };
   }
+
+  const pipeline = redis.pipeline();
+
+  for (const streamerUserId of streamerUserIds) {
+    pipeline.hdel(streamWatchersKey(serverId, channelId, streamerUserId), userId);
+    pipeline.expire(streamWatchersKey(serverId, channelId, streamerUserId), ROOM_TTL_SECONDS);
+    pipeline.expire(streamMetaKey(serverId, channelId, streamerUserId), ROOM_TTL_SECONDS);
+  }
+
+  pipeline.expire(roomStreamersKey(serverId, channelId), ROOM_TTL_SECONDS);
+  await pipeline.exec();
 
   return { ok: true };
 }

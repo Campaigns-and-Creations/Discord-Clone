@@ -9,11 +9,6 @@ const STREAM_CHANNEL_PREFIX = "stream-state";
 const SUBSCRIBE_TIMEOUT_MS = 2_000;
 
 function getChannelSecret(): string {
-  const explicit = process.env.STREAM_REALTIME_SECRET?.trim();
-  if (explicit && explicit.length > 0) {
-    return explicit;
-  }
-
   const authSecret = process.env.BETTER_AUTH_SECRET?.trim();
   if (authSecret && authSecret.length > 0) {
     return authSecret;
@@ -24,7 +19,7 @@ function getChannelSecret(): string {
     return serviceRoleKey;
   }
 
-  throw new Error("Missing realtime channel secret. Set STREAM_REALTIME_SECRET or BETTER_AUTH_SECRET.");
+  throw new Error("Missing realtime channel secret. Set BETTER_AUTH_SECRET.");
 }
 
 export function buildStreamRealtimeChannel(serverId: string, channelId: string): string {

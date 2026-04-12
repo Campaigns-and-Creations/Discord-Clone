@@ -646,6 +646,11 @@ function VoiceCallContent({ channelId, channelName, serverId, currentUser }: Voi
     });
 
     realtimeChannel.subscribe((status) => {
+      if (status === "SUBSCRIBED") {
+        void fetchStreamState();
+        return;
+      }
+
       if (status === "CHANNEL_ERROR" || status === "TIMED_OUT") {
         setStreamError("Realtime connection issue. Reconnecting...");
       }
@@ -696,12 +701,6 @@ function VoiceCallContent({ channelId, channelName, serverId, currentUser }: Voi
         stopScreenshareTimeoutRef.current = null;
       }
     };
-  }, [channelId, isLocalScreensharing, serverId]);
-
-  useEffect(() => {
-    if (!isLocalScreensharing) {
-      return;
-    }
   }, [channelId, isLocalScreensharing, serverId]);
 
   useEffect(() => {
